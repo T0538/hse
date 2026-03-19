@@ -15,6 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -33,6 +34,53 @@
 }
 html{font-size:16px;scroll-behavior:smooth}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:var(--nav-h)}
+
+/* ── THÈME SOMBRE ── */
+body.dark-mode{
+  --orange:#E8733E;--orange-light:#3A1F10;--orange-mid:#7A3520;
+  --green:#4A9E22;--green-light:#1A2E0A;--green-mid:#5A8830;
+  --red:#C44040;--red-light:#3A1010;
+  --amber:#D08830;--amber-light:#3A2810;
+  --blue:#3A80C8;--blue-light:#0E1E3A;
+  --gray:#8A8880;--gray-light:#2A2A28;--gray-mid:#4A4845;
+  --text:#E8E6DE;--text2:#B0AEA6;--text3:#6A6860;
+  --bg:#1A1A18;--surface:#242422;--border:#383836;
+}
+body.dark-mode .topbar,body.dark-mode .bottom-nav{background:var(--surface)}
+body.dark-mode .modal-sheet{background:#242422}
+body.dark-mode .form-input,body.dark-mode .form-select,body.dark-mode .form-textarea{background:#1E1E1C;color:var(--text);border-color:var(--border)}
+body.dark-mode .sig-pad{background:#2A2A28}
+body.dark-mode .photo-zone{border-color:var(--border)}
+body.dark-mode .card{background:var(--surface)}
+body.dark-mode .list-card,body.dark-mode .rapport-card,body.dark-mode .permit-card{background:var(--surface)}
+body.dark-mode .export-btn,body.dark-mode .backup-card,body.dark-mode .pers-card{background:var(--surface)}
+body.dark-mode .epi-card,body.dark-mode .kpi-card,body.dark-mode .kpi-box{background:var(--surface)}
+body.dark-mode .qa-btn,body.dark-mode .permit-type-btn{background:var(--surface)}
+body.dark-mode .permit-type-btn.feu{background:#2A1408;border-color:#7A3520}
+body.dark-mode .permit-type-btn.levage{background:#0A1828;border-color:#1A4070}
+body.dark-mode .permit-type-btn.fouille{background:#2A1E08;border-color:#705020}
+body.dark-mode .permit-type-btn.travail{background:#0A1E08;border-color:#205020}
+body.dark-mode .pwa-banner{background:#3A3A38}
+body.dark-mode .sev-btn{background:transparent}
+body.dark-mode .filter-chip,body.dark-mode .date-chip{background:var(--surface);color:var(--text2)}
+body.dark-mode .search-overlay .search-box{background:#242422}
+body.dark-mode .search-results{background:#1A1A18}
+body.dark-mode .search-item{background:#242422}
+body.dark-mode .weather-strip{background:linear-gradient(135deg,#1A3A5A,#0E2440)}
+body.dark-mode input[type=checkbox]{accent-color:var(--orange)}
+
+/* ── BOUTON THÈME ── */
+.theme-toggle{width:36px;height:36px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.theme-toggle:active{background:var(--gray-mid)}
+
+/* ── QR CODE MODAL ── */
+.qr-modal-agent{text-align:center;padding:8px 0 16px}
+.qr-canvas-wrap{display:flex;justify-content:center;margin:14px 0}
+.qr-canvas-wrap canvas{border-radius:12px;border:3px solid var(--border)}
+.qr-agent-name{font-family:var(--font-head);font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px}
+.qr-agent-meta{font-size:12px;color:var(--text3)}
+.qr-instruction{font-size:11px;color:var(--text3);margin-top:10px;padding:9px 12px;background:var(--gray-light);border-radius:var(--radius-sm);line-height:1.5}
+
 .screen{display:none;min-height:calc(100vh - var(--nav-h));animation:fadeIn .18s ease}
 .screen.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -249,7 +297,36 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .ind-btn{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s;margin-top:1px}
 .ind-btn.ok{background:var(--green-light);border-color:var(--green-mid)}
 
-/* ── OUI/NON TOGGLE ── */
+/* ── PERMIS DE TRAVAUX ── */
+.permit-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 8px}
+.permit-type-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 8px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s}
+.permit-type-btn:active{transform:scale(.96)}
+.permit-type-btn.feu{border-color:#F0997B;background:#FAECE7}
+.permit-type-btn.levage{border-color:#85B7EB;background:var(--blue-light)}
+.permit-type-btn.fouille{border-color:#FAC775;background:var(--amber-light)}
+.permit-type-btn.travail{border-color:#8BBF44;background:var(--green-light)}
+.permit-type-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.permit-type-label{font-family:var(--font-head);font-size:13px;font-weight:700;text-align:center;line-height:1.2}
+.permit-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px;margin:0 16px 10px;position:relative;overflow:hidden}
+.permit-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.permit-card.feu::before{background:var(--orange)}
+.permit-card.levage::before{background:var(--blue)}
+.permit-card.fouille::before{background:var(--amber)}
+.permit-card.travail::before{background:var(--green)}
+.permit-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;padding-left:8px}
+.permit-num{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px}
+.permit-title{font-size:14px;font-weight:600;color:var(--text)}
+.permit-status{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.2px}
+.permit-status.actif{background:var(--green-light);color:var(--green)}
+.permit-status.expire{background:var(--red-light);color:var(--red)}
+.permit-status.cloture{background:var(--gray-light);color:var(--gray)}
+.permit-checks-row{display:flex;align-items:center;gap:6px;padding-left:8px;margin-bottom:8px;flex-wrap:wrap}
+.permit-check-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.permit-check-dot.ok{background:var(--green-mid)}
+.permit-check-dot.nok{background:var(--gray-mid)}
+.permit-section-hdr{background:var(--gray-light);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+
+/* ── OUI/NON existant — déjà défini mais on s'assure ── */
 .yn-row{display:flex;gap:7px;margin-top:4px}
 .yn-btn{flex:1;padding:9px 6px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:transparent;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;letter-spacing:.3px}
 .yn-btn.oui{color:var(--green)}
@@ -467,6 +544,10 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
       <div class="topbar-sub" id="topbar-sub">Chantier</div>
     </div>
     <div class="topbar-right">
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Thème sombre / clair">
+        <svg id="theme-icon-sun" width="17" height="17" viewBox="0 0 24 24" stroke="var(--text2)" stroke-width="2" fill="none" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="theme-icon-moon" width="17" height="17" viewBox="0 0 24 24" stroke="var(--text2)" stroke-width="2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
       <button class="icon-btn" onclick="ouvrirRecherche()" title="Recherche globale">
         <svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--text2)" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
@@ -527,9 +608,9 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
       <div class="qa-icon blue"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
       <div class="qa-label">JSA</div>
     </div>
-    <div class="qa-btn" onclick="switchScreen('personnel')">
-      <div class="qa-icon blue" style="background:var(--blue-light)"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
-      <div class="qa-label">Personnel</div>
+    <div class="qa-btn" onclick="switchScreen('jsa');setTimeout(()=>document.getElementById('permis-list').scrollIntoView({behavior:'smooth'}),300)">
+      <div class="qa-icon amber" style="background:var(--amber-light)"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/><path d="M17 13l2 2 3-3" stroke-width="2.2"/></svg></div>
+      <div class="qa-label">Permis</div>
     </div>
   </div>
 
@@ -640,6 +721,29 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
   <div class="section-title">Inventaire EPI</div>
   <div class="epi-grid" id="epi-grid"></div>
   <div style="padding:0 16px 4px"><button class="btn-secondary" style="margin-top:0" onclick="openModal('modal-epi')">+ Ajouter un EPI</button></div>
+
+  <!-- Permis de travaux -->
+  <div class="section-title">Permis de Travaux</div>
+  <div class="permit-type-grid">
+    <button class="permit-type-btn feu" onclick="ouvrirPermis('feu')">
+      <div class="permit-type-icon" style="background:#FAECE7">🔥</div>
+      <div class="permit-type-label" style="color:var(--orange)">Permis de Feu</div>
+    </button>
+    <button class="permit-type-btn levage" onclick="ouvrirPermis('levage')">
+      <div class="permit-type-icon" style="background:var(--blue-light)">🏗️</div>
+      <div class="permit-type-label" style="color:var(--blue)">Permis de Levage</div>
+    </button>
+    <button class="permit-type-btn fouille" onclick="ouvrirPermis('fouille')">
+      <div class="permit-type-icon" style="background:var(--amber-light)">⛏️</div>
+      <div class="permit-type-label" style="color:var(--amber)">Permis de Fouille</div>
+    </button>
+    <button class="permit-type-btn travail" onclick="ouvrirPermis('travail')">
+      <div class="permit-type-icon" style="background:var(--green-light)">📋</div>
+      <div class="permit-type-label" style="color:var(--green)">Permis de Travail</div>
+    </button>
+  </div>
+  <div id="permis-list"></div>
+
   <div class="spacer"></div>
 </div>
 
@@ -1445,7 +1549,455 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 <!-- ═══════════════════════════════════════════════
      JAVASCRIPT
 ═══════════════════════════════════════════════ -->
-<!-- Overlay Recherche Globale -->
+<!-- ═══ MODAL PERMIS DE FEU ═══ -->
+<div class="modal-overlay" id="modal-permis-feu" onclick="closeModalOut(event,'modal-permis-feu')">
+  <div class="modal-sheet" style="max-height:94vh">
+    <div class="modal-handle"></div>
+
+    <!-- En-tête officiel -->
+    <div style="border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+      <div style="width:44px;height:44px;border-radius:8px;background:#FAECE7;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🔥</div>
+      <div style="flex:1">
+        <div style="font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--orange);letter-spacing:.3px" id="pfeu-title">PERMIS DE FEU</div>
+        <div style="font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.3px">PERMIS DE TRAVAIL PAR POINT CHAUD</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px" id="pfeu-num-display"></div>
+      </div>
+    </div>
+    <input type="hidden" id="pfeu-edit-id">
+
+    <!-- 1. DATES D'UTILISATION -->
+    <div class="permit-section-hdr" style="background:var(--orange-light);color:var(--orange)">📅 Dates d'utilisation</div>
+    <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 10px;align-items:center;margin-bottom:14px">
+      <span style="font-size:11px;font-weight:600;color:var(--text3)">Du</span>
+      <input class="form-input" id="pfeu-date" type="date" style="font-size:13px">
+      <input class="form-input" id="pfeu-heure" type="time" style="font-size:13px" placeholder="Heure début">
+      <span style="font-size:11px;font-weight:600;color:var(--text3)">Au</span>
+      <input class="form-input" id="pfeu-date-fin" type="date" style="font-size:13px">
+      <input class="form-input" id="pfeu-heure-fin" type="time" style="font-size:13px" placeholder="Heure fin">
+    </div>
+
+    <!-- 2. DESCRIPTION DES TRAVAUX -->
+    <div class="permit-section-hdr" style="background:var(--orange-light);color:var(--orange)">📋 Description des travaux</div>
+    <div class="form-group">
+      <label class="form-label">Lieu d'exécution des travaux *</label>
+      <input class="form-input" id="pfeu-zone" type="text" placeholder="Bâtiment, niveau, zone précise…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Type de travaux (cocher)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:6px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pfeu-t1" style="accent-color:var(--orange)"> Soudage au chalumeau</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pfeu-t2" style="accent-color:var(--orange)"> Soudage électrique</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pfeu-t3" style="accent-color:var(--orange)"> Découpage au chalumeau</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pfeu-t4" style="accent-color:var(--orange)"> Découpage électrique</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pfeu-t5" style="accent-color:var(--orange)"> Meulage / tronçonnage</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pfeu-t6" style="accent-color:var(--orange)"> Autres (préciser)</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description détaillée des travaux et du matériel *</label>
+      <textarea class="form-textarea" id="pfeu-travaux" style="min-height:80px" placeholder="Nature des travaux, matériaux, outillage utilisé, description du chantier…"></textarea>
+    </div>
+
+    <!-- 3. RISQUES LIÉS À L'ENVIRONNEMENT -->
+    <div class="permit-section-hdr" style="background:var(--red-light);color:var(--red)">⚠️ Risques liés à l'environnement de travail</div>
+    <div style="margin-bottom:14px">
+      <label style="display:flex;align-items:flex-start;gap:9px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer"><input type="checkbox" id="pfeu-r1" style="accent-color:var(--orange);margin-top:2px;flex-shrink:0"> Stockage et proximité de matériaux combustibles</label>
+      <label style="display:flex;align-items:flex-start;gap:9px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer"><input type="checkbox" id="pfeu-r2" style="accent-color:var(--orange);margin-top:2px;flex-shrink:0"> Stockage de produits inflammables</label>
+      <label style="display:flex;align-items:flex-start;gap:9px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer"><input type="checkbox" id="pfeu-r3" style="accent-color:var(--orange);margin-top:2px;flex-shrink:0"> Proximité d'installations dangereuses</label>
+      <label style="display:flex;align-items:flex-start;gap:9px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer"><input type="checkbox" id="pfeu-r4" style="accent-color:var(--orange);margin-top:2px;flex-shrink:0"> Activité du voisinage immédiat</label>
+      <div style="padding:7px 0;display:flex;align-items:flex-start;gap:9px">
+        <label style="display:flex;align-items:flex-start;gap:9px;font-size:13px;flex-shrink:0;cursor:pointer"><input type="checkbox" id="pfeu-r5" style="accent-color:var(--orange);margin-top:2px"> Autres :</label>
+        <input class="form-input" id="pfeu-r5-desc" type="text" placeholder="Préciser…" style="flex:1;font-size:12px;padding:6px 10px">
+      </div>
+    </div>
+
+    <!-- 4. EN CAS D'INCENDIE -->
+    <div class="permit-section-hdr" style="background:var(--red-light);color:var(--red)">🚨 En cas d'incendie ou d'accident</div>
+    <div class="form-group">
+      <label class="form-label">Moyens d'alerte à proximité (types)</label>
+      <input class="form-input" id="pfeu-alerte-types" type="text" placeholder="Sonnette, téléphone, déclencheur manuel…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emplacement</label>
+      <input class="form-input" id="pfeu-alerte-empl" type="text" placeholder="Localisation des moyens d'alerte…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Numéro de téléphone à appeler</label>
+      <input class="form-input" id="pfeu-tel-urgence" type="tel" placeholder="Ex : 15 · 17 · 18 · 112 ou numéro interne">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Moyens de première intervention à proximité</label>
+      <input class="form-input" id="pfeu-moyens-inter" type="text" placeholder="Extincteurs, RIA, défibrillateur, trousse de secours…">
+    </div>
+
+    <!-- 5. DEMANDEUR / EXÉCUTANT -->
+    <div class="permit-section-hdr" style="background:var(--blue-light);color:var(--blue)">🏢 Demandeur</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nom du chantier / Collectivité *</label><input class="form-input" id="pfeu-demandeur-nom" type="text" placeholder="Nom chantier ou collectivité"></div>
+      <div class="form-group"><label class="form-label">Service</label><input class="form-input" id="pfeu-demandeur-service" type="text" placeholder="Service concerné"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Représentant qualifié (demandeur)</label><input class="form-input" id="pfeu-demandeur-rep" type="text" placeholder="Nom, prénom, fonction"></div>
+
+    <div class="permit-section-hdr" style="background:var(--blue-light);color:var(--blue)">👷 Exécutant</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nom de l'entreprise *</label><input class="form-input" id="pfeu-entreprise" type="text" placeholder="Entreprise intervenante"></div>
+      <div class="form-group"><label class="form-label">Représentant qualifié</label><input class="form-input" id="pfeu-exec-rep" type="text" placeholder="Nom, prénom, fonction"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Personne exécutant les travaux (nom – prénom, fonction, tél.) *</label><input class="form-input" id="pfeu-executant" type="text" placeholder="Nom Prénom — Fonction — 06 XX XX XX XX"></div>
+    <div class="form-group"><label class="form-label">Agent chargé de la sécurité générale (nom – prénom, fonction, tél.)</label><input class="form-input" id="pfeu-agent-secu" type="text" placeholder="Nom Prénom — Fonction — 06 XX XX XX XX"></div>
+
+    <!-- 6. MESURES DE PRÉVENTION -->
+    <div class="permit-section-hdr" style="background:var(--green-light);color:var(--green)">✅ Mesures de prévention à mettre en œuvre</div>
+
+    <!-- Tableau responsive avec 2 colonnes responsabilité -->
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:0;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:10px;font-size:11px">
+      <!-- Header -->
+      <div style="background:var(--gray-light);padding:7px 10px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border)">Mesure</div>
+      <div style="background:var(--gray-light);padding:7px 8px;font-weight:700;color:var(--blue);border-bottom:1px solid var(--border);text-align:center;font-size:10px;min-width:44px">Coll.</div>
+      <div style="background:var(--gray-light);padding:7px 8px;font-weight:700;color:var(--orange);border-bottom:1px solid var(--border);text-align:center;font-size:10px;min-width:44px">Entr.</div>
+
+      <!-- AVANT -->
+      <div style="padding:6px 10px;font-weight:700;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;background:var(--bg);border-bottom:1px solid var(--border);grid-column:1/-1">Avant le début ou la reprise du travail</div>
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Établir un plan de prévention si nécessaire (soudage oxyacétylénique)</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m1c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m1e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Vérifier le matériel (état de fonctionnement, tension adaptée, etc.)</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m2c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m2e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Éloigner / protéger les matériaux combustibles ou inflammables (y compris derrière les cloisons)</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m3c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m3e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">S'assurer du dégazage des cuves / réservoirs si travaux sur ceux-ci</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m4c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m4e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Éloigner produits combustibles des conduites et tuyauteries traitées</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m5c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m5e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Disposer des moyens d'alarme et de lutte à portée immédiate (extincteur eau + extincteur adapté)</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m6c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m6e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Faire aérer la zone de travail</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m7c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m7e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Éviter le déclenchement intempestif de la détection / extinction automatique</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m8c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m8e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Transmettre les consignes de sécurité incendie applicables dans le bâtiment</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m9c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m9e" style="accent-color:var(--orange)"></div>
+
+      <!-- PENDANT -->
+      <div style="padding:6px 10px;font-weight:700;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;background:var(--bg);border-bottom:1px solid var(--border);grid-column:1/-1">Pendant le travail</div>
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Porter les EPI adaptés (lunettes, gants, tablier, écran facial…)</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m10c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m10e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Surveiller les points de chute des projections incandescentes (gaines, fissures, interstices)</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m11c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m11e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Ne déposer les objets chauffés que sur des supports résistants à la chaleur</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m12c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m12e" style="accent-color:var(--orange)"></div>
+
+      <!-- APRÈS -->
+      <div style="padding:6px 10px;font-weight:700;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;background:var(--bg);border-bottom:1px solid var(--border);grid-column:1/-1">Après le travail / avant de quitter le chantier</div>
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Inspecter le lieu de travail, locaux adjacents et tout local atteint par projections</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m13c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m13e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text)">Maintenir une surveillance pendant au moins 2 heures après la cessation des travaux</div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m14c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center"><input type="checkbox" id="pfeu-m14e" style="accent-color:var(--orange)"></div>
+
+      <div style="padding:6px 10px;color:var(--text)">Remettre le système de détection / extinction automatique en service opérationnel</div>
+      <div style="padding:6px 8px;text-align:center"><input type="checkbox" id="pfeu-m15c" style="accent-color:var(--blue)"></div>
+      <div style="padding:6px 8px;text-align:center"><input type="checkbox" id="pfeu-m15e" style="accent-color:var(--orange)"></div>
+    </div>
+
+    <div class="form-group"><label class="form-label">Mesure complémentaire / Autre</label><textarea class="form-textarea" id="pfeu-obs" style="min-height:56px" placeholder="Toute mesure spécifique non listée ci-dessus…"></textarea></div>
+
+    <!-- 7. PHOTOS -->
+    <div class="form-group">
+      <label class="form-label">Photos de la zone (preuve)</label>
+      <div class="photo-zone"><input type="file" accept="image/*" multiple id="pfeu-photo" onchange="previewPhotos(this,'pfeu-photo-preview')">
+        <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="photo-zone-text">Photos zone avant travaux</div></div>
+      <div class="photos-preview" id="pfeu-photo-preview"></div>
+    </div>
+
+    <!-- 8. SIGNATURES (3) -->
+    <div class="permit-section-hdr" style="background:var(--gray-light);color:var(--gray)">✍️ Signatures</div>
+    <div class="form-group"><label class="form-label">Agent chargé de la sécurité générale — Nom &amp; Date</label>
+      <div style="display:flex;gap:8px"><input class="form-input" id="pfeu-sig1-nom" type="text" placeholder="Nom Prénom" style="flex:1"><input class="form-input" id="pfeu-sig1-date" type="date" style="width:140px;flex-shrink:0"></div>
+    </div>
+    <div class="sig-pad" style="margin-bottom:14px"><canvas id="sig-pfeu-secu" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-pfeu-secu')">Effacer</button></div>
+
+    <div class="form-group"><label class="form-label">Exécutant (Entreprise extérieure) — Nom &amp; Date</label>
+      <div style="display:flex;gap:8px"><input class="form-input" id="pfeu-sig2-nom" type="text" placeholder="Nom Prénom" style="flex:1"><input class="form-input" id="pfeu-sig2-date" type="date" style="width:140px;flex-shrink:0"></div>
+    </div>
+    <div class="sig-pad" style="margin-bottom:14px"><canvas id="sig-pfeu-exec" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-pfeu-exec')">Effacer</button></div>
+
+    <div class="form-group"><label class="form-label">Demandeur (Chantier / Collectivité) — Nom &amp; Date</label>
+      <div style="display:flex;gap:8px"><input class="form-input" id="pfeu-sig3-nom" type="text" placeholder="Nom Prénom" style="flex:1"><input class="form-input" id="pfeu-sig3-date" type="date" style="width:140px;flex-shrink:0"></div>
+    </div>
+    <div class="sig-pad" style="margin-bottom:16px"><canvas id="sig-pfeu-dem" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-pfeu-dem')">Effacer</button></div>
+
+    <button class="btn-primary" onclick="sauvegarderPermis('feu',true)">💾 Enregistrer & Générer PDF</button>
+    <button class="btn-secondary" onclick="sauvegarderPermis('feu',false)">Enregistrer sans PDF</button>
+    <button class="btn-secondary" style="margin-top:6px" onclick="closeModal('modal-permis-feu')">Annuler</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL PERMIS DE LEVAGE ═══ -->
+<div class="modal-overlay" id="modal-permis-levage" onclick="closeModalOut(event,'modal-permis-levage')">
+  <div class="modal-sheet" style="max-height:94vh">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:40px;height:40px;border-radius:11px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🏗️</div>
+      <div><div class="modal-title" style="margin:0;font-size:20px" id="plev-title">Permis de Levage</div><div style="font-size:11px;color:var(--text3)" id="plev-num-display"></div></div>
+    </div>
+    <input type="hidden" id="plev-edit-id">
+
+    <div class="permit-section-hdr">🗂️ Identification</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="plev-date" type="date"></div>
+      <div class="form-group"><label class="form-label">Heure début</label><input class="form-input" id="plev-heure" type="time"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Zone / Localisation *</label><input class="form-input" id="plev-zone" type="text" placeholder="Ex : Grue tour – Zone C"></div>
+    <div class="form-group"><label class="form-label">Description de l'opération *</label><input class="form-input" id="plev-operation" type="text" placeholder="Ex : Levage poutre IPN 200 – 1,2 tonne"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Engin / Appareil</label><input class="form-input" id="plev-engin" type="text" placeholder="Ex : Grue Liebherr 50T"></div>
+      <div class="form-group"><label class="form-label">Grutier / Opérateur</label><input class="form-input" id="plev-operateur" type="text" placeholder="Nom prénom"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Charge (tonnes)</label><input class="form-input" id="plev-charge" type="number" step="0.1" min="0" placeholder="0.0"></div>
+      <div class="form-group"><label class="form-label">Hauteur max (m)</label><input class="form-input" id="plev-hauteur" type="number" step="0.5" min="0" placeholder="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Entreprise</label><input class="form-input" id="plev-entreprise" type="text"></div>
+      <div class="form-group"><label class="form-label">Chef de manœuvre</label><input class="form-input" id="plev-chef" type="text" placeholder="Nom prénom"></div>
+    </div>
+
+    <div class="permit-section-hdr">✅ Vérifications avant levage</div>
+    <div id="plev-checks">
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c1"></div><div class="check-label">Plan de levage établi et validé</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c2"></div><div class="check-label">Vérification certificat conformité engin (VGP valide)</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c3"></div><div class="check-label">Accessoires de levage vérifiés (élingues, crochets, manilles)</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c4"></div><div class="check-label">Zone de levage balisée et sécurisée</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c5"></div><div class="check-label">Sol porteur et stabilisateurs en place</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c6"></div><div class="check-label">Réseau aérien (lignes électriques) identifié et distance respectée</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c7"></div><div class="check-label">Communication radio / signaux convenus entre opérateurs</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c8"></div><div class="check-label">Conditions météo favorables (vent < 45 km/h)</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="plev-c9"></div><div class="check-label">Grutier CACES valide et habilité</div></div>
+    </div>
+    <div class="form-group" style="margin-top:14px"><label class="form-label">Conditions météo du jour</label>
+      <div style="display:flex;gap:8px"><input class="form-input" id="plev-meteo" type="text" placeholder="Ex : Ciel dégagé, vent 15 km/h" style="flex:1"><input class="form-input" id="plev-vent" type="number" placeholder="Vent km/h" style="width:100px;flex-shrink:0"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Observations / Contraintes</label><textarea class="form-textarea" id="plev-obs" placeholder="Obstacles, contraintes particulières…"></textarea></div>
+    <div class="form-group"><label class="form-label">Photos (zone, engin, charge)</label>
+      <div class="photo-zone"><input type="file" accept="image/*" multiple id="plev-photo" onchange="previewPhotos(this,'plev-photo-preview')">
+        <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="photo-zone-text">Photos de la configuration de levage</div></div>
+      <div class="photos-preview" id="plev-photo-preview"></div>
+    </div>
+    <div class="permit-section-hdr">✍️ Signatures</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Responsable HSE</label><div class="sig-pad"><canvas id="sig-plev-hse" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-plev-hse')">Effacer</button></div></div>
+      <div class="form-group"><label class="form-label">Chef de manœuvre</label><div class="sig-pad"><canvas id="sig-plev-chef" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-plev-chef')">Effacer</button></div></div>
+    </div>
+    <button class="btn-primary" onclick="sauvegarderPermis('levage',true)" style="background:var(--blue)">💾 Enregistrer & PDF</button>
+    <button class="btn-secondary" onclick="sauvegarderPermis('levage',false)">Enregistrer sans PDF</button>
+    <button class="btn-secondary" style="margin-top:6px" onclick="closeModal('modal-permis-levage')">Annuler</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL PERMIS DE FOUILLE ═══ -->
+<div class="modal-overlay" id="modal-permis-fouille" onclick="closeModalOut(event,'modal-permis-fouille')">
+  <div class="modal-sheet" style="max-height:94vh">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:40px;height:40px;border-radius:11px;background:var(--amber-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">⛏️</div>
+      <div><div class="modal-title" style="margin:0;font-size:20px" id="pfou-title">Permis de Fouille</div><div style="font-size:11px;color:var(--text3)" id="pfou-num-display"></div></div>
+    </div>
+    <input type="hidden" id="pfou-edit-id">
+
+    <div class="permit-section-hdr">🗂️ Identification</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="pfou-date" type="date"></div>
+      <div class="form-group"><label class="form-label">Date fin prévue</label><input class="form-input" id="pfou-date-fin" type="date"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Zone / Localisation *</label><input class="form-input" id="pfou-zone" type="text" placeholder="Ex : Parking Est – côté route nationale"></div>
+    <div class="form-group"><label class="form-label">Nature de la fouille *</label>
+      <select class="form-select" id="pfou-nature">
+        <option value="">-- Sélectionner --</option>
+        <option>Fouille en puits</option><option>Fouille en tranchée</option><option>Fouille en excavation large</option><option>Fouille blindée</option><option>Autre</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Profondeur max (m)</label><input class="form-input" id="pfou-prof" type="number" step="0.1" min="0" placeholder="0.0"></div>
+      <div class="form-group"><label class="form-label">Longueur (m)</label><input class="form-input" id="pfou-longueur" type="number" step="0.5" min="0" placeholder="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Engin / Méthode</label><input class="form-input" id="pfou-engin" type="text" placeholder="Ex : Pelle hydraulique, manuel"></div>
+      <div class="form-group"><label class="form-label">Chef de chantier</label><input class="form-input" id="pfou-chef" type="text" placeholder="Nom prénom"></div>
+    </div>
+
+    <div class="permit-section-hdr">⚠️ Réseaux enterrés</div>
+    <div class="form-group"><label class="form-label">DICT déposée auprès des concessionnaires ?</label>
+      <div class="yn-row"><button class="yn-btn non active" id="pfou-dict-non" onclick="ynSelect('pfou-dict','non')">✕ NON</button><button class="yn-btn oui" id="pfou-dict-oui" onclick="ynSelect('pfou-dict','oui')">✓ OUI</button></div>
+      <div class="yn-detail" id="pfou-dict-detail"><div class="form-row" style="margin-top:6px"><input class="form-input" id="pfou-dict-ref" type="text" placeholder="Référence DICT" style="flex:1"><input class="form-input" id="pfou-dict-date" type="date" style="width:130px;flex-shrink:0"></div></div>
+    </div>
+    <div class="form-group"><label class="form-label">Réseaux détectés dans la zone</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="pfou-res-elec"> Électricité</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="pfou-res-gaz"> Gaz</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="pfou-res-eau"> Eau potable</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="pfou-res-tel"> Télécom / fibre</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="pfou-res-asse"> Assainissement</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="pfou-res-autre"> Autre</label>
+      </div>
+    </div>
+
+    <div class="permit-section-hdr">✅ Mesures de sécurité</div>
+    <div id="pfou-checks">
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c1"></div><div class="check-label">Balisage périphérique de la fouille réalisé</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c2"></div><div class="check-label">Blindage / étaiement prévu si profondeur > 1,3 m</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c3"></div><div class="check-label">Talus de déblais à distance réglementaire (min. profondeur)</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c4"></div><div class="check-label">Échelle d'accès ou rampe prévue</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c5"></div><div class="check-label">Détection atmosphère (O₂, gaz, H₂S) si profondeur > 1,5 m</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c6"></div><div class="check-label">Éclairage suffisant (fouille > 1,3 m)</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c7"></div><div class="check-label">Eaux de ruissellement évacuées / pompage prévu</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c8"></div><div class="check-label">Signalisation chantier visible pour piétons et véhicules</div></div>
+    </div>
+    <div class="form-group" style="margin-top:14px"><label class="form-label">Nature du terrain / risques particuliers</label><textarea class="form-textarea" id="pfou-terrain" placeholder="Remblaie, nappe phréatique, argile, rocher…"></textarea></div>
+    <div class="form-group"><label class="form-label">Observations</label><textarea class="form-textarea" id="pfou-obs" placeholder="Mesures complémentaires, contraintes…"></textarea></div>
+    <div class="form-group"><label class="form-label">Photos (zone, plan, réseaux)</label>
+      <div class="photo-zone"><input type="file" accept="image/*" multiple id="pfou-photo" onchange="previewPhotos(this,'pfou-photo-preview')">
+        <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="photo-zone-text">Photos de la zone et du plan des réseaux</div></div>
+      <div class="photos-preview" id="pfou-photo-preview"></div>
+    </div>
+    <div class="permit-section-hdr">✍️ Signatures</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Responsable HSE</label><div class="sig-pad"><canvas id="sig-pfou-hse" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-pfou-hse')">Effacer</button></div></div>
+      <div class="form-group"><label class="form-label">Chef de chantier</label><div class="sig-pad"><canvas id="sig-pfou-chef" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-pfou-chef')">Effacer</button></div></div>
+    </div>
+    <button class="btn-primary" onclick="sauvegarderPermis('fouille',true)" style="background:var(--amber)">💾 Enregistrer & PDF</button>
+    <button class="btn-secondary" onclick="sauvegarderPermis('fouille',false)">Enregistrer sans PDF</button>
+    <button class="btn-secondary" style="margin-top:6px" onclick="closeModal('modal-permis-fouille')">Annuler</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL PERMIS DE TRAVAIL ═══ -->
+<div class="modal-overlay" id="modal-permis-travail" onclick="closeModalOut(event,'modal-permis-travail')">
+  <div class="modal-sheet" style="max-height:94vh">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:40px;height:40px;border-radius:11px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📋</div>
+      <div><div class="modal-title" style="margin:0;font-size:20px" id="ptrav-title">Permis de Travail</div><div style="font-size:11px;color:var(--text3)" id="ptrav-num-display"></div></div>
+    </div>
+    <input type="hidden" id="ptrav-edit-id">
+
+    <div class="permit-section-hdr">🗂️ Identification</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="ptrav-date" type="date"></div>
+      <div class="form-group"><label class="form-label">Date fin validité</label><input class="form-input" id="ptrav-date-fin" type="date"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Type de travaux *</label>
+      <select class="form-select" id="ptrav-type">
+        <option value="">-- Sélectionner --</option>
+        <option>Travaux en hauteur</option><option>Espace confiné</option><option>Travaux sous tension</option><option>Travaux par points chauds</option><option>Travaux sur installation process</option><option>Démolition / déconstruction</option><option>Travaux de nuit</option><option>Autre</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Description détaillée *</label><textarea class="form-textarea" id="ptrav-desc" placeholder="Nature et étendue des travaux à réaliser…"></textarea></div>
+    <div class="form-group"><label class="form-label">Zone / Localisation *</label><input class="form-input" id="ptrav-zone" type="text" placeholder="Bâtiment, niveau, zone…"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Entreprise intervenante</label><input class="form-input" id="ptrav-entreprise" type="text"></div>
+      <div class="form-group"><label class="form-label">Responsable travaux *</label><input class="form-input" id="ptrav-responsable" type="text" placeholder="Nom prénom"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Nombre d'intervenants</label><input class="form-input" id="ptrav-nb" type="number" min="1" placeholder="1"></div>
+
+    <div class="permit-section-hdr">⚠️ Analyse des risques</div>
+    <div class="form-group"><label class="form-label">Risques identifiés (cocher les risques présents)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="ptrav-risq-chute"> Chute de hauteur</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="ptrav-risq-elec"> Électrique</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="ptrav-risq-chimique"> Chimique / toxique</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="ptrav-risq-mecanique"> Mécanique</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="ptrav-risq-incendie"> Incendie / explosion</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="ptrav-risq-bruit"> Bruit / vibration</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="ptrav-risq-ecrase"> Écrasement</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px"><input type="checkbox" id="ptrav-risq-autre"> Autre</label>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Niveau de risque global</label>
+      <div class="severity-row">
+        <button class="sev-btn minor" onclick="selSevPermis(this,'ptrav-riskniv')">Faible</button>
+        <button class="sev-btn moderate" onclick="selSevPermis(this,'ptrav-riskniv')">Modéré</button>
+        <button class="sev-btn serious" onclick="selSevPermis(this,'ptrav-riskniv')">Élevé</button>
+        <button class="sev-btn critical" onclick="selSevPermis(this,'ptrav-riskniv')">Critique</button>
+      </div>
+      <input type="hidden" id="ptrav-riskniv" value="">
+    </div>
+
+    <div class="permit-section-hdr">✅ Mesures de prévention obligatoires</div>
+    <div id="ptrav-checks">
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c1"></div><div class="check-label">EPI adaptés aux risques identifiés fournis et portés</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c2"></div><div class="check-label">Consignation / déconsignation des énergies réalisée</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c3"></div><div class="check-label">Zone de travail balisée et signalisée</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c4"></div><div class="check-label">Outillage adapté et en bon état vérifiés</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c5"></div><div class="check-label">Moyens de communication (radio / téléphone) disponibles</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c6"></div><div class="check-label">Plan d'évacuation / points de rassemblement connus</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c7"></div><div class="check-label">Secouriste / SST disponible sur chantier</div></div>
+      <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c8"></div><div class="check-label">Permis affiché sur le lieu des travaux</div></div>
+    </div>
+    <div class="form-group" style="margin-top:14px"><label class="form-label">Consignes particulières / mesures complémentaires</label><textarea class="form-textarea" id="ptrav-consignes" placeholder="Instructions spécifiques à l'opération…"></textarea></div>
+    <div class="form-group"><label class="form-label">Photos (zone, équipements, préparation)</label>
+      <div class="photo-zone"><input type="file" accept="image/*" multiple id="ptrav-photo" onchange="previewPhotos(this,'ptrav-photo-preview')">
+        <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="photo-zone-text">Photos avant démarrage des travaux</div></div>
+      <div class="photos-preview" id="ptrav-photo-preview"></div>
+    </div>
+    <div class="permit-section-hdr">✍️ Signatures</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Responsable HSE</label><div class="sig-pad"><canvas id="sig-ptrav-hse" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-ptrav-hse')">Effacer</button></div></div>
+      <div class="form-group"><label class="form-label">Responsable travaux</label><div class="sig-pad"><canvas id="sig-ptrav-resp" width="400" height="80"></canvas><button class="sig-clear" onclick="clearSig('sig-ptrav-resp')">Effacer</button></div></div>
+    </div>
+    <button class="btn-primary" onclick="sauvegarderPermis('travail',true)" style="background:var(--green)">💾 Enregistrer & PDF</button>
+    <button class="btn-secondary" onclick="sauvegarderPermis('travail',false)">Enregistrer sans PDF</button>
+    <button class="btn-secondary" style="margin-top:6px" onclick="closeModal('modal-permis-travail')">Annuler</button>
+  </div>
+</div>
+
+
+<!-- Modal QR Code Agent -->
+<div class="modal-overlay" id="modal-qr-agent" onclick="closeModalOut(event,'modal-qr-agent')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="qr-modal-agent">
+      <div class="qr-agent-name" id="qr-agent-name">—</div>
+      <div class="qr-agent-meta" id="qr-agent-meta">—</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-canvas" width="220" height="220"></canvas></div>
+      <div class="qr-instruction">
+        📷 Scannez ce QR code pour marquer la présence de cet agent<br>ou partager sa fiche HSE instantanément.
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn-primary" style="flex:1" onclick="telechargerQR()">⬇ Télécharger PNG</button>
+      <button class="btn-secondary" style="flex:1;margin-top:0" onclick="closeModal('modal-qr-agent')">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <div id="search-overlay" class="search-overlay" onclick="fermerRecherche(event)">
   <div class="search-box">
     <svg width="18" height="18" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1731,7 +2283,9 @@ let DB = {
   activity: [],
   capaCounter: 1,
   rapportsJournaliers: [],
-  rapportsMensuels: []
+  rapportsMensuels: [],
+  permis: [],
+  permisCounter: 1
 };
 
 function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch(e){} }
@@ -1758,6 +2312,8 @@ function load() {
   if (DB.logo === undefined) DB.logo = null;
   if (!DB.rapportsJournaliers) DB.rapportsJournaliers = [];
   if (!DB.rapportsMensuels)    DB.rapportsMensuels    = [];
+  if (!DB.permis)              DB.permis              = [];
+  if (!DB.permisCounter)       DB.permisCounter       = 1;
 }
 
 // ═══════════════════════════════════════════════
@@ -1786,6 +2342,7 @@ function startApp() {
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('bottom-nav').style.display = 'flex';
   document.getElementById('fab-btn').style.display = 'flex';
+  _appliquerTheme();
   switchScreen('home');
   initSignaturePads();
   loadWeather();
@@ -1861,7 +2418,7 @@ function openSettingsModal() {
   document.getElementById('s-entreprise').value = DB.config.entreprise || '';
   document.getElementById('s-date-debut').value = DB.config.dateDebut || '';
   afficherLogoPreview();
-  openModal('modal-settings');
+  // NE PAS appeler openModal ici — c'est openModal qui appelle openSettingsModal
 }
 
 // ═══════════════════════════════════════════════
@@ -1879,7 +2436,7 @@ function switchScreen(name) {
   window.scrollTo(0,0);
   if (name === 'home') renderHome();
   if (name === 'incidents') renderIncidents();
-  if (name === 'jsa') renderJSA();
+  if (name === 'jsa') { renderJSA(); renderPermis(); }
   if (name === 'toolbox') renderToolbox();
   if (name === 'personnel') renderPersonnel();
   if (name === 'exports') renderExports();
@@ -2720,6 +3277,7 @@ function renderJSA() {
         + '<div class="list-card-actions">'
         + '<button class="btn-sm outline" onclick="voirDetailJSA(\'' + jsa.id + '\')">Voir étapes</button>'
         + '<button class="btn-sm outline" onclick="editerJSA(\'' + jsa.id + '\')">Modifier</button>'
+        + '<button class="btn-sm" style="background:var(--green-light);color:var(--green)" onclick="dupliquerJSA(\'' + jsa.id + '\')">⎘ Copier</button>'
         + '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFicheJSA(\'' + jsa.id + '\')">📄 PDF</button>'
         + '<button class="btn-sm outline" onclick="supprimerJSA(\'' + jsa.id + '\')">✕</button>'
         + '</div></div>';
@@ -4560,6 +5118,7 @@ function voirDetailPersonnel(id) {
     <div style="margin-bottom:8px"><div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">Téléphone</div><div style="font-size:13px">${p.tel||'—'}</div></div>
     <div style="display:flex;gap:7px;margin-top:14px;flex-wrap:wrap">
       <button class="btn-sm orange" onclick="editerPersonnel('${p.id}');closeModal('modal-detail')">Modifier</button>
+      <button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="afficherQRAgent('${p.id}');closeModal('modal-detail')">📱 QR Code</button>
       <button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFichePersonnel('${p.id}')">📄 PDF</button>
       <button class="btn-sm outline" onclick="supprimerPersonnel('${p.id}');closeModal('modal-detail')">Supprimer</button>
       <button class="btn-sm outline" onclick="closeModal('modal-detail')">Fermer</button>
@@ -4653,6 +5212,906 @@ function envoyerEmail() {
 
 function copierLien() {
   navigator.clipboard.writeText(window.location.href).then(() => showToast('Lien copié dans le presse-papier')).catch(() => showToast('Copie manuelle : ' + window.location.href));
+}
+
+// ═══════════════════════════════════════════════
+// THÈME SOMBRE / CLAIR
+// ═══════════════════════════════════════════════
+function _appliquerTheme() {
+  var dark = localStorage.getItem('hse_dark') === '1';
+  document.body.classList.toggle('dark-mode', dark);
+  var sun = document.getElementById('theme-icon-sun');
+  var moon = document.getElementById('theme-icon-moon');
+  if (sun)  sun.style.display  = dark ? 'block' : 'none';
+  if (moon) moon.style.display = dark ? 'none'  : 'block';
+  var tc = document.querySelector('meta[name="theme-color"]');
+  if (tc) tc.content = dark ? '#1A1A18' : '#D85A30';
+}
+function toggleTheme() {
+  var isDark = document.body.classList.contains('dark-mode');
+  localStorage.setItem('hse_dark', isDark ? '0' : '1');
+  _appliquerTheme();
+  showToast(isDark ? '☀️ Thème clair activé' : '🌙 Thème sombre activé');
+}
+
+// ═══════════════════════════════════════════════
+// DUPLICATION JSA
+// ═══════════════════════════════════════════════
+function dupliquerJSA(id) {
+  var orig = DB.jsas.find(function(j){ return j.id == id; });
+  if (!orig) return;
+  var copy = JSON.parse(JSON.stringify(orig));
+  copy.id = Date.now();
+  copy.createdAt = nowISO();
+  copy.updatedAt = nowISO();
+  copy.createdBy = DB.config.nom;
+  copy.type = 'Copie — ' + copy.type;
+  DB.jsas.unshift(copy);
+  addActivity('JSA dupliquée — ' + copy.type, 'blue');
+  save();
+  renderJSA();
+  showToast('JSA dupliquée ✓ — modifiez-la selon vos besoins');
+}
+
+// ═══════════════════════════════════════════════
+// QR CODE PERSONNEL — réel et scannable
+// ═══════════════════════════════════════════════
+var _qrCurrentAgentId = null;
+
+function afficherQRAgent(id) {
+  var p = DB.personnel.find(function(x){ return x.id == id; });
+  if (!p) return;
+  _qrCurrentAgentId = id;
+
+  document.getElementById('qr-agent-name').textContent = p.prenom + ' ' + p.nom;
+  document.getElementById('qr-agent-meta').textContent =
+    p.role + ' · ' + p.entreprise +
+    (p.induction === 'oui' ? ' · ✓ Induit' : ' · ✕ Non induit');
+
+  openModal('modal-qr-agent');
+  // Léger délai pour que le modal soit visible avant de dessiner
+  setTimeout(function() { _dessinerQR(p); }, 100);
+}
+
+function _dessinerQR(p) {
+  var canvas = document.getElementById('qr-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var SIZE = 220;
+  canvas.width = SIZE; canvas.height = SIZE;
+
+  var isDark = document.body.classList.contains('dark-mode');
+  var DARK = isDark ? '#E8E6DE' : '#1A1A18';
+  var LIGHT = isDark ? '#242422' : '#FFFFFF';
+
+  // Texte court et lisible par tous les scanners
+  // Format vCard simplifié — universel
+  var ind = p.induction === 'oui' ? 'OUI' : 'NON';
+  var qrText =
+    'BEGIN:VCARD\n' +
+    'VERSION:3.0\n' +
+    'FN:' + p.prenom + ' ' + p.nom + '\n' +
+    'ORG:' + (p.entreprise||'') + '\n' +
+    'TITLE:' + (p.role||'') + '\n' +
+    'NOTE:Chantier ' + (DB.chantier||'') + ' | Induction HSE: ' + ind + ' | ID:' + p.id + '\n' +
+    'TEL:' + (p.tel||'') + '\n' +
+    'END:VCARD';
+
+  try {
+    if (typeof qrcode === 'undefined') {
+      _qrErreur(ctx, SIZE, DARK, LIGHT, 'Lib QR indisponible');
+      return;
+    }
+
+    // qrcode-generator : type 0 = auto, niveau M
+    var qr = qrcode(0, 'M');
+    qr.addData(qrText);
+    qr.make();
+
+    var modules = qr.getModuleCount();
+    var cell = Math.floor((SIZE - 20) / modules); // marge de 10px de chaque côté
+    var offset = Math.floor((SIZE - modules * cell) / 2);
+
+    // Fond
+    ctx.fillStyle = LIGHT;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    // Modules
+    ctx.fillStyle = DARK;
+    for (var row = 0; row < modules; row++) {
+      for (var col = 0; col < modules; col++) {
+        if (qr.isDark(row, col)) {
+          ctx.fillRect(
+            offset + col * cell,
+            offset + row * cell,
+            cell, cell
+          );
+        }
+      }
+    }
+
+  } catch(e) {
+    _qrErreur(ctx, SIZE, DARK, LIGHT, 'Erreur: ' + e.message);
+  }
+}
+
+function _qrErreur(ctx, size, dark, light, msg) {
+  ctx.fillStyle = light; ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = dark;
+  ctx.font = 'bold 13px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('QR indisponible', size/2, size/2 - 10);
+  ctx.font = '10px sans-serif';
+  ctx.fillStyle = '#8A8880';
+  ctx.fillText('Vérifiez la connexion', size/2, size/2 + 10);
+  ctx.fillText(msg||'', size/2, size/2 + 25);
+}
+
+
+function telechargerQR() {
+  var canvas = document.getElementById('qr-canvas');
+  var p = DB.personnel.find(function(x){ return x.id == _qrCurrentAgentId; });
+  if (!canvas || !p) return;
+
+  var final = document.createElement('canvas');
+  final.width = 300; final.height = 340;
+  var ctx = final.getContext('2d');
+
+  // Fond blanc toujours pour l'impression
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, 300, 340);
+
+  // En-tête info
+  ctx.fillStyle = '#2B2B29';
+  ctx.font = 'bold 15px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(p.prenom + ' ' + p.nom, 150, 28);
+  ctx.fillStyle = '#8A8880';
+  ctx.font = '11px sans-serif';
+  ctx.fillText(p.role + ' · ' + p.entreprise, 150, 46);
+
+  // QR
+  ctx.drawImage(canvas, 40, 58, 220, 220);
+
+  // Pied orange
+  ctx.fillStyle = '#D85A30';
+  ctx.fillRect(0, 292, 300, 48);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.fillText(DB.chantier || 'HSE Tetris', 150, 314);
+  ctx.font = '10px sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,.75)';
+  ctx.fillText('Chantier · ' + new Date().toLocaleDateString('fr-FR'), 150, 331);
+
+  var link = document.createElement('a');
+  link.download = 'QR_' + (p.prenom + '_' + p.nom).replace(/ /g, '_') + '.png';
+  link.href = final.toDataURL('image/png');
+  link.click();
+  showToast('QR Code téléchargé ✓');
+}
+
+// ═══════════════════════════════════════════════
+// PERMIS DE TRAVAUX
+// ═══════════════════════════════════════════════
+var PERMIS_CFG = {
+  feu:    { label:'Permis de Feu',    color:[216,90,48],  modalId:'modal-permis-feu',    sigHse:'sig-pfeu-secu',  sigExec:'sig-pfeu-exec',  photoId:'pfeu-photo-preview',  checks:15 },
+  levage: { label:'Permis de Levage', color:[26,95,163],  modalId:'modal-permis-levage', sigHse:'sig-plev-hse',   sigExec:'sig-plev-chef',  photoId:'plev-photo-preview',  checks:9 },
+  fouille:{ label:'Permis de Fouille',color:[185,114,24], modalId:'modal-permis-fouille',sigHse:'sig-pfou-hse',   sigExec:'sig-pfou-chef',  photoId:'pfou-photo-preview',  checks:8 },
+  travail:{ label:'Permis de Travail',color:[46,110,14],  modalId:'modal-permis-travail',sigHse:'sig-ptrav-hse',  sigExec:'sig-ptrav-resp', photoId:'ptrav-photo-preview', checks:8 }
+};
+
+function ouvrirPermis(type, id) {
+  var cfg = PERMIS_CFG[type];
+  var today = new Date().toISOString().split('T')[0];
+  var now   = new Date().toTimeString().slice(0,5);
+  initSig(cfg.sigHse);
+  initSig(cfg.sigExec);
+  if (type === 'feu') initSig('sig-pfeu-dem');
+  if (id) { var r = DB.permis.find(function(p){ return p.id==id; }); if(r) _remplirPermis(type,r); }
+  else _resetPermis(type, today, now);
+  openModal(cfg.modalId);
+}
+
+function _pfx(type) {
+  if (type==='feu')    return 'pfeu';
+  if (type==='levage') return 'plev';
+  if (type==='fouille')return 'pfou';
+  return 'ptrav';
+}
+
+function _resetPermis(type, today, now) {
+  var p = _pfx(type);
+  var editEl = document.getElementById(p+'-edit-id'); if(editEl) editEl.value='';
+  var tEl = document.getElementById(p+'-title'); if(tEl) tEl.textContent = PERMIS_CFG[type].label;
+  var nEl = document.getElementById(p+'-num-display'); if(nEl) nEl.textContent='';
+  document.querySelectorAll('#modal-permis-'+type+' .form-input, #modal-permis-'+type+' .form-select, #modal-permis-'+type+' .form-textarea').forEach(function(el){
+    if(el.type==='date') el.value=today;
+    else if(el.type==='time') el.value=now;
+    else if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.value='';
+  });
+  document.querySelectorAll('#modal-permis-'+type+' input[type=checkbox]').forEach(function(c){ c.checked=false; });
+  document.querySelectorAll('#'+p+'-checks .custom-check').forEach(function(c){c.classList.remove('checked');c.innerHTML='';});
+  ['r1','r2','dict'].forEach(function(yn){
+    var nonBtn=document.getElementById(p+'-'+yn+'-non');
+    if(nonBtn) ynSelect(p+'-'+yn,'non');
+  });
+  clearSig(PERMIS_CFG[type].sigHse); clearSig(PERMIS_CFG[type].sigExec);
+  clearPhotos(PERMIS_CFG[type].photoId);
+}
+
+function _remplirPermis(type, r) {
+  var p = _pfx(type);
+  var editEl = document.getElementById(p+'-edit-id'); if(editEl) editEl.value=r.id;
+  var tEl = document.getElementById(p+'-title'); if(tEl) tEl.textContent='✏️ '+PERMIS_CFG[type].label+' N°'+r.num;
+  var nEl = document.getElementById(p+'-num-display'); if(nEl) nEl.textContent='N° '+r.num;
+  // Champs simples
+  var fieldMap = {date:r.date,'date-fin':r.date_fin,heure:r.heure,'heure-fin':r.heure_fin,zone:r.zone,travaux:r.travaux,operation:r.operation,entreprise:r.entreprise,executant:r.executant,operateur:r.operateur,charge:r.charge,hauteur:r.hauteur,chef:r.chef,meteo:r.meteo,vent:r.vent,obs:r.obs,terrain:r.terrain,nature:r.nature,engin:r.engin,longueur:r.longueur,prof:r.prof,responsable:r.responsable,desc:r.desc,nb:r.nb,consignes:r.consignes,'dict-ref':r.dict_ref,'dict-date':r.dict_date};
+  Object.keys(fieldMap).forEach(function(k){
+    var el=document.getElementById(p+'-'+k); if(el&&fieldMap[k]!==undefined) el.value=fieldMap[k]||'';
+  });
+  ['r1','r2','dict'].forEach(function(yn){ var nonBtn=document.getElementById(p+'-'+yn+'-non'); if(nonBtn) ynSelect(p+'-'+yn,r[yn]||'non'); });
+  var checkEls=document.querySelectorAll('#'+p+'-checks .custom-check'), cv=r.checks||[];
+  checkEls.forEach(function(c,i){c.classList.remove('checked');c.innerHTML='';if(cv[i]){c.classList.add('checked');c.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';}});
+  if(type==='fouille'&&r.reseaux) r.reseaux.forEach(function(rv){var el=document.getElementById('pfou-res-'+rv);if(el)el.checked=true;});
+  if(type==='travail'&&r.risques) r.risques.forEach(function(rv){var el=document.getElementById('ptrav-risq-'+rv);if(el)el.checked=true;});
+  clearSig(PERMIS_CFG[type].sigHse); clearSig(PERMIS_CFG[type].sigExec);
+  clearPhotos(PERMIS_CFG[type].photoId);
+}
+
+function _lirePermis(type) {
+  var p = _pfx(type);
+  var date = (document.getElementById(p+'-date')||{}).value;
+  var zone = ((document.getElementById(p+'-zone')||{}).value||'').trim();
+  if (!date||!zone){showToast('Date et localisation obligatoires','err');return null;}
+  var today = new Date().toISOString().split('T')[0];
+  var r = {type:type,date:date,zone:zone,createdAt:nowISO(),createdBy:DB.config.nom};
+
+  if (type === 'feu') {
+    // Champs spécifiques permis de feu officiel
+    ['heure','heure-fin','entreprise','executant','obs','alerte-types','alerte-empl','tel-urgence','moyens-inter',
+     'demandeur-nom','demandeur-service','demandeur-rep','exec-rep','agent-secu','sig1-nom','sig1-date','sig2-nom','sig2-date','sig3-nom','sig3-date','r5-desc'].forEach(function(f){
+      var el=document.getElementById(p+'-'+f); if(el) r[f.replace(/-/g,'_')]=el.value;
+    });
+    var dfEl=document.getElementById(p+'-date-fin'); if(dfEl) r.date_fin=dfEl.value;
+    // Types de travaux (checkboxes)
+    var typesTrav=['t1','t2','t3','t4','t5','t6'];
+    var typeLabels=['Soudage chalumeau','Soudage électrique','Découpage chalumeau','Découpage électrique','Meulage/tronçonnage','Autres'];
+    r.types_travaux=[];
+    typesTrav.forEach(function(tid,i){ var el=document.getElementById(p+'-'+tid); if(el&&el.checked) r.types_travaux.push(typeLabels[i]); });
+    // Risques environnement
+    r.risques_env=[];
+    var rLabels=['Stockage/proximité combustibles','Produits inflammables','Installations dangereuses','Activité voisinage','Autres'];
+    ['r1','r2','r3','r4','r5'].forEach(function(rid,i){ var el=document.getElementById(p+'-'+rid); if(el&&el.checked) r.risques_env.push(rLabels[i]); });
+    // Mesures (15 items × 2 colonnes)
+    r.mesures_coll=[]; r.mesures_entr=[];
+    for(var m=1;m<=15;m++){
+      var ec=document.getElementById(p+'-m'+m+'c'), ee=document.getElementById(p+'-m'+m+'e');
+      r.mesures_coll.push(ec?ec.checked:false);
+      r.mesures_entr.push(ee?ee.checked:false);
+    }
+    r.checksDone = r.mesures_coll.filter(Boolean).length + r.mesures_entr.filter(Boolean).length;
+    r.checksTotal = 30;
+    r.checks = r.mesures_coll; // pour compatibilité affichage carte
+    // 3 signatures
+    r.sigHse   = getSig('sig-pfeu-secu');
+    r.sigExec  = getSig('sig-pfeu-exec');
+    r.sigDem   = getSig('sig-pfeu-dem');
+    r.photos   = getPhotos('pfeu-photo-preview');
+    r.travaux  = ((document.getElementById(p+'-travaux')||{}).value||'');
+  } else {
+    ['heure','heure_fin','travaux','operation','entreprise','executant','operateur','charge','hauteur','chef','meteo','vent','obs','terrain','engin','longueur','prof','responsable','desc','nb','consignes'].forEach(function(f){
+      var el=document.getElementById(p+'-'+f.replace('_','-')); if(el) r[f]=el.value;
+    });
+    var dfEl2=document.getElementById(p+'-date-fin'); if(dfEl2) r.date_fin=dfEl2.value;
+    var natEl=document.getElementById(p+'-nature'); if(natEl) r.nature=natEl.value;
+    var typEl=document.getElementById(p+'-type'); if(typEl) r.type_val=typEl.value;
+    ['r1','r2','dict'].forEach(function(yn){r[yn]=ynGet(p+'-'+yn);});
+    ['r1-desc','r2-desc','dict-ref','dict-date'].forEach(function(f){var el=document.getElementById(p+'-'+f);if(el)r[f.replace(/-/g,'_')]=el.value;});
+    r.checks=[]; document.querySelectorAll('#'+p+'-checks .custom-check').forEach(function(c){r.checks.push(c.classList.contains('checked'));});
+    r.checksDone=r.checks.filter(Boolean).length; r.checksTotal=r.checks.length;
+    if(type==='fouille'){r.reseaux=[];['elec','gaz','eau','tel','asse','autre'].forEach(function(rv){var el=document.getElementById('pfou-res-'+rv);if(el&&el.checked)r.reseaux.push(rv);});}
+    if(type==='travail'){r.risques=[];['chute','elec','chimique','mecanique','incendie','bruit','ecrase','autre'].forEach(function(rv){var el=document.getElementById('ptrav-risq-'+rv);if(el&&el.checked)r.risques.push(rv);});var rnEl=document.getElementById('ptrav-riskniv');if(rnEl)r.riskniv=rnEl.value;}
+    r.sigHse=getSig(PERMIS_CFG[type].sigHse); r.sigExec=getSig(PERMIS_CFG[type].sigExec);
+    r.photos=getPhotos(PERMIS_CFG[type].photoId);
+  }
+
+  r.status=(r.date_fin||r.date)<today?'expire':'actif';
+  var editId=(document.getElementById(p+'-edit-id')||{}).value;
+  if(editId){r.id=editId;var ex=DB.permis.find(function(x){return x.id==editId;});r.num=ex?ex.num:DB.permisCounter++;}
+  else{r.id=Date.now();r.num=DB.permisCounter++;}
+  return r;
+}
+
+function sauvegarderPermis(type, genPDF) {
+  var data=_lirePermis(type); if(!data) return;
+  var isEdit=DB.permis.some(function(x){return x.id==data.id;});
+  if(isEdit){var idx=DB.permis.findIndex(function(x){return x.id==data.id;});if(idx>=0)DB.permis[idx]=data;}
+  else{DB.permis.unshift(data);addActivity(PERMIS_CFG[type].label+' — '+data.zone,type==='feu'?'orange':type==='levage'?'blue':type==='fouille'?'amber':'green');}
+  save(); closeModal(PERMIS_CFG[type].modalId); renderPermis();
+  showToast(PERMIS_CFG[type].label+' N°'+data.num+' enregistré ✓');
+  if(genPDF) pdfPermis(data);
+}
+
+function cloturerPermis(id){
+  var p=DB.permis.find(function(x){return x.id==id;});if(!p)return;
+  p.status='cloture';p.closedAt=nowISO();save();renderPermis();showToast('Permis clôturé');
+}
+function supprimerPermis(id){
+  showConfirm('Supprimer ce permis ?','Cette fiche sera définitivement supprimée.',function(){
+    DB.permis=DB.permis.filter(function(x){return x.id!=id;});
+    save();renderPermis();showToast('Permis supprimé');
+  });
+}
+function selSevPermis(btn,hiddenId){
+  btn.closest('.severity-row').querySelectorAll('.sev-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById(hiddenId).value=btn.textContent;
+}
+
+function renderPermis() {
+  var el=document.getElementById('permis-list');if(!el)return;
+  if(!DB.permis.length){el.innerHTML='<div class="empty-state" style="padding:24px 16px"><div class="empty-icon" style="font-size:28px">📋</div><div class="empty-title" style="margin-top:8px">Aucun permis</div><div class="empty-desc">Créez un permis de feu, levage, fouille ou travail.</div></div>';return;}
+  var today=new Date().toISOString().split('T')[0];
+  el.innerHTML=DB.permis.map(function(p){
+    var cfg=PERMIS_CFG[p.type]||PERMIS_CFG.travail;
+    var stat=p.status==='cloture'?'cloture':((p.date_fin||p.date)<today?'expire':'actif');
+    var statLabel=stat==='actif'?'✓ Actif':stat==='expire'?'⚠ Expiré':'Clôturé';
+    var checks=p.checks||[];
+    var checkHTML=checks.map(function(c){return '<div class="permit-check-dot '+(c?'ok':'nok')+'"></div>';}).join('');
+    return '<div class="permit-card '+p.type+'">' +
+      '<div class="permit-card-top">' +
+        '<div style="padding-left:8px"><div class="permit-num">'+cfg.label+' · N°'+p.num+'</div><div class="permit-title">'+p.zone+'</div></div>' +
+        '<span class="permit-status '+stat+'">'+statLabel+'</span>' +
+      '</div>' +
+      '<div class="permit-checks-row">' + checkHTML +
+        '<span style="font-size:10px;color:var(--text3);margin-left:4px">'+(p.checksDone||0)+'/'+(p.checksTotal||0)+' mesures</span>' +
+        (p.sigHse?'<span style="font-size:10px;color:var(--green);font-weight:600;margin-left:8px">✓ Signé</span>':'') +
+      '</div>' +
+      '<div class="list-card-meta" style="padding-left:8px">' +
+        '<span>'+fmtDate(p.date)+'</span>' +
+        (p.date_fin?'<span>→</span><span>'+fmtDate(p.date_fin)+'</span>':'') +
+        (p.createdBy?'<span>·</span><span>'+p.createdBy+'</span>':'') +
+      '</div>' +
+      '<div class="list-card-actions" style="padding-left:8px">' +
+        '<button class="btn-sm orange" onclick="ouvrirPermis(\''+p.type+'\',\''+p.id+'\')">✏️ Modifier</button>' +
+        '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfPermisById(\''+p.id+'\')">📄 PDF</button>' +
+        (stat!=='cloture'?'<button class="btn-sm outline" style="color:var(--green);border-color:var(--green-mid)" onclick="cloturerPermis(\''+p.id+'\')">✓ Clôturer</button>':'') +
+        '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="supprimerPermis(\''+p.id+'\')">✕</button>' +
+      '</div></div>';
+  }).join('');
+}
+// ═══════════════════════════════════════════════
+// PDF OFFICIEL — PERMIS DE FEU
+// ═══════════════════════════════════════════════
+function pdfPermisFeu(r) {
+  if (!window.jspdf) { showToast('Librairie PDF en chargement', 'err'); return; }
+  var {jsPDF} = window.jspdf;
+  var doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  var w = doc.internal.pageSize.width, h = doc.internal.pageSize.height;
+  var ent = DB.config.entreprise || 'Tetris Construction';
+  var orange = [216,90,48], red=[163,45,45], blue=[26,95,163], green=[46,110,14];
+  var dark=[43,43,41], gray=[95,94,90], lgray=[232,230,223], vlgray=[247,246,243];
+  var today = new Date().toISOString().split('T')[0];
+
+  // === PAGE 1 ===
+
+  // En-tête : logo gauche + titre centre
+  var logo = DB.logo || TETRIS_LOGO_DEFAULT;
+  if(logo){try{doc.setFillColor(255,255,255);doc.roundedRect(10,8,36,18,2,2,'F');doc.addImage(logo,logo.indexOf('data:image/png')===0?'PNG':'JPEG',12,9,32,16);}catch(e){}}
+  doc.setDrawColor(...lgray); doc.setLineWidth(0.3); doc.roundedRect(10,8,36,18,2,2,'S');
+
+  // Titre
+  doc.setFillColor(...orange); doc.roundedRect(52,8,w-62,18,2,2,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(255,255,255);
+  doc.text('PERMIS DE FEU', (52+(w-62)/2), 15, {align:'center'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(255,220,200);
+  doc.text('PERMIS DE TRAVAIL PAR POINT CHAUD  ·  N° '+r.num+'  ·  Émis par '+r.createdBy, (52+(w-62)/2), 22, {align:'center'});
+
+  var y = 34;
+
+  // Bandeau section helper
+  function secBar(title, col) {
+    doc.setFillColor(...col); doc.rect(10,y,w-20,7,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+    doc.text(title.toUpperCase(), 14, y+4.8);
+    y += 9;
+  }
+  function secLine(title) {
+    doc.setDrawColor(...lgray); doc.setLineWidth(0.3); doc.line(10, y, w-10, y);
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...gray);
+    doc.text(title, 10, y-1);
+    y += 4;
+  }
+  function field2(lbl, val, x2, xw, yPos) {
+    var fy = (yPos !== undefined) ? yPos : y;
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+    doc.text(lbl.toUpperCase(), x2, fy);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+    var lines = doc.splitTextToSize(String(val||'—'), xw-2);
+    doc.text(lines, x2, fy+4.5);
+    return lines.length*4.5 + 6;
+  }
+  function box(x,bw,bh,filled){
+    doc.setDrawColor(...lgray); doc.setLineWidth(0.3);
+    if(filled){doc.setFillColor(...orange);doc.rect(x,y,bw,bh,'FD');}
+    else{doc.setFillColor(255,255,255);doc.rect(x,y,bw,bh,'FD');}
+  }
+  function checkBox(x,cy,checked,col){
+    doc.setDrawColor(...(col||lgray)); doc.setLineWidth(0.5);
+    doc.rect(x,cy-3.5,4,4,'S');
+    if(checked){
+      doc.setDrawColor(...(col||orange)); doc.setLineWidth(0.8);
+      doc.line(x+0.5,cy-1.5,x+1.5,cy-0.5);
+      doc.line(x+1.5,cy-0.5,x+3.5,cy-3.2);
+    }
+  }
+
+  // 1. DATES
+  secBar('Dates d\'utilisation', orange);
+  doc.setFillColor(...vlgray); doc.rect(10,y,w-20,14,'F');
+  doc.setDrawColor(...lgray); doc.setLineWidth(0.3); doc.rect(10,y,w-20,14,'S');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...dark);
+  doc.text('Du', 14, y+5.5);
+  doc.text(fmtDate(r.date)||'— / — / ———', 22, y+5.5);
+  doc.text(r.heure||'—:—', 70, y+5.5);
+  doc.text('Au', 14, y+11.5);
+  doc.text(fmtDate(r.date_fin)||'— / — / ———', 22, y+11.5);
+  doc.text(r.heure_fin||'—:—', 70, y+11.5);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...gray);
+  doc.text('Chantier : '+DB.chantier+'   ·   '+ent, w/2+10, y+5.5, {align:'center'});
+  y += 16;
+
+  // 2. DESCRIPTION DES TRAVAUX
+  secBar('Description des travaux', [60,60,60]);
+
+  // Lieu
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('LIEU D\'EXÉCUTION DES TRAVAUX', 12, y);
+  y += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.zone||'—', 12, y);
+  y += 7;
+
+  // Types de travaux — 2 colonnes, espacement explicite
+  var typeTrav = r.types_travaux || [];
+  var tLabels = ['Soudage au chalumeau','Soudage électrique','Découpage au chalumeau','Découpage électrique','Meulage / tronçonnage','Autres'];
+  var tcw = (w-24)/2;
+  var tStartY = y;
+  tLabels.forEach(function(lbl, i){
+    var col = i % 2;
+    var row = Math.floor(i / 2);
+    var tx = 12 + col * tcw;
+    var ty = tStartY + row * 8;
+    checkBox(tx, ty + 3, typeTrav.indexOf(lbl) >= 0, orange);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...dark);
+    doc.text(lbl, tx + 7, ty + 3);
+  });
+  y = tStartY + Math.ceil(tLabels.length / 2) * 8 + 3;
+
+  // Description détaillée
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('DESCRIPTION DÉTAILLÉE DES TRAVAUX ET DU MATÉRIEL', 12, y);
+  y += 4;
+  var travLines = doc.splitTextToSize(r.travaux || '—', w - 24);
+  var travBoxH = Math.max(travLines.length * 5 + 6, 18);
+  doc.setFillColor(...vlgray); doc.rect(10, y, w-20, travBoxH, 'F');
+  doc.setDrawColor(...lgray); doc.setLineWidth(0.3); doc.rect(10, y, w-20, travBoxH, 'S');
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(travLines.slice(0, 4), 14, y + 5);
+  y += travBoxH + 3;
+
+  // 3. RISQUES ENV
+  secBar('Risques liés à l\'environnement de travail', red);
+  var rEnv = r.risques_env || [];
+  var rLabels2 = [
+    'Stockage et proximité de matériaux combustibles',
+    'Stockage de produits inflammables',
+    'Proximité d\'installations dangereuses',
+    'Activité du voisinage immédiat'
+  ];
+  rLabels2.forEach(function(lbl) {
+    checkBox(12, y + 3.5, rEnv.indexOf(lbl) >= 0, red);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...dark);
+    doc.text(lbl, 19, y + 3.5);
+    y += 7;
+  });
+  checkBox(12, y + 3.5, rEnv.indexOf('Autres') >= 0, red);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...dark);
+  doc.text('Autres : ' + (r.r5_desc || ''), 19, y + 3.5);
+  y += 9;
+
+  // 4. EN CAS D'INCENDIE
+  secBar('En cas d\'incendie ou d\'accident', red);
+  var cw2 = Math.floor((w - 26) / 2); // largeur colonne = ~92mm
+  var lx2 = 12, rx2 = 14 + cw2 + 2;  // gauche=12, droite=108
+
+  // Ligne 1 : Moyens alerte | Emplacement
+  var ly1 = y;
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('MOYENS D\'ALERTE À PROXIMITÉ (TYPES)', lx2, ly1);
+  doc.text('EMPLACEMENT', rx2, ly1);
+  ly1 += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  var alertLines = doc.splitTextToSize(r.alerte_types || '—', cw2 - 4);
+  doc.text(alertLines.slice(0,2), lx2, ly1);
+  var emplLines = doc.splitTextToSize(r.alerte_empl || '—', cw2 - 4);
+  doc.text(emplLines.slice(0,2), rx2, ly1);
+  y = ly1 + Math.max(alertLines.length, emplLines.length) * 5 + 3;
+
+  // Ligne 2 : Téléphone | Moyens intervention
+  var ly2 = y;
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('N° DE TÉLÉPHONE À APPELER', lx2, ly2);
+  doc.text('MOYENS DE 1ÈRE INTERVENTION', rx2, ly2);
+  ly2 += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.tel_urgence || '—', lx2, ly2);
+  var moyLines = doc.splitTextToSize(r.moyens_inter || '—', cw2 - 4);
+  doc.text(moyLines.slice(0,2), rx2, ly2);
+  y = ly2 + Math.max(5, moyLines.length * 5) + 4;
+
+  // 5. DEMANDEUR / EXÉCUTANT
+  secBar('Demandeur / Exécutant', blue);
+  var cw3 = Math.floor((w - 26) / 2);
+  var lx3 = 12, rx3 = 14 + cw3 + 2;
+
+  // Colonne gauche — empilée
+  var gY = y;
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('NOM DU CHANTIER / COLLECTIVITÉ', lx3, gY); gY += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.demandeur_nom || DB.chantier || '—', lx3, gY); gY += 6;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('SERVICE', lx3, gY); gY += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.demandeur_service || '—', lx3, gY); gY += 6;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('REPRÉSENTANT QUALIFIÉ (DEMANDEUR)', lx3, gY); gY += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.demandeur_rep || '—', lx3, gY); gY += 6;
+
+  // Colonne droite — empilée
+  var dY = y;
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('NOM DE L\'ENTREPRISE', rx3, dY); dY += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.entreprise || '—', rx3, dY); dY += 6;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('REPRÉSENTANT QUALIFIÉ (EXÉCUTANT)', rx3, dY); dY += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.exec_rep || '—', rx3, dY); dY += 6;
+
+  // y = fin de la plus haute colonne
+  y = Math.max(gY, dY) + 3;
+
+  // Champs pleine largeur
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('PERSONNE EXÉCUTANT LES TRAVAUX (NOM – PRÉNOM, FONCTION, TÉL.)', lx3, y); y += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.executant || '—', lx3, y); y += 7;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('AGENT CHARGÉ DE LA SÉCURITÉ GÉNÉRALE (NOM – PRÉNOM, FONCTION, TÉL.)', lx3, y); y += 4.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+  doc.text(r.agent_secu || '—', lx3, y); y += 7;
+
+  // Footer page 1
+  doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(...gray);
+  doc.text('→ Suite page 2 : Mesures de prévention et signatures', w/2, h-6, {align:'center'});
+  doc.setDrawColor(...lgray); doc.setLineWidth(0.2); doc.line(10, h-8, w-10, h-8);
+
+  // === PAGE 2 ===
+  doc.addPage();
+  y = 14;
+
+  // Rappel en-tête p2
+  doc.setFillColor(...orange); doc.rect(10,y,w-20,8,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255,255,255);
+  doc.text('MESURES DE PRÉVENTION À METTRE EN ŒUVRE  ·  PERMIS DE FEU N°'+r.num, w/2, y+5.5, {align:'center'});
+  y += 12;
+
+  // Tableau mesures
+  var mc = r.mesures_coll || [];
+  var me = r.mesures_entr || [];
+  var measures = [
+    {phase:'Avant le début ou la reprise du travail', items:[
+      'Établir un plan de prévention si nécessaire (soudage oxyacétylénique)',
+      'Vérifier le matériel (état, tension adaptée, etc.)',
+      'Éloigner/protéger matériaux combustibles ou inflammables (y compris derrière cloisons)',
+      'S\'assurer du dégazage des cuves/réservoirs si travaux sur ceux-ci',
+      'Éloigner produits combustibles des conduites et tuyauteries traitées',
+      'Disposer moyens alarme + lutte incendie à portée immédiate (extincteur eau + extincteur adapté)',
+      'Faire aérer la zone de travail',
+      'Éviter déclenchement intempestif de la détection/extinction automatique',
+      'Transmettre les consignes de sécurité incendie du bâtiment'
+    ], start:0},
+    {phase:'Pendant le travail', items:[
+      'Porter les EPI adaptés (lunettes, gants, tablier, écran facial...)',
+      'Surveiller les points de chute des projections incandescentes (gaines, fissures, interstices...)',
+      'Ne déposer objets chauffés que sur supports résistants à la chaleur'
+    ], start:9},
+    {phase:'Après le travail / avant de quitter le chantier', items:[
+      'Inspecter le lieu de travail, locaux adjacents et tout local atteint par projections',
+      'Maintenir surveillance pendant au moins 2 heures après cessation des travaux',
+      'Remettre le système de détection/extinction automatique en service opérationnel'
+    ], start:12}
+  ];
+
+  // Header tableau
+  var colW2 = w-20-34, colCW = 17;
+  doc.setFillColor(...vlgray); doc.rect(10,y,w-20,8,'F');
+  doc.setDrawColor(...lgray); doc.setLineWidth(0.3); doc.rect(10,y,w-20,8,'S');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...dark);
+  doc.text('Mesures de prévention', 14, y+5);
+  doc.setTextColor(...blue);  doc.text('Coll.', w-10-colCW*2+colCW/2, y+5, {align:'center'});
+  doc.setTextColor(...orange); doc.text('Entr.', w-10-colCW+colCW/2, y+5, {align:'center'});
+  // Separateurs colonnes
+  doc.setDrawColor(...lgray); doc.setLineWidth(0.2);
+  doc.line(w-10-colCW*2, y, w-10-colCW*2, y+8);
+  doc.line(w-10-colCW, y, w-10-colCW, y+8);
+  y += 8;
+
+  measures.forEach(function(phase){
+    // Phase header
+    if(y > h-40){doc.addPage();y=14;}
+    doc.setFillColor(230,244,230); doc.rect(10,y,w-20,7,'F');
+    doc.setDrawColor(...lgray); doc.setLineWidth(0.2); doc.rect(10,y,w-20,7,'S');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...green);
+    doc.text(phase.phase, 13, y+4.8);
+    y += 7;
+
+    phase.items.forEach(function(item,i){
+      if(y > h-22){doc.addPage();y=14;}
+      var ri = phase.start + i;
+      var cChecked = mc[ri]; var eChecked = me[ri];
+      var itemLines = doc.splitTextToSize(item, colW2 - 6);
+      var rowH = Math.max(itemLines.length * 4.5 + 4, 9);
+
+      // Fond alterné
+      if(i%2===0){doc.setFillColor(252,251,249);doc.rect(10,y,w-20,rowH,'F');}
+      doc.setDrawColor(...lgray); doc.setLineWidth(0.2); doc.rect(10,y,w-20,rowH,'S');
+      doc.line(w-10-colCW*2,y,w-10-colCW*2,y+rowH);
+      doc.line(w-10-colCW,y,w-10-colCW,y+rowH);
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...dark);
+      doc.text(itemLines, 14, y+5);
+
+      // Cases à cocher
+      checkBox(w-10-colCW*2+colCW/2-2, y+rowH/2+1, cChecked, blue);
+      checkBox(w-10-colCW+colCW/2-2, y+rowH/2+1, eChecked, [216,90,48]);
+
+      y += rowH;
+    });
+  });
+
+  // Autre/obs
+  if(r.obs){
+    y += 3;
+    if(y > h-30){doc.addPage();y=14;}
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...gray);
+    doc.text('AUTRE / MESURE COMPLÉMENTAIRE', 12, y);
+    y += 4;
+    doc.setFillColor(...vlgray); doc.rect(10,y,w-20,12,'F');
+    doc.setDrawColor(...lgray); doc.setLineWidth(0.3); doc.rect(10,y,w-20,12,'S');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+    var obsLines = doc.splitTextToSize(r.obs, w-24);
+    doc.text(obsLines.slice(0,2), 14, y+5);
+    y += 15;
+  }
+
+  // Photos
+  if(r.photos && r.photos.length){
+    y += 3;
+    if(y > h-60){doc.addPage();y=14;}
+    secBar('Photos de preuve', [60,60,60]);
+    var pcols=Math.min(r.photos.length,2), pw2=(w-24)/pcols, ph2=35;
+    for(var pi=0;pi<Math.min(r.photos.length,4);pi++){
+      try{
+        var ppx=12+(pi%pcols)*(pw2+4), ppy=y+(Math.floor(pi/pcols))*(ph2+4);
+        doc.setFillColor(...lgray);doc.roundedRect(ppx,ppy,pw2,ph2,2,2,'F');
+        doc.addImage(r.photos[pi],r.photos[pi].indexOf('data:image/png')===0?'PNG':'JPEG',ppx,ppy,pw2,ph2,undefined,'FAST');
+        doc.setDrawColor(...lgray);doc.setLineWidth(0.3);doc.roundedRect(ppx,ppy,pw2,ph2,2,2,'S');
+      }catch(e){}
+    }
+    y += Math.ceil(Math.min(r.photos.length,4)/pcols)*(ph2+4)+4;
+  }
+
+  // SIGNATURES (3 colonnes côte à côte)
+  y += 4;
+  if(y > h-58){doc.addPage();y=14;}
+  secBar('Signatures', [60,60,60]);
+
+  var sigW = (w-28)/3;
+  var sigGap = 4;
+  var startSigY = y; // y fixe pour les 3 colonnes
+
+  var sigTitles = ['Agent sécurité générale','Exécutant','Demandeur'];
+  var sigNoms   = [r.sig1_nom, r.sig2_nom, r.sig3_nom];
+  var sigDates  = [r.sig1_date, r.sig2_date, r.sig3_date];
+  var sigImgs   = [r.sigHse, r.sigExec, r.sigDem];
+
+  sigTitles.forEach(function(title, i){
+    var sx = 12 + i*(sigW+sigGap);
+    var sy = startSigY; // chaque colonne commence au même y
+
+    // Titre colonne
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...dark);
+    doc.text(title.toUpperCase(), sx, sy+4.5);
+
+    // Nom
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...gray);
+    doc.text('Nom : ' + (sigNoms[i]||'—'), sx, sy+10);
+
+    // Date
+    doc.text('Date : ' + (fmtDate(sigDates[i])||'—'), sx, sy+15.5);
+
+    // Zone signature
+    var sigBoxY = sy + 18;
+    doc.setFillColor(250,250,248);
+    doc.roundedRect(sx, sigBoxY, sigW, 22, 2, 2, 'F');
+    doc.setDrawColor(...lgray); doc.setLineWidth(0.3);
+    doc.roundedRect(sx, sigBoxY, sigW, 22, 2, 2, 'S');
+    if(sigImgs[i]){ try{ doc.addImage(sigImgs[i],'PNG',sx+2,sigBoxY+2,sigW-4,18); }catch(e){} }
+
+    // Label "Signature" sous la zone
+    doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(...gray);
+    doc.text('Signature', sx+sigW/2, sigBoxY+25, {align:'center'});
+  });
+
+  // Avancer y après les 3 colonnes
+  y = startSigY + 46;
+
+  // Note de bas de page
+  y += 4;
+  doc.setFillColor(...vlgray); doc.rect(10,y,w-20,12,'F');
+  doc.setDrawColor(...lgray); doc.setLineWidth(0.2); doc.rect(10,y,w-20,12,'S');
+  doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(...gray);
+  doc.text('Le document original est à conserver par le demandeur des travaux, avec une copie pour :', 14, y+4);
+  doc.text('- La personne exécutant les travaux   - L\'agent chargé de la sécurité générale de l\'opération', 14, y+9);
+
+  // Pieds de page tous les feuillets
+  var pages = doc.internal.getNumberOfPages();
+  for(var fi=1;fi<=pages;fi++){
+    doc.setPage(fi);
+    doc.setFillColor(...orange); doc.rect(0,h-8,w,8,'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(255,255,255);
+    doc.text('Permis de Feu N°'+r.num+'  ·  '+ent+'  ·  Chantier : '+DB.chantier+'  ·  Émis le '+fmtDate(r.createdAt), 10, h-3);
+    doc.text('Page '+fi+'/'+pages, w-10, h-3, {align:'right'});
+  }
+
+  doc.save('PermisdeFeu_N'+r.num+'_'+r.date+'.pdf');
+  showToast('Permis de Feu N°'+r.num+' — PDF généré ✓');
+}
+
+function pdfPermisById(id){var p=DB.permis.find(function(x){return x.id==id;});if(p)pdfPermis(p);}
+
+function pdfPermis(r) {
+  if (r.type === 'feu') { pdfPermisFeu(r); return; }
+  if(!window.jspdf){showToast('Librairie PDF en chargement','err');return;}
+
+  var cfg=PERMIS_CFG[r.type]||PERMIS_CFG.travail;
+  var {jsPDF}=window.jspdf;
+  var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  var w=doc.internal.pageSize.width,h=doc.internal.pageSize.height;
+  var col=cfg.color,dark=[43,43,41],gray=[95,94,90],lgray=[232,230,223];
+  var ent=DB.config.entreprise||'Tetris Construction';
+  var today=new Date().toISOString().split('T')[0];
+
+  // En-tête coloré
+  doc.setFillColor(col[0],col[1],col[2]);doc.rect(0,0,w,40,'F');
+  var logo=DB.logo||TETRIS_LOGO_DEFAULT;
+  if(logo){try{doc.setFillColor(255,255,255);doc.roundedRect(12,8,34,18,2,2,'F');doc.addImage(logo,logo.indexOf('data:image/png')===0?'PNG':'JPEG',14,9,30,16);}catch(e){}}
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(255,255,255);
+  doc.text(cfg.label.toUpperCase(),w/2,17,{align:'center'});
+  doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(230,230,230);
+  doc.text('N° '+r.num+'  ·  '+ent+'  ·  Chantier : '+DB.chantier,w/2,25,{align:'center'});
+  doc.setFontSize(8);doc.text('Émis le '+fmtDate(r.createdAt)+' par '+r.createdBy,w/2,32,{align:'center'});
+
+  var y=48;
+  function sec(title){
+    if(y>255){doc.addPage();y=16;}
+    doc.setFillColor(col[0],col[1],col[2]);doc.roundedRect(12,y,3,7,1,1,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.setTextColor(...dark);
+    doc.text(title,18,y+5.5);
+    doc.setDrawColor(...lgray);doc.setLineWidth(0.2);doc.line(18,y+8,w-12,y+8);
+    y+=13;
+  }
+  function field(lbl,val){
+    if(!val&&val!==0)return;
+    if(y>255){doc.addPage();y=16;}
+    doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(...gray);doc.text(lbl.toUpperCase(),14,y);
+    doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(...dark);
+    var lines=doc.splitTextToSize(String(val),w-32);
+    doc.text(lines,14,y+5);y+=5+lines.length*4.5+3;
+  }
+  function row3(pairs){
+    if(y>255){doc.addPage();y=16;}
+    var cw=(w-28)/pairs.length;
+    pairs.forEach(function(pair,i){
+      if(!pair[1]&&pair[1]!==0)return;
+      var x=14+i*cw;
+      doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(...gray);doc.text(pair[0].toUpperCase(),x,y);
+      doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(...dark);doc.text(String(pair[1]),x,y+5);
+    });
+    y+=13;
+  }
+
+  sec('IDENTIFICATION');
+  row3([['Date',fmtDate(r.date)],['Fin validité',fmtDate(r.date_fin||r.date)],['Zone / Localisation',r.zone]]);
+  if(r.type==='feu'){field('Nature des travaux',r.travaux);row3([['Entreprise',r.entreprise],['Exécutant',r.executant],['Heure',r.heure+(r.heure_fin?' → '+r.heure_fin:'')]]);}
+  if(r.type==='levage'){field('Opération de levage',r.operation);row3([['Engin',r.engin],['Opérateur',r.operateur],['Charge',r.charge?r.charge+'t':'—']]);row3([['Hauteur max',r.hauteur?r.hauteur+'m':'—'],['Chef de manœuvre',r.chef],['Vent',r.vent?r.vent+' km/h':'—']]);}
+  if(r.type==='fouille'){row3([['Nature',r.nature],['Profondeur',r.prof?r.prof+'m':'—'],['Longueur',r.longueur?r.longueur+'m':'—']]);row3([['Engin / Méthode',r.engin],['Chef de chantier',r.chef],['DICT',r.dict==='oui'?'Oui — Réf. '+(r.dict_ref||''):'Non']]);if(r.reseaux&&r.reseaux.length)field('Réseaux détectés',r.reseaux.join(', '));}
+  if(r.type==='travail'){field('Type de travaux',r.type_val);field('Description',r.desc);row3([['Entreprise',r.entreprise],['Responsable',r.responsable],['Nb intervenants',r.nb||1]]);if(r.risques&&r.risques.length)field('Risques identifiés',r.risques.join(' · '));if(r.riskniv)field('Niveau de risque',r.riskniv);}
+
+  var checkLabels={
+    feu:['Zone dégagée de combustibles (1m)','Extincteur sur site et vérifié','Moyen hydraulique accessible','EPI feu portés','Écrans protecteurs en place','Détection incendie neutralisée si nécessaire','Rondes post-travaux prévues (1h min.)','Permis affiché sur le lieu'],
+    levage:['Plan de levage validé','VGP engin valide','Accessoires levage vérifiés','Zone balisée et sécurisée','Sol porteur / stabilisateurs OK','Réseaux aériens identifiés','Communication radio convenue','Météo favorable (vent < 45 km/h)','Grutier CACES valide'],
+    fouille:['Balisage périphérique réalisé','Blindage si profondeur > 1,3m','Talus à distance réglementaire','Échelle d\'accès ou rampe prévue','Détection atm. si > 1,5m','Éclairage suffisant','Eaux de ruissellement évacuées','Signalisation visible'],
+    travail:['EPI fournis et portés','Consignation des énergies réalisée','Zone de travail balisée','Outillage adapté et vérifié','Moyens de communication disponibles','Plan évacuation connu','SST disponible sur chantier','Permis affiché sur le lieu']
+  };
+  var labels=checkLabels[r.type]||[]; var checks=r.checks||[];
+  sec('MESURES DE PRÉVENTION ('+( r.checksDone||0)+'/'+( r.checksTotal||0)+')');
+  var cols2=2,bw2=(w-28-8)/cols2;
+  var rowH=8;
+  labels.forEach(function(lbl,i){
+    var col2i=i%cols2,row2i=Math.floor(i/cols2);
+    var px=14+col2i*(bw2+8),py=y+row2i*rowH;
+    if(py>252&&col2i===0){doc.addPage();y=16;py=y+row2i*rowH;}
+    var ok=checks[i];
+    doc.setFillColor(ok?46:220,ok?110:220,ok?14:220);
+    doc.circle(px+3,py+2.5,2.2,'F');
+    doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+    doc.setTextColor(ok?dark[0]:gray[0],ok?dark[1]:gray[1],ok?dark[2]:gray[2]);
+    doc.text(lbl,px+8,py+3.5);
+  });
+  y+=Math.ceil(labels.length/cols2)*rowH+6;
+
+  if(r.obs)field('Observations / Mesures complémentaires',r.obs);
+  if(r.consignes)field('Consignes particulières',r.consignes);
+
+  if(r.photos&&r.photos.length){
+    sec('PHOTOS DE PREUVE');
+    var pcols=Math.min(r.photos.length,2),pw2=(w-28-8)/pcols,ph2=38;
+    for(var pi=0;pi<Math.min(r.photos.length,4);pi++){
+      try{
+        var ppx=14+(pi%pcols)*(pw2+8),ppy=y+(Math.floor(pi/pcols))*(ph2+5);
+        doc.setFillColor(...lgray);doc.roundedRect(ppx,ppy,pw2,ph2,2,2,'F');
+        doc.addImage(r.photos[pi],r.photos[pi].indexOf('data:image/png')===0?'PNG':'JPEG',ppx,ppy,pw2,ph2,undefined,'FAST');
+        doc.setDrawColor(...lgray);doc.setLineWidth(0.3);doc.roundedRect(ppx,ppy,pw2,ph2,2,2,'S');
+      }catch(e){}
+    }
+    y+=Math.ceil(Math.min(r.photos.length,4)/pcols)*(ph2+5)+5;
+  }
+
+  if(y>218){doc.addPage();y=16;}
+  sec('SIGNATURES');
+  var slbls={feu:['Responsable HSE','Exécutant'],levage:['Responsable HSE','Chef de manœuvre'],fouille:['Responsable HSE','Chef de chantier'],travail:['Responsable HSE','Responsable travaux']};
+  var sl=slbls[r.type]||['Responsable HSE','Exécutant'],sigs=[r.sigHse,r.sigExec];
+  sigs.forEach(function(sig,i){
+    var sx=14+i*(w/2-6),sw=w/2-20;
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...gray);doc.text(sl[i].toUpperCase(),sx,y);
+    doc.setFillColor(250,250,248);doc.roundedRect(sx,y+3,sw,24,2,2,'F');
+    doc.setDrawColor(...lgray);doc.setLineWidth(0.3);doc.roundedRect(sx,y+3,sw,24,2,2,'S');
+    if(sig){try{doc.addImage(sig,'PNG',sx+2,y+4,sw-4,22);}catch(e){}}
+  });
+  y+=32;
+  var stat=r.status==='cloture'?'Clôturé':(r.date_fin||r.date)<today?'Expiré':'Actif';
+  doc.setFont('helvetica','italic');doc.setFontSize(7);doc.setTextColor(...gray);
+  doc.text('Statut : '+stat+' · Émis par '+r.createdBy+' · '+DB.chantier,14,y);
+
+  var pages=doc.internal.getNumberOfPages();
+  for(var fi=1;fi<=pages;fi++){
+    doc.setPage(fi);
+    doc.setFillColor(col[0],col[1],col[2]);doc.rect(0,h-9,w,9,'F');
+    doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(255,255,255);
+    doc.text(cfg.label+' N°'+r.num+'  ·  '+ent+'  ·  '+DB.chantier,10,h-3);
+    doc.text('Page '+fi+'/'+pages,w-10,h-3,{align:'right'});
+  }
+  doc.save(cfg.label.replace(/ /g,'_')+'_N'+r.num+'_'+r.date+'.pdf');
+  showToast(cfg.label+' N°'+r.num+' — PDF généré ✓');
 }
 
 // ═══════════════════════════════════════════════
