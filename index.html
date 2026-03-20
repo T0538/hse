@@ -116,6 +116,57 @@ body.dark-mode .p5-inc-banner{background:var(--gray-light)}
 .theme-toggle{width:36px;height:36px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
 .theme-toggle:active{background:var(--gray-mid)}
 
+/* ── BIBLIOTHÈQUE RESSOURCES HSE ── */
+.res-modal-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px;margin-bottom:10px}
+.res-modal-tag.form{background:var(--orange-light);color:var(--orange)}
+.res-modal-tag.plan{background:var(--red-light);color:var(--red)}
+.res-modal-tag.objectif{background:var(--blue-light);color:var(--blue)}
+.res-modal-tag.ref{background:var(--green-light);color:var(--green)}
+.res-modal-tag.template{background:var(--amber-light);color:var(--amber)}
+.res-section{background:var(--gray-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px}
+.res-section-title{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.res-field{margin-bottom:10px}
+.res-field label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px;display:block}
+.res-field input,.res-field select,.res-field textarea{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);font-family:var(--font-body);font-size:13px;color:var(--text);outline:none;transition:border-color .18s;-webkit-appearance:none}
+.res-field input:focus,.res-field select:focus,.res-field textarea:focus{border-color:var(--orange)}
+.res-field textarea{min-height:70px;resize:none;line-height:1.5}
+.res-field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.res-checklist-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.res-checklist-item:last-child{border-bottom:none}
+.res-cb{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;transition:all .12s}
+.res-cb.on{background:var(--orange);border-color:var(--orange)}
+.res-cb-lbl{font-size:12px;color:var(--text);flex:1;line-height:1.4}
+.res-urgency-box{border-radius:10px;padding:12px 14px;margin-bottom:10px;border:1.5px solid}
+.res-urgency-box.rouge{background:var(--red-light);border-color:var(--red)}
+.res-urgency-box.orange{background:var(--orange-light);border-color:var(--orange)}
+.res-urgency-box.blue{background:var(--blue-light);border-color:var(--blue)}
+.res-urgency-box.green{background:var(--green-light);border-color:var(--green-mid)}
+.res-urgency-title{font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:6px}
+.res-urgency-box.rouge .res-urgency-title{color:var(--red)}
+.res-urgency-box.orange .res-urgency-title{color:var(--orange)}
+.res-urgency-box.blue .res-urgency-title{color:var(--blue)}
+.res-urgency-box.green .res-urgency-title{color:var(--green)}
+.res-urgency-content{font-size:12px;color:var(--text);line-height:1.6}
+.res-num-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.res-num-row:last-child{border-bottom:none}
+.res-num-label{font-size:12px;color:var(--text2);flex:1}
+.res-num-val{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--text)}
+.res-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.res-kpi-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px;text-align:center}
+.res-kpi-val{font-family:var(--font-head);font-size:28px;font-weight:800;line-height:1}
+.res-kpi-lbl{font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+.res-kpi-target{font-size:11px;color:var(--text3);margin-top:2px}
+.res-step{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.res-step:last-child{border-bottom:none}
+.res-step-num{width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;font-family:var(--font-head);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.res-step-content{flex:1}
+.res-step-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.res-step-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.res-badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+body.dark-mode .res-section{background:var(--gray-light)}
+body.dark-mode .res-field input,body.dark-mode .res-field select,body.dark-mode .res-field textarea{background:#1E1E1C;color:var(--text);border-color:var(--border)}
+body.dark-mode .res-kpi-card{background:var(--surface)}
+
 /* ── QR CODE MODAL ── */
 .qr-modal-agent{text-align:center;padding:8px 0 16px}
 .qr-canvas-wrap{display:flex;justify-content:center;margin:14px 0}
@@ -2202,7 +2253,7 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 <div id="search-overlay" class="search-overlay" onclick="fermerRecherche(event)">
   <div class="search-box">
     <svg width="18" height="18" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input class="search-input" id="search-input" type="search" placeholder="Rechercher un incident, agent, JSA, CAPA…" oninput="lancerRecherche(this.value)" autocomplete="off" autocorrect="off">
+    <input class="search-input" id="search-input" type="search" placeholder="Incident, agent, JSA, formulaires, plans d'urgence…" oninput="lancerRecherche(this.value)" autocomplete="off" autocorrect="off">
     <button onclick="_closeSearch()" style="border:none;background:transparent;font-size:14px;color:var(--text3);padding:4px;cursor:pointer">✕</button>
   </div>
   <div class="search-results" id="search-results">
@@ -2224,6 +2275,16 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
   </div>
   <button class="pwa-banner-btn" onclick="installerPWA()">Installer</button>
   <button class="pwa-banner-close" onclick="masquerBannerePWA()">✕</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL RESSOURCES HSE (bibliothèque invisible)
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-ressource" onclick="closeModalOut(event,'modal-ressource')">
+  <div class="modal-sheet" style="padding-bottom:32px">
+    <div class="modal-handle"></div>
+    <div id="res-modal-body"><!-- contenu injecté dynamiquement --></div>
+  </div>
 </div>
 
 
@@ -7778,7 +7839,889 @@ function pdf5P() {
   doc.save('5Pourquoi_' + inc.type.replace(/[^a-z0-9]/gi,'_').slice(0,25) + '_' + fmtDate(inc.date).replace(/\//g,'-') + '.pdf');
   showToast('Rapport 5 Pourquoi téléchargé ✓');
 }
-// ═══════════════════ FIN MODULE 5P ═══════════════════════
+// ═══════════════════════════════════════════════════════════════
+// BIBLIOTHÈQUE DE RESSOURCES HSE — INVISIBLE SAUF DANS RECHERCHE
+// ═══════════════════════════════════════════════════════════════
+
+var RESSOURCES_HSE = [
+
+  // ── FORMULAIRES ─────────────────────────────────────────────
+  {
+    id: 'mise-a-pied',
+    cat: 'Formulaires',
+    type: 'form',
+    titre: 'Formulaire de mise à pied',
+    desc: 'Notification disciplinaire officielle — suspension d\'un ouvrier',
+    tags: ['mise a pied','discipline','suspension','sanction','ouvrier','disciplinaire','retrait','exclusion','avertissement'],
+    iconBg: 'var(--red-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>',
+    renderFn: 'res_misePied'
+  },
+  {
+    id: 'declaration-at',
+    cat: 'Formulaires',
+    type: 'form',
+    titre: 'Déclaration Accident du Travail',
+    desc: 'Formulaire officiel de déclaration AT à transmettre à l\'employeur',
+    tags: ['declaration','accident travail','dat','at','blessure','arret','cerfa','formulaire','accident'],
+    iconBg: 'var(--orange-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>',
+    renderFn: 'res_declarationAT'
+  },
+  {
+    id: 'observation-comportementale',
+    cat: 'Formulaires',
+    type: 'form',
+    titre: 'Fiche Observation Comportementale',
+    desc: 'Enregistrement rapide d\'un comportement sécuritaire positif ou à risque',
+    tags: ['observation','comportement','oc','culture securite','comportemental','positif','risque','terrain'],
+    iconBg: 'var(--blue-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+    renderFn: 'res_observationOC'
+  },
+  {
+    id: 'non-conformite',
+    cat: 'Formulaires',
+    type: 'form',
+    titre: 'Fiche de Non-Conformité',
+    desc: 'Signalement d\'une déviation aux procédures ou exigences réglementaires',
+    tags: ['non conformite','nc','deviation','ecart','non-conformite','audit','anomalie'],
+    iconBg: 'var(--amber-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>',
+    renderFn: 'res_nonConformite'
+  },
+  {
+    id: 'bon-travail',
+    cat: 'Formulaires',
+    type: 'form',
+    titre: 'Bon de Travail / Ordre de Mission',
+    desc: 'Autorisation écrite pour démarrer une tâche spécifique sur le chantier',
+    tags: ['bon de travail','ordre de mission','autorisation','démarrage','tâche','habilitation'],
+    iconBg: 'var(--green-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+    renderFn: 'res_bonTravail'
+  },
+
+  // ── PLANS D'URGENCE ─────────────────────────────────────────
+  {
+    id: 'plan-urgence-incendie',
+    cat: "Plans d'urgence",
+    type: 'plan',
+    titre: "Plan d'urgence — Incendie",
+    desc: 'Procédure complète en cas de départ de feu sur le chantier',
+    tags: ['incendie','feu','evacuation','urgence','plan','procedure','alerte','pompiers','18','112','extincteur','fire'],
+    iconBg: 'var(--red-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2" fill="none"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+    renderFn: 'res_planIncendie'
+  },
+  {
+    id: 'plan-urgence-accident',
+    cat: "Plans d'urgence",
+    type: 'plan',
+    titre: "Plan d'urgence — Accident grave",
+    desc: 'Procédure d\'intervention en cas d\'accident corporel sérieux ou critique',
+    tags: ['accident grave','urgence medicale','secours','samu','15','premier secours','procedure accident','blessé','evacuation medicale'],
+    iconBg: 'var(--red-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+    renderFn: 'res_planAccidentGrave'
+  },
+  {
+    id: 'plan-urgence-evacuation',
+    cat: "Plans d'urgence",
+    type: 'plan',
+    titre: "Plan d'évacuation du chantier",
+    desc: 'Schéma et procédure d\'évacuation générale — points de rassemblement',
+    tags: ['evacuation','rassemblement','point de rassemblement','sortie de secours','evacuer','plan evacuation'],
+    iconBg: 'var(--orange-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 1-1 1h-3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1m-6 0h6"/></svg>',
+    renderFn: 'res_planEvacuation'
+  },
+  {
+    id: 'numeros-urgence',
+    cat: "Plans d'urgence",
+    type: 'plan',
+    titre: 'Numéros d\'urgence du chantier',
+    desc: 'Contacts d\'urgence — à afficher sur le chantier et garder sur soi',
+    tags: ['numero urgence','telephone urgence','samu','pompiers','police','15','18','17','112','contact','appel'],
+    iconBg: 'var(--red-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    renderFn: 'res_numerosUrgence'
+  },
+  {
+    id: 'plan-urgence-chute-hauteur',
+    cat: "Plans d'urgence",
+    type: 'plan',
+    titre: "Plan d'urgence — Chute de hauteur",
+    desc: 'Conduite à tenir immédiate après une chute de hauteur sur chantier',
+    tags: ['chute hauteur','suspension','secours hauteur','trauma','urgence chute','harnais','suspension harness'],
+    iconBg: 'var(--orange-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><circle cx="12" cy="5" r="3"/><path d="M6.5 8a5.5 5.5 0 0 1 11 0l-2 10H9.5L7.5 8z"/><line x1="12" y1="13" x2="12" y2="21"/></svg>',
+    renderFn: 'res_planChuteHauteur'
+  },
+
+  // ── OBJECTIFS HSE ────────────────────────────────────────────
+  {
+    id: 'objectifs-hse',
+    cat: 'Objectifs HSE',
+    type: 'objectif',
+    titre: 'Tableau de bord des objectifs HSE',
+    desc: 'Indicateurs cibles annuels — TF, TG, CAPA, toolbox, inductions',
+    tags: ['objectifs','objectif hse','kpi','indicateurs','taux frequence','taux gravite','tf tg','performance','annuel','cible'],
+    iconBg: 'var(--blue-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+    renderFn: 'res_objectifsHSE'
+  },
+  {
+    id: 'politique-hse',
+    cat: 'Objectifs HSE',
+    type: 'objectif',
+    titre: 'Politique HSE Tetris Construction',
+    desc: 'Engagement de la direction — charte sécurité à afficher sur le chantier',
+    tags: ['politique hse','charte securite','engagement direction','vision','management','politique sécurité'],
+    iconBg: 'var(--blue-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    renderFn: 'res_politiqueHSE'
+  },
+
+  // ── RÉFÉRENCES RÉGLEMENTAIRES ────────────────────────────────
+  {
+    id: 'epi-obligatoires',
+    cat: 'Références',
+    type: 'ref',
+    titre: 'EPI obligatoires par poste de travail',
+    desc: 'Tableau de référence des équipements de protection selon l\'activité',
+    tags: ['epi','equipement protection','obligatoire','casque','harnais','chaussures','lunettes','gants','gilet','poste','reglementation'],
+    iconBg: 'var(--green-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
+    renderFn: 'res_epiObligatoires'
+  },
+  {
+    id: 'registre-legal',
+    cat: 'Références',
+    type: 'ref',
+    titre: 'Registres légaux obligatoires HSE',
+    desc: 'Liste des documents et registres à tenir impérativement sur le chantier',
+    tags: ['registre','legal','obligatoire','document','conformite','reglementation','verification','dossier','controle'],
+    iconBg: 'var(--amber-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    renderFn: 'res_registresLegaux'
+  },
+  {
+    id: 'travail-hauteur-reglementation',
+    cat: 'Références',
+    type: 'ref',
+    titre: 'Réglementation travail en hauteur',
+    desc: 'Rappel des exigences légales — seuils, EPC, EPI, formations requises',
+    tags: ['travail en hauteur','reglementation hauteur','3m','harnais obligatoire','garde corps','epc','nacelle','echafaudage','loi'],
+    iconBg: 'var(--green-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><polyline points="18 15 12 9 6 15"/><line x1="12" y1="9" x2="12" y2="21"/><path d="M2 5h20"/></svg>',
+    renderFn: 'res_reglHauteur'
+  },
+  {
+    id: 'conduite-alcool',
+    cat: 'Références',
+    type: 'ref',
+    titre: 'Procédure Alcool / Drogues sur chantier',
+    desc: 'Conduite à tenir et procédure de contrôle des substances sur site',
+    tags: ['alcool','drogue','substance','controle','taux','alcoholemie','zero alcool','procedure','test'],
+    iconBg: 'var(--red-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>',
+    renderFn: 'res_procedureAlcool'
+  },
+
+  // ── TEMPLATES ─────────────────────────────────────────────────
+  {
+    id: 'rapport-audit',
+    cat: 'Templates',
+    type: 'template',
+    titre: "Modèle de rapport d'audit HSE",
+    desc: 'Trame complète pour conduire et documenter un audit terrain',
+    tags: ['audit','rapport audit','template','modele','inspection','evaluation','trame','check audit','grille audit'],
+    iconBg: 'var(--amber-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+    renderFn: 'res_rapportAudit'
+  },
+  {
+    id: 'compte-rendu-reunion',
+    cat: 'Templates',
+    type: 'template',
+    titre: 'Compte-rendu de réunion HSE',
+    desc: 'Modèle de CR pour les réunions de coordination sécurité',
+    tags: ['compte rendu','reunion hse','cr','reunion securite','pv','template cr','modele reunion'],
+    iconBg: 'var(--amber-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>',
+    renderFn: 'res_compteRendu'
+  }
+];
+
+// ── Ouvrir une ressource ──────────────────────────────────────
+function ouvrirRessource(id) {
+  var res = null;
+  for (var i = 0; i < RESSOURCES_HSE.length; i++) {
+    if (RESSOURCES_HSE[i].id === id) { res = RESSOURCES_HSE[i]; break; }
+  }
+  if (!res || !window['res_' + res.renderFn.replace('res_','')]) {
+    // fallback : juste le nom
+    var tagColors = {form:'form',plan:'plan',objectif:'objectif',ref:'ref',template:'template'};
+    document.getElementById('res-modal-body').innerHTML =
+      '<div class="modal-title">' + res.titre + '</div>' +
+      '<div class="res-modal-tag ' + tagColors[res.type] + '">' + res.cat + '</div>' +
+      '<p style="font-size:13px;color:var(--text2);line-height:1.6">' + res.desc + '</p>' +
+      '<button class="btn-secondary" onclick="closeModal(\'modal-ressource\')" style="margin-top:16px">Fermer</button>';
+    openModal('modal-ressource');
+    return;
+  }
+  var fn = window[res.renderFn];
+  if (typeof fn === 'function') {
+    document.getElementById('res-modal-body').innerHTML = fn(res);
+    openModal('modal-ressource');
+  }
+}
+
+// ── Télécharger PDF ressource ─────────────────────────────────
+function pdfRessource(id) {
+  var res = null;
+  for (var i = 0; i < RESSOURCES_HSE.length; i++) {
+    if (RESSOURCES_HSE[i].id === id) { res = RESSOURCES_HSE[i]; break; }
+  }
+  if (!res) return;
+  if (!window.jspdf) { showToast('Librairie PDF en chargement', 'err'); return; }
+  var fn = window['pdfRes_' + res.id.replace(/-/g,'_')];
+  if (typeof fn === 'function') { fn(res); return; }
+  // Fallback générique
+  var c = C();
+  var base = _pdfBase(res.titre.toUpperCase(), DB.chantier + ' — ' + fmtDate(nowISO()));
+  var doc = base.doc, y = base.y, w = doc.internal.pageSize.width;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...c.text2);
+  var lines = doc.splitTextToSize(res.desc, w - 28);
+  doc.text(lines, 14, y);
+  pdfFooter(doc);
+  doc.save(res.id + '_' + fmtDate(nowISO()).replace(/\//g,'-') + '.pdf');
+  showToast(res.titre + ' — PDF téléchargé ✓');
+}
+
+// ── Helpers HTML partagés ──────────────────────────────────────
+function resHeader(res) {
+  var tagColors = {form:'form',plan:'plan',objectif:'objectif',ref:'ref',template:'template'};
+  return '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">'
+    + '<div class="modal-title" style="margin-bottom:0">' + res.titre + '</div></div>'
+    + '<span class="res-modal-tag ' + tagColors[res.type] + '">' + res.cat + '</span>'
+    + '<p style="font-size:12px;color:var(--text3);margin-bottom:16px">' + res.desc + '</p>';
+}
+function resFooter(id, pdfLabel) {
+  return '<div style="display:flex;gap:8px;margin-top:18px">'
+    + '<button class="btn-primary" style="flex:1;margin:0" onclick="pdfRessource(\'' + id + '\')">'
+    +   '<svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" style="display:inline-block;vertical-align:middle;margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+    +   (pdfLabel || 'Télécharger PDF') + '</button>'
+    + '<button class="btn-sm outline" style="padding:12px 16px;flex-shrink:0" onclick="closeModal(\'modal-ressource\')">Fermer</button>'
+    + '</div>';
+}
+function resCheckItem(label, id_sfx) {
+  return '<div class="res-checklist-item">'
+    + '<div class="res-cb" id="rescb-' + id_sfx + '" onclick="resToggleCB(this)"><svg width="10" height="10" viewBox="0 0 24 24" stroke="#fff" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>'
+    + '<div class="res-cb-lbl">' + label + '</div></div>';
+}
+function resToggleCB(el) {
+  el.classList.toggle('on');
+}
+
+// ═══════ RENDER FUNCTIONS — chaque ressource ═══════════════════
+
+function res_misePied(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Identification de l\'employé</div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Nom complet *</label><input type="text" id="rmp-nom" placeholder="Prénom NOM"></div>'
+    + '<div class="res-field"><label>N° Badge</label><input type="text" id="rmp-badge" placeholder="B-001"></div></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Rôle / Fonction</label><input type="text" id="rmp-role" placeholder="Soudeur, Grutier…"></div>'
+    + '<div class="res-field"><label>Entreprise</label><input type="text" id="rmp-ent" placeholder="Nom sous-traitant"></div></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Nature de la mise à pied</div>'
+    + '<div class="res-field"><label>Type</label><select id="rmp-type"><option value="">-- Sélectionner --</option><option>Mise à pied conservatoire (enquête en cours)</option><option>Mise à pied disciplinaire — durée déterminée</option><option>Retrait de zone — mesure de sécurité immédiate</option><option>Suspension en attente de décision</option></select></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Date d\'effet *</label><input type="date" id="rmp-date"></div>'
+    + '<div class="res-field"><label>Durée</label><input type="text" id="rmp-duree" placeholder="Ex: 3 jours, jusqu\'à nouvel ordre"></div></div>'
+    + '<div class="res-field"><label>Motif détaillé *</label><textarea id="rmp-motif" placeholder="Décrivez précisément le motif : infraction constatée, date, témoins, circonstances…"></textarea></div>'
+    + '<div class="res-field"><label>Faits constatés par</label><input type="text" id="rmp-constate" placeholder="Nom et fonction du constatant"></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Points légaux à vérifier</div>'
+    + resCheckItem('L\'employé a été informé oralement en présence d\'un témoin', 'mp1')
+    + resCheckItem('Un représentant de l\'entreprise sous-traitante a été notifié', 'mp2')
+    + resCheckItem('La décision est documentée et horodatée', 'mp3')
+    + resCheckItem('L\'accès au chantier a été suspendu (badge / retrait EPI)', 'mp4')
+    + resCheckItem('Le service RH / Direction est informé', 'mp5')
+    + '</div>'
+    + '<div class="res-field"><label>Signature Responsable HSE</label><input type="text" id="rmp-signataire" placeholder="' + (DB.config.nom || 'Responsable HSE') + '" value="' + (DB.config.nom || '') + '"></div>'
+    + resFooter('mise-a-pied', 'Générer la notification PDF');
+}
+
+function res_declarationAT(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Victime</div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Nom complet *</label><input type="text" id="rdat-nom" placeholder="Prénom NOM"></div>'
+    + '<div class="res-field"><label>Date de naissance</label><input type="date" id="rdat-nais"></div></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Rôle / Métier *</label><input type="text" id="rdat-role" placeholder="Charpentier, Soudeur…"></div>'
+    + '<div class="res-field"><label>Ancienneté sur chantier</label><input type="text" id="rdat-anciennete" placeholder="Ex: 3 semaines"></div></div>'
+    + '<div class="res-field"><label>Employeur direct</label><input type="text" id="rdat-employeur" placeholder="Nom entreprise"></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Circonstances de l\'accident</div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Date *</label><input type="date" id="rdat-date"></div>'
+    + '<div class="res-field"><label>Heure *</label><input type="time" id="rdat-heure"></div></div>'
+    + '<div class="res-field"><label>Lieu précis *</label><input type="text" id="rdat-lieu" placeholder="Zone, niveau, activité en cours"></div>'
+    + '<div class="res-field"><label>Nature des blessures *</label><select id="rdat-blessure"><option>-- Sélectionner --</option><option>Coupure / Plaie</option><option>Fracture</option><option>Entorse / Luxation</option><option>Brûlure</option><option>Contusion / Hématome</option><option>Traumatisme crânien</option><option>Chute de hauteur</option><option>Électrisation</option><option>Intoxication</option><option>Autre</option></select></div>'
+    + '<div class="res-field"><label>Siège de la lésion</label><input type="text" id="rdat-siege" placeholder="Bras droit, épaule gauche, crâne…"></div>'
+    + '<div class="res-field"><label>Description détaillée *</label><textarea id="rdat-desc" placeholder="Comment l\'accident s\'est produit : séquence des faits, geste effectué, conditions de travail…"></textarea></div>'
+    + '<div class="res-field"><label>Témoins directs</label><input type="text" id="rdat-temoins" placeholder="Noms des personnes présentes"></div>'
+    + '<div class="res-field"><label>Arrêt de travail probable</label><select id="rdat-arret"><option>Non — reprise immédiate</option><option>Oui — durée inconnue</option><option>Oui — durée estimée</option><option>Hospitalisation</option></select></div></div>'
+    + '<div class="res-field"><label>Déclaré par</label><input type="text" id="rdat-declarant" value="' + (DB.config.nom || '') + '"></div>'
+    + resFooter('declaration-at', 'Générer déclaration AT PDF');
+}
+
+function res_observationOC(res) {
+  return resHeader(res)
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">'
+    + '<button id="oc-pos-btn" style="padding:14px;border-radius:12px;border:2px solid var(--green-mid);background:var(--green-light);color:var(--green);font-family:var(--font-head);font-size:16px;font-weight:700;cursor:pointer" onclick="resOCselect(\'positif\')">✓ Comportement<br>SÉCURITAIRE</button>'
+    + '<button id="oc-neg-btn" style="padding:14px;border-radius:12px;border:2px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font-head);font-size:16px;font-weight:700;cursor:pointer" onclick="resOCselect(\'risque\')">⚠ Comportement<br>À RISQUE</button>'
+    + '</div><input type="hidden" id="oc-type" value="positif">'
+    + '<div class="res-section"><div class="res-section-title">Observation</div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Date</label><input type="date" id="oc-date"></div>'
+    + '<div class="res-field"><label>Heure</label><input type="time" id="oc-heure"></div></div>'
+    + '<div class="res-field"><label>Zone / Activité</label><input type="text" id="oc-zone" placeholder="Zone A, ferraillage niveau 2…"></div>'
+    + '<div class="res-field"><label>Comportement observé *</label><textarea id="oc-desc" placeholder="Décrivez précisément ce que vous avez vu — geste, situation, contexte…" style="min-height:80px"></textarea></div>'
+    + '<div class="res-field"><label>Action prise sur le moment</label><select id="oc-action"><option>Félicitations / Encouragement</option><option>Sensibilisation immédiate</option><option>Arrêt de la tâche</option><option>Correction du comportement</option><option>Signalement à l\'encadrement</option><option>Aucune action nécessaire</option></select></div></div>'
+    + '<div class="res-field"><label>Observateur</label><input type="text" id="oc-obs" value="' + (DB.config.nom || '') + '"></div>'
+    + resFooter('observation-comportementale', 'Enregistrer l\'observation');
+}
+function resOCselect(type) {
+  document.getElementById('oc-type').value = type;
+  if (type === 'positif') {
+    document.getElementById('oc-pos-btn').style.borderColor = 'var(--green-mid)';
+    document.getElementById('oc-pos-btn').style.background = 'var(--green-light)';
+    document.getElementById('oc-neg-btn').style.borderColor = 'var(--border)';
+    document.getElementById('oc-neg-btn').style.background = 'transparent';
+  } else {
+    document.getElementById('oc-neg-btn').style.borderColor = 'var(--orange)';
+    document.getElementById('oc-neg-btn').style.background = 'var(--orange-light)';
+    document.getElementById('oc-pos-btn').style.borderColor = 'var(--border)';
+    document.getElementById('oc-pos-btn').style.background = 'transparent';
+  }
+}
+
+function res_nonConformite(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Identification</div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Date</label><input type="date" id="rnc-date"></div>'
+    + '<div class="res-field"><label>Réf. NC</label><input type="text" id="rnc-ref" placeholder="NC-001"></div></div>'
+    + '<div class="res-field"><label>Zone / Activité concernée</label><input type="text" id="rnc-zone" placeholder="Zone B, coffrage niveau 1…"></div>'
+    + '<div class="res-field"><label>Type de non-conformité</label><select id="rnc-type"><option>-- Sélectionner --</option><option>Non-respect d\'une procédure HSE</option><option>Défaut de port des EPI</option><option>Non-conformité équipement / matériel</option><option>Défaut de formation / habilitation</option><option>Non-conformité documentaire</option><option>Dépassement des limites d\'exposition</option><option>Autre</option></select></div>'
+    + '<div class="res-field"><label>Description détaillée *</label><textarea id="rnc-desc" placeholder="Décrire précisément l\'écart constaté par rapport à la norme ou procédure de référence…"></textarea></div>'
+    + '<div class="res-field"><label>Référence de la règle enfreinte</label><input type="text" id="rnc-ref-regle" placeholder="Procédure P-HSE-03, Article L4141-1…"></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Gravité</label><select id="rnc-grav"><option>Mineure</option><option>Majeure</option><option>Critique</option></select></div>'
+    + '<div class="res-field"><label>Constaté par</label><input type="text" id="rnc-by" value="' + (DB.config.nom || '') + '"></div></div></div>'
+    + '<div class="res-field"><label>Action corrective immédiate</label><textarea id="rnc-action" placeholder="Mesure prise sur le champ…" style="min-height:60px"></textarea></div>'
+    + resFooter('non-conformite', 'Générer fiche NC PDF');
+}
+
+function res_bonTravail(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Tâche autorisée</div>'
+    + '<div class="res-field"><label>Nature des travaux *</label><input type="text" id="rbt-travaux" placeholder="Ex: Soudure poutre principale, zone A niveau 3"></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Date début</label><input type="date" id="rbt-debut"></div>'
+    + '<div class="res-field"><label>Date fin</label><input type="date" id="rbt-fin"></div></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Heure début</label><input type="time" id="rbt-hdeb"></div>'
+    + '<div class="res-field"><label>Heure fin prévue</label><input type="time" id="rbt-hfin"></div></div>'
+    + '<div class="res-field"><label>Zone / Localisation précise</label><input type="text" id="rbt-zone" placeholder="Bâtiment, niveau, travée, axe…"></div>'
+    + '<div class="res-field"><label>Équipe concernée</label><input type="text" id="rbt-equipe" placeholder="Chef d\'équipe et effectif"></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Conditions préalables requises</div>'
+    + resCheckItem('JSA réalisée et validée pour cette tâche', 'bt1')
+    + resCheckItem('Zone balisée et accès non-autorisés signalés', 'bt2')
+    + resCheckItem('EPI appropriés distribués et vérifiés', 'bt3')
+    + resCheckItem('Outillage et équipements contrôlés', 'bt4')
+    + resCheckItem('Permis spécifiques obtenus (feu, levage, fouille…)', 'bt5')
+    + resCheckItem('Briefing de 5 minutes réalisé avec l\'équipe', 'bt6')
+    + '</div>'
+    + '<div class="res-field"><label>Autorisé par (HSE) *</label><input type="text" id="rbt-autor" value="' + (DB.config.nom || '') + '"></div>'
+    + resFooter('bon-travail', 'Générer bon de travail PDF');
+}
+
+function res_planIncendie(res) {
+  return resHeader(res)
+    + '<div class="res-urgency-box rouge"><div class="res-urgency-title">🔥 En cas de départ de feu</div>'
+    + '<div class="res-urgency-content"><strong>1. DONNER L\'ALARME</strong> — Crier "Au feu !" et actionner le point d\'alarme le plus proche<br>'
+    + '<strong>2. APPELER LES SECOURS</strong> — Composer le <strong>18</strong> (Pompiers) ou le <strong>112</strong><br>'
+    + '<strong>3. ÉVACUER</strong> — Guider le personnel vers les sorties balisées<br>'
+    + '<strong>4. NE PAS UTILISER LES ASCENSEURS</strong><br>'
+    + '<strong>5. POINT DE RASSEMBLEMENT</strong> — Rejoindre la zone désignée<br>'
+    + '<strong>6. ATTENDRE LES SECOURS</strong> — Signaler les personnes manquantes</div></div>'
+    + '<div class="res-urgency-box orange"><div class="res-urgency-title">Extincteurs disponibles</div>'
+    + '<div class="res-urgency-content">Eau pulvérisée (ABC) · CO₂ (équipements électriques)<br>Emplacements : entrée chantier, zone soudage, local électrique, zone stockage</div></div>'
+    + '<div class="res-urgency-box blue"><div class="res-urgency-title">Consignes de lutte contre le feu</div>'
+    + '<div class="res-urgency-content">N\'intervenez sur un feu <strong>que si</strong> :<br>• Le feu est à son début (taille d\'une corbeille à papier maximum)<br>• Vous avez une issue de secours dans votre dos<br>• Vous êtes formé à l\'utilisation des extincteurs<br>→ Sinon : <strong>évacuation immédiate</strong></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Informations du chantier à personnaliser</div>'
+    + '<div class="res-field"><label>Adresse exacte du chantier</label><input type="text" id="rpi-adresse" placeholder="Rue, ville — pour guider les secours"></div>'
+    + '<div class="res-field"><label>Responsable évacuation (rôle de serre-file)</label><input type="text" id="rpi-serre" placeholder="Nom de la personne désignée"></div>'
+    + '<div class="res-field"><label>Point de rassemblement</label><input type="text" id="rpi-rassemblement" placeholder="Ex: Parking nord, face entrée chantier"></div></div>'
+    + resFooter('plan-urgence-incendie', 'Imprimer le plan incendie PDF');
+}
+
+function res_planAccidentGrave(res) {
+  return resHeader(res)
+    + '<div class="res-urgency-box rouge"><div class="res-urgency-title">Accident grave — Conduite à tenir IMMÉDIATE</div>'
+    + '<div class="res-urgency-content">'
+    + '<strong>P — Protéger :</strong> Sécuriser la zone, supprimer le danger si possible sans risque pour le sauveteur<br>'
+    + '<strong>A — Alerter :</strong> SAMU <strong>15</strong> · Pompiers <strong>18</strong> · Urgences <strong>112</strong><br>'
+    + '<strong>S — Secourir :</strong> Appliquer les gestes de premier secours jusqu\'à l\'arrivée des secours<br>'
+    + '<strong>NE PAS DÉPLACER</strong> la victime sauf danger immédiat</div></div>'
+    + '<div class="res-urgency-box orange"><div class="res-urgency-title">Informations à communiquer aux secours</div>'
+    + '<div class="res-urgency-content">'
+    + '→ <strong>Qui appelle</strong> : nom et numéro de rappel<br>'
+    + '→ <strong>Quoi</strong> : nature de l\'accident, nombre de victimes<br>'
+    + '→ <strong>Où</strong> : adresse précise du chantier, point d\'entrée<br>'
+    + '→ <strong>État victime</strong> : conscient, respire, saigne…<br>'
+    + '→ <strong>Gestes réalisés</strong> : PLS, compression, RCP…<br>'
+    + '<strong>Ne raccrochez pas</strong> avant l\'accord des secours</div></div>'
+    + '<div class="res-urgency-box green"><div class="res-urgency-title">Après l\'accident</div>'
+    + '<div class="res-urgency-content">'
+    + '• Sécuriser la zone et conserver la scène telle quelle<br>'
+    + '• Recueillir les témoignages des présents<br>'
+    + '• Remplir la fiche incident dans l\'application<br>'
+    + '• Aviser la direction et l\'inspecteur du travail si accident grave<br>'
+    + '• Déclarer l\'AT à l\'employeur sous 48h</div></div>'
+    + resFooter('plan-urgence-accident', 'Imprimer le plan d\'urgence PDF');
+}
+
+function res_planEvacuation(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Informations du chantier</div>'
+    + '<div class="res-field"><label>Adresse du chantier</label><input type="text" id="rev-adresse" placeholder="Adresse complète"></div>'
+    + '<div class="res-field"><label>Point de rassemblement principal</label><input type="text" id="rev-pr1" placeholder="Description précise de l\'emplacement"></div>'
+    + '<div class="res-field"><label>Point de rassemblement secondaire</label><input type="text" id="rev-pr2" placeholder="En cas d\'indisponibilité du point principal"></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Responsable évacuation</label><input type="text" id="rev-resp" value="' + (DB.config.nom || '') + '"></div>'
+    + '<div class="res-field"><label>Téléphone de crise</label><input type="tel" id="rev-tel" placeholder="+225 XX XX XX XX XX"></div></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Procédure d\'évacuation</div>'
+    + '<div class="res-step"><div class="res-step-num">1</div><div class="res-step-content"><div class="res-step-title">Déclenchement de l\'alarme</div><div class="res-step-desc">Actionner l\'alarme générale — signal sonore continu 3 minutes</div></div></div>'
+    + '<div class="res-step"><div class="res-step-num">2</div><div class="res-step-content"><div class="res-step-title">Arrêt immédiat des travaux</div><div class="res-step-desc">Poser les outils, sécuriser les engins, couper les alimentations</div></div></div>'
+    + '<div class="res-step"><div class="res-step-num">3</div><div class="res-step-content"><div class="res-step-title">Évacuation ordonnée</div><div class="res-step-desc">Suivre les voies de sortie balisées — ne pas courir, ne pas revenir en arrière</div></div></div>'
+    + '<div class="res-step"><div class="res-step-num">4</div><div class="res-step-content"><div class="res-step-title">Rassemblement</div><div class="res-step-desc">Rejoindre le point de rassemblement désigné — ne pas quitter la zone</div></div></div>'
+    + '<div class="res-step"><div class="res-step-num">5</div><div class="res-step-content"><div class="res-step-title">Appel nominal</div><div class="res-step-desc">Le responsable évacuation réalise l\'appel et signale les absents aux secours</div></div></div></div>'
+    + resFooter('plan-urgence-evacuation', 'Générer le plan d\'évacuation PDF');
+}
+
+function res_numerosUrgence(res) {
+  return resHeader(res)
+    + '<div class="res-urgency-box rouge"><div class="res-urgency-title">Numéros nationaux — à utiliser immédiatement</div>'
+    + '<div>'
+    + '<div class="res-num-row"><div class="res-num-label">🚑 SAMU — Urgences médicales</div><div class="res-num-val">15</div></div>'
+    + '<div class="res-num-row"><div class="res-num-label">🚒 Pompiers — Incendie / Secours</div><div class="res-num-val">18</div></div>'
+    + '<div class="res-num-row"><div class="res-num-label">🚓 Police / Gendarmerie</div><div class="res-num-val">17</div></div>'
+    + '<div class="res-num-row"><div class="res-num-label">📞 Numéro d\'urgence européen</div><div class="res-num-val">112</div></div>'
+    + '<div class="res-num-row" style="border-bottom:none"><div class="res-num-label">☣️ Centre antipoison</div><div class="res-num-val">3632</div></div></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Contacts spécifiques du chantier — à personnaliser</div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Responsable HSE</label><input type="text" id="rnu-hse" value="' + (DB.config.nom || '') + '"></div>'
+    + '<div class="res-field"><label>Tél. HSE</label><input type="tel" id="rnu-tel-hse" placeholder="+225…"></div></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Médecin du travail</label><input type="text" id="rnu-med" placeholder="Dr…"></div>'
+    + '<div class="res-field"><label>Tél. médecin</label><input type="tel" id="rnu-tel-med" placeholder="+225…"></div></div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Hôpital le plus proche</label><input type="text" id="rnu-hopital" placeholder="Nom de l\'hôpital"></div>'
+    + '<div class="res-field"><label>Distance / Temps trajet</label><input type="text" id="rnu-dist" placeholder="Ex: 4 km — 8 min"></div></div>'
+    + '<div class="res-field"><label>Adresse exacte du chantier (pour les secours)</label><input type="text" id="rnu-adresse" placeholder="Rue, quartier, ville, repère visible"></div></div>'
+    + resFooter('numeros-urgence', 'Imprimer la fiche numéros PDF');
+}
+
+function res_planChuteHauteur(res) {
+  return resHeader(res)
+    + '<div class="res-urgency-box rouge"><div class="res-urgency-title">Chute de hauteur — Que faire en PREMIER</div>'
+    + '<div class="res-urgency-content">'
+    + '<strong>SI LA PERSONNE EST EN SUSPENSION (harnais, corde) :</strong><br>'
+    + '→ Décrocher / descendre la victime <strong>le plus vite possible</strong> (syndrome de suspension = risque vital en 10-15 min)<br>'
+    + '→ Allonger à plat sur le dos immédiatement<br>'
+    + '→ Appeler le 15 ou 18 <strong>en même temps</strong><br><br>'
+    + '<strong>SI LA PERSONNE EST AU SOL :</strong><br>'
+    + '→ Ne pas déplacer (risque lésion cervicale)<br>'
+    + '→ Maintenir la tête dans l\'axe du corps<br>'
+    + '→ Surveiller conscience et respiration<br>'
+    + '→ Appeler le 15 ou 18 immédiatement</div></div>'
+    + '<div class="res-urgency-box orange"><div class="res-urgency-title">Signes d\'alerte — traumatisme grave</div>'
+    + '<div class="res-urgency-content">• Inconscience ou confusion mentale<br>• Douleur au dos, à la nuque, aux membres<br>• Déformation visible d\'un membre<br>• Saignement abondant<br>• Difficultés respiratoires<br>→ <strong>Ne rien faire d\'autre qu\'appeler les secours</strong></div></div>'
+    + '<div class="res-urgency-box blue"><div class="res-urgency-title">Prévention — rappels obligatoires</div>'
+    + '<div class="res-urgency-content">'
+    + '• Harnais obligatoire dès 3m (charpente métallique : dès 1m si risque de chute)<br>'
+    + '• Vérification quotidienne harnais avant usage<br>'
+    + '• Ligne de vie ou point d\'ancrage certifié<br>'
+    + '• Filets de protection sous les zones de travail<br>'
+    + '• Personne seule = interdite en hauteur</div></div>'
+    + resFooter('plan-urgence-chute-hauteur', 'Imprimer le plan chute PDF');
+}
+
+function res_objectifsHSE(res) {
+  var incidents = DB.incidents.length;
+  var capaOuv = DB.capas.filter(function(c){return c.status!=='closed';}).length;
+  var capaClos = DB.capas.filter(function(c){return c.status==='closed';}).length;
+  var toolboxCount = DB.toolboxes.length;
+  var jsat = 0;
+  if (DB.config.dateDebut) {
+    var d1 = new Date(DB.config.dateDebut), dn = new Date();
+    jsat = Math.max(0, Math.round((dn - d1) / 86400000));
+  }
+  return resHeader(res)
+    + '<div class="res-kpi-grid">'
+    + '<div class="res-kpi-card"><div class="res-kpi-val" style="color:var(--green)">' + jsat + '</div><div class="res-kpi-lbl">Jours sans AT</div><div class="res-kpi-target">Objectif : &gt; 365</div></div>'
+    + '<div class="res-kpi-card"><div class="res-kpi-val" style="color:var(--orange)">' + incidents + '</div><div class="res-kpi-lbl">Incidents</div><div class="res-kpi-target">Objectif : 0 grave</div></div>'
+    + '<div class="res-kpi-card"><div class="res-kpi-val" style="color:var(--amber)">' + capaOuv + '</div><div class="res-kpi-lbl">CAPA ouvertes</div><div class="res-kpi-target">Objectif : &lt; 5</div></div>'
+    + '<div class="res-kpi-card"><div class="res-kpi-val" style="color:var(--blue)">' + toolboxCount + '</div><div class="res-kpi-lbl">Toolbox Talks</div><div class="res-kpi-target">Objectif : 1/semaine</div></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Objectifs annuels HSE — ' + (new Date().getFullYear()) + '</div>'
+    + resCheckItem('Taux de Fréquence (TF) &lt; 10', 'obj1')
+    + resCheckItem('Taux de Gravité (TG) &lt; 1', 'obj2')
+    + resCheckItem('100% des ouvriers induits avant démarrage', 'obj3')
+    + resCheckItem('Toolbox Talk toutes les semaines', 'obj4')
+    + resCheckItem('Taux de conformité EPI &gt; 95%', 'obj5')
+    + resCheckItem('0 accident avec arrêt de travail', 'obj6')
+    + resCheckItem('Toutes les CAPA clôturées dans les délais', 'obj7')
+    + resCheckItem('Audit HSE mensuel réalisé', 'obj8')
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Objectifs à personnaliser</div>'
+    + '<div class="res-field"><label>Objectif TF cible</label><input type="number" id="robj-tf" placeholder="Ex: 10" min="0" max="100"></div>'
+    + '<div class="res-field"><label>Nombre de Toolbox Talks par mois</label><input type="number" id="robj-tb" placeholder="Ex: 4" min="1"></div>'
+    + '<div class="res-field"><label>Taux EPI cible (%)</label><input type="number" id="robj-epi" placeholder="95" min="0" max="100"></div>'
+    + '<div class="res-field"><label>Autre objectif spécifique</label><textarea id="robj-autre" placeholder="Objectif personnalisé…" style="min-height:55px"></textarea></div></div>'
+    + resFooter('objectifs-hse', 'Exporter tableau de bord PDF');
+}
+
+function res_politiqueHSE(res) {
+  var entreprise = DB.config.entreprise || 'Tetris Construction';
+  return resHeader(res)
+    + '<div class="res-urgency-box blue"><div class="res-urgency-title">Politique HSE — ' + entreprise + '</div>'
+    + '<div class="res-urgency-content" style="font-style:italic;line-height:1.8">'
+    + '"' + entreprise + ' s\'engage à réaliser ses activités de construction dans le strict respect de la santé, la sécurité et l\'environnement de tous ses collaborateurs, sous-traitants et parties prenantes. Notre objectif est zéro accident."</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Nos engagements</div>'
+    + resCheckItem('Identifier et évaluer tous les risques avant chaque démarrage de tâche', 'pol1')
+    + resCheckItem('Fournir les EPI appropriés et vérifier leur port effectif', 'pol2')
+    + resCheckItem('Former et sensibiliser chaque membre du personnel à la sécurité', 'pol3')
+    + resCheckItem('Déclarer et analyser systématiquement tout incident ou presqu\'accident', 'pol4')
+    + resCheckItem('Appliquer le principe d\'amélioration continue via les CAPA', 'pol5')
+    + resCheckItem('Interdire formellement toute consommation d\'alcool et de drogues sur site', 'pol6')
+    + resCheckItem('Respecter les réglementations locales et internationales en vigueur', 'pol7')
+    + '</div>'
+    + '<div class="res-field"><label>Signature de la Direction</label><input type="text" id="rpol-sig" placeholder="Directeur / Chef de projet"></div>'
+    + resFooter('politique-hse', 'Générer charte HSE PDF à afficher');
+}
+
+function res_epiObligatoires(res) {
+  var postes = [
+    { poste:'Charpentier métallique', epis:'Casque · Chaussures S3 · Gilet HV · Gants anti-coupures · Harnais complet + longe · Lunettes' },
+    { poste:'Soudeur', epis:'Masque de soudure · Tablier cuir · Gants soudeur · Chaussures S3 · Gilet HV · Casque · Bouchons oreilles' },
+    { poste:'Grutier / Conducteur engin', epis:'Casque · Chaussures S3 · Gilet HV · Ceinture lombaire (si vibrations)' },
+    { poste:'Coffrageur / Bancheur', epis:'Casque · Chaussures S3 · Gilet HV · Gants · Harnais si hauteur &gt; 2m · Lunettes' },
+    { poste:'Ferrailleur', epis:'Casque · Chaussures S3 · Gilet HV · Gants anti-coupures · Lunettes' },
+    { poste:'Conducteur de travaux / Visiteur', epis:'Casque · Chaussures S3 · Gilet HV' },
+    { poste:'Électricien', epis:'Casque · Chaussures isolantes · Gilet HV · Gants isolants HT/BT · Lunettes · Tapis isolant' },
+  ];
+  return resHeader(res)
+    + postes.map(function(p) {
+      return '<div class="res-section" style="margin-bottom:8px"><div class="res-section-title">' + p.poste + '</div>'
+        + '<div style="font-size:12px;color:var(--text);line-height:1.7">' + p.epis + '</div></div>';
+    }).join('')
+    + '<div class="res-urgency-box orange"><div class="res-urgency-title">Règle absolue</div>'
+    + '<div class="res-urgency-content">Aucun ouvrier ne peut pénétrer sur le chantier sans les EPI de base : casque + chaussures S3 + gilet haute visibilité. Tout non-respect entraîne le retrait immédiat de la zone.</div></div>'
+    + resFooter('epi-obligatoires', 'Télécharger tableau EPI PDF');
+}
+
+function res_registresLegaux(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Documents obligatoires à tenir sur chantier</div>'
+    + resCheckItem('Registre des observations et mises en demeure de l\'inspection du travail', 'rl1')
+    + resCheckItem('Registre des accidents du travail (DAT + fiches de soins)', 'rl2')
+    + resCheckItem('Registre des vérifications EPI (contrôle périodique)', 'rl3')
+    + resCheckItem('Registre des formations et habilitations du personnel', 'rl4')
+    + resCheckItem('Plan de Prévention ou PPSPS (Plan Particulier de Sécurité)', 'rl5')
+    + resCheckItem('Registre des permis de travaux (feu, fouilles, levage)', 'rl6')
+    + resCheckItem('Fiches de données de sécurité (FDS) des produits chimiques', 'rl7')
+    + resCheckItem('Registre de vérification des engins et équipements de levage', 'rl8')
+    + resCheckItem('Affichage obligatoire : consignes incendie, numéros d\'urgence, médecin travail', 'rl9')
+    + resCheckItem('Registre du personnel (effectif, habilitations, visites médicales)', 'rl10')
+    + '</div>'
+    + '<div class="res-urgency-box orange"><div class="res-urgency-title">Fréquences de vérification légales</div>'
+    + '<div class="res-num-row"><div class="res-num-label">Engins de levage (grues, palans)</div><div class="res-num-val" style="font-size:12px;color:var(--text)">Annuel</div></div>'
+    + '<div class="res-num-row"><div class="res-num-label">Échafaudages</div><div class="res-num-val" style="font-size:12px;color:var(--text)">Par prise</div></div>'
+    + '<div class="res-num-row"><div class="res-num-label">Harnais de sécurité</div><div class="res-num-val" style="font-size:12px;color:var(--text)">Avant usage</div></div>'
+    + '<div class="res-num-row" style="border-bottom:none"><div class="res-num-label">Extincteurs</div><div class="res-num-val" style="font-size:12px;color:var(--text)">Annuel</div></div></div>'
+    + resFooter('registre-legal', 'Télécharger checklist légale PDF');
+}
+
+function res_reglHauteur(res) {
+  return resHeader(res)
+    + '<div class="res-urgency-box orange"><div class="res-urgency-title">Seuils réglementaires — Travail en hauteur</div>'
+    + '<div class="res-urgency-content">'
+    + '• <strong>Dès 1m</strong> : Protection collective obligatoire (garde-corps, filets) en charpente métallique<br>'
+    + '• <strong>Dès 3m</strong> : Harnais complet obligatoire si pas de protection collective<br>'
+    + '• <strong>Dès 5m</strong> : Formation travail en hauteur obligatoire<br>'
+    + '• <strong>Travail isolé en hauteur</strong> : INTERDIT — toujours travailler à 2 minimum</div></div>'
+    + '<div class="res-section"><div class="res-section-title">EPI hauteur — contrôle avant usage</div>'
+    + resCheckItem('Harnais : coutures intactes, aucune déchirure ni brûlure', 'th1')
+    + resCheckItem('Longe / absorbeur : mousquetons fonctionnels, indicateur non déclenché', 'th2')
+    + resCheckItem('Point d\'ancrage certifié : résistance min. 10 kN (1 tonne)', 'th3')
+    + resCheckItem('Retrait immédiat tout harnais ayant subi une chute', 'th4')
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Formations obligatoires</div>'
+    + '<div class="res-num-row"><div class="res-num-label">CACES nacelle (PEMP)</div><div class="res-num-val" style="font-size:11px;color:var(--text)">5 ans</div></div>'
+    + '<div class="res-num-row"><div class="res-num-label">Sauveteur Secouriste du Travail (SST)</div><div class="res-num-val" style="font-size:11px;color:var(--text)">2 ans</div></div>'
+    + '<div class="res-num-row" style="border-bottom:none"><div class="res-num-label">Formation travail en hauteur spécifique</div><div class="res-num-val" style="font-size:11px;color:var(--text)">3 ans</div></div></div>'
+    + resFooter('travail-hauteur-reglementation', 'Télécharger fiche réglementaire PDF');
+}
+
+function res_procedureAlcool(res) {
+  return resHeader(res)
+    + '<div class="res-urgency-box rouge"><div class="res-urgency-title">Règle ABSOLUE — Tolérance ZÉRO</div>'
+    + '<div class="res-urgency-content">Toute consommation d\'alcool, drogues ou substances psychoactives est <strong>strictement interdite</strong> sur le chantier. Taux légal maximal autorisé : <strong>0,0 g/L de sang.</strong><br>Toute personne en état d\'ivresse ou sous influence est retirée immédiatement du chantier.</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Procédure en cas de suspicion</div>'
+    + '<div class="res-step"><div class="res-step-num">1</div><div class="res-step-content"><div class="res-step-title">Constater et isoler</div><div class="res-step-desc">Ne pas laisser la personne travailler — risque pour elle et pour les autres</div></div></div>'
+    + '<div class="res-step"><div class="res-step-num">2</div><div class="res-step-content"><div class="res-step-title">Informer l\'encadrement</div><div class="res-step-desc">Alerter immédiatement le chef de chantier et le responsable HSE</div></div></div>'
+    + '<div class="res-step"><div class="res-step-num">3</div><div class="res-step-content"><div class="res-step-title">Contrôle éthylomètre (si disponible)</div><div class="res-step-desc">Effectuer le test en présence d\'un témoin — résultat consigné</div></div></div>'
+    + '<div class="res-step"><div class="res-step-num">4</div><div class="res-step-content"><div class="res-step-title">Retrait du chantier</div><div class="res-step-desc">Interdire l\'accès — assurer le retour à domicile en sécurité (ne pas laisser conduire)</div></div></div>'
+    + '<div class="res-step"><div class="res-step-num">5</div><div class="res-step-content"><div class="res-step-title">Documenter et sanctionner</div><div class="res-step-desc">Remplir une fiche de non-conformité + mise à pied si récidive</div></div></div></div>'
+    + resFooter('conduite-alcool', 'Générer procédure alcool PDF');
+}
+
+function res_rapportAudit(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">En-tête de l\'audit</div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Date de l\'audit</label><input type="date" id="rau-date"></div>'
+    + '<div class="res-field"><label>Auditeur</label><input type="text" id="rau-auditeur" value="' + (DB.config.nom || '') + '"></div></div>'
+    + '<div class="res-field"><label>Zones / Périmètre audité</label><input type="text" id="rau-zone" placeholder="Ex: Ensemble du chantier, zone A uniquement…"></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Grille d\'évaluation</div>'
+    + resCheckItem('Balisage et signalisation des zones à risque', 'au1')
+    + resCheckItem('Port effectif des EPI par l\'ensemble du personnel', 'au2')
+    + resCheckItem('JSA disponibles pour toutes les tâches critiques en cours', 'au3')
+    + resCheckItem('Permis de travaux valides pour les travaux spéciaux', 'au4')
+    + resCheckItem('Matériel et outillage en bon état et vérifiés', 'au5')
+    + resCheckItem('Zone de stockage ordonnée — aucun encombrement des voies', 'au6')
+    + resCheckItem('Extincteurs accessibles, non obstrués, date de contrôle valide', 'au7')
+    + resCheckItem('Sorties de secours dégagées et signalées', 'au8')
+    + resCheckItem('Registres de sécurité à jour et accessibles', 'au9')
+    + resCheckItem('Aucun ouvrier non induit présent sur chantier', 'au10')
+    + '</div>'
+    + '<div class="res-field"><label>Non-conformités majeures relevées</label><textarea id="rau-nc" placeholder="Lister les écarts significatifs observés…"></textarea></div>'
+    + '<div class="res-field"><label>Points positifs notables</label><textarea id="rau-pos" placeholder="Ce qui fonctionne bien…" style="min-height:55px"></textarea></div>'
+    + '<div class="res-field"><label>Note globale</label><select id="rau-note"><option>-- Sélectionner --</option><option>Satisfaisant</option><option>Acceptable avec réserves</option><option>Insuffisant</option><option>Critique — action immédiate requise</option></select></div>'
+    + resFooter('rapport-audit', 'Générer le rapport d\'audit PDF');
+}
+
+function res_compteRendu(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">En-tête</div>'
+    + '<div class="res-field-row"><div class="res-field"><label>Date</label><input type="date" id="rcr-date"></div>'
+    + '<div class="res-field"><label>Heure</label><input type="time" id="rcr-heure"></div></div>'
+    + '<div class="res-field"><label>Objet de la réunion</label><input type="text" id="rcr-objet" placeholder="Réunion HSE hebdo, coordination sécurité…"></div>'
+    + '<div class="res-field"><label>Lieu</label><input type="text" id="rcr-lieu" placeholder="Salle de réunion, base vie chantier…"></div>'
+    + '<div class="res-field"><label>Animateur</label><input type="text" id="rcr-animateur" value="' + (DB.config.nom || '') + '"></div>'
+    + '<div class="res-field"><label>Participants présents</label><textarea id="rcr-participants" placeholder="Nom — Fonction&#10;Nom — Fonction…" style="min-height:70px"></textarea></div></div>'
+    + '<div class="res-section"><div class="res-section-title">Points abordés</div>'
+    + '<div class="res-field"><label>Point 1 — Bilan incidents / accidents</label><textarea id="rcr-p1" placeholder="Incidents de la semaine, état des enquêtes…" style="min-height:60px"></textarea></div>'
+    + '<div class="res-field"><label>Point 2 — Suivi CAPA</label><textarea id="rcr-p2" placeholder="CAPA ouvertes, avancement, retards…" style="min-height:60px"></textarea></div>'
+    + '<div class="res-field"><label>Point 3 — Risques à venir / Travaux planifiés</label><textarea id="rcr-p3" placeholder="Travaux de la semaine, nouvelles JSA à créer…" style="min-height:60px"></textarea></div>'
+    + '<div class="res-field"><label>Autres points / Décisions prises</label><textarea id="rcr-autres" placeholder="Décisions, instructions, engagements…" style="min-height:60px"></textarea></div></div>'
+    + '<div class="res-field"><label>Prochaine réunion</label><input type="date" id="rcr-next"></div>'
+    + resFooter('compte-rendu-reunion', 'Générer CR PDF');
+}
+
+// ── Intégration dans _execSearch ─────────────────────────────
+// Override ou patch de _execSearch pour injecter les ressources
+var _execSearchOrig = _execSearch;
+_execSearch = function(q) {
+  // 1. Run original search logic
+  var origFn = _execSearchOrig;
+  // We rebuild completely to add resources
+  var el = document.getElementById('search-results');
+  if (!q) {
+    el.innerHTML = '<div class="search-empty"><svg width="36" height="36" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.2" fill="none" style="margin-bottom:12px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Commencez à taper...</div>';
+    return;
+  }
+
+  var results = [];
+
+  // Incidents
+  DB.incidents.filter(function(i) {
+    return (i.type||'').toLowerCase().includes(q)||(i.zone||'').toLowerCase().includes(q)||(i.desc||'').toLowerCase().includes(q)||(i.createdBy||'').toLowerCase().includes(q);
+  }).forEach(function(i) {
+    results.push({ cat:'Incidents', iconBg:'var(--orange-light)', iconSvg:'<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>', title: i.type, meta: fmtDate(i.date) + ' · ' + i.zone, action: function(){ _closeSearch(); switchScreen('incidents'); } });
+  });
+
+  // Inductions
+  DB.inductions.filter(function(i) {
+    return (i.nom||'').toLowerCase().includes(q)||(i.entreprise||'').toLowerCase().includes(q)||(i.role||'').toLowerCase().includes(q);
+  }).forEach(function(i) {
+    results.push({ cat:'Inductions', iconBg:'var(--blue-light)', iconSvg:'<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg>', title: 'Induction — ' + i.nom, meta: i.entreprise + ' · ' + i.role, action: function(){ _closeSearch(); switchScreen('incidents'); } });
+  });
+
+  // Personnel
+  DB.personnel.filter(function(p) {
+    return (p.prenom+' '+p.nom).toLowerCase().includes(q)||(p.entreprise||'').toLowerCase().includes(q)||(p.role||'').toLowerCase().includes(q);
+  }).forEach(function(p) {
+    results.push({ cat:'Personnel', iconBg:'var(--blue-light)', iconSvg:'<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>', title: p.prenom + ' ' + p.nom, meta: p.entreprise + ' · ' + p.role, action: function(pid){ return function(){ _closeSearch(); switchScreen('personnel'); setTimeout(function(){ voirDetailPersonnel(pid); }, 300); }; }(p.id) });
+  });
+
+  // JSA
+  DB.jsas.filter(function(j) {
+    return (j.type||'').toLowerCase().includes(q)||(j.zone||'').toLowerCase().includes(q)||(j.resp||'').toLowerCase().includes(q);
+  }).forEach(function(j) {
+    results.push({ cat:'JSA', iconBg:'var(--blue-light)', iconSvg:'<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>', title: j.type, meta: (j.zone||'—') + ' · ' + j.resp, action: function(){ _closeSearch(); switchScreen('jsa'); } });
+  });
+
+  // CAPA
+  DB.capas.filter(function(c) {
+    return (c.titre||'').toLowerCase().includes(q)||(c.resp||'').toLowerCase().includes(q)||(c.desc||'').toLowerCase().includes(q);
+  }).forEach(function(c) {
+    results.push({ cat:'CAPA', iconBg:'var(--amber-light)', iconSvg:'<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>', title: '#' + c.num + ' — ' + c.titre, meta: 'Resp. ' + c.resp + ' · ' + statusLabel(c.status), action: function(){ _closeSearch(); switchScreen('toolbox'); } });
+  });
+
+  // Toolbox
+  DB.toolboxes.filter(function(t) {
+    return (t.theme||'').toLowerCase().includes(q)||(t.animateur||'').toLowerCase().includes(q);
+  }).forEach(function(t) {
+    results.push({ cat:'Toolbox', iconBg:'var(--green-light)', iconSvg:'<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>', title: 'Toolbox — ' + t.theme, meta: fmtDate(t.date), action: function(){ _closeSearch(); switchScreen('toolbox'); } });
+  });
+
+  // ── RESSOURCES HSE (invisibles sauf ici) ──
+  var typeColors = { form:'var(--orange-light)', plan:'var(--red-light)', objectif:'var(--blue-light)', ref:'var(--green-light)', template:'var(--amber-light)' };
+  RESSOURCES_HSE.filter(function(r) {
+    var qLow = q.toLowerCase();
+    if (r.titre.toLowerCase().includes(qLow)) return true;
+    if (r.desc.toLowerCase().includes(qLow)) return true;
+    for (var t = 0; t < r.tags.length; t++) {
+      if (r.tags[t].toLowerCase().includes(qLow)) return true;
+    }
+    return false;
+  }).forEach(function(r) {
+    var rid = r.id;
+    results.push({
+      cat: 'Ressources HSE',
+      iconBg: typeColors[r.type] || 'var(--gray-light)',
+      iconSvg: r.iconSvg,
+      title: r.titre,
+      meta: r.cat + ' · ' + r.desc.slice(0, 50) + (r.desc.length > 50 ? '…' : ''),
+      action: function(id){ return function(){ _closeSearch(); ouvrirRessource(id); }; }(rid)
+    });
+  });
+
+  if (!results.length) {
+    el.innerHTML = '<div class="search-empty"><svg width="36" height="36" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.2" fill="none" style="margin-bottom:12px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>Aucun résultat pour "<strong>' + q + '</strong>"<br><small style="color:var(--text3);margin-top:6px;display:block">Essayez : "mise à pied", "urgence", "objectif", "audit"…</small></div>';
+    return;
+  }
+
+  // Grouper par catégorie — Ressources HSE toujours en dernier
+  var cats = {};
+  var catOrder = [];
+  results.forEach(function(r) {
+    if (!cats[r.cat]) { cats[r.cat] = []; catOrder.push(r.cat); }
+    cats[r.cat].push(r);
+  });
+  // Mettre Ressources HSE en dernier
+  catOrder = catOrder.filter(function(c){ return c !== 'Ressources HSE'; });
+  if (cats['Ressources HSE']) catOrder.push('Ressources HSE');
+
+  var html = '';
+  var allResults = [];
+  catOrder.forEach(function(cat) {
+    var isRes = cat === 'Ressources HSE';
+    var catColor = isRes ? 'var(--blue)' : 'var(--text3)';
+    html += '<div class="search-cat" style="' + (isRes ? 'color:var(--blue);display:flex;align-items:center;gap:6px' : '') + '">'
+      + (isRes ? '<svg width="12" height="12" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>' : '')
+      + cat + ' (' + cats[cat].length + ')</div>';
+    cats[cat].forEach(function(r, idx) {
+      html += '<div class="search-item" data-gidx="' + allResults.length + '">'
+        + '<div class="search-item-icon" style="background:' + r.iconBg + '">' + r.iconSvg + '</div>'
+        + '<div><div class="search-item-title">' + r.title + '</div><div class="search-item-meta">' + r.meta + '</div></div>'
+        + (isRes ? '<div style="margin-left:auto;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg></div>' : '')
+        + '</div>';
+      allResults.push(r);
+    });
+  });
+  el.innerHTML = html;
+
+  el.querySelectorAll('.search-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var idx = parseInt(item.dataset.gidx);
+      allResults[idx].action();
+    });
+  });
+};
+
+// ── PDF génériques pour chaque ressource ────────────────────
+function _pdfResGeneric(res, sections) {
+  if (!window.jspdf) { showToast('PDF en chargement…', 'err'); return; }
+  var c = C(), base = _pdfBase(res.titre.toUpperCase(), DB.chantier + ' — ' + fmtDate(nowISO()));
+  var doc = base.doc, y = base.y, w = doc.internal.pageSize.width;
+  sections.forEach(function(s) {
+    y = pageCheck(doc, y, 30, res.titre, '');
+    if (s.titre) { y = pdfSectionTitle(doc, s.titre, y, s.color || c.blue); }
+    if (s.rows) {
+      doc.autoTable({
+        startY: y, margin:{left:14,right:14},
+        body: s.rows,
+        styles:{fontSize:9, cellPadding:3},
+        columnStyles:{0:{cellWidth:55, fontStyle:'bold', fillColor:[248,248,246], textColor:c.text2}},
+        theme:'plain', tableLineColor:c.lightGray, tableLineWidth:0.3,
+      });
+      y = doc.lastAutoTable.finalY + 8;
+    }
+    if (s.text) {
+      var lines = doc.splitTextToSize(s.text, w - 28);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...c.text);
+      doc.text(lines, 14, y);
+      y += lines.length * 5 + 6;
+    }
+    if (s.checklist) {
+      s.checklist.forEach(function(item) {
+        y = pageCheck(doc, y, 12, res.titre, '');
+        doc.setFillColor(...c.lightGray); doc.roundedRect(14, y, 6, 6, 1, 1, 'F');
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
+        doc.text(item, 24, y+4.5);
+        y += 9;
+      });
+      y += 4;
+    }
+  });
+  // Signature zone
+  y = pageCheck(doc, y, 35, res.titre, '');
+  y += 6;
+  var hw = (w-28)/2 - 4;
+  doc.setDrawColor(...c.lightGray); doc.setLineWidth(0.3);
+  doc.roundedRect(14, y, hw, 22, 2, 2, 'S');
+  doc.roundedRect(14+hw+8, y, hw, 22, 2, 2, 'S');
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...c.text2);
+  doc.text('Établi par', 20, y+5); doc.text('Validé par (HSE)', 20+hw+8, y+5);
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
+  doc.text(DB.config.nom || '—', 20, y+13); doc.text(DB.config.nom || '—', 20+hw+8, y+13);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...c.text2);
+  doc.text('Date : ' + fmtDate(nowISO()), 20, y+19); doc.text(DB.config.fonction || 'HSE', 20+hw+8, y+19);
+  pdfFooter(doc);
+  doc.save(res.id + '_' + fmtDate(nowISO()).replace(/\//g,'-') + '.pdf');
+  showToast(res.titre + ' — PDF téléchargé ✓');
+}
+
+// PDF spécifiques
+window.pdfRes_mise_a_pied = function(res) {
+  var nom=document.getElementById('rmp-nom')?.value||'—', role=document.getElementById('rmp-role')?.value||'—', ent=document.getElementById('rmp-ent')?.value||'—', type=document.getElementById('rmp-type')?.value||'—', date=document.getElementById('rmp-date')?.value||'—', duree=document.getElementById('rmp-duree')?.value||'—', motif=document.getElementById('rmp-motif')?.value||'—';
+  _pdfResGeneric(res, [
+    { titre:'EMPLOYÉ CONCERNÉ', color:[163,45,45], rows:[['Nom complet',nom],['Rôle / Fonction',role],['Entreprise',ent]] },
+    { titre:'NATURE DE LA MISE À PIED', color:[163,45,45], rows:[['Type de sanction',type],['Date d\'effet',fmtDate(date)],['Durée',duree]] },
+    { titre:'MOTIF DÉTAILLÉ', color:[163,45,45], text: motif },
+  ]);
+};
+window.pdfRes_declaration_at = function(res) {
+  var nom=document.getElementById('rdat-nom')?.value||'—', role=document.getElementById('rdat-role')?.value||'—', empl=document.getElementById('rdat-employeur')?.value||'—', date=document.getElementById('rdat-date')?.value||'—', heure=document.getElementById('rdat-heure')?.value||'—', lieu=document.getElementById('rdat-lieu')?.value||'—', bless=document.getElementById('rdat-blessure')?.value||'—', desc=document.getElementById('rdat-desc')?.value||'—', arret=document.getElementById('rdat-arret')?.value||'—';
+  _pdfResGeneric(res, [
+    { titre:'VICTIME', color:[216,90,48], rows:[['Nom',nom],['Rôle',role],['Employeur',empl]] },
+    { titre:'CIRCONSTANCES', color:[216,90,48], rows:[['Date',fmtDate(date)],['Heure',heure],['Lieu',lieu],['Nature blessure',bless],['Arrêt de travail',arret]] },
+    { titre:'DESCRIPTION', color:[216,90,48], text: desc },
+  ]);
+};
+
+// Fallback : toutes les autres ressources utilisent le générique avec sections minimales
+['observation-comportementale','non-conformite','bon-travail','plan-urgence-incendie','plan-urgence-accident','plan-urgence-evacuation','numeros-urgence','plan-urgence-chute-hauteur','objectifs-hse','politique-hse','epi-obligatoires','registre-legal','travail-hauteur-reglementation','conduite-alcool','rapport-audit','compte-rendu-reunion'].forEach(function(rid) {
+  var key = 'pdfRes_' + rid.replace(/-/g,'_');
+  if (!window[key]) {
+    window[key] = function(res) {
+      _pdfResGeneric(res, [{ titre: res.titre.toUpperCase(), text: res.desc }]);
+    };
+  }
+});
+
+// ═══════════════ FIN BIBLIOTHÈQUE RESSOURCES HSE ═══════════════
 </script>
 </body>
 </html>
