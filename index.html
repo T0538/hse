@@ -1538,7 +1538,7 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
     <div class="modal-title">Quart d'heure Sécurité</div>
     <div class="form-group">
       <label class="form-label">Thème du Talk *</label>
-      <select class="form-select" id="tb-theme">
+      <select class="form-select" id="tb-theme-select" onchange="tbThemeSelect(this.value)">
         <option value="">-- Sélectionner un thème --</option>
         <option>Travaux en hauteur — Risques & Prévention</option>
         <option>Sécurité levage — Grue et élingage</option>
@@ -1550,7 +1550,10 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
         <option>Signalement incidents et presqu'accidents</option>
         <option>Conduite sécurisée des engins</option>
         <option>Risques électriques sur chantier</option>
+        <option value="__custom__">✏️  Saisir un thème personnalisé…</option>
       </select>
+      <input class="form-input" id="tb-theme" type="text" placeholder="Saisissez le thème de votre session ici…" style="margin-top:8px;display:none" oninput="tbThemeInput(this.value)">
+      <div class="form-hint" id="tb-theme-hint" style="display:none">Thème libre — appuyez sur la liste ci-dessus pour revenir aux thèmes pré-définis</div>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -3785,6 +3788,13 @@ function initToolboxParticipants() {
   document.getElementById('tb-obs').value = '';
   document.getElementById('tb-duree').value = '15';
   document.getElementById('tb-participants-list').innerHTML = '';
+  // Reset thème
+  var sel = document.getElementById('tb-theme-select');
+  var inp = document.getElementById('tb-theme');
+  var hint = document.getElementById('tb-theme-hint');
+  if(sel) sel.value = '';
+  if(inp){ inp.value = ''; inp.style.display = 'none'; }
+  if(hint) hint.style.display = 'none';
   clearPhotos('tb-photo-preview');
   setDefaultDates();
   renderTbPersonnelSelector();
@@ -3892,12 +3902,15 @@ function toggleSign2(id) {
 }
 
 function sauvegarderToolbox() {
-  const theme = document.getElementById('tb-theme').value;
+  // Lire le thème : champ libre en priorité, sinon dropdown
+  var themeInput = document.getElementById('tb-theme');
+  var themeSelect = document.getElementById('tb-theme-select');
+  var theme = (themeInput.style.display !== 'none' ? themeInput.value.trim() : '') || themeSelect.value;
   const date = document.getElementById('tb-date').value;
   const heure = document.getElementById('tb-heure').value;
   // Récupérer uniquement les présents (cochés) + ajouts manuels
   const presentsOnly = tbParticipants.filter(function(p){ return p.present || !p.fromPersonnel; });
-  if (!theme || !date || presentsOnly.length === 0) {
+  if (!theme || theme === '__custom__' || !date || presentsOnly.length === 0) {
     showToast('Thème, date et au moins un participant requis', 'err'); return;
   }
   const signes = presentsOnly.filter(function(p){ return p.signe; }).length;
@@ -3917,6 +3930,24 @@ function sauvegarderToolbox() {
   showToast('Session Toolbox enregistrée (' + tbParticipants.length + ' participants)');
   if (currentScreen === 'toolbox') renderToolbox();
   if (currentScreen === 'home') renderHome();
+}
+
+function tbThemeSelect(val) {
+  var inp = document.getElementById('tb-theme');
+  var hint = document.getElementById('tb-theme-hint');
+  if (val === '__custom__') {
+    inp.style.display = 'block';
+    hint.style.display = 'block';
+    inp.value = '';
+    setTimeout(function(){ inp.focus(); }, 80);
+  } else {
+    inp.style.display = 'none';
+    hint.style.display = 'none';
+    inp.value = val;
+  }
+}
+function tbThemeInput(val) {
+  // Sync so sauvegarderToolbox can read it directly
 }
 
 function renderToolbox() {
@@ -8693,33 +8724,532 @@ function _pdfResGeneric(res, sections) {
   showToast(res.titre + ' — PDF téléchargé ✓');
 }
 
-// PDF spécifiques
+
+// ═══════════════════════════════════════════════════════════
+// PDFs RESSOURCES — VERSION FINALE ROBUSTE
+// autoTable partout, pageCheck systématique, Y dynamique
+// ═══════════════════════════════════════════════════════════
+
+function gv(id){ var el=document.getElementById(id); return el ? el.value.trim() : ''; }
+function gcbs(prefix,total){var out=[];for(var i=1;i<=total;i++){var el=document.getElementById(prefix+i);out.push(el?el.classList.contains('on'):false);}return out;}
+
+function _rSection(doc,y,w,title,col){
+  y=pageCheck(doc,y,18,title,'');
+  doc.setFillColor(col[0],col[1],col[2]);
+  doc.roundedRect(14,y,w-28,7,1.5,1.5,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(255,255,255);
+  doc.text(title,17,y+5);
+  return y+10;
+}
+function _rBanner(doc,y,w,text,col,sz){
+  doc.setFillColor(col[0],col[1],col[2]);
+  doc.roundedRect(14,y,w-28,12,2,2,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(sz||10);doc.setTextColor(255,255,255);
+  doc.text(text,w/2,y+8.5,{align:'center'});
+  return y+16;
+}
+function _rTextBox(doc,y,w,textCol,text,bgRGB,borderRGB){
+  var c=C();
+  var lines=doc.splitTextToSize(text,w-36);
+  var h=lines.length*4.8+10;
+  y=pageCheck(doc,y,h+4,'','');
+  doc.setFillColor(bgRGB[0],bgRGB[1],bgRGB[2]);
+  doc.setDrawColor(borderRGB[0],borderRGB[1],borderRGB[2]);doc.setLineWidth(0.4);
+  doc.roundedRect(14,y,w-28,h,2,2,'FD');
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(textCol[0],textCol[1],textCol[2]);
+  doc.text(lines,18,y+7);
+  return y+h+5;
+}
+function _rChecklist(doc,y,w,c,items,checked){
+  var rows=items.map(function(item,i){var ok=checked?checked[i]:false;return[ok?'✓':'○',item];});
+  doc.autoTable({startY:y,margin:{left:14,right:14},body:rows,
+    styles:{fontSize:9,cellPadding:3},
+    columnStyles:{0:{cellWidth:10,halign:'center',fontStyle:'bold'},1:{fontStyle:'normal'}},
+    bodyStyles:{lineColor:[230,228,220],lineWidth:0.3},theme:'plain',
+    didParseCell:function(data){
+      if(data.column.index===0&&data.row.index>=0){
+        var ok=checked?checked[data.row.index]:false;
+        data.cell.styles.fillColor=ok?[234,243,222]:[248,248,246];
+        data.cell.styles.textColor=ok?[46,110,14]:[140,136,128];
+      } else if(data.column.index===1&&data.row.index>=0){
+        var ok2=checked?checked[data.row.index]:false;
+        data.cell.styles.fillColor=ok2?[234,243,222]:[248,248,246];
+      }
+    }
+  });
+  return doc.lastAutoTable.finalY+5;
+}
+function _rSignatures(doc,y,w,c,left,right){
+  y=pageCheck(doc,y,34,'','');y+=5;
+  var hw=(w-28)/2-4;
+  doc.setDrawColor(220,218,212);doc.setLineWidth(0.3);
+  doc.roundedRect(14,y,hw,26,2,2,'S');
+  doc.roundedRect(14+hw+8,y,hw,26,2,2,'S');
+  doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(136,135,128);
+  doc.text(left.label||'Établi par',20,y+5);doc.text(right.label||'Visa HSE',20+hw+8,y+5);
+  doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(43,43,41);
+  doc.text(left.name||DB.config.nom||'—',20,y+14);doc.text(right.name||DB.config.nom||'—',20+hw+8,y+14);
+  doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(136,135,128);
+  doc.text(left.sub||('Date : '+fmtDate(nowISO())),20,y+21);
+  doc.text(right.sub||(DB.config.fonction||'Responsable HSE'),20+hw+8,y+21);
+  return y+30;
+}
+
+// ─── MISE À PIED ──────────────────────────────────────────
 window.pdfRes_mise_a_pied = function(res) {
-  var nom=document.getElementById('rmp-nom')?.value||'—', role=document.getElementById('rmp-role')?.value||'—', ent=document.getElementById('rmp-ent')?.value||'—', type=document.getElementById('rmp-type')?.value||'—', date=document.getElementById('rmp-date')?.value||'—', duree=document.getElementById('rmp-duree')?.value||'—', motif=document.getElementById('rmp-motif')?.value||'—';
-  _pdfResGeneric(res, [
-    { titre:'EMPLOYÉ CONCERNÉ', color:[163,45,45], rows:[['Nom complet',nom],['Rôle / Fonction',role],['Entreprise',ent]] },
-    { titre:'NATURE DE LA MISE À PIED', color:[163,45,45], rows:[['Type de sanction',type],['Date d\'effet',fmtDate(date)],['Durée',duree]] },
-    { titre:'MOTIF DÉTAILLÉ', color:[163,45,45], text: motif },
-  ]);
-};
-window.pdfRes_declaration_at = function(res) {
-  var nom=document.getElementById('rdat-nom')?.value||'—', role=document.getElementById('rdat-role')?.value||'—', empl=document.getElementById('rdat-employeur')?.value||'—', date=document.getElementById('rdat-date')?.value||'—', heure=document.getElementById('rdat-heure')?.value||'—', lieu=document.getElementById('rdat-lieu')?.value||'—', bless=document.getElementById('rdat-blessure')?.value||'—', desc=document.getElementById('rdat-desc')?.value||'—', arret=document.getElementById('rdat-arret')?.value||'—';
-  _pdfResGeneric(res, [
-    { titre:'VICTIME', color:[216,90,48], rows:[['Nom',nom],['Rôle',role],['Employeur',empl]] },
-    { titre:'CIRCONSTANCES', color:[216,90,48], rows:[['Date',fmtDate(date)],['Heure',heure],['Lieu',lieu],['Nature blessure',bless],['Arrêt de travail',arret]] },
-    { titre:'DESCRIPTION', color:[216,90,48], text: desc },
-  ]);
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('NOTIFICATION DE MISE À PIED',DB.chantier+' — '+fmtDate(nowISO()));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var nom=gv('rmp-nom'),badge=gv('rmp-badge'),role=gv('rmp-role'),ent=gv('rmp-ent');
+  var type=gv('rmp-type'),date=gv('rmp-date'),duree=gv('rmp-duree'),motif=gv('rmp-motif'),constate=gv('rmp-constate'),signataire=gv('rmp-signataire');
+  y=_rBanner(doc,y,w,'MESURE DISCIPLINAIRE — MISE À PIED',c.red,11);
+  y=_rSection(doc,y,w,'IDENTIFICATION DE L\'EMPLOYÉ CONCERNÉ',c.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Nom complet',nom||'—'],['N° Badge',badge||'—'],['Rôle / Fonction',role||'—'],['Entreprise / Sous-traitant',ent||'—']],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:60,fontStyle:'bold',fillColor:[255,243,243],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rSection(doc,y,w,'NATURE ET DURÉE DE LA SANCTION',c.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Type de sanction',type||'—'],['Date d\'effet',fmtDate(date)||'—'],['Durée',duree||'—'],['Constaté par',constate||DB.config.nom]],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:60,fontStyle:'bold',fillColor:[255,243,243],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rSection(doc,y,w,'MOTIF DÉTAILLÉ',c.red);
+  y=_rTextBox(doc,y,w,c.text,motif||'(non renseigné)',[255,248,248],[163,45,45]);
+  y=_rSection(doc,y,w,'POINTS LÉGAUX VÉRIFIÉS',[90,90,90]);
+  y=_rChecklist(doc,y,w,c,['Employé informé oralement en présence d\'un témoin','Représentant de l\'entreprise sous-traitante notifié','Décision documentée et horodatée','Accès chantier suspendu (badge / retrait EPI)','Service RH / Direction informé'],gcbs('rescb-mp',5));
+  y=_rSignatures(doc,y,w,c,{label:'Responsable HSE',name:signataire||DB.config.nom},{label:'Direction / Chef de projet',name:'—'});
+  pdfFooter(doc);doc.save('MiseAPied_'+fmtDate(nowISO()).replace(/\//g,'-')+'.pdf');showToast('Notification de mise à pied téléchargée ✓');
 };
 
-// Fallback : toutes les autres ressources utilisent le générique avec sections minimales
-['observation-comportementale','non-conformite','bon-travail','plan-urgence-incendie','plan-urgence-accident','plan-urgence-evacuation','numeros-urgence','plan-urgence-chute-hauteur','objectifs-hse','politique-hse','epi-obligatoires','registre-legal','travail-hauteur-reglementation','conduite-alcool','rapport-audit','compte-rendu-reunion'].forEach(function(rid) {
-  var key = 'pdfRes_' + rid.replace(/-/g,'_');
-  if (!window[key]) {
-    window[key] = function(res) {
-      _pdfResGeneric(res, [{ titre: res.titre.toUpperCase(), text: res.desc }]);
-    };
+// ─── DÉCLARATION AT ───────────────────────────────────────
+window.pdfRes_declaration_at = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('DÉCLARATION ACCIDENT DU TRAVAIL',DB.chantier+' — '+fmtDate(nowISO()));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var nom=gv('rdat-nom'),nais=gv('rdat-nais'),role=gv('rdat-role'),anc=gv('rdat-anciennete'),empl=gv('rdat-employeur');
+  var date=gv('rdat-date'),heure=gv('rdat-heure'),lieu=gv('rdat-lieu'),bless=gv('rdat-blessure'),siege=gv('rdat-siege'),desc=gv('rdat-desc'),temoins=gv('rdat-temoins'),arret=gv('rdat-arret'),declarant=gv('rdat-declarant');
+  y=_rBanner(doc,y,w,'DÉCLARATION OFFICIELLE — ACCIDENT DU TRAVAIL',c.orange,10.5);
+  y=_rSection(doc,y,w,'IDENTITÉ DE LA VICTIME',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Nom complet',nom||'—'],['Date de naissance',fmtDate(nais)||'—'],['Rôle / Métier',role||'—'],['Ancienneté sur chantier',anc||'—'],['Employeur direct',empl||'—']],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:60,fontStyle:'bold',fillColor:[255,248,240],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rSection(doc,y,w,'CIRCONSTANCES DE L\'ACCIDENT',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Date',fmtDate(date)||'—'],['Heure',heure||'—'],['Lieu précis',lieu||'—'],['Nature des blessures',bless||'—'],['Siège de la lésion',siege||'—'],['Témoins directs',temoins||'—'],['Arrêt de travail',arret||'—']],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:60,fontStyle:'bold',fillColor:[255,248,240],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rSection(doc,y,w,'DESCRIPTION DÉTAILLÉE DES FAITS',c.orange);
+  y=_rTextBox(doc,y,w,c.text,desc||'(non renseigné)',[255,250,244],[216,90,48]);
+  y=_rSignatures(doc,y,w,c,{label:'Déclaré par',name:declarant||DB.config.nom},{label:'Responsable HSE',name:DB.config.nom});
+  pdfFooter(doc);doc.save('Declaration_AT_'+fmtDate(date||nowISO()).replace(/\//g,'-')+'.pdf');showToast('Déclaration AT téléchargée ✓');
+};
+
+// ─── OBSERVATION COMPORTEMENTALE ─────────────────────────
+window.pdfRes_observation_comportementale = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('FICHE OBSERVATION COMPORTEMENTALE',DB.chantier+' — '+fmtDate(nowISO()));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var type=gv('oc-type')||'positif',zone=gv('oc-zone'),desc=gv('oc-desc'),action=gv('oc-action'),obs=gv('oc-obs'),date=gv('oc-date'),heure=gv('oc-heure');
+  var isPos=type==='positif',bannerCol=isPos?c.green:c.orange;
+  y=_rBanner(doc,y,w,isPos?'✓ COMPORTEMENT SÉCURITAIRE POSITIF':'⚠ COMPORTEMENT À RISQUE IDENTIFIÉ',bannerCol,11);
+  y=_rSection(doc,y,w,'INFORMATIONS GÉNÉRALES',bannerCol);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Date',fmtDate(date)||'—'],['Heure',heure||'—'],['Zone / Activité',zone||'—'],['Type',isPos?'Positif — à valoriser':'À risque — à corriger'],['Action prise',action||'—'],['Observateur',obs||DB.config.nom]],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:60,fontStyle:'bold',fillColor:isPos?[240,250,232]:[255,248,240],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rSection(doc,y,w,'DESCRIPTION DU COMPORTEMENT OBSERVÉ',bannerCol);
+  y=_rTextBox(doc,y,w,c.text,desc||'(non renseigné)',isPos?[240,250,232]:[255,248,240],bannerCol);
+  y=_rSignatures(doc,y,w,c,{label:'Observateur',name:obs||DB.config.nom},{label:'Visa Responsable HSE',name:DB.config.nom});
+  pdfFooter(doc);doc.save('OC_'+fmtDate(nowISO()).replace(/\//g,'-')+'.pdf');showToast('Fiche OC téléchargée ✓');
+};
+
+// ─── NON-CONFORMITÉ ───────────────────────────────────────
+window.pdfRes_non_conformite = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('FICHE DE NON-CONFORMITÉ',DB.chantier+' — '+fmtDate(nowISO()));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var date=gv('rnc-date'),ref=gv('rnc-ref'),zone=gv('rnc-zone'),type=gv('rnc-type'),desc=gv('rnc-desc'),regle=gv('rnc-ref-regle'),grav=gv('rnc-grav'),by=gv('rnc-by'),action=gv('rnc-action');
+  var gravCol=grav==='Critique'?c.red:grav==='Majeure'?c.orange:c.amber;
+  y=_rBanner(doc,y,w,'NON-CONFORMITÉ — GRAVITÉ : '+(grav||'À DÉFINIR').toUpperCase(),gravCol,11);
+  y=_rSection(doc,y,w,'IDENTIFICATION',gravCol);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Référence NC',ref||'—'],['Date',fmtDate(date)||'—'],['Zone / Activité',zone||'—'],['Type',type||'—'],['Règle enfreinte',regle||'—'],['Gravité',grav||'—'],['Constaté par',by||DB.config.nom]],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:60,fontStyle:'bold',fillColor:[252,248,244],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rSection(doc,y,w,'DESCRIPTION DE L\'ÉCART CONSTATÉ',gravCol);
+  y=_rTextBox(doc,y,w,c.text,desc||'(non renseigné)',[252,248,244],gravCol);
+  if(action){y=_rSection(doc,y,w,'ACTION CORRECTIVE IMMÉDIATE',c.green);y=_rTextBox(doc,y,w,c.text,action,[242,250,235],c.green);}
+  y=_rSignatures(doc,y,w,c,{label:'Constaté par',name:by||DB.config.nom},{label:'Responsable HSE',name:DB.config.nom});
+  pdfFooter(doc);doc.save('NC_'+(ref||'001')+'_'+fmtDate(nowISO()).replace(/\//g,'-')+'.pdf');showToast('Fiche NC téléchargée ✓');
+};
+
+// ─── BON DE TRAVAIL ───────────────────────────────────────
+window.pdfRes_bon_travail = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('BON DE TRAVAIL — AUTORISATION DE DÉMARRAGE',DB.chantier+' — '+fmtDate(nowISO()));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var trav=gv('rbt-travaux'),debut=gv('rbt-debut'),fin=gv('rbt-fin'),hdeb=gv('rbt-hdeb'),hfin=gv('rbt-hfin'),zone=gv('rbt-zone'),equipe=gv('rbt-equipe'),autor=gv('rbt-autor');
+  y=_rBanner(doc,y,w,'AUTORISATION DE DÉMARRAGE DES TRAVAUX',c.green,11);
+  y=_rSection(doc,y,w,'DESCRIPTION DE LA TÂCHE',c.green);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Nature des travaux',trav||'—'],['Début',fmtDate(debut)+(hdeb?' à '+hdeb:'')],['Fin prévue',fmtDate(fin)+(hfin?' à '+hfin:'')],['Zone / Localisation',zone||'—'],['Équipe concernée',equipe||'—'],['Autorisé par (HSE)',autor||DB.config.nom]],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:55,fontStyle:'bold',fillColor:[242,250,235],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rSection(doc,y,w,'CONDITIONS PRÉALABLES — À COCHER AVANT DÉMARRAGE',c.green);
+  y=_rChecklist(doc,y,w,c,['JSA réalisée et validée pour cette tâche','Zone balisée — accès non-autorisés signalés','EPI appropriés distribués et vérifiés','Outillage et équipements contrôlés','Permis spécifiques obtenus si requis','Briefing de 5 minutes réalisé avec l\'équipe'],gcbs('rescb-bt',6));
+  y=_rSignatures(doc,y,w,c,{label:'Chef d\'équipe',name:equipe||'—'},{label:'Responsable HSE (autorisation)',name:autor||DB.config.nom});
+  pdfFooter(doc);doc.save('BonTravail_'+fmtDate(nowISO()).replace(/\//g,'-')+'.pdf');showToast('Bon de travail téléchargé ✓');
+};
+
+// ─── PLAN INCENDIE ────────────────────────────────────────
+window.pdfRes_plan_urgence_incendie = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase("PLAN D'URGENCE — INCENDIE",DB.chantier+' — AFFICHAGE OBLIGATOIRE');
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var adresse=gv('rpi-adresse'),serre=gv('rpi-serre'),rassemble=gv('rpi-rassemblement');
+  y=_rBanner(doc,y,w,'EN CAS DE FEU  ·  18 (POMPIERS)  ·  112 (URGENCES)',c.red,11.5);
+  y=_rSection(doc,y,w,'CONDUITE À TENIR — 5 ÉTAPES DANS L\'ORDRE',c.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['1 — ALARME','Crier "Au feu !" · Actionner le déclencheur d\'alarme le plus proche'],['2 — APPEL','Composer le 18 ou 112 · Donner adresse + situation · Ne pas raccrocher'],['3 — ÉVACUATION','Guider vers les sorties balisées · NE PAS utiliser les ascenseurs · Ne pas courir'],['4 — RASSEMBLEMENT','Rejoindre le point désigné · Rester groupé · NE PAS revenir en arrière'],['5 — APPEL NOMINAL','Vérifier la présence de chacun · Signaler les manquants aux pompiers']],
+    styles:{fontSize:9,cellPadding:4},theme:'striped',alternateRowStyles:{fillColor:[255,245,245]},
+    columnStyles:{0:{cellWidth:35,fontStyle:'bold',textColor:c.red}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'INFORMATIONS DU CHANTIER',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Adresse exacte',adresse||'À COMPLÉTER'],['Responsable évacuation (serre-file)',serre||DB.config.nom||'À COMPLÉTER'],['Point de rassemblement',rassemble||'À COMPLÉTER'],['Responsable HSE',DB.config.nom||'—']],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:65,fontStyle:'bold',fillColor:[255,249,244],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'RÈGLES EXTINCTEURS',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Quand intervenir','Feu à son début (taille corbeille) + sortie dans votre dos + vous êtes formé'],['Eau pulvérisée (ABC)','Bois, papier, liquides — NE JAMAIS utiliser sur équipement électrique'],['CO₂','Équipements électriques uniquement'],['Technique','2-3m de distance · Viser la BASE des flammes · Balayer en éventail'],['Si non maîtrisé','ÉVACUATION IMMÉDIATE — Ne pas insister']],
+    styles:{fontSize:9,cellPadding:3.5},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:42,fontStyle:'bold',fillColor:[255,249,244],textColor:c.text2}}});
+  pdfFooter(doc);doc.save('Plan_Incendie_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Plan Incendie téléchargé — À afficher ✓');
+};
+
+// ─── PLAN ACCIDENT GRAVE ──────────────────────────────────
+window.pdfRes_plan_urgence_accident = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase("PLAN D'URGENCE — ACCIDENT GRAVE",DB.chantier+' — AFFICHAGE OBLIGATOIRE');
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  y=_rBanner(doc,y,w,'PROTÉGER  →  ALERTER (15 / 18 / 112)  →  SECOURIR',c.red,11.5);
+  y=_rSection(doc,y,w,'MÉTHODE P·A·S — 3 ÉTAPES DANS L\'ORDRE',c.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Étape','Action à effectuer']],
+    body:[['P — PROTÉGER','Sécuriser la zone · Supprimer le danger SANS risque pour le sauveteur · Baliser 10m autour'],['A — ALERTER','Appeler 15, 18 ou 112 · Donner : QUI / QUOI / OÙ (adresse précise) / ÉTAT victime / GESTES effectués · NE PAS RACCROCHER'],['S — SECOURIR','PLS si inconscient qui respire · RCP si arrêt respiratoire · Compression si hémorragie · NE PAS DÉPLACER si traumatisme']],
+    styles:{fontSize:9,cellPadding:4.5},theme:'striped',
+    headStyles:{fillColor:c.red,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[255,245,245]},
+    columnStyles:{0:{cellWidth:32,fontStyle:'bold',textColor:c.red,halign:'center'}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'INFORMATIONS À DONNER AUX SECOURS',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Adresse',DB.chantier],['Votre nom + numéro','À préciser lors de l\'appel'],['Nature de l\'accident','À préciser'],['Nombre de victimes','À préciser'],['État de la victime','Conscient / Inconscient · Respire / Hémorragie…'],['Gestes effectués','PLS / RCP / Compression directe…']],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:55,fontStyle:'bold',fillColor:[255,248,244],textColor:c.text2}}});
+  pdfFooter(doc);doc.save('Plan_AccidentGrave_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Plan Accident Grave téléchargé ✓');
+};
+
+// ─── PLAN ÉVACUATION ─────────────────────────────────────
+window.pdfRes_plan_urgence_evacuation = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase("PLAN D'ÉVACUATION DU CHANTIER",DB.chantier+' — AFFICHAGE OBLIGATOIRE');
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var adresse=gv('rev-adresse'),pr1=gv('rev-pr1'),pr2=gv('rev-pr2'),resp=gv('rev-resp'),tel=gv('rev-tel');
+  y=_rBanner(doc,y,w,'ALARME  →  ARRÊT TRAVAUX  →  ÉVACUATION  →  RASSEMBLEMENT',c.orange,10.5);
+  y=_rSection(doc,y,w,'INFORMATIONS DU CHANTIER',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Adresse',adresse||'À compléter'],['Point de rassemblement principal',pr1||'À compléter'],['Point de rassemblement secondaire',pr2||'—'],['Responsable évacuation',resp||DB.config.nom],['Téléphone de crise',tel||'—']],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:65,fontStyle:'bold',fillColor:[255,249,244],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'PROCÉDURE D\'ÉVACUATION — 5 ÉTAPES',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['N°','Action','Consigne']],
+    body:[['1','Déclencher l\'alarme','Signal sonore · Alerter le responsable évacuation immédiatement'],['2','Arrêter les travaux','Poser les outils · Sécuriser les engins · Couper les alimentations'],['3','Évacuer calmement','Voies balisées · Ne pas courir · Ne pas revenir en arrière · Laisser les affaires'],['4','Rassemblement','Point désigné · Rester groupé · Ne pas quitter la zone avant l\'autorisation'],['5','Appel nominal','Vérifier la présence · Signaler les absents aux secours immédiatement']],
+    styles:{fontSize:9,cellPadding:4},theme:'striped',
+    headStyles:{fillColor:c.orange,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[255,249,244]},
+    columnStyles:{0:{cellWidth:10,halign:'center',fontStyle:'bold'},1:{cellWidth:48,fontStyle:'bold',textColor:c.orange}}});
+  pdfFooter(doc);doc.save('Plan_Evacuation_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Plan Évacuation téléchargé — À afficher ✓');
+};
+
+// ─── NUMÉROS URGENCE ─────────────────────────────────────
+window.pdfRes_numeros_urgence = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase("NUMÉROS D'URGENCE — À AFFICHER",DB.chantier);
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var hse=gv('rnu-hse')||DB.config.nom,telHse=gv('rnu-tel-hse'),med=gv('rnu-med'),telMed=gv('rnu-tel-med'),hopital=gv('rnu-hopital'),dist=gv('rnu-dist'),adresse=gv('rnu-adresse');
+  y=_rSection(doc,y,w,'NUMÉROS NATIONAUX — À COMPOSER EN CAS D\'URGENCE',c.red);
+  var nums=[{num:'15',lbl:'SAMU\nUrgences médicales',col:c.red},{num:'18',lbl:'POMPIERS\nIncendie · Secours',col:c.orange},{num:'17',lbl:'POLICE\nGendarmerie',col:c.blue},{num:'112',lbl:'URGENCES\nEuropéen',col:c.red},{num:'3632',lbl:'ANTIPOISON',col:c.amber}];
+  var nb=nums.length,bw=(w-28-4*(nb-1))/nb;
+  nums.forEach(function(n,i){
+    var x=14+i*(bw+4);
+    doc.setFillColor(248,248,246);doc.setDrawColor(n.col[0],n.col[1],n.col[2]);doc.setLineWidth(0.8);
+    doc.roundedRect(x,y,bw,26,2,2,'FD');
+    doc.setFillColor(n.col[0],n.col[1],n.col[2]);doc.roundedRect(x,y,3,26,1,1,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(22);doc.setTextColor(n.col[0],n.col[1],n.col[2]);
+    doc.text(n.num,x+bw/2+1.5,y+14,{align:'center'});
+    var ll=n.lbl.split('\n');doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(95,94,90);
+    doc.text(ll[0],x+bw/2+1.5,y+19,{align:'center'});
+    if(ll[1])doc.text(ll[1],x+bw/2+1.5,y+23,{align:'center'});
+  });
+  y+=31;
+  y=_rSection(doc,y,w,'CONTACTS DU CHANTIER',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Fonction','Nom / Établissement','Téléphone']],
+    body:[['Responsable HSE',hse,telHse||'—'],['Médecin du travail',med||'À compléter',telMed||'—'],['Hôpital / Clinique le plus proche',hopital||'À compléter',dist||'—']],
+    styles:{fontSize:9.5,cellPadding:4},theme:'striped',
+    headStyles:{fillColor:c.orange,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[255,249,244]},
+    columnStyles:{0:{cellWidth:55,fontStyle:'bold'}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rBanner(doc,y,w,'ADRESSE : '+(adresse||'À COMPLÉTER OBLIGATOIREMENT'),c.red,9);
+  pdfFooter(doc);doc.save('Numeros_Urgence_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Numéros urgence téléchargés — À plastifier ✓');
+};
+
+// ─── PLAN CHUTE HAUTEUR ───────────────────────────────────
+window.pdfRes_plan_urgence_chute_hauteur = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase("PLAN D'URGENCE — CHUTE DE HAUTEUR",DB.chantier+' — AFFICHAGE OBLIGATOIRE');
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  y=_rBanner(doc,y,w,'APPELER 15 ou 18 IMMÉDIATEMENT — NE PAS DÉPLACER LA VICTIME',c.red,11);
+  y=_rSection(doc,y,w,'SI LA PERSONNE EST EN SUSPENSION (harnais)',c.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['DANGER VITAL','Syndrome de suspension = risque vital en 10-15 minutes — agir vite'],['Action 1','Décrocher / descendre la victime LE PLUS VITE POSSIBLE'],['Action 2','Allonger à PLAT sur le dos IMMÉDIATEMENT — jamais assise'],['Action 3','Appeler 15 ou 18 EN MÊME TEMPS que la manœuvre'],['Action 4','Surveiller conscience et respiration jusqu\'aux secours']],
+    styles:{fontSize:9,cellPadding:4},theme:'striped',alternateRowStyles:{fillColor:[255,245,245]},
+    columnStyles:{0:{cellWidth:32,fontStyle:'bold',textColor:c.red}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'SI LA PERSONNE EST AU SOL (chute)',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['INTERDIT','NE PAS DÉPLACER — risque fracture vertébrale ou lésion cervicale'],['Action 1','Maintenir la tête dans l\'axe du corps — ne jamais tourner la tête'],['Action 2','Surveiller conscience, respiration, pouls — parler à la victime'],['Action 3','RCP si arrêt respiratoire confirmé (SST uniquement)'],['Action 4','Appeler 15 ou 18 — indiquer hauteur de chute et état']],
+    styles:{fontSize:9,cellPadding:4},theme:'striped',alternateRowStyles:{fillColor:[255,249,244]},
+    columnStyles:{0:{cellWidth:32,fontStyle:'bold',textColor:c.orange}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'PRÉVENTION — RÈGLES ABSOLUES',c.blue);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Seuil','Harnais dès 3m · Charpente métallique : dès 1m si chute libre possible'],['Vérification','Contrôle visuel harnais AVANT chaque prise de hauteur — coutures, longe, boucles'],['Ancrage','Point d\'ancrage certifié min. 10 kN — jamais sur tube d\'échafaudage'],['Après chute','Harnais ayant subi une chute = hors service IMMÉDIATEMENT'],['Travail isolé','INTERDIT en hauteur — binôme minimum à tout moment']],
+    styles:{fontSize:9,cellPadding:3.5},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:30,fontStyle:'bold',fillColor:[244,248,255],textColor:c.blue}}});
+  pdfFooter(doc);doc.save('Plan_ChuteHauteur_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Plan Chute de Hauteur téléchargé ✓');
+};
+
+// ─── OBJECTIFS HSE ────────────────────────────────────────
+window.pdfRes_objectifs_hse = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('TABLEAU DE BORD DES OBJECTIFS HSE — '+new Date().getFullYear(),DB.chantier+' · '+(DB.config.entreprise||'Tetris Construction'));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var tf=gv('robj-tf')||'10',tb=gv('robj-tb')||'4',epi=gv('robj-epi')||'95',autre=gv('robj-autre');
+  var incidents=DB.incidents.length;
+  var capaOpen=DB.capas.filter(function(x){return x.status!=='closed';}).length;
+  var capaClosed=DB.capas.filter(function(x){return x.status==='closed';}).length;
+  var toolboxes=DB.toolboxes.length;
+  var jsat=0;
+  if(DB.config.dateDebut){var d1=new Date(DB.config.dateDebut);jsat=Math.max(0,Math.round((new Date()-d1)/86400000));}
+  y=_rSection(doc,y,w,'INDICATEURS EN COURS DU CHANTIER',c.blue);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Indicateur','Valeur actuelle','Objectif cible','Statut']],
+    body:[
+      ['Jours sans Accident du Travail',String(jsat),'> 365 jours',jsat>=30?'✓ Bon':'⚠ Surveiller'],
+      ['Incidents enregistrés (total)',String(incidents),'< 5 par mois',incidents<=5?'✓ OK':'⚠ Dépassé'],
+      ['CAPA ouvertes (en attente)',String(capaOpen),'< 5 ouvertes',capaOpen<5?'✓ Bon':'⚠ À traiter'],
+      ['CAPA clôturées (total)',String(capaClosed),'Maximum','✓ Bon suivi'],
+      ['Toolbox Talks réalisés',String(toolboxes),tb+'/mois',toolboxes>0?'✓ En cours':'⚠ À démarrer'],
+    ],
+    styles:{fontSize:9.5,cellPadding:4},theme:'striped',
+    headStyles:{fillColor:c.blue,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[244,248,255]},
+    columnStyles:{0:{cellWidth:65,fontStyle:'bold'},2:{cellWidth:32},3:{cellWidth:28}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'OBJECTIFS ANNUELS HSE — '+new Date().getFullYear(),c.blue);
+  var items=['Taux de Fréquence (TF) < '+tf,'Taux de Gravité (TG) < 1','100% des ouvriers induits avant leur démarrage sur chantier','Toolbox Talk au minimum '+tb+' fois par mois','Taux conformité EPI > '+epi+'%','0 accident grave avec arrêt de travail sur la durée du chantier','Toutes les CAPA clôturées dans les délais prévus','Audit HSE terrain réalisé au moins 1 fois par mois'];
+  y=_rChecklist(doc,y,w,c,items,gcbs('rescb-obj',8));
+  if(autre){y=_rSection(doc,y,w,'OBJECTIFS COMPLÉMENTAIRES',c.blue);y=_rTextBox(doc,y,w,c.text,autre,[244,248,255],c.blue);}
+  y=_rSignatures(doc,y,w,c,{label:'Responsable HSE',name:DB.config.nom},{label:'Direction / Chef de projet',name:'—'});
+  pdfFooter(doc);doc.save('Objectifs_HSE_'+new Date().getFullYear()+'_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Tableau de bord Objectifs HSE téléchargé ✓');
+};
+
+// ─── POLITIQUE HSE ────────────────────────────────────────
+window.pdfRes_politique_hse = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),ent=DB.config.entreprise||'Tetris Construction';
+  var base=_pdfBase('POLITIQUE HSE — '+ent.toUpperCase(),'Charte Sécurité en vigueur · '+fmtDate(nowISO()));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var sig=gv('rpol-sig');
+  y=_rBanner(doc,y,w,ent.toUpperCase()+' — ENGAGEMENT ZÉRO ACCIDENT',[0,80,140],12);
+  var decl='"'+ent+' s\'engage à réaliser l\'ensemble de ses activités de construction dans le strict respect de la santé, de la sécurité et de l\'environnement de ses collaborateurs, sous-traitants et de toutes les parties prenantes. Notre objectif absolu est zéro accident grave sur tous nos chantiers."';
+  y=_rTextBox(doc,y,w,[0,80,140],decl,[240,248,255],[0,120,200]);
+  y=_rSection(doc,y,w,'NOS ENGAGEMENTS — LA DIRECTION S\'ENGAGE À',[0,80,140]);
+  var items=['Identifier et évaluer TOUS les risques avant chaque démarrage de tâche','Fournir les EPI appropriés et vérifier leur port effectif 100% du temps','Former et sensibiliser chaque membre du personnel dès son arrivée sur chantier','Déclarer et analyser systématiquement tout incident, accident ou presqu\'accident','Appliquer le principe d\'amélioration continue via les actions correctives (CAPA)','Interdire formellement toute consommation d\'alcool et de drogues sur site','Respecter l\'ensemble des réglementations nationales et internationales en vigueur'];
+  y=_rChecklist(doc,y,w,c,items,gcbs('rescb-pol',7));
+  y=_rSignatures(doc,y,w,c,{label:'Responsable HSE',name:DB.config.nom,sub:DB.config.fonction||'Responsable HSE'},{label:'Signature Direction / Chef de Projet',name:sig||'—',sub:'Directeur · Chef de Projet'});
+  pdfFooter(doc);doc.save('Politique_HSE_'+ent.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Charte HSE téléchargée — À afficher sur chantier ✓');
+};
+
+// ─── EPI OBLIGATOIRES ─────────────────────────────────────
+window.pdfRes_epi_obligatoires = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('EPI OBLIGATOIRES PAR POSTE DE TRAVAIL',DB.chantier+' — Référence réglementaire');
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Poste / Activité','EPI Obligatoires — Description complète']],
+    body:[['Charpentier métallique','Casque · Chaussures S3 · Gilet HV · Gants anti-coupures · Harnais complet + longe anti-chute · Lunettes de protection'],['Soudeur','Masque de soudure · Tablier cuir · Gants soudeur · Chaussures S3 · Gilet HV · Casque · Bouchons oreilles'],['Grutier / Conducteur d\'engin','Casque · Chaussures S3 · Gilet HV · Ceinture lombaire si vibrations prolongées'],['Coffrageur / Bancheur','Casque · Chaussures S3 · Gilet HV · Gants · Harnais + longe si hauteur > 2m · Lunettes'],['Ferrailleur','Casque · Chaussures S3 · Gilet HV · Gants anti-coupures · Lunettes de protection'],['Électricien','Casque · Chaussures isolantes · Gilet HV · Gants isolants HT/BT · Lunettes · Tapis isolant'],['Opérateur démolition','Casque · Chaussures S3 · Gilet HV · Gants · Lunettes · Masque FFP2 · Bouchons oreilles'],['Conducteur de travaux / Visiteur','Casque · Chaussures S3 · Gilet HV — minimum absolu sans exception']],
+    styles:{fontSize:9,cellPadding:4.5},
+    headStyles:{fillColor:c.orange,textColor:[255,255,255],fontStyle:'bold',fontSize:9.5},
+    alternateRowStyles:{fillColor:[255,249,244]},
+    columnStyles:{0:{cellWidth:52,fontStyle:'bold',textColor:c.text2}},
+    theme:'striped'});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rBanner(doc,y,w,'RÈGLE ABSOLUE : Aucun accès chantier sans CASQUE + CHAUSSURES S3 + GILET HV',c.red,9.5);
+  pdfFooter(doc);doc.save('EPI_Obligatoires_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Tableau EPI téléchargé ✓');
+};
+
+// ─── REGISTRES LÉGAUX ─────────────────────────────────────
+window.pdfRes_registre_legal = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('REGISTRES LÉGAUX OBLIGATOIRES HSE',DB.chantier+' — '+new Date().getFullYear());
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  y=_rSection(doc,y,w,'DOCUMENTS OBLIGATOIRES À TENIR SUR CHANTIER',c.blue);
+  y=_rChecklist(doc,y,w,c,['Registre des observations et mises en demeure (Inspection du Travail)','Registre des accidents du travail — DAT + fiches de soins','Registre des vérifications EPI — contrôle périodique documenté','Registre des formations, habilitations et aptitudes médicales','Plan de Prévention ou PPSPS en cours de validité','Registre des permis de travaux spéciaux — feu, fouilles, levage','Fiches de Données de Sécurité (FDS) des produits chimiques utilisés','Registre de vérification des engins et équipements de levage','Affichages : consignes incendie, numéros urgence, médecin du travail','Registre du personnel : effectif, habilitations, visites médicales à jour'],gcbs('rescb-rl',10));
+  y=_rSection(doc,y,w,'FRÉQUENCES DE VÉRIFICATION LÉGALES',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Équipement / Document','Fréquence','Organisme']],
+    body:[['Engins de levage — grues, palans, nacelles','Annuelle','Organisme agréé'],['Échafaudages','Chaque montage / modification','Personne compétente'],['Harnais et EPI hauteur','Avant usage + annuelle','Chef d\'équipe / vérificateur'],['Extincteurs','Annuelle','Technicien agréé'],['Installations électriques chantier','Trimestrielle','Électricien qualifié'],['Véhicules et engins','Selon constructeur','Garagiste / organisme']],
+    styles:{fontSize:9,cellPadding:3.5},theme:'striped',
+    headStyles:{fillColor:c.orange,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[255,249,244]},
+    columnStyles:{0:{cellWidth:65,fontStyle:'bold'}}});
+  pdfFooter(doc);doc.save('Registres_Legaux_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Checklist registres légaux téléchargée ✓');
+};
+
+// ─── RÉGLEMENTATION HAUTEUR ───────────────────────────────
+window.pdfRes_travail_hauteur_reglementation = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('RÉGLEMENTATION TRAVAIL EN HAUTEUR',DB.chantier+' — Rappel réglementaire');
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  y=_rSection(doc,y,w,'SEUILS RÉGLEMENTAIRES EN VIGUEUR',c.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Seuil','Obligation réglementaire']],
+    body:[['Dès 1 m','Protection collective obligatoire en charpente métallique si risque de chute libre'],['Dès 2 m','Garde-corps, filet ou protection collective pour tout bâtiment'],['Dès 3 m','Harnais complet obligatoire en l\'absence de protection collective'],['Dès 5 m','Formation spécifique travail en hauteur obligatoire'],['Travail isolé','INTERDIT en hauteur — binôme minimum à tout moment']],
+    styles:{fontSize:9.5,cellPadding:4.5},theme:'striped',
+    headStyles:{fillColor:c.red,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[255,245,245]},
+    columnStyles:{0:{cellWidth:28,fontStyle:'bold',halign:'center',textColor:c.red}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'CONTRÔLE EPI HAUTEUR AVANT CHAQUE UTILISATION',c.orange);
+  y=_rChecklist(doc,y,w,c,['Harnais : coutures intactes, aucune déchirure, marque ou brûlure sur les sangles','Longe / absorbeur : mousquetons fonctionnels, indicateur de chute NON déclenché','Point d\'ancrage certifié : min. 10 kN (≈ 1 tonne) — jamais sur tube d\'échafaudage','Tout harnais ayant subi une chute = mis hors service IMMÉDIATEMENT'],gcbs('rescb-th',4));
+  y=_rSection(doc,y,w,'FORMATIONS ET HABILITATIONS REQUISES',c.blue);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Formation / Habilitation','Obligation','Validité']],
+    body:[['CACES nacelle — PEMP cat. 1 et 3b','Obligatoire pour tout opérateur','5 ans'],['Formation travail en hauteur','Obligatoire dès 5m','3 ans'],['Sauveteur Secouriste du Travail (SST)','Obligatoire sur tout chantier','2 ans'],['Habilitation électrique B0/H0','Obligatoire abords lignes électriques','3 ans']],
+    styles:{fontSize:9,cellPadding:3.5},theme:'striped',
+    headStyles:{fillColor:c.blue,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[244,248,255]},
+    columnStyles:{0:{cellWidth:70,fontStyle:'bold'},2:{cellWidth:20,halign:'center'}}});
+  pdfFooter(doc);doc.save('Reglementation_Hauteur_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Fiche réglementaire téléchargée ✓');
+};
+
+// ─── PROCÉDURE ALCOOL/DROGUES ─────────────────────────────
+window.pdfRes_conduite_alcool = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('PROCÉDURE ALCOOL / DROGUES — CHANTIER',DB.chantier+' — Tolérance ZÉRO');
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  y=_rBanner(doc,y,w,'TOLÉRANCE ZÉRO — Taux légal autorisé sur chantier : 0,0 g/L',c.red,11);
+  y=_rSection(doc,y,w,'RÈGLES EN VIGUEUR',c.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Substance','Règle applicable']],
+    body:[['Alcool','Strictement interdit sur le chantier et ses abords — taux autorisé : 0,0 g/L'],['Drogues','Tout produit stupéfiant formellement interdit en toutes circonstances'],['Médicaments','Tout médicament altérant la vigilance DOIT être signalé au responsable HSE'],['Contrôle','Le responsable HSE est habilité à demander un contrôle éthylomètre'],['Sanction','Retrait immédiat + mise à pied conservatoire · Licenciement en cas de récidive']],
+    styles:{fontSize:9,cellPadding:4},theme:'striped',
+    headStyles:{fillColor:c.red,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[255,245,245]},
+    columnStyles:{0:{cellWidth:35,fontStyle:'bold',textColor:c.red}}});
+  y=doc.lastAutoTable.finalY+8;
+  y=_rSection(doc,y,w,'PROCÉDURE EN CAS DE SUSPICION — 5 ÉTAPES',c.orange);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    head:[['Étape','Action requise']],
+    body:[['1 — Constater et isoler','Interdire l\'accès aux équipements · Ne pas laisser travailler la personne'],['2 — Alerter','Prévenir le chef de chantier et le responsable HSE immédiatement'],['3 — Contrôle éthylomètre','Test en présence d\'un témoin · Consigner le résultat par écrit'],['4 — Retrait du chantier','Interdire l\'accès · Assurer le retour à domicile — ne pas laisser conduire'],['5 — Documenter','Fiche de non-conformité + procédure disciplinaire adaptée (1er écart / récidive)']],
+    styles:{fontSize:9,cellPadding:4},theme:'striped',
+    headStyles:{fillColor:c.orange,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[255,249,244]},
+    columnStyles:{0:{cellWidth:40,fontStyle:'bold',textColor:c.orange}}});
+  pdfFooter(doc);doc.save('Procedure_AlcoolDrogues_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Procédure Alcool/Drogues téléchargée ✓');
+};
+
+// ─── RAPPORT D'AUDIT ──────────────────────────────────────
+window.pdfRes_rapport_audit = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase("RAPPORT D'AUDIT HSE TERRAIN",DB.chantier+' — '+fmtDate(nowISO()));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var date=gv('rau-date'),aud=gv('rau-auditeur'),zone=gv('rau-zone'),nc=gv('rau-nc'),pos=gv('rau-pos'),note=gv('rau-note');
+  var noteCol=note==='Satisfaisant'?c.green:note==='Critique — action immédiate requise'?c.red:note==='Insuffisant'?c.orange:c.amber;
+  if(note&&note!=='-- Sélectionner --'){y=_rBanner(doc,y,w,'NOTE GLOBALE : '+note.toUpperCase(),noteCol,10.5);}
+  y=_rSection(doc,y,w,'EN-TÊTE DE L\'AUDIT',c.blue);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Date de l\'audit',fmtDate(date)||'—'],['Auditeur',aud||DB.config.nom],['Périmètre / Zones audités',zone||'Ensemble du chantier'],['Chantier audité',DB.chantier],['Responsable HSE',DB.config.nom]],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:60,fontStyle:'bold',fillColor:[244,248,255],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  y=_rSection(doc,y,w,'GRILLE D\'ÉVALUATION — 10 POINTS DE CONTRÔLE',c.blue);
+  var items=['Balisage et signalisation des zones à risque en place et visible','Port effectif des EPI par l\'ensemble du personnel présent','JSA disponibles pour toutes les tâches critiques en cours','Permis de travaux valides pour les travaux spéciaux','Matériel et outillage en bon état apparent et vérifiés','Zones de stockage ordonnées — voies d\'évacuation dégagées','Extincteurs accessibles, non obstrués, date de contrôle valide','Sorties de secours dégagées et clairement signalées','Registres de sécurité à jour et accessibles sur site','Aucun ouvrier non induit présent sur le chantier'];
+  y=_rChecklist(doc,y,w,c,items,gcbs('rescb-au',10));
+  if(nc){y=_rSection(doc,y,w,'NON-CONFORMITÉS RELEVÉES',c.red);y=_rTextBox(doc,y,w,c.text,nc,[255,248,248],c.red);}
+  if(pos){y=_rSection(doc,y,w,'POINTS POSITIFS NOTABLES',c.green);y=_rTextBox(doc,y,w,c.text,pos,[242,250,235],c.green);}
+  y=_rSignatures(doc,y,w,c,{label:'Auditeur',name:aud||DB.config.nom},{label:'Responsable HSE',name:DB.config.nom});
+  pdfFooter(doc);doc.save('Audit_HSE_'+fmtDate((date||nowISO())).replace(/\//g,'-')+'.pdf');showToast('Rapport d\'audit téléchargé ✓');
+};
+
+// ─── COMPTE-RENDU RÉUNION ─────────────────────────────────
+window.pdfRes_compte_rendu_reunion = function(res) {
+  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
+  var c=C(),base=_pdfBase('COMPTE-RENDU DE RÉUNION HSE',DB.chantier+' — '+fmtDate(nowISO()));
+  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
+  var date=gv('rcr-date'),heure=gv('rcr-heure'),objet=gv('rcr-objet'),lieu=gv('rcr-lieu'),anim=gv('rcr-animateur'),parts=gv('rcr-participants'),p1=gv('rcr-p1'),p2=gv('rcr-p2'),p3=gv('rcr-p3'),autres=gv('rcr-autres'),next=gv('rcr-next');
+  y=_rSection(doc,y,w,'INFORMATIONS GÉNÉRALES',c.blue);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Objet de la réunion',objet||'Réunion de coordination HSE'],['Date',fmtDate(date)||'—'],['Heure',heure||'—'],['Lieu',lieu||DB.chantier],['Animateur',anim||DB.config.nom],['Chantier',DB.chantier]],
+    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:50,fontStyle:'bold',fillColor:[244,248,255],textColor:c.text2}}});
+  y=doc.lastAutoTable.finalY+6;
+  if(parts){
+    y=_rSection(doc,y,w,'PARTICIPANTS PRÉSENTS',c.blue);
+    var partLines=parts.split('\n').filter(function(l){return l.trim();});
+    if(partLines.length>0){
+      doc.autoTable({startY:y,margin:{left:14,right:14},
+        head:[['N°','Nom — Fonction / Entreprise']],
+        body:partLines.map(function(l,i){return[String(i+1),l.trim()];}),
+        styles:{fontSize:9.5,cellPadding:3.5},theme:'striped',
+        headStyles:{fillColor:c.blue,textColor:[255,255,255],fontStyle:'bold'},
+        alternateRowStyles:{fillColor:[244,248,255]},
+        columnStyles:{0:{cellWidth:12,halign:'center'}}});
+      y=doc.lastAutoTable.finalY+6;
+    }
   }
-});
+  var sections=[[p1,'1 — BILAN INCIDENTS / ACCIDENTS DE LA PÉRIODE',c.red],[p2,'2 — SUIVI DES ACTIONS CAPA',c.amber],[p3,'3 — RISQUES À VENIR / TRAVAUX PLANIFIÉS',c.orange],[autres,'4 — AUTRES POINTS / DÉCISIONS PRISES',c.blue]];
+  sections.forEach(function(s){
+    if(!s[0])return;
+    y=_rSection(doc,y,w,s[1],s[2]);
+    y=_rTextBox(doc,y,w,c.text,s[0],[248,248,246],[220,218,210]);
+  });
+  if(next){
+    y=_rSection(doc,y,w,'PROCHAINE RÉUNION',c.green);
+    doc.autoTable({startY:y,margin:{left:14,right:14},
+      body:[['Date de la prochaine réunion',fmtDate(next)||'—']],
+      styles:{fontSize:10,cellPadding:5},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+      columnStyles:{0:{cellWidth:70,fontStyle:'bold',fillColor:[242,250,235],textColor:c.text2}}});
+    y=doc.lastAutoTable.finalY+6;
+  }
+  y=_rSignatures(doc,y,w,c,{label:'Rédigé par',name:anim||DB.config.nom},{label:'Responsable HSE',name:DB.config.nom});
+  pdfFooter(doc);doc.save('CR_Reunion_HSE_'+fmtDate((date||nowISO())).replace(/\//g,'-')+'.pdf');showToast('Compte-rendu réunion téléchargé ✓');
+};
 
 // ═══════════════ FIN BIBLIOTHÈQUE RESSOURCES HSE ═══════════════
 </script>
