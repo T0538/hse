@@ -69,6 +69,49 @@ body.dark-mode .search-item{background:#242422}
 body.dark-mode .weather-strip{background:linear-gradient(135deg,#1A3A5A,#0E2440)}
 body.dark-mode input[type=checkbox]{accent-color:var(--orange)}
 
+/* ── 5 POURQUOI ── */
+.p5-chain{display:flex;flex-direction:column;gap:0}
+.p5-step{position:relative;padding:0 0 0 0}
+.p5-step-inner{border-radius:12px;border:1.5px solid var(--border);background:var(--surface);padding:13px 14px;transition:border-color .2s,opacity .2s}
+.p5-step-inner.active{border-color:var(--orange)}
+.p5-step-inner.locked{opacity:.45;pointer-events:none}
+.p5-step-inner.done{border-color:var(--green-mid);background:var(--green-light)}
+.p5-step-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.p5-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:15px;font-weight:800;flex-shrink:0;transition:background .2s,color .2s}
+.p5-step-inner.locked .p5-num{background:var(--gray-light);color:var(--text3)}
+.p5-step-inner.active .p5-num{background:var(--orange);color:#fff}
+.p5-step-inner.done .p5-num{background:var(--green);color:#fff}
+.p5-label{font-size:12px;font-weight:600;color:var(--text2);flex:1;line-height:1.3}
+.p5-step-inner.done .p5-label{color:var(--green)}
+.p5-input{width:100%;border:none;background:transparent;font-family:var(--font-body);font-size:13px;color:var(--text);outline:none;resize:none;min-height:52px;line-height:1.5;padding:0}
+.p5-input::placeholder{color:var(--text3)}
+.p5-input-row{display:flex;align-items:flex-start;gap:6px}
+.p5-mic{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;margin-top:2px}
+.p5-mic:active,.p5-mic.recording{background:var(--red-light)}
+.p5-mic.recording svg{stroke:var(--red)}
+.p5-arrow{display:flex;justify-content:center;padding:4px 0;height:22px;flex-shrink:0}
+.p5-arrow svg{stroke:var(--border)}
+.p5-cause-racine{border-radius:12px;border:2px solid var(--red);background:var(--red-light);padding:14px;margin-top:4px}
+.p5-cause-racine-lbl{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--red);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.p5-cause-racine-val{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;min-height:20px}
+.p5-cause-racine-val.empty{color:var(--text3);font-weight:400;font-size:13px;font-style:italic}
+.p5-capa-banner{border-radius:12px;border:1.5px solid var(--green-mid);background:var(--green-light);padding:13px 14px;margin-top:12px;display:flex;align-items:center;gap:12px}
+.p5-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px}
+.p5-badge.rouge{background:var(--red-light);color:var(--red)}
+.p5-badge.orange{background:var(--orange-light);color:var(--orange)}
+.p5-badge.vert{background:var(--green-light);color:var(--green)}
+.p5-inc-banner{border-radius:10px;background:var(--gray-light);border:1px solid var(--border);padding:10px 13px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.p5-inc-banner-icon{width:32px;height:32px;border-radius:8px;background:var(--orange-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.p5-inc-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.p5-inc-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.p5-progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:14px}
+.p5-progress-fill{height:100%;border-radius:2px;background:var(--orange);transition:width .4s ease}
+body.dark-mode .p5-step-inner{background:var(--surface)}
+body.dark-mode .p5-step-inner.done{background:#1A2E0A}
+body.dark-mode .p5-cause-racine{background:#3A1010}
+body.dark-mode .p5-capa-banner{background:#1A2E0A}
+body.dark-mode .p5-inc-banner{background:var(--gray-light)}
+
 /* ── BOUTON THÈME ── */
 .theme-toggle{width:36px;height:36px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
 .theme-toggle:active{background:var(--gray-mid)}
@@ -1038,6 +1081,164 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
     </div>
     <button class="btn-primary" style="margin-top:16px" onclick="sauvegarderSettings()">Enregistrer</button>
     <button class="btn-secondary" style="margin-top:8px;border-color:var(--red);color:var(--red)" onclick="demanderReset()">Réinitialiser l'application</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL 5 POURQUOI — Analyse des causes racines
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-5p" onclick="closeModalOut(event,'modal-5p')">
+  <div class="modal-sheet" style="padding-bottom:32px">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="modal-title" style="margin-bottom:0">Analyse 5 Pourquoi</div>
+      <span class="p5-badge rouge" id="p5-sev-badge">—</span>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Remontez jusqu'à la cause racine en répondant à chaque Pourquoi.</div>
+
+    <!-- Bannière incident -->
+    <div class="p5-inc-banner" id="p5-inc-banner">
+      <div class="p5-inc-banner-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div>
+        <div class="p5-inc-title" id="p5-inc-title">—</div>
+        <div class="p5-inc-meta" id="p5-inc-meta">—</div>
+      </div>
+    </div>
+
+    <!-- Barre de progression -->
+    <div class="p5-progress-bar"><div class="p5-progress-fill" id="p5-progress" style="width:0%"></div></div>
+
+    <!-- Chaîne des 5 Pourquoi -->
+    <div class="p5-chain" id="p5-chain">
+
+      <!-- P1 -->
+      <div class="p5-step">
+        <div class="p5-step-inner active" id="p5-step-1">
+          <div class="p5-step-header">
+            <div class="p5-num">1</div>
+            <div class="p5-label" id="p5-label-1">Pourquoi cet événement s'est-il produit ?</div>
+          </div>
+          <div class="p5-input-row">
+            <textarea class="p5-input" id="p5-ans-1" placeholder="Décrivez la première cause…" oninput="p5Update(1)" rows="2"></textarea>
+            <button class="p5-mic" id="p5-mic-1" onclick="p5StartVoice(1)" title="Dicter la réponse">
+              <svg width="13" height="13" viewBox="0 0 24 24" stroke="var(--text2)" stroke-width="2" fill="none"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p5-arrow"><svg width="16" height="22" viewBox="0 0 16 22" stroke-width="1.5"><line x1="8" y1="0" x2="8" y2="16"/><polyline points="4,12 8,18 12,12"/></svg></div>
+
+      <!-- P2 -->
+      <div class="p5-step">
+        <div class="p5-step-inner locked" id="p5-step-2">
+          <div class="p5-step-header">
+            <div class="p5-num">2</div>
+            <div class="p5-label" id="p5-label-2">Mais pourquoi cette cause existe-t-elle ?</div>
+          </div>
+          <div class="p5-input-row">
+            <textarea class="p5-input" id="p5-ans-2" placeholder="Creusez plus profond…" oninput="p5Update(2)" rows="2"></textarea>
+            <button class="p5-mic" id="p5-mic-2" onclick="p5StartVoice(2)" title="Dicter">
+              <svg width="13" height="13" viewBox="0 0 24 24" stroke="var(--text2)" stroke-width="2" fill="none"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p5-arrow"><svg width="16" height="22" viewBox="0 0 16 22" stroke-width="1.5"><line x1="8" y1="0" x2="8" y2="16"/><polyline points="4,12 8,18 12,12"/></svg></div>
+
+      <!-- P3 -->
+      <div class="p5-step">
+        <div class="p5-step-inner locked" id="p5-step-3">
+          <div class="p5-step-header">
+            <div class="p5-num">3</div>
+            <div class="p5-label" id="p5-label-3">Et pourquoi cela n'a-t-il pas été évité ?</div>
+          </div>
+          <div class="p5-input-row">
+            <textarea class="p5-input" id="p5-ans-3" placeholder="Identifiez la défaillance systémique…" oninput="p5Update(3)" rows="2"></textarea>
+            <button class="p5-mic" id="p5-mic-3" onclick="p5StartVoice(3)" title="Dicter">
+              <svg width="13" height="13" viewBox="0 0 24 24" stroke="var(--text2)" stroke-width="2" fill="none"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p5-arrow"><svg width="16" height="22" viewBox="0 0 16 22" stroke-width="1.5"><line x1="8" y1="0" x2="8" y2="16"/><polyline points="4,12 8,18 12,12"/></svg></div>
+
+      <!-- P4 -->
+      <div class="p5-step">
+        <div class="p5-step-inner locked" id="p5-step-4">
+          <div class="p5-step-header">
+            <div class="p5-num">4</div>
+            <div class="p5-label" id="p5-label-4">Pourquoi cette défaillance existe-t-elle dans le système ?</div>
+          </div>
+          <div class="p5-input-row">
+            <textarea class="p5-input" id="p5-ans-4" placeholder="Organisation, procédure, management…" oninput="p5Update(4)" rows="2"></textarea>
+            <button class="p5-mic" id="p5-mic-4" onclick="p5StartVoice(4)" title="Dicter">
+              <svg width="13" height="13" viewBox="0 0 24 24" stroke="var(--text2)" stroke-width="2" fill="none"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p5-arrow"><svg width="16" height="22" viewBox="0 0 16 22" stroke-width="1.5"><line x1="8" y1="0" x2="8" y2="16"/><polyline points="4,12 8,18 12,12"/></svg></div>
+
+      <!-- P5 -->
+      <div class="p5-step">
+        <div class="p5-step-inner locked" id="p5-step-5">
+          <div class="p5-step-header">
+            <div class="p5-num">5</div>
+            <div class="p5-label" id="p5-label-5">Quelle est la cause racine fondamentale ?</div>
+          </div>
+          <div class="p5-input-row">
+            <textarea class="p5-input" id="p5-ans-5" placeholder="Cause racine profonde — culture, ressources, process…" oninput="p5Update(5)" rows="2"></textarea>
+            <button class="p5-mic" id="p5-mic-5" onclick="p5StartVoice(5)" title="Dicter">
+              <svg width="13" height="13" viewBox="0 0 24 24" stroke="var(--text2)" stroke-width="2" fill="none"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /p5-chain -->
+
+    <!-- Cause racine -->
+    <div class="p5-cause-racine" style="margin-top:16px">
+      <div class="p5-cause-racine-lbl">
+        <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".6" fill="var(--red)"/></svg>
+        Cause racine identifiée
+      </div>
+      <div class="p5-cause-racine-val empty" id="p5-racine-display">Remplissez au moins le premier Pourquoi…</div>
+    </div>
+
+    <!-- Bannière CAPA générée -->
+    <div class="p5-capa-banner" id="p5-capa-done" style="display:none">
+      <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none" style="flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:var(--green)">CAPA générée automatiquement</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px" id="p5-capa-ref">Visible dans l'onglet Animation → CAPA</div>
+      </div>
+      <button class="btn-sm" style="background:var(--green);color:#fff;padding:7px 12px" onclick="switchScreen('toolbox');closeModal('modal-5p')">Voir</button>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn-primary" style="flex:1;margin-top:0" onclick="sauvegarder5P()">Enregistrer l'analyse</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-sm outline" style="flex:1;padding:11px" id="p5-gen-capa-btn" onclick="genererCapaDepuis5P()">
+        <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" style="display:inline-block;vertical-align:middle;margin-right:5px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Générer une CAPA
+      </button>
+      <button class="btn-sm" style="background:var(--blue-light);color:var(--blue);padding:11px 14px;flex-shrink:0" onclick="pdf5P()">
+        <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        PDF
+      </button>
+      <button class="btn-sm outline" style="padding:11px 12px;flex-shrink:0" onclick="closeModal('modal-5p')">Fermer</button>
+    </div>
+
+    <input type="hidden" id="p5-inc-id" value="">
   </div>
 </div>
 
@@ -2765,6 +2966,9 @@ function renderIncidents() {
         ${item.status === 'open' ? `<button class="btn-sm orange" onclick="changerStatutIncident('${item.id}','progress')">En cours</button>` : ''}
         ${item.status === 'progress' ? `<button class="btn-sm green" onclick="changerStatutIncident('${item.id}','closed')">Clôturer</button>` : ''}
         ${item.status === 'closed' ? '' : `<button class="btn-sm outline" onclick="creerCapaDepuis('${item.id}')">→ CAPA</button>`}
+        <button class="btn-sm" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-light)" onclick="ouvrir5P('${item.id}')" title="Analyse 5 Pourquoi — causes racines">
+          <svg width="11" height="11" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="display:inline-block;vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>5P${item.cinqP && item.cinqP.whys && item.cinqP.whys.filter(w=>w).length > 0 ? ' ✓' : ''}
+        </button>
         <button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFicheIncident('${item.id}')">📄 PDF</button>
         <button class="btn-sm outline" onclick="supprimerIncident('${item.id}')">✕</button>
       </div>
@@ -3845,8 +4049,18 @@ function voirDetail(type, id) {
       ${item.cause ? row('Cause immédiate', item.cause) : ''}
       ${item.action ? row('Action immédiate', item.action) : ''}
       ${row('Déclaré par', item.createdBy + ' le ' + fmtDate(item.createdAt))}
-      <div style="margin-top:16px;display:flex;gap:8px">
+      ${item.cinqP && item.cinqP.whys && item.cinqP.whys.filter(w=>w).length > 0 ? `
+      <div style="margin-top:14px;padding:12px;background:var(--red-light);border-radius:10px;border:1px solid var(--red)">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--red);margin-bottom:8px">Analyse 5 Pourquoi</div>
+        ${item.cinqP.whys.filter(w=>w).map((w,i)=>`<div style="display:flex;gap:8px;margin-bottom:6px;align-items:flex-start"><div style="width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</div><div style="font-size:12px;color:var(--text);line-height:1.4">${w}</div></div>`).join('')}
+        ${item.cinqP.causeRacine ? `<div style="margin-top:8px;padding:8px;background:var(--red);border-radius:7px"><div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Cause racine</div><div style="font-size:12px;color:#fff;font-weight:600;line-height:1.4">${item.cinqP.causeRacine}</div></div>`:''}
+        ${item.cinqP.capaId ? `<div style="margin-top:8px;font-size:11px;color:var(--green);font-weight:600">CAPA associée : #${item.cinqP.capaNum||'—'}</div>`:''}
+      </div>` : ''}
+      <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
         ${item.status !== 'closed' ? `<button class="btn-sm orange" onclick="changerStatutIncident('${item.id}','${item.status==='open'?'progress':'closed'}');closeModal('modal-detail')">→ ${item.status==='open'?'Démarrer':'Clôturer'}</button>` : ''}
+        <button class="btn-sm" style="background:var(--red-light);color:var(--red)" onclick="closeModal('modal-detail');setTimeout(()=>ouvrir5P('${item.id}'),200)">
+          <svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="display:inline-block;vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>${item.cinqP && item.cinqP.whys && item.cinqP.whys.filter(w=>w).length > 0 ? 'Modifier 5P' : 'Analyser 5P'}
+        </button>
         <button class="btn-sm outline" onclick="closeModal('modal-detail')">Fermer</button>
       </div>`;
   } else if (type === 'induction') {
@@ -4616,6 +4830,62 @@ function pdfFicheIncident(id) {
 
   // Photos
   y = _pdfAddPhotos(doc, inc.photos, y, 'Fiche Incident');
+
+  // ── Section 5 Pourquoi ──
+  if (inc.cinqP && inc.cinqP.whys && inc.cinqP.whys.filter(w=>w).length > 0) {
+    y = pageCheck(doc, y, 60, 'Fiche Incident', '');
+    y = pdfSectionTitle(doc, 'ANALYSE DES CAUSES RACINES — 5 POURQUOI', y, c.red);
+    const whys = inc.cinqP.whys.filter(w=>w);
+    const stepColors = [c.orange, c.orange, c.red, c.red, c.red];
+    whys.forEach(function(why, i) {
+      y = pageCheck(doc, y, 30, 'Fiche Incident', '');
+      // Numéro coloré
+      doc.setFillColor(...(stepColors[i] || c.red));
+      doc.circle(17, y+4, 3.5, 'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+      doc.text(String(i+1), 17, y+5.5, {align:'center'});
+      // Flèche de liaison
+      if (i < whys.length - 1) {
+        doc.setDrawColor(...c.lightGray); doc.setLineWidth(0.5);
+        doc.line(17, y+8, 17, y+14);
+      }
+      // Label question
+      const labels = [
+        'Pourquoi cet événement s\'est-il produit ?',
+        'Mais pourquoi cette cause existe-t-elle ?',
+        'Et pourquoi cela n\'a-t-il pas été évité ?',
+        'Pourquoi cette défaillance existe-t-elle ?',
+        'Quelle est la cause racine fondamentale ?'
+      ];
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...(stepColors[i] || c.red));
+      doc.text(labels[i], 24, y+3);
+      // Réponse
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
+      const whyLines = doc.splitTextToSize(why, w-42);
+      doc.text(whyLines, 24, y+8.5);
+      y += Math.max(14, whyLines.length * 4.5 + 6);
+    });
+    // Cause racine encadrée
+    if (inc.cinqP.causeRacine) {
+      y = pageCheck(doc, y, 25, 'Fiche Incident', '');
+      doc.setFillColor(...c.red); doc.roundedRect(14, y, w-28, 4, 1, 1, 'F');
+      y += 7;
+      doc.setFillColor(253, 235, 235); doc.roundedRect(14, y, w-28, 18, 1, 1, 'F');
+      doc.setDrawColor(...c.red); doc.setLineWidth(0.5); doc.roundedRect(14, y, w-28, 18, 1, 1, 'S');
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...c.red);
+      doc.text('CAUSE RACINE IDENTIFIÉE :', 18, y+5);
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...c.text);
+      const racineLines = doc.splitTextToSize(inc.cinqP.causeRacine, w-38);
+      doc.text(racineLines, 18, y+12);
+      y += Math.max(22, racineLines.length * 4.5 + 8);
+    }
+    if (inc.cinqP.capaId) {
+      doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(...c.green);
+      doc.text('CAPA générée automatiquement : #' + (inc.cinqP.capaNum||'—'), 14, y+4);
+      y += 10;
+    }
+    y += 4;
+  }
 
   // Signature zone
   y = pageCheck(doc, y, 235, 'Fiche Incident', '');
@@ -7054,6 +7324,461 @@ function initSig(canvasId) {
   canvas.addEventListener('touchend', ()=>drawing=false);
 }
 function clearSig(id) { const c=document.getElementById(id);if(c)c.getContext('2d').clearRect(0,0,c.width,c.height); }
+
+// ═══════════════════════════════════════════════════════════
+// MODULE 5 POURQUOI — ANALYSE DES CAUSES RACINES
+// ═══════════════════════════════════════════════════════════
+
+var _p5IncId = null;
+var _p5SpeechActive = null;
+
+// Labels contextuels selon la sévérité de l'incident
+var P5_QUESTIONS = [
+  'Pourquoi cet événement s\'est-il produit ?',
+  'Mais pourquoi cette cause existe-t-elle ?',
+  'Et pourquoi cela n\'a-t-il pas été évité ?',
+  'Pourquoi cette défaillance existe-t-elle dans le système ?',
+  'Quelle est la cause racine fondamentale ?'
+];
+
+// Ouvrir le modal 5P pour un incident donné
+function ouvrir5P(incId) {
+  var inc = null;
+  for (var i = 0; i < DB.incidents.length; i++) {
+    if (DB.incidents[i].id == incId) { inc = DB.incidents[i]; break; }
+  }
+  if (!inc) return;
+  _p5IncId = incId;
+
+  // Bannière incident
+  document.getElementById('p5-inc-id').value = incId;
+  document.getElementById('p5-inc-title').textContent = inc.type + ' — ' + inc.zone;
+  document.getElementById('p5-inc-meta').textContent = fmtDate(inc.date) + (inc.heure ? ' à ' + inc.heure : '') + (inc.personnes ? ' · ' + inc.personnes : '');
+
+  // Badge sévérité
+  var badge = document.getElementById('p5-sev-badge');
+  var sevMap = { 'Mineur': 'vert', 'Modéré': 'orange', 'Sérieux': 'orange', 'Critique': 'rouge' };
+  badge.className = 'p5-badge ' + (sevMap[inc.sev] || 'orange');
+  badge.textContent = inc.sev || '—';
+
+  // Remplir les réponses existantes si analyse déjà faite
+  var existing = inc.cinqP && inc.cinqP.whys ? inc.cinqP.whys : ['', '', '', '', ''];
+  for (var n = 1; n <= 5; n++) {
+    var ta = document.getElementById('p5-ans-' + n);
+    if (ta) ta.value = existing[n - 1] || '';
+  }
+
+  // Réinitialiser états visuels
+  p5RefreshAll();
+
+  // Cacher bannière CAPA si déjà présente
+  if (inc.cinqP && inc.cinqP.capaId) {
+    var capaNum = inc.cinqP.capaNum || '—';
+    document.getElementById('p5-capa-done').style.display = 'flex';
+    document.getElementById('p5-capa-ref').textContent = 'CAPA #' + capaNum + ' déjà générée';
+  } else {
+    document.getElementById('p5-capa-done').style.display = 'none';
+  }
+
+  openModal('modal-5p');
+  // Focus sur le premier champ non rempli
+  setTimeout(function() {
+    for (var k = 1; k <= 5; k++) {
+      var v = (document.getElementById('p5-ans-' + k).value || '').trim();
+      if (!v) {
+        document.getElementById('p5-ans-' + k).focus();
+        break;
+      }
+    }
+  }, 350);
+}
+
+// Appelée à chaque frappe dans un champ
+function p5Update(step) {
+  p5RefreshAll();
+}
+
+// Recalcule tous les états (locked / active / done) + progression + cause racine
+function p5RefreshAll() {
+  var vals = [];
+  for (var i = 1; i <= 5; i++) {
+    var el = document.getElementById('p5-ans-' + i);
+    vals.push(el ? el.value.trim() : '');
+  }
+
+  var filled = vals.filter(function(v) { return v.length > 0; }).length;
+  var pct = Math.round((filled / 5) * 100);
+  document.getElementById('p5-progress').style.width = pct + '%';
+
+  for (var n = 1; n <= 5; n++) {
+    var box = document.getElementById('p5-step-' + n);
+    if (!box) continue;
+    var prev = n === 1 ? true : vals[n - 2].length > 0;
+    var curr = vals[n - 1].length > 0;
+
+    box.className = 'p5-step-inner ' + (curr ? 'done' : (prev ? 'active' : 'locked'));
+
+    // Mise à jour du label dynamique (contextualisation)
+    var lbl = document.getElementById('p5-label-' + n);
+    if (lbl) {
+      if (curr && n < 5) {
+        lbl.textContent = 'Pourquoi n°' + n + ' — ✓ Complété';
+      } else {
+        lbl.textContent = P5_QUESTIONS[n - 1];
+      }
+    }
+  }
+
+  // Cause racine = dernière réponse non vide
+  var racine = '';
+  for (var r = vals.length - 1; r >= 0; r--) {
+    if (vals[r].length > 0) { racine = vals[r]; break; }
+  }
+  var racineEl = document.getElementById('p5-racine-display');
+  if (racine) {
+    racineEl.textContent = racine;
+    racineEl.className = 'p5-cause-racine-val';
+  } else {
+    racineEl.textContent = 'Remplissez au moins le premier Pourquoi…';
+    racineEl.className = 'p5-cause-racine-val empty';
+  }
+}
+
+// Sauvegarder l'analyse dans l'incident
+function sauvegarder5P() {
+  if (!_p5IncId) return;
+  var inc = null;
+  for (var i = 0; i < DB.incidents.length; i++) {
+    if (DB.incidents[i].id == _p5IncId) { inc = DB.incidents[i]; break; }
+  }
+  if (!inc) return;
+
+  var whys = [];
+  for (var n = 1; n <= 5; n++) {
+    var el = document.getElementById('p5-ans-' + n);
+    whys.push(el ? el.value.trim() : '');
+  }
+
+  var filled = whys.filter(function(w) { return w.length > 0; });
+  if (filled.length === 0) {
+    showToast('Répondez à au moins un Pourquoi avant d\'enregistrer', 'err');
+    return;
+  }
+
+  // Cause racine = dernière réponse remplie
+  var causeRacine = '';
+  for (var r = whys.length - 1; r >= 0; r--) {
+    if (whys[r].length > 0) { causeRacine = whys[r]; break; }
+  }
+
+  if (!inc.cinqP) inc.cinqP = {};
+  inc.cinqP.whys = whys;
+  inc.cinqP.causeRacine = causeRacine;
+  inc.cinqP.updatedAt = nowISO();
+  inc.cinqP.updatedBy = DB.config.nom;
+
+  save();
+  addActivity('5P complété — ' + inc.type + ' (' + filled.length + '/5 causes)', 'red');
+  showToast('Analyse 5P enregistrée (' + filled.length + '/5 niveaux)');
+
+  if (currentScreen === 'incidents') renderIncidents();
+  if (currentScreen === 'home') renderHome();
+}
+
+// Générer automatiquement une CAPA depuis la cause racine
+function genererCapaDepuis5P() {
+  if (!_p5IncId) return;
+  var inc = null;
+  for (var i = 0; i < DB.incidents.length; i++) {
+    if (DB.incidents[i].id == _p5IncId) { inc = DB.incidents[i]; break; }
+  }
+  if (!inc) return;
+
+  // Vérifier qu'au moins une cause existe
+  var whys = [];
+  for (var n = 1; n <= 5; n++) {
+    var el = document.getElementById('p5-ans-' + n);
+    whys.push(el ? el.value.trim() : '');
+  }
+  var filled = whys.filter(function(w) { return w.length > 0; });
+  if (filled.length === 0) {
+    showToast('Répondez à au moins un Pourquoi avant de générer une CAPA', 'err');
+    return;
+  }
+
+  // Sauvegarder d'abord
+  if (!inc.cinqP) inc.cinqP = {};
+  inc.cinqP.whys = whys;
+  var causeRacine = '';
+  for (var r = whys.length - 1; r >= 0; r--) {
+    if (whys[r].length > 0) { causeRacine = whys[r]; break; }
+  }
+  inc.cinqP.causeRacine = causeRacine;
+
+  // Si CAPA déjà générée
+  if (inc.cinqP.capaId) {
+    showToast('Une CAPA existe déjà pour cet incident (CAPA #' + (inc.cinqP.capaNum || '—') + ')', 'err');
+    return;
+  }
+
+  // Construire la description CAPA depuis la chaîne 5P
+  var desc5P = 'Analyse 5 Pourquoi :\n';
+  whys.forEach(function(w, idx) {
+    if (w) desc5P += 'P' + (idx + 1) + '. ' + w + '\n';
+  });
+  desc5P += '\nCause racine identifiée : ' + causeRacine;
+
+  // Numéro CAPA
+  var capaNum = (DB.capas.length > 0
+    ? Math.max.apply(null, DB.capas.map(function(c) { return parseInt(c.num) || 0; })) + 1
+    : 1);
+
+  var capaId = Date.now();
+  var newCapa = {
+    id: capaId,
+    num: capaNum,
+    type: 'corrective',
+    titre: 'Action corrective — ' + inc.type + ' (' + inc.zone + ')',
+    desc: desc5P,
+    resp: DB.config.nom,
+    echeance: '',
+    origine: '5 Pourquoi — Incident ' + fmtDate(inc.date),
+    status: 'open',
+    createdAt: nowISO(),
+    createdBy: DB.config.nom
+  };
+  DB.capas.push(newCapa);
+
+  // Lier la CAPA à l'incident
+  inc.cinqP.capaId = capaId;
+  inc.cinqP.capaNum = capaNum;
+  inc.cinqP.updatedAt = nowISO();
+
+  save();
+  addActivity('CAPA #' + capaNum + ' générée depuis analyse 5P', 'green');
+
+  // Afficher bannière confirmation
+  document.getElementById('p5-capa-done').style.display = 'flex';
+  document.getElementById('p5-capa-ref').textContent = 'CAPA #' + capaNum + ' créée — échéance à définir';
+
+  showToast('CAPA #' + capaNum + ' générée depuis l\'analyse 5P ✓');
+
+  if (currentScreen === 'incidents') renderIncidents();
+}
+
+// Dictée vocale sur un champ (Web Speech API)
+function p5StartVoice(step) {
+  var btn = document.getElementById('p5-mic-' + step);
+  var ta = document.getElementById('p5-ans-' + step);
+  if (!ta) return;
+
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('Dictée vocale non disponible sur ce navigateur', 'err');
+    return;
+  }
+
+  // Arrêter une session précédente
+  if (_p5SpeechActive) {
+    try { _p5SpeechActive.stop(); } catch(e) {}
+    _p5SpeechActive = null;
+    if (btn) btn.classList.remove('recording');
+    return;
+  }
+
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recog = new SpeechRecognition();
+  recog.lang = 'fr-FR';
+  recog.continuous = false;
+  recog.interimResults = false;
+  _p5SpeechActive = recog;
+
+  if (btn) btn.classList.add('recording');
+  showToast('Parlez maintenant… (touchez à nouveau pour arrêter)');
+
+  recog.onresult = function(e) {
+    var transcript = e.results[0][0].transcript;
+    // Ajouter au texte existant
+    var prev = ta.value.trim();
+    ta.value = prev ? prev + ' ' + transcript : transcript;
+    p5Update(step);
+    showToast('Dictée enregistrée ✓');
+  };
+
+  recog.onerror = function(e) {
+    showToast('Dictée interrompue — ' + (e.error || 'erreur'), 'err');
+  };
+
+  recog.onend = function() {
+    if (btn) btn.classList.remove('recording');
+    _p5SpeechActive = null;
+  };
+
+  recog.start();
+}
+
+// Générer le PDF de l'analyse 5P seule
+function pdf5P() {
+  if (!_p5IncId) return;
+  var inc = null;
+  for (var i = 0; i < DB.incidents.length; i++) {
+    if (DB.incidents[i].id == _p5IncId) { inc = DB.incidents[i]; break; }
+  }
+  if (!inc) return;
+
+  // Récupérer les réponses actuelles du formulaire (pas forcément sauvegardées)
+  var whys = [];
+  for (var n = 1; n <= 5; n++) {
+    var el = document.getElementById('p5-ans-' + n);
+    whys.push(el ? el.value.trim() : '');
+  }
+
+  if (!window.jspdf) { showToast('Librairie PDF en chargement', 'err'); return; }
+  var c = C();
+  var base = _pdfBase('ANALYSE DES CAUSES RACINES — 5 POURQUOI', DB.chantier + ' — ' + fmtDate(inc.createdAt));
+  var doc = base.doc, y = base.y;
+  var w = doc.internal.pageSize.width;
+
+  // Bloc incident source
+  y = pdfSectionTitle(doc, 'INCIDENT SOURCE', y, c.orange);
+  doc.autoTable({
+    startY: y, margin: {left:14, right:14},
+    body: [
+      ['Référence', 'Incident du ' + fmtDate(inc.date) + (inc.heure ? ' à ' + inc.heure : '')],
+      ['Type', inc.type],
+      ['Gravité', inc.sev || '—'],
+      ['Zone', inc.zone],
+      ['Personne(s)', inc.personnes || '—'],
+      ['Description', inc.desc || '—'],
+    ],
+    styles: {fontSize:8.5, cellPadding:3},
+    columnStyles: {0: {cellWidth:45, fontStyle:'bold', fillColor:[252,245,240], textColor:c.text2}},
+    theme: 'plain', tableLineColor: c.lightGray, tableLineWidth: 0.3,
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  // Chaîne 5P
+  y = pdfSectionTitle(doc, 'CHAÎNE DES 5 POURQUOI', y, c.red);
+
+  var labels5p = [
+    'Pourquoi cet événement s\'est-il produit ?',
+    'Mais pourquoi cette cause existe-t-elle ?',
+    'Et pourquoi cela n\'a-t-il pas été évité ?',
+    'Pourquoi cette défaillance existe-t-elle dans le système ?',
+    'Quelle est la cause racine fondamentale ?'
+  ];
+  var colorsStep = [c.amber, c.amber, c.orange, c.orange, c.red];
+  var answered = 0;
+
+  whys.forEach(function(why, idx) {
+    y = pageCheck(doc, y, 30, 'Analyse 5 Pourquoi', inc.type);
+    var col = colorsStep[idx];
+    var isEmpty = !why;
+
+    // Fond de case
+    doc.setFillColor(isEmpty ? 248 : 255, isEmpty ? 248 : 248, isEmpty ? 248 : 248);
+    doc.setDrawColor(isEmpty ? 220 : col[0], isEmpty ? 220 : col[1], isEmpty ? 220 : col[2]);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(14, y, w - 28, isEmpty ? 12 : 20, 2, 2, isEmpty ? 'F' : 'FD');
+
+    // Accent coloré gauche
+    if (!isEmpty) {
+      doc.setFillColor(...col);
+      doc.roundedRect(14, y, 4, isEmpty ? 12 : 20, 1, 1, 'F');
+    }
+
+    // Cercle numéro
+    doc.setFillColor(...(isEmpty ? [210,210,210] : col));
+    doc.circle(23, y + (isEmpty ? 6 : 10), 4, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255, 255, 255);
+    doc.text(String(idx + 1), 23, y + (isEmpty ? 7.5 : 11.5), {align:'center'});
+
+    // Question
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+    doc.setTextColor(...(isEmpty ? [180,180,180] : col));
+    doc.text(labels5p[idx], 31, y + 5);
+
+    if (!isEmpty) {
+      // Réponse
+      var lines = doc.splitTextToSize(why, w - 50);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
+      doc.text(lines, 31, y + 11);
+      y += Math.max(24, lines.length * 4.5 + 10);
+      answered++;
+    } else {
+      doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(...[200,200,200]);
+      doc.text('(non renseigné)', 31, y + 8);
+      y += 16;
+    }
+
+    // Flèche si pas le dernier
+    if (idx < 4) {
+      doc.setDrawColor(...(isEmpty ? [210,210,210] : col));
+      doc.setLineWidth(0.6);
+      doc.line(23, y, 23, y + 5);
+      doc.setFillColor(...(isEmpty ? [210,210,210] : col));
+      doc.triangle(20, y + 5, 26, y + 5, 23, y + 8, 'F');
+      y += 10;
+    }
+  });
+
+  // Bloc cause racine
+  y += 6;
+  y = pageCheck(doc, y, 35, 'Analyse 5 Pourquoi', '');
+  var causeRacine = '';
+  for (var r = whys.length - 1; r >= 0; r--) {
+    if (whys[r].length > 0) { causeRacine = whys[r]; break; }
+  }
+
+  if (causeRacine) {
+    // Fond rouge
+    doc.setFillColor(...c.red);
+    doc.roundedRect(14, y, w - 28, 7, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255);
+    doc.text('CAUSE RACINE IDENTIFIÉE', w / 2, y + 5, {align: 'center'});
+    y += 10;
+
+    doc.setFillColor(253, 235, 235);
+    doc.setDrawColor(...c.red); doc.setLineWidth(0.5);
+    var causeLines = doc.splitTextToSize(causeRacine, w - 40);
+    var causeH = Math.max(18, causeLines.length * 5 + 8);
+    doc.roundedRect(14, y, w - 28, causeH, 2, 2, 'FD');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...c.text);
+    doc.text(causeLines, 22, y + 7);
+    y += causeH + 8;
+  }
+
+  // Bloc CAPA associée
+  if (inc.cinqP && inc.cinqP.capaId) {
+    y = pageCheck(doc, y, 20, 'Analyse 5 Pourquoi', '');
+    doc.setFillColor(...c.green);
+    doc.roundedRect(14, y, w - 28, 12, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255);
+    doc.text('CAPA #' + (inc.cinqP.capaNum || '—') + ' générée automatiquement depuis cette analyse', w / 2, y + 8, {align:'center'});
+    y += 16;
+  }
+
+  // Signatures
+  y = pageCheck(doc, y, 40, 'Analyse 5 Pourquoi', '');
+  y += 4;
+  doc.setDrawColor(...c.lightGray); doc.setLineWidth(0.3);
+  var hw = (w - 28) / 2 - 4;
+  doc.roundedRect(14, y, hw, 24, 2, 2, 'S');
+  doc.roundedRect(14 + hw + 8, y, hw, 24, 2, 2, 'S');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...c.text2);
+  doc.text('Réalisé par', 20, y + 5);
+  doc.text('Validé par (HSE)', 20 + hw + 8, y + 5);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
+  doc.text(DB.config.nom || '—', 20, y + 14);
+  doc.text(DB.config.nom || '—', 20 + hw + 8, y + 14);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...c.text2);
+  doc.text('Date : ' + fmtDate(nowISO()), 20, y + 20);
+  doc.text(DB.config.fonction || 'Responsable HSE', 20 + hw + 8, y + 20);
+
+  pdfFooter(doc);
+  doc.save('5Pourquoi_' + inc.type.replace(/[^a-z0-9]/gi,'_').slice(0,25) + '_' + fmtDate(inc.date).replace(/\//g,'-') + '.pdf');
+  showToast('Rapport 5 Pourquoi téléchargé ✓');
+}
+// ═══════════════════ FIN MODULE 5P ═══════════════════════
 </script>
 </body>
 </html>
