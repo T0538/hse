@@ -216,6 +216,53 @@ body.dark-mode .tour-obs-input{background:#1E1E1C;color:var(--text);border-color
 body.dark-mode .tour-hist-card,.tour-summary-chip{background:var(--surface)}
 body.dark-mode .tour-nc-list{background:#3A1010}
 
+/* ── PLANIFICATEUR MENSUEL QUART D'HEURE ── */
+.qhs-tabs{display:flex;gap:0;margin:0 16px 14px;background:var(--gray-light);border-radius:var(--radius-sm);padding:3px}
+.qhs-tab{flex:1;padding:8px 4px;border-radius:6px;border:none;background:transparent;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s;text-align:center}
+.qhs-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.qhs-month-nav{display:flex;align-items:center;justify-content:space-between;padding:0 16px;margin-bottom:12px}
+.qhs-month-label{font-family:var(--font-head);font-size:20px;font-weight:700;color:var(--text);letter-spacing:.3px}
+.qhs-nav-btn{width:34px;height:34px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.qhs-nav-btn:active{background:var(--gray-mid)}
+.qhs-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px 14px}
+.qhs-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center}
+.qhs-stat-num{font-family:var(--font-head);font-size:22px;font-weight:800;line-height:1}
+.qhs-stat-lbl{font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.qhs-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0 16px 16px}
+.qhs-slot{border-radius:10px;border:1.5px solid var(--border);padding:8px 6px;cursor:pointer;transition:all .15s;min-height:70px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.qhs-slot:active{opacity:.8}
+.qhs-slot.vide{background:var(--surface);border-style:dashed}
+.qhs-slot.planifie{background:var(--blue-light);border-color:var(--blue)}
+.qhs-slot.realise{background:var(--green-light);border-color:var(--green-mid)}
+.qhs-slot.retard{background:var(--red-light);border-color:var(--red)}
+.qhs-slot-num{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.3px}
+.qhs-slot.planifie .qhs-slot-num{color:var(--blue)}
+.qhs-slot.realise .qhs-slot-num{color:var(--green)}
+.qhs-slot.retard .qhs-slot-num{color:var(--red)}
+.qhs-slot-theme{font-size:9.5px;font-weight:600;color:var(--text);line-height:1.25;margin-top:3px;flex:1}
+.qhs-slot.vide .qhs-slot-theme{color:var(--text3);font-weight:400;font-style:italic}
+.qhs-slot-status{font-size:9px;font-weight:700;margin-top:4px}
+.qhs-slot.planifie .qhs-slot-status{color:var(--blue)}
+.qhs-slot.realise .qhs-slot-status{color:var(--green)}
+.qhs-slot.retard .qhs-slot-status{color:var(--red)}
+.qhs-slot.vide .qhs-slot-status{color:var(--text3)}
+.qhs-modal-slots{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.qhs-slot-pick{border:1.5px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;background:var(--surface);transition:border-color .15s}
+.qhs-slot-pick.sel{border-color:var(--orange);background:var(--orange-light)}
+.qhs-slot-pick-num{font-size:10px;font-weight:700;color:var(--text3)}
+.qhs-slot-pick-theme{font-size:11px;font-weight:600;color:var(--text);margin-top:2px;line-height:1.3}
+.qhs-slot-pick.realise{background:var(--green-light);border-color:var(--green-mid);opacity:.6;cursor:default}
+.qhs-pdf-banner{border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green-mid));padding:14px 16px;margin:0 16px 14px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.qhs-pdf-banner-icon{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qhs-pdf-banner-text{flex:1}
+.qhs-pdf-banner-title{font-size:13px;font-weight:700;color:#fff}
+.qhs-pdf-banner-sub{font-size:11px;color:rgba(255,255,255,.8);margin-top:1px}
+body.dark-mode .qhs-stat{background:var(--surface)}
+body.dark-mode .qhs-slot.vide{background:var(--surface)}
+body.dark-mode .qhs-slot.planifie{background:#0E1E3A;border-color:var(--blue)}
+body.dark-mode .qhs-slot.realise{background:#1A2E0A;border-color:var(--green-mid)}
+body.dark-mode .qhs-slot.retard{background:#3A1010;border-color:var(--red)}
+
 /* ── QR CODE MODAL ── */
 .qr-modal-agent{text-align:center;padding:8px 0 16px}
 .qr-canvas-wrap{display:flex;justify-content:center;margin:14px 0}
@@ -897,35 +944,147 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
   <div class="topbar">
     <div>
       <div class="topbar-brand"><div class="brand-dot"></div><div class="topbar-title">Animation HSE</div></div>
-      <div class="topbar-sub">Toolbox Talks · Actions CAPA</div>
+      <div class="topbar-sub" id="qhs-topbar-sub">Quarts d'heure sécurité · CAPA</div>
     </div>
-    <button class="btn-sm orange" onclick="openModal('modal-toolbox')">+ Talk</button>
+    <button class="btn-sm orange" id="qhs-add-btn" onclick="ouvrirAjoutQHS()">+ Session</button>
   </div>
 
-  <div class="section-title">Sessions Toolbox</div>
-  <div id="toolbox-list"></div>
+  <!-- Tabs -->
+  <div class="qhs-tabs">
+    <button class="qhs-tab active" id="qtab-plan" onclick="switchQHSTab('plan')">📅 Planification</button>
+    <button class="qhs-tab" id="qtab-sessions" onclick="switchQHSTab('sessions')">📋 Sessions</button>
+    <button class="qhs-tab" id="qtab-capa" onclick="switchQHSTab('capa')">✅ CAPA</button>
+  </div>
 
-  <div class="section-title">Actions CAPA</div>
-  <div class="filters-bar" id="capa-filters">
-    <div class="filter-chip active" data-filter="all" onclick="filterCapa('all',this)">Toutes</div>
-    <div class="filter-chip" data-filter="open" onclick="filterCapa('open',this)">Ouvertes</div>
-    <div class="filter-chip" data-filter="progress" onclick="filterCapa('progress',this)">En cours</div>
-    <div class="filter-chip" data-filter="closed" onclick="filterCapa('closed',this)">Clôturées</div>
+  <!-- TAB : Planification mensuelle -->
+  <div id="qtab-plan-content">
+    <!-- Navigateur de mois -->
+    <div class="qhs-month-nav">
+      <button class="qhs-nav-btn" onclick="qhsNavMois(-1)">
+        <svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--text)" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="qhs-month-label" id="qhs-month-label">—</div>
+      <button class="qhs-nav-btn" onclick="qhsNavMois(1)">
+        <svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--text)" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="qhs-stats-bar">
+      <div class="qhs-stat"><div class="qhs-stat-num" id="qhs-s-plan" style="color:var(--blue)">0</div><div class="qhs-stat-lbl">Planifiés</div></div>
+      <div class="qhs-stat"><div class="qhs-stat-num" id="qhs-s-done" style="color:var(--green)">0</div><div class="qhs-stat-lbl">Réalisés</div></div>
+      <div class="qhs-stat"><div class="qhs-stat-num" id="qhs-s-retard" style="color:var(--red)">0</div><div class="qhs-stat-lbl">En retard</div></div>
+      <div class="qhs-stat"><div class="qhs-stat-num" id="qhs-s-vide" style="color:var(--text3)">0</div><div class="qhs-stat-lbl">À planifier</div></div>
+    </div>
+
+    <!-- Bouton PDF mensuel -->
+    <div class="qhs-pdf-banner" onclick="pdfPlanMensuel()">
+      <div class="qhs-pdf-banner-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="qhs-pdf-banner-text">
+        <div class="qhs-pdf-banner-title">Exporter le programme mensuel</div>
+        <div class="qhs-pdf-banner-sub">PDF de diffusion — 26 sessions planifiées</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <!-- Grille 26 slots -->
+    <div class="qhs-grid" id="qhs-grid"></div>
   </div>
-  <div class="date-filter-bar" id="capa-date-filters">
-    <div class="date-chip active" data-period="all" onclick="setCapaDateFilter('all',this)">Toutes dates</div>
-    <div class="date-chip" data-period="30" onclick="setCapaDateFilter('30',this)">30 jours</div>
-    <div class="date-chip" data-period="90" onclick="setCapaDateFilter('90',this)">3 mois</div>
-    <div class="date-chip" data-period="custom" onclick="setCapaDateFilter('custom',this)">Période…</div>
+
+  <!-- TAB : Sessions réalisées -->
+  <div id="qtab-sessions-content" style="display:none">
+    <div id="toolbox-list"></div>
   </div>
-  <div class="date-custom-row" id="capa-date-custom" style="display:none">
-    <input type="date" id="capa-date-from" onchange="renderCapa()">
-    <span style="font-size:12px;color:var(--text3)">→</span>
-    <input type="date" id="capa-date-to" onchange="renderCapa()">
+
+  <!-- TAB : CAPA -->
+  <div id="qtab-capa-content" style="display:none">
+    <div class="filters-bar" id="capa-filters">
+      <div class="filter-chip active" data-filter="all" onclick="filterCapa('all',this)">Toutes</div>
+      <div class="filter-chip" data-filter="open" onclick="filterCapa('open',this)">Ouvertes</div>
+      <div class="filter-chip" data-filter="progress" onclick="filterCapa('progress',this)">En cours</div>
+      <div class="filter-chip" data-filter="closed" onclick="filterCapa('closed',this)">Clôturées</div>
+    </div>
+    <div class="date-filter-bar" id="capa-date-filters">
+      <div class="date-chip active" onclick="setCapaDateFilter('all',this)">Toutes dates</div>
+      <div class="date-chip" onclick="setCapaDateFilter('30',this)">30 jours</div>
+      <div class="date-chip" onclick="setCapaDateFilter('90',this)">3 mois</div>
+      <div class="date-chip" onclick="setCapaDateFilter('custom',this)">Période…</div>
+    </div>
+    <div class="date-custom-row" id="capa-date-custom" style="display:none">
+      <input type="date" id="capa-date-from" onchange="renderCapa()">
+      <span style="font-size:12px;color:var(--text3)">→</span>
+      <input type="date" id="capa-date-to" onchange="renderCapa()">
+    </div>
+    <div id="capa-list"></div>
+    <div style="padding:0 16px 4px"><button class="btn-primary" onclick="openModal('modal-capa')">+ Nouvelle Action CAPA</button></div>
   </div>
-  <div id="capa-list"></div>
-  <div style="padding:0 16px 4px"><button class="btn-primary" onclick="openModal('modal-capa')">+ Nouvelle Action CAPA</button></div>
+
   <div class="spacer"></div>
+</div>
+
+<!-- Modal planification slot QHS -->
+<div class="modal-overlay" id="modal-qhs-slot" onclick="closeModalOut(event,'modal-qhs-slot')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="qhs-slot-modal-title">Session #1</div>
+    <input type="hidden" id="qhs-slot-num" value="">
+    <div class="form-group">
+      <label class="form-label">Thème de la session *</label>
+      <select class="form-select" id="qhs-slot-theme-sel" onchange="qhsSlotThemeSel(this.value)">
+        <option value="">-- Choisir un thème --</option>
+        <option>Travaux en hauteur — Risques & Prévention</option>
+        <option>Sécurité levage — Grue et élingage</option>
+        <option>Port obligatoire des EPI</option>
+        <option>Procédures d'urgence et évacuation</option>
+        <option>Prévention chaleur et hydratation</option>
+        <option>Soudage sécurisé — Risques incendie</option>
+        <option>Ordre et rangement — Méthode 5S</option>
+        <option>Signalement incidents et presqu'accidents</option>
+        <option>Conduite sécurisée des engins</option>
+        <option>Risques électriques sur chantier</option>
+        <option>Analyse des risques avant démarrage</option>
+        <option>Travail en espace confiné</option>
+        <option>Manutention manuelle — Gestes et postures</option>
+        <option>Protection contre les chutes d'objets</option>
+        <option>Permis de travaux — Rôle et responsabilités</option>
+        <option>Risques chimiques et produits dangereux</option>
+        <option>Bruit et vibrations sur chantier</option>
+        <option>Co-activité et coordination interentreprises</option>
+        <option>Premiers secours — Gestes qui sauvent</option>
+        <option>Risques routiers — Circulation sur site</option>
+        <option>Travail par fortes chaleurs — Plan canicule</option>
+        <option>Alcool et drogues — Tolérance zéro</option>
+        <option>Habilitations et formations obligatoires</option>
+        <option>Signalisation et balisage de chantier</option>
+        <option>Retour d'expérience — Incident de la semaine</option>
+        <option>Bilan sécurité mensuel — Chiffres et objectifs</option>
+        <option value="__libre__">✏️ Thème libre…</option>
+      </select>
+      <input class="form-input" id="qhs-slot-theme-libre" type="text" placeholder="Saisissez votre thème…" style="margin-top:8px;display:none">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date prévue</label>
+        <input class="form-input" type="date" id="qhs-slot-date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Heure</label>
+        <input class="form-input" type="time" id="qhs-slot-heure" value="07:30">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Animateur prévu</label>
+      <input class="form-input" type="text" id="qhs-slot-animateur" placeholder="Nom du responsable">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Objectif / Message clé</label>
+      <textarea class="form-textarea" id="qhs-slot-objectif" placeholder="Ce que les équipes doivent retenir de cette session…" style="min-height:65px"></textarea>
+    </div>
+    <button class="btn-primary" onclick="sauvegarderSlotQHS()">Enregistrer la planification</button>
+    <button class="btn-secondary" onclick="closeModal('modal-qhs-slot')">Annuler</button>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════
@@ -2742,6 +2901,7 @@ function load() {
   if (!DB.permis)              DB.permis              = [];
   if (!DB.permisCounter)       DB.permisCounter       = 1;
   if (!DB.tournees)            DB.tournees            = [];
+  if (!DB.qhsPlan)             DB.qhsPlan             = {}; // clé: 'YYYY-MM', val: [{slot,theme,date,heure,animateur,objectif,toolboxId}]
 }
 
 // ═══════════════════════════════════════════════
@@ -2865,7 +3025,7 @@ function switchScreen(name) {
   if (name === 'home') renderHome();
   if (name === 'incidents') renderIncidents();
   if (name === 'jsa') { renderJSA(); renderPermis(); }
-  if (name === 'toolbox') renderToolbox();
+  if (name === 'toolbox') { renderToolbox(); switchQHSTab(_qhsActiveTab || 'plan'); }
   if (name === 'personnel') renderPersonnel();
   if (name === 'exports') renderExports();
   if (name === 'tournee') renderTournee();
@@ -4114,42 +4274,582 @@ function tbThemeInput(val) {
   // Sync so sauvegarderToolbox can read it directly
 }
 
+// ═══════════════════════════════════════════════════════════
+// PLANIFICATEUR MENSUEL QUARTS D'HEURE SÉCURITÉ
+// ═══════════════════════════════════════════════════════════
+
+var _qhsMoisActuel = new Date().getFullYear() + '-' + String(new Date().getMonth()+1).padStart(2,'0');
+var _qhsActiveTab = 'plan';
+var _MOIS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+function switchQHSTab(tab) {
+  _qhsActiveTab = tab;
+  ['plan','sessions','capa'].forEach(function(t) {
+    var btn = document.getElementById('qtab-'+t);
+    var ct  = document.getElementById('qtab-'+t+'-content');
+    if (btn) btn.classList.toggle('active', t===tab);
+    if (ct)  ct.style.display = t===tab ? 'block' : 'none';
+  });
+  var addBtn = document.getElementById('qhs-add-btn');
+  if (addBtn) addBtn.textContent = tab === 'sessions' ? '+ Talk' : (tab === 'capa' ? '+ CAPA' : '+ Session');
+  if (tab === 'plan')     renderQHSGrid();
+  if (tab === 'sessions') renderQHSSessions();
+  if (tab === 'capa')     renderCapa();
+}
+
+function ouvrirAjoutQHS() {
+  if (_qhsActiveTab === 'sessions') { openModal('modal-toolbox'); return; }
+  if (_qhsActiveTab === 'capa')     { openModal('modal-capa'); return; }
+  // Trouver le prochain slot vide
+  var slots = (DB.qhsPlan[_qhsMoisActuel] || []);
+  var used = slots.map(function(s){ return s.slot; });
+  var next = 1;
+  while (used.indexOf(next) !== -1 && next <= 26) next++;
+  ouvrirSlotModal(next);
+}
+
+function qhsNavMois(dir) {
+  var parts = _qhsMoisActuel.split('-');
+  var y = parseInt(parts[0]), m = parseInt(parts[1]) - 1 + dir;
+  if (m < 0)  { y--; m = 11; }
+  if (m > 11) { y++; m = 0;  }
+  _qhsMoisActuel = y + '-' + String(m+1).padStart(2,'0');
+  renderQHSGrid();
+}
+
 function renderToolbox() {
-  const el = document.getElementById('toolbox-list');
-  if (DB.toolboxes.length === 0) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="empty-title">Aucun Toolbox Talk</div><div class="empty-desc">Animez votre premier quart d\'heure sécurité en cliquant sur "+ Talk".</div></div>';
-  } else {
-    el.innerHTML = DB.toolboxes.sort((a,b) => b.createdAt.localeCompare(a.createdAt)).map(tb => {
-      const pct = tb.participants.length > 0 ? Math.round((tb.signes / tb.participants.length) * 100) : 0;
-      return `<div class="list-card" style="border-left:3px solid var(--green)">
-        <div class="list-card-top">
-          <div class="list-card-title">${tb.theme}</div>
-          <span class="badge green">Validé</span>
-        </div>
-        <div class="list-card-meta">
-          <span>${fmtDate(tb.date)} ${tb.heure}</span><span>·</span>
-          <span>${tb.duree} min</span><span>·</span>
-          <span>${tb.participants.length} participant(s)</span><span>·</span>
-          <span>${tb.signes}/${tb.participants.length} signatures</span>
-        </div>
-        <div class="list-card-bar"><div class="list-card-bar-fill" style="width:${pct}%;background:var(--green-mid)"></div></div>
-        <div class="list-card-actions">
-          <button class="btn-sm outline" onclick="voirDetail('toolbox','${tb.id}')">Voir</button>
-          <button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFicheToolbox('${tb.id}')">📄 PDF</button>
-          <button class="btn-sm outline" onclick="supprimerToolbox('${tb.id}')">✕</button>
-        </div>
-      </div>`;
-    }).join('');
+  // Appelé aussi par switchScreen — redirige vers la bonne fonction
+  switchQHSTab(_qhsActiveTab || 'plan');
+}
+
+function renderQHSGrid() {
+  var key  = _qhsMoisActuel;
+  var parts = key.split('-');
+  var mLabel = _MOIS_FR[parseInt(parts[1])-1] + ' ' + parts[0];
+  var el = document.getElementById('qhs-month-label');
+  if (el) el.textContent = mLabel;
+
+  var slots = DB.qhsPlan[key] || [];
+  var today = new Date().toISOString().split('T')[0];
+
+  // Compter stats
+  var nPlan = 0, nDone = 0, nRetard = 0, nVide = 0;
+  var slotMap = {};
+  slots.forEach(function(s){ slotMap[s.slot] = s; });
+
+  var html = '';
+  for (var i = 1; i <= 26; i++) {
+    var s = slotMap[i];
+    var cls, statusTxt, themeTxt;
+    if (!s) {
+      cls = 'vide'; statusTxt = '+ Planifier'; themeTxt = ''; nVide++;
+    } else if (s.toolboxId) {
+      cls = 'realise'; statusTxt = '✓ Réalisé'; themeTxt = s.theme; nDone++;
+    } else if (s.date && s.date < today) {
+      cls = 'retard'; statusTxt = '⚠ En retard'; themeTxt = s.theme; nRetard++;
+    } else {
+      cls = 'planifie'; statusTxt = s.date ? fmtDate(s.date) : 'Planifié'; themeTxt = s.theme; nPlan++;
+    }
+    html += '<div class="qhs-slot '+cls+'" onclick="ouvrirSlotModal('+i+')">'
+      + '<div class="qhs-slot-num">S-'+String(i).padStart(2,'0')+' / 26</div>'
+      + '<div class="qhs-slot-theme">'+(themeTxt||'Session à planifier')+'</div>'
+      + '<div class="qhs-slot-status">'+statusTxt+'</div>'
+      + '</div>';
   }
-  renderCapa();
+  var grid = document.getElementById('qhs-grid');
+  if (grid) grid.innerHTML = html;
+
+  // Stats
+  var set = function(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; };
+  set('qhs-s-plan', nPlan); set('qhs-s-done', nDone); set('qhs-s-retard', nRetard); set('qhs-s-vide', nVide);
+  var sub = document.getElementById('qhs-topbar-sub');
+  if (sub) sub.textContent = nDone + '/26 réalisés · ' + mLabel;
+}
+
+function ouvrirSlotModal(num) {
+  document.getElementById('qhs-slot-num').value = num;
+  document.getElementById('qhs-slot-modal-title').textContent = 'Session S-'+String(num).padStart(2,'0')+' / 26';
+  // Pré-remplir si déjà planifié
+  var slots = DB.qhsPlan[_qhsMoisActuel] || [];
+  var existing = slots.find(function(s){ return s.slot === num; });
+  var selEl = document.getElementById('qhs-slot-theme-sel');
+  var libreEl = document.getElementById('qhs-slot-theme-libre');
+  var dateEl = document.getElementById('qhs-slot-date');
+  var heureEl = document.getElementById('qhs-slot-heure');
+  var animEl = document.getElementById('qhs-slot-animateur');
+  var objEl = document.getElementById('qhs-slot-objectif');
+  if (existing) {
+    // Chercher si le thème est dans la liste
+    var found = false;
+    for (var i = 0; i < selEl.options.length; i++) {
+      if (selEl.options[i].value === existing.theme || selEl.options[i].text === existing.theme) {
+        selEl.value = selEl.options[i].value; found = true; break;
+      }
+    }
+    if (!found) {
+      selEl.value = '__libre__';
+      libreEl.style.display = 'block';
+      libreEl.value = existing.theme;
+    } else { libreEl.style.display = 'none'; libreEl.value = ''; }
+    if (dateEl)  dateEl.value  = existing.date || '';
+    if (heureEl) heureEl.value = existing.heure || '07:30';
+    if (animEl)  animEl.value  = existing.animateur || DB.config.nom || '';
+    if (objEl)   objEl.value   = existing.objectif || '';
+  } else {
+    selEl.value = '';
+    libreEl.style.display = 'none'; libreEl.value = '';
+    // Date auto = lundi du bloc de 5 sessions
+    var week = Math.floor((num-1)/5);
+    var parts = _qhsMoisActuel.split('-');
+    var firstDay = new Date(parseInt(parts[0]), parseInt(parts[1])-1, 1);
+    var dayOfWeek = firstDay.getDay() || 7; // 1=lundi
+    var firstMonday = new Date(firstDay);
+    if (dayOfWeek > 1) firstMonday.setDate(firstMonday.getDate() + (8-dayOfWeek));
+    var slotDate = new Date(firstMonday);
+    slotDate.setDate(slotDate.getDate() + week * 7 + ((num-1)%5));
+    if (dateEl) dateEl.value = slotDate.toISOString().split('T')[0];
+    if (heureEl) heureEl.value = '07:30';
+    if (animEl)  animEl.value  = DB.config.nom || '';
+    if (objEl)   objEl.value   = '';
+  }
+  openModal('modal-qhs-slot');
+}
+
+function qhsSlotThemeSel(val) {
+  var libre = document.getElementById('qhs-slot-theme-libre');
+  if (val === '__libre__') { libre.style.display = 'block'; libre.focus(); }
+  else { libre.style.display = 'none'; libre.value = ''; }
+}
+
+function sauvegarderSlotQHS() {
+  var num = parseInt(document.getElementById('qhs-slot-num').value);
+  var selVal = document.getElementById('qhs-slot-theme-sel').value;
+  var theme = selVal === '__libre__'
+    ? document.getElementById('qhs-slot-theme-libre').value.trim()
+    : selVal;
+  var date  = document.getElementById('qhs-slot-date').value;
+  var heure = document.getElementById('qhs-slot-heure').value;
+  var anim  = document.getElementById('qhs-slot-animateur').value.trim();
+  var obj   = document.getElementById('qhs-slot-objectif').value.trim();
+
+  if (!theme) { showToast('Choisissez ou saisissez un thème', 'err'); return; }
+
+  if (!DB.qhsPlan[_qhsMoisActuel]) DB.qhsPlan[_qhsMoisActuel] = [];
+  var slots = DB.qhsPlan[_qhsMoisActuel];
+  var idx = -1;
+  for (var i = 0; i < slots.length; i++) { if (slots[i].slot === num) { idx = i; break; } }
+  var slotObj = { slot: num, theme: theme, date: date, heure: heure, animateur: anim || DB.config.nom, objectif: obj };
+  if (idx >= 0) { var old = slots[idx]; slotObj.toolboxId = old.toolboxId; slots[idx] = slotObj; }
+  else slots.push(slotObj);
+
+  save();
+  closeModal('modal-qhs-slot');
+  renderQHSGrid();
+  showToast('Session S-'+String(num).padStart(2,'0')+' planifiée ✓');
+}
+
+function renderQHSSessions() {
+  var el = document.getElementById('toolbox-list');
+  if (!el) return;
+  var list = (DB.toolboxes || []).slice().sort(function(a,b){ return b.createdAt.localeCompare(a.createdAt); });
+  if (list.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="empty-title">Aucune session réalisée</div><div class="empty-desc">Utilisez "+ Talk" pour enregistrer une session réalisée.</div></div>';
+    return;
+  }
+  el.innerHTML = list.map(function(tb) {
+    var pct = tb.participants.length > 0 ? Math.round((tb.signes/tb.participants.length)*100) : 0;
+    return '<div class="list-card" style="border-left:3px solid var(--green)">'
+      + '<div class="list-card-top"><div class="list-card-title">'+tb.theme+'</div>'
+      + '<span class="badge green">Réalisé</span></div>'
+      + '<div class="list-card-meta"><span>'+fmtDate(tb.date)+' '+tb.heure+'</span><span>·</span>'
+      + '<span>'+tb.duree+' min</span><span>·</span>'
+      + '<span>'+tb.participants.length+' participants</span><span>·</span>'
+      + '<span>'+tb.signes+'/'+tb.participants.length+' sig.</span></div>'
+      + '<div class="list-card-bar"><div class="list-card-bar-fill" style="width:'+pct+'%;background:var(--green-mid)"></div></div>'
+      + '<div class="list-card-actions">'
+      + '<button class="btn-sm outline" onclick="voirDetail(\'toolbox\',\''+tb.id+'\')">Voir</button>'
+      + '<button class="btn-sm" style="background:var(--green-light);color:var(--green)" onclick="pdfQHS(\''+tb.id+'\')">📄 PDF Premium</button>'
+      + '<button class="btn-sm outline" onclick="supprimerToolbox(\''+tb.id+'\')">✕</button>'
+      + '</div></div>';
+  }).join('');
 }
 
 function supprimerToolbox(id) {
-  showConfirm('Supprimer ?', 'Cette session sera supprimée.', () => {
-    DB.toolboxes = DB.toolboxes.filter(t => t.id != id);
-    save(); renderToolbox(); showToast('Session supprimée');
+  showConfirm('Supprimer ?', 'Cette session sera supprimée.', function() {
+    DB.toolboxes = DB.toolboxes.filter(function(t){ return t.id != id; });
+    save(); renderQHSSessions(); renderHome(); showToast('Session supprimée');
   });
 }
+
+// ── Lier une session réalisée à un slot planifié ─────────────
+// Appelée après sauvegarderToolbox : chercher un slot qui correspond
+var _origSauvegarderToolbox = sauvegarderToolbox;
+sauvegarderToolbox = function() {
+  _origSauvegarderToolbox();
+  // Après sauvegarde, lier au slot planifié si match thème+mois
+  var lastTb = DB.toolboxes[DB.toolboxes.length-1];
+  if (!lastTb) return;
+  var mois = lastTb.date ? lastTb.date.slice(0,7) : _qhsMoisActuel;
+  var slots = DB.qhsPlan[mois] || [];
+  for (var i = 0; i < slots.length; i++) {
+    if (!slots[i].toolboxId && slots[i].theme === lastTb.theme) {
+      slots[i].toolboxId = lastTb.id;
+      save();
+      showToast('Lié automatiquement au slot planifié S-'+String(slots[i].slot).padStart(2,'0'));
+      break;
+    }
+  }
+  if (currentScreen === 'toolbox') renderQHSGrid();
+};
+
+// ═══════════════════════════════════════════════════════════
+// PDF PREMIUM — QUART D'HEURE SÉCURITÉ (design épuré & sobre)
+// ═══════════════════════════════════════════════════════════
+
+function pdfQHS(id) {
+  if (!window.jspdf) { showToast('Librairie PDF en chargement', 'err'); return; }
+  var tb = null;
+  for (var i = 0; i < DB.toolboxes.length; i++) { if (DB.toolboxes[i].id == id) { tb = DB.toolboxes[i]; break; } }
+  if (!tb) return;
+
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  var w = doc.internal.pageSize.width;   // 210
+  var h = doc.internal.pageSize.height;  // 297
+  var ent = DB.config.entreprise || 'Tetris Construction';
+  var HSE_GREEN = [30, 90, 20];
+  var HSE_DARK  = [20, 55, 12];
+  var HSE_LIGHT = [235, 248, 228];
+  var GRAY1     = [245, 244, 242];
+  var GRAY2     = [160, 158, 154];
+  var TEXT_D    = [30, 30, 28];
+  var TEXT_M    = [90, 88, 84];
+
+  // ── BANDE VERTE HAUTE ─────────────────────────────────────
+  doc.setFillColor(...HSE_GREEN);
+  doc.rect(0, 0, w, 28, 'F');
+
+  // Logo (si dispo)
+  if (DB.logo) {
+    try {
+      doc.setFillColor(255,255,255);
+      doc.roundedRect(8, 4, 28, 20, 2, 2, 'F');
+      doc.addImage(DB.logo, 'JPEG', 9, 4.5, 26, 19);
+    } catch(e) {}
+  }
+
+  // Titre dans la bande verte
+  var txX = DB.logo ? 42 : 14;
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255,255,255);
+  doc.text(ent.toUpperCase(), txX, 11);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(200, 235, 190);
+  doc.text('SANTÉ · SÉCURITÉ · ENVIRONNEMENT', txX, 16.5);
+
+  // Numéro de session et date (droite)
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(255,255,255);
+  doc.text(fmtDate(tb.date), w-14, 11, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(200,235,190);
+  doc.text('Chantier : ' + DB.chantier, w-14, 16.5, {align:'right'});
+
+  // ── BLOC TITRE THÈME ──────────────────────────────────────
+  doc.setFillColor(...GRAY1);
+  doc.rect(0, 28, w, 32, 'F');
+
+  // Accent vertical vert
+  doc.setFillColor(...HSE_GREEN);
+  doc.rect(14, 34, 3, 20, 'F');
+
+  // Label "QUART D'HEURE SÉCURITÉ"
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...GRAY2);
+  doc.setCharSpace(1.5);
+  doc.text("QUART D'HEURE SÉCURITÉ", 21, 39.5);
+  doc.setCharSpace(0);
+
+  // Thème en grand
+  var themeLines = doc.splitTextToSize(tb.theme.toUpperCase(), w - 70);
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(...HSE_DARK);
+  doc.text(themeLines, 21, 47);
+
+  // Pilule "Session"
+  doc.setFillColor(...HSE_GREEN);
+  doc.roundedRect(w-52, 33, 38, 9, 4.5, 4.5, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+  doc.text('SESSION HSE', w-33, 39, {align:'center'});
+
+  // ── BARRE D'INFOS (4 blocs) ───────────────────────────────
+  var y = 62;
+  var infoW = (w-28)/4;
+  var infos = [
+    { lbl:'DATE', val: fmtDate(tb.date) },
+    { lbl:'HEURE', val: tb.heure || '07:30' },
+    { lbl:'DURÉE', val: (tb.duree||15) + ' min' },
+    { lbl:'ANIMATEUR', val: (tb.animateur||tb.createdBy||DB.config.nom).split(' ')[0] },
+  ];
+  infos.forEach(function(info, i) {
+    var x = 14 + i * infoW;
+    doc.setFillColor(255,255,255);
+    doc.setDrawColor(...GRAY2); doc.setLineWidth(0.3);
+    doc.rect(x, y, infoW - (i<3?1:0), 14, 'S');
+    // Accent top
+    doc.setFillColor(...HSE_GREEN);
+    doc.rect(x, y, infoW - (i<3?1:0), 1.5, 'F');
+    // Label
+    doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(...GRAY2);
+    doc.setCharSpace(.8); doc.text(info.lbl, x + (infoW-1)/2, y+6.5, {align:'center'});
+    doc.setCharSpace(0);
+    // Valeur
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...TEXT_D);
+    doc.text(info.val, x + (infoW-1)/2, y+12, {align:'center'});
+  });
+  y += 18;
+
+  // ── SECTION PARTICIPANTS ───────────────────────────────────
+  // Titre section
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...HSE_DARK);
+  doc.setCharSpace(.8);
+  doc.text('LISTE DE PRÉSENCE', 14, y+5);
+  doc.setCharSpace(0);
+  // Compteur
+  var pct = tb.participants.length > 0 ? Math.round(tb.signes/tb.participants.length*100) : 0;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...GRAY2);
+  doc.text(tb.participants.length + ' participants · ' + tb.signes + ' signatures (' + pct + '%)', w-14, y+5, {align:'right'});
+  // Ligne séparatrice verte fine
+  doc.setFillColor(...HSE_GREEN); doc.rect(14, y+7, w-28, 0.7, 'F');
+  y += 11;
+
+  // Tableau participants
+  var rows = tb.participants.map(function(p, i) {
+    return [String(i+1).padStart(2,'0'), p.nom, p.role || '—', p.entreprise || '—', p.signe ? '✓' : ''];
+  });
+  doc.autoTable({
+    startY: y,
+    margin: {left:14, right:14},
+    head: [['#', 'Nom Prénom', 'Fonction', 'Entreprise', 'Signature']],
+    body: rows,
+    styles: {
+      fontSize: 9,
+      cellPadding: {top:4, bottom:4, left:3, right:3},
+      lineColor: [235, 233, 228],
+      lineWidth: 0.3,
+      font: 'helvetica',
+    },
+    headStyles: {
+      fillColor: HSE_GREEN,
+      textColor: [255,255,255],
+      fontStyle: 'bold',
+      fontSize: 8,
+      cellPadding: {top:4, bottom:4, left:3, right:3},
+      halign: 'left',
+    },
+    alternateRowStyles: { fillColor: [248, 247, 245] },
+    columnStyles: {
+      0: {cellWidth: 10, halign:'center', textColor: GRAY2},
+      1: {cellWidth: 55, fontStyle:'bold', textColor: TEXT_D},
+      2: {cellWidth: 42, textColor: TEXT_M},
+      3: {cellWidth: 42, textColor: TEXT_M},
+      4: {cellWidth: 23, halign:'center', fontStyle:'bold', textColor: HSE_GREEN[0] > 100 ? HSE_GREEN : [30,90,20]},
+    },
+    didParseCell: function(data) {
+      if (data.section === 'body' && data.column.index === 4) {
+        data.cell.styles.textColor = data.cell.raw === '✓' ? [30,90,20] : [200,198,194];
+        data.cell.styles.fontSize = data.cell.raw === '✓' ? 11 : 9;
+      }
+    },
+    tableLineColor: [220,218,212],
+    tableLineWidth: 0.3,
+  });
+  y = doc.lastAutoTable.finalY + 6;
+
+  // ── NOTES / OBSERVATIONS ──────────────────────────────────
+  if (tb.obs) {
+    var avail = h - 42 - y;
+    if (avail < 18) { doc.addPage(); y = 20; }
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...HSE_DARK);
+    doc.setCharSpace(.8); doc.text('OBSERVATIONS ET POINTS CLÉS', 14, y+5); doc.setCharSpace(0);
+    doc.setFillColor(...HSE_GREEN); doc.rect(14, y+7, w-28, 0.7, 'F');
+    y += 11;
+    var obsLines = doc.splitTextToSize(tb.obs, w-32);
+    var obsH = obsLines.length * 5 + 10;
+    if (y + obsH > h - 42) { doc.addPage(); y = 20; }
+    doc.setFillColor(...GRAY1); doc.roundedRect(14, y, w-28, obsH, 2, 2, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...TEXT_D);
+    doc.text(obsLines, 18, y+7);
+    y += obsH + 8;
+  }
+
+  // ── PHOTOS ────────────────────────────────────────────────
+  if (tb.photos && tb.photos.length > 0) {
+    var avail2 = h - 42 - y;
+    if (avail2 < 30) { doc.addPage(); y = 20; }
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...HSE_DARK);
+    doc.setCharSpace(.8); doc.text('PHOTOS DE LA SESSION', 14, y+5); doc.setCharSpace(0);
+    doc.setFillColor(...HSE_GREEN); doc.rect(14, y+7, w-28, 0.7, 'F');
+    y += 11;
+    var imgW = (w-34)/2, imgH = 48;
+    tb.photos.forEach(function(b64, pi) {
+      var col = pi % 2, row = Math.floor(pi/2);
+      var ix = 14 + col*(imgW+6), iy = y + row*(imgH+5);
+      if (iy + imgH > h - 42) { doc.addPage(); y = 20; iy = y; }
+      try {
+        var fmt = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+        doc.addImage(b64, fmt, ix, iy, imgW, imgH, '', 'FAST');
+        doc.setDrawColor(...GRAY2); doc.setLineWidth(0.3);
+        doc.roundedRect(ix, iy, imgW, imgH, 1, 1, 'S');
+      } catch(e) {}
+    });
+    y += Math.ceil(tb.photos.length/2) * (imgH+5) + 6;
+  }
+
+  // ── ZONE SIGNATURES ───────────────────────────────────────
+  var sigY = h - 42;
+  doc.setFillColor(...GRAY1); doc.rect(0, sigY-4, w, 46, 'F');
+  // Ligne séparatrice verte
+  doc.setFillColor(...HSE_GREEN); doc.rect(0, sigY-4, w, 1.5, 'F');
+
+  var hw = (w-34)/2;
+  // Gauche
+  doc.setFillColor(255,255,255); doc.setDrawColor(...GRAY2); doc.setLineWidth(0.3);
+  doc.roundedRect(14, sigY+2, hw, 30, 2, 2, 'FD');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...GRAY2);
+  doc.setCharSpace(.6); doc.text('SIGNATURE ANIMATEUR', 14+4, sigY+8); doc.setCharSpace(0);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...TEXT_D);
+  doc.text(tb.animateur || tb.createdBy || DB.config.nom, 14+4, sigY+18);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY2);
+  doc.text(DB.config.fonction || 'Responsable HSE', 14+4, sigY+24);
+
+  // Droite
+  doc.setFillColor(255,255,255);
+  doc.roundedRect(14+hw+6, sigY+2, hw, 30, 2, 2, 'FD');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...GRAY2);
+  doc.setCharSpace(.6); doc.text('VISA RESPONSABLE HSE', 14+hw+10, sigY+8); doc.setCharSpace(0);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...TEXT_D);
+  doc.text(DB.config.nom || '—', 14+hw+10, sigY+18);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY2);
+  doc.text('Date : ' + fmtDate(nowISO()), 14+hw+10, sigY+24);
+
+  // ── PIED DE PAGE ──────────────────────────────────────────
+  var pages = doc.internal.getNumberOfPages();
+  for (var pg = 1; pg <= pages; pg++) {
+    doc.setPage(pg);
+    doc.setFillColor(...HSE_GREEN); doc.rect(0, h-8, w, 8, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(200,235,190);
+    doc.text(ent + '  ·  Quart d\'heure Sécurité  ·  ' + DB.chantier + '  ·  ' + fmtDate(nowISO()), 10, h-3);
+    doc.text('Page ' + pg + ' / ' + pages, w-10, h-3, {align:'right'});
+  }
+
+  doc.save('QHS_' + tb.theme.replace(/[^a-z0-9]/gi,'_').slice(0,30) + '_' + fmtDate(tb.date).replace(/\//g,'-') + '.pdf');
+  showToast('PDF Quart d\'Heure Sécurité téléchargé ✓');
+}
+
+// ── PDF Programme mensuel ──────────────────────────────────
+function pdfPlanMensuel() {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var key = _qhsMoisActuel;
+  var parts = key.split('-');
+  var mLabel = _MOIS_FR[parseInt(parts[1])-1] + ' ' + parts[0];
+  var ent = DB.config.entreprise || 'Tetris Construction';
+
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  var w = doc.internal.pageSize.width, h = doc.internal.pageSize.height;
+  var HSE_GREEN = [30,90,20], HSE_DARK=[20,55,12], GRAY1=[245,244,242], GRAY2=[160,158,154], TEXT_D=[30,30,28], TEXT_M=[90,88,84];
+  var slots = DB.qhsPlan[key] || [];
+  var slotMap = {};
+  slots.forEach(function(s){ slotMap[s.slot]=s; });
+  var today = new Date().toISOString().split('T')[0];
+
+  // En-tête
+  doc.setFillColor(...HSE_GREEN); doc.rect(0,0,w,28,'F');
+  var txX = 14;
+  if (DB.logo) {
+    try {
+      doc.setFillColor(255,255,255); doc.roundedRect(8,4,28,20,2,2,'F');
+      doc.addImage(DB.logo,'JPEG',9,4.5,26,19); txX=42;
+    } catch(e) {}
+  }
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255,255,255);
+  doc.text(ent.toUpperCase(), txX, 11);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(200,235,190);
+  doc.text('PROGRAMME DES QUARTS D\'HEURE SÉCURITÉ', txX, 16.5);
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(255,255,255);
+  doc.text(mLabel.toUpperCase(), w-14, 12, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(200,235,190);
+  doc.text(DB.chantier, w-14, 18, {align:'right'});
+
+  // Titre
+  doc.setFillColor(...GRAY1); doc.rect(0,28,w,18,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...GRAY2);
+  doc.setCharSpace(1.5); doc.text('OBJECTIF : 26 SESSIONS / MOIS', 14, 36); doc.setCharSpace(0);
+  var nDone = slots.filter(function(s){ return s.toolboxId; }).length;
+  var nPlan = slots.filter(function(s){ return !s.toolboxId && (!s.date||s.date>=today); }).length;
+  var nRetard = slots.filter(function(s){ return !s.toolboxId && s.date && s.date<today; }).length;
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...HSE_DARK);
+  doc.text(nDone + '/26 réalisés · ' + nPlan + ' planifiés · ' + nRetard + ' en retard', 14, 43);
+
+  var y = 50;
+  // Tableau des 26 sessions
+  var rows = [];
+  for (var i=1; i<=26; i++) {
+    var s = slotMap[i];
+    var num = 'S-'+String(i).padStart(2,'0');
+    var theme = s ? s.theme : '(à planifier)';
+    var date  = s && s.date ? fmtDate(s.date) : '—';
+    var heure = s && s.heure ? s.heure : '—';
+    var anim  = s && s.animateur ? s.animateur : '—';
+    var stat  = !s ? '—' : (s.toolboxId ? '✓ Réalisé' : (s.date&&s.date<today ? '⚠ Retard' : '◇ Prévu'));
+    rows.push([num, theme, date, heure, anim, stat]);
+  }
+  doc.autoTable({
+    startY: y, margin:{left:14,right:14},
+    head:[['Session','Thème de la session','Date','Heure','Animateur','Statut']],
+    body: rows,
+    styles:{fontSize:8,cellPadding:{top:3.5,bottom:3.5,left:3,right:3},lineColor:[230,228,222],lineWidth:0.3},
+    headStyles:{fillColor:HSE_GREEN,textColor:[255,255,255],fontStyle:'bold',fontSize:7.5,cellPadding:{top:4,bottom:4,left:3,right:3}},
+    alternateRowStyles:{fillColor:[248,247,245]},
+    columnStyles:{
+      0:{cellWidth:18,halign:'center',fontStyle:'bold',textColor:GRAY2},
+      1:{fontStyle:'normal',textColor:TEXT_D},
+      2:{cellWidth:22,halign:'center',textColor:TEXT_M},
+      3:{cellWidth:16,halign:'center',textColor:TEXT_M},
+      4:{cellWidth:32,textColor:TEXT_M},
+      5:{cellWidth:22,halign:'center',fontStyle:'bold'},
+    },
+    didParseCell:function(data){
+      if(data.section==='body'&&data.column.index===5){
+        var v=data.cell.raw;
+        if(v==='✓ Réalisé') data.cell.styles.textColor=HSE_GREEN;
+        else if(v==='⚠ Retard') data.cell.styles.textColor=[163,45,45];
+        else if(v==='◇ Prévu') data.cell.styles.textColor=[26,95,163];
+        else data.cell.styles.textColor=GRAY2;
+      }
+      if(data.section==='body'&&data.column.index===1&&(!slotMap[data.row.index+1])){
+        data.cell.styles.textColor=GRAY2;
+        data.cell.styles.fontStyle='italic';
+      }
+    },
+    tableLineColor:[220,218,212],tableLineWidth:0.3,
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  // Légende
+  var legY = y;
+  [['✓ Réalisé',HSE_GREEN],['◇ Prévu',[26,95,163]],['⚠ En retard',[163,45,45]],['— À planifier',GRAY2]].forEach(function(l,i){
+    var x = 14 + i*48;
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...l[1]);
+    doc.text(l[0], x, legY);
+  });
+
+  // Footer
+  doc.setFillColor(...HSE_GREEN); doc.rect(0,h-8,w,8,'F');
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(200,235,190);
+  doc.text(ent+'  ·  Programme QHS  ·  '+DB.chantier+'  ·  Généré le '+fmtDate(nowISO()), 10, h-3);
+
+  doc.save('Programme_QHS_'+mLabel.replace(/\s/g,'_')+'.pdf');
+  showToast('Programme mensuel téléchargé ✓');
+}
+
+// ── Compat : pdfFicheToolbox → redirige vers pdfQHS ──────────
+function pdfFicheToolbox(id) { pdfQHS(id); }
 
 // ═══════════════════════════════════════════════
 // CAPA
