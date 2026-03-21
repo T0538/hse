@@ -167,6 +167,55 @@ body.dark-mode .res-section{background:var(--gray-light)}
 body.dark-mode .res-field input,body.dark-mode .res-field select,body.dark-mode .res-field textarea{background:#1E1E1C;color:var(--text);border-color:var(--border)}
 body.dark-mode .res-kpi-card{background:var(--surface)}
 
+/* ── MODULE TOURNÉES D'INSPECTION ── */
+.tour-zone-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 12px}
+.tour-zone-card{background:var(--surface);border-radius:var(--radius);border:1.5px solid var(--border);padding:14px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;overflow:hidden}
+.tour-zone-card:active{background:var(--gray-light)}
+.tour-zone-card.ok{border-color:var(--green-mid);background:var(--green-light)}
+.tour-zone-card.nok{border-color:var(--red);background:var(--red-light)}
+.tour-zone-card.partial{border-color:var(--amber);background:var(--amber-light)}
+.tour-zone-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.tour-zone-name{font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+.tour-zone-stat{font-size:11px;color:var(--text3)}
+.tour-zone-card.ok .tour-zone-stat{color:var(--green)}
+.tour-zone-card.nok .tour-zone-stat{color:var(--red)}
+.tour-zone-card.partial .tour-zone-stat{color:var(--amber)}
+.tour-point{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+.tour-point:last-child{border-bottom:none}
+.tour-point-left{flex:1}
+.tour-point-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.3}
+.tour-point-sub{font-size:11px;color:var(--text3)}
+.tour-btn-group{display:flex;gap:6px;margin-top:8px}
+.tour-btn{padding:6px 12px;border-radius:7px;border:1.5px solid var(--border);font-family:var(--font-head);font-size:12px;font-weight:700;cursor:pointer;transition:all .12s;background:transparent}
+.tour-btn:active{opacity:.8}
+.tour-btn.ok{background:var(--green-light);border-color:var(--green-mid);color:var(--green)}
+.tour-btn.nok{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.tour-btn.na{background:var(--gray-light);border-color:var(--gray-mid);color:var(--gray)}
+.tour-photo-mini{width:52px;height:52px;border-radius:7px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;cursor:pointer}
+.tour-nc-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--red-light);color:var(--red);margin-top:4px}
+.tour-obs-input{width:100%;padding:7px 10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);font-family:var(--font-body);font-size:12px;color:var(--text);outline:none;margin-top:6px;resize:none;min-height:50px;line-height:1.4;transition:border-color .18s}
+.tour-obs-input:focus{border-color:var(--orange)}
+.tour-progress-wrap{padding:0 16px 12px}
+.tour-progress-bar{height:8px;background:var(--gray-light);border-radius:4px;overflow:hidden;margin-top:4px}
+.tour-progress-fill{height:100%;border-radius:4px;transition:width .4s ease;background:var(--orange)}
+.tour-summary-row{display:flex;gap:8px;padding:0 16px 10px}
+.tour-summary-chip{flex:1;text-align:center;padding:10px 4px;background:var(--surface);border:1px solid var(--border);border-radius:10px}
+.tour-summary-num{font-family:var(--font-head);font-size:24px;font-weight:800;line-height:1}
+.tour-summary-lbl{font-size:10px;color:var(--text3);font-weight:500;margin-top:2px}
+.tour-hist-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px;margin:0 16px 10px}
+.tour-hist-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.tour-hist-title{font-size:14px;font-weight:600;color:var(--text)}
+.tour-hist-meta{font-size:11px;color:var(--text3);margin-bottom:8px}
+.tour-nc-list{background:var(--red-light);border-radius:var(--radius-sm);padding:8px 10px;margin-top:6px}
+.tour-nc-item{font-size:11px;color:var(--red);padding:2px 0;display:flex;gap:6px;align-items:flex-start}
+body.dark-mode .tour-zone-card{background:var(--surface)}
+body.dark-mode .tour-zone-card.ok{background:#1A2E0A;border-color:var(--green-mid)}
+body.dark-mode .tour-zone-card.nok{background:#3A1010;border-color:var(--red)}
+body.dark-mode .tour-zone-card.partial{background:#3A2810;border-color:var(--amber)}
+body.dark-mode .tour-obs-input{background:#1E1E1C;color:var(--text);border-color:var(--border)}
+body.dark-mode .tour-hist-card,.tour-summary-chip{background:var(--surface)}
+body.dark-mode .tour-nc-list{background:#3A1010}
+
 /* ── QR CODE MODAL ── */
 .qr-modal-agent{text-align:center;padding:8px 0 16px}
 .qr-canvas-wrap{display:flex;justify-content:center;margin:14px 0}
@@ -694,17 +743,17 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
       <div class="qa-icon orange"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
       <div class="qa-label">Incident</div>
     </div>
-    <div class="qa-btn" onclick="switchScreen('toolbox');setTimeout(()=>openModal('modal-toolbox'),120)">
-      <div class="qa-icon green"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      <div class="qa-label">Toolbox</div>
+    <div class="qa-btn" onclick="switchScreen('tournee');setTimeout(()=>ouvrirNouvelleTournee(),120)">
+      <div class="qa-icon green"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
+      <div class="qa-label">Tournée</div>
     </div>
     <div class="qa-btn" onclick="switchScreen('jsa');setTimeout(()=>openModal('modal-jsa'),120)">
       <div class="qa-icon blue"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
       <div class="qa-label">JSA</div>
     </div>
-    <div class="qa-btn" onclick="switchScreen('jsa');setTimeout(()=>document.getElementById('permis-list').scrollIntoView({behavior:'smooth'}),300)">
-      <div class="qa-icon amber" style="background:var(--amber-light)"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/><path d="M17 13l2 2 3-3" stroke-width="2.2"/></svg></div>
-      <div class="qa-label">Permis</div>
+    <div class="qa-btn" onclick="switchScreen('toolbox');setTimeout(()=>openModal('modal-toolbox'),120)">
+      <div class="qa-icon amber" style="background:var(--amber-light)"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
+      <div class="qa-label">Toolbox</div>
     </div>
   </div>
 
@@ -877,6 +926,115 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
   <div id="capa-list"></div>
   <div style="padding:0 16px 4px"><button class="btn-primary" onclick="openModal('modal-capa')">+ Nouvelle Action CAPA</button></div>
   <div class="spacer"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SCREEN — TOURNÉES D'INSPECTION
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-tournee">
+  <div class="topbar">
+    <div>
+      <div class="topbar-brand"><div class="brand-dot"></div><div class="topbar-title">Tournée Inspection</div></div>
+      <div class="topbar-sub" id="tour-topbar-sub">Aucune tournée en cours</div>
+    </div>
+    <button class="btn-sm orange" onclick="ouvrirNouvelleTournee()">+ Démarrer</button>
+  </div>
+
+  <div id="tour-en-cours" style="display:none">
+    <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;padding-right:16px">
+      <span id="tour-en-cours-titre">Tournée en cours</span>
+      <span class="badge orange" id="tour-chrono">00:00</span>
+    </div>
+    <div class="tour-progress-wrap">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:11px;color:var(--text3)" id="tour-prog-label">0 / 0 points vérifiés</span>
+        <span style="font-size:11px;font-weight:600;color:var(--orange)" id="tour-prog-pct">0%</span>
+      </div>
+      <div class="tour-progress-bar"><div class="tour-progress-fill" id="tour-progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="tour-summary-row">
+      <div class="tour-summary-chip"><div class="tour-summary-num" id="ts-ok" style="color:var(--green)">0</div><div class="tour-summary-lbl">Conformes</div></div>
+      <div class="tour-summary-chip"><div class="tour-summary-num" id="ts-nok" style="color:var(--red)">0</div><div class="tour-summary-lbl">Non-conf.</div></div>
+      <div class="tour-summary-chip"><div class="tour-summary-num" id="ts-na" style="color:var(--text3)">0</div><div class="tour-summary-lbl">N/A</div></div>
+      <div class="tour-summary-chip"><div class="tour-summary-num" id="ts-todo" style="color:var(--amber)">0</div><div class="tour-summary-lbl">À faire</div></div>
+    </div>
+    <div class="section-title">Zones à inspecter — appuyez pour ouvrir</div>
+    <div class="tour-zone-grid" id="tour-zones-grid"></div>
+    <div id="tour-zone-detail" style="display:none">
+      <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;padding-right:16px">
+        <span id="tour-zone-detail-title">Zone</span>
+        <button class="btn-sm outline" style="font-size:11px;padding:5px 10px" onclick="fermerZoneDetail()">↑ Toutes les zones</button>
+      </div>
+      <div id="tour-points-list" style="margin:0 16px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:4px 14px"></div>
+    </div>
+    <div style="padding:14px 16px;display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;margin:0" onclick="cloturerTournee()">Clôturer et générer rapport</button>
+      <button class="btn-sm outline" style="padding:12px 14px" onclick="annulerTournee()">Annuler</button>
+    </div>
+  </div>
+
+  <div id="tour-vide">
+    <div class="empty-state" style="padding:44px 20px">
+      <div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
+      <div class="empty-title">Aucune tournée en cours</div>
+      <div class="empty-desc">Vérifiez chaque zone du chantier point par point. Photo obligatoire sur les non-conformités.</div>
+    </div>
+    <div style="padding:0 16px 16px">
+      <button class="btn-primary" onclick="ouvrirNouvelleTournee()">Démarrer une tournée d'inspection</button>
+    </div>
+  </div>
+
+  <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;padding-right:16px">
+    <span>Historique des tournées</span>
+    <span class="badge gray" id="tour-hist-count">0</span>
+  </div>
+  <div id="tour-historique">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="empty-state" style="padding:24px 16px"><div class="empty-desc">Les tournées clôturées apparaîtront ici.</div></div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- Modal Nouvelle Tournée -->
+<div class="modal-overlay" id="modal-tournee" onclick="closeModalOut(event,'modal-tournee')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Démarrer une tournée</div>
+    <div class="form-group">
+      <label class="form-label">Type de tournée *</label>
+      <select class="form-select" id="tour-type" onchange="tourTypeChange(this.value)">
+        <option value="">-- Sélectionner --</option>
+        <option value="quotidienne">Inspection quotidienne — toutes zones</option>
+        <option value="securite">Inspection sécurité spécifique</option>
+        <option value="epi">Vérification EPI du personnel</option>
+        <option value="hauteur">Contrôle travaux en hauteur</option>
+        <option value="levage">Vérification zone de levage</option>
+        <option value="permis">Contrôle permis de travaux</option>
+        <option value="pre-demarrage">Pré-démarrage chantier (matin)</option>
+        <option value="fin-journee">Fin de journée — sécurisation site</option>
+        <option value="libre">Tournée libre (zones personnalisées)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Zones à inspecter</label>
+      <div id="tour-zones-sel" style="background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);padding:4px 0;max-height:220px;overflow-y:auto"></div>
+      <div class="form-hint">Cochez les zones à inclure dans cette tournée</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ajouter une zone personnalisée</label>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="tour-zone-custom" type="text" placeholder="Ex: Toiture bâtiment B, Clôture nord…" style="flex:1">
+        <button class="btn-sm orange" onclick="ajouterZoneCustom()">+</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Inspecteur *</label>
+      <input class="form-input" id="tour-inspecteur" type="text" placeholder="Votre nom">
+    </div>
+    <button class="btn-primary" onclick="demarrerTournee()">Démarrer la tournée</button>
+    <button class="btn-secondary" onclick="closeModal('modal-tournee')">Annuler</button>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════
@@ -1068,6 +1226,10 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
   <button class="nav-item" id="nav-toolbox" onclick="switchScreen('toolbox')">
     <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
     <div class="nav-label">Animation</div>
+  </button>
+  <button class="nav-item" id="nav-tournee" onclick="switchScreen('tournee')">
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
+    <div class="nav-label">Tournées</div>
   </button>
   <button class="nav-item" id="nav-exports" onclick="switchScreen('exports')">
     <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
@@ -2579,6 +2741,7 @@ function load() {
   if (!DB.rapportsMensuels)    DB.rapportsMensuels    = [];
   if (!DB.permis)              DB.permis              = [];
   if (!DB.permisCounter)       DB.permisCounter       = 1;
+  if (!DB.tournees)            DB.tournees            = [];
 }
 
 // ═══════════════════════════════════════════════
@@ -2705,6 +2868,7 @@ function switchScreen(name) {
   if (name === 'toolbox') renderToolbox();
   if (name === 'personnel') renderPersonnel();
   if (name === 'exports') renderExports();
+  if (name === 'tournee') renderTournee();
 }
 
 // ═══════════════════════════════════════════════
@@ -9251,7 +9415,558 @@ window.pdfRes_compte_rendu_reunion = function(res) {
   pdfFooter(doc);doc.save('CR_Reunion_HSE_'+fmtDate((date||nowISO())).replace(/\//g,'-')+'.pdf');showToast('Compte-rendu réunion téléchargé ✓');
 };
 
-// ═══════════════ FIN BIBLIOTHÈQUE RESSOURCES HSE ═══════════════
+// ═══════════════════════════════════════════════════════════
+// MODULE TOURNÉES D'INSPECTION
+// ═══════════════════════════════════════════════════════════
+
+// ── Base de données des points de contrôle par zone ──────────
+var TOUR_ZONES_BASE = {
+  'Zone grue / Levage': [
+    'Périmètre de la grue balisé et signalé',
+    'Élingues et crochets — état visuel, marquage de contrôle',
+    'Sol stable sous les calages de grue',
+    'Personne qualifiée CACES présente et identifiée',
+    'Plan de levage disponible pour la tâche en cours',
+    'Zone dégagée sous les charges pendant les manœuvres',
+  ],
+  'Travaux en hauteur': [
+    'Harnais portés par tout le personnel en hauteur',
+    'Points d\'ancrage certifiés et visibles',
+    'Garde-corps ou filets de protection en place',
+    'Longes anti-chute accrochées à chaque déplacement',
+    'Aucun harnais présentant des signes de détérioration',
+    'Accès sécurisé (échelle, escalier) sans encombrement',
+    'Personnel seul en hauteur — INTERDIT — binôme présent',
+  ],
+  'Zone soudage': [
+    'Permis feu valide affiché sur la zone',
+    'Extincteur fonctionnel à moins de 5m du poste',
+    'EPI soudeur complets : masque, tablier, gants, chaussures',
+    'Zone dégagée de tout matériau inflammable sur 3m',
+    'Câbles et tuyaux en bon état — pas de fuite visible',
+    'Ventilation ou aspiration des fumées présente',
+    'Bouteilles gaz stockées debout, attachées, loin du feu',
+  ],
+  'Base vie / Accueil': [
+    'Vestiaires propres et ordonnés',
+    'Armoire premiers secours garnie et accessible',
+    'Numéros d\'urgence affichés de façon visible',
+    'Registre de présence à jour',
+    'Aucun produit dangereux stocké sans étiquetage (FDS)',
+    'Extincteurs accessibles et date de contrôle valide',
+  ],
+  'Zone ferraillage': [
+    'Armatures stabilisées — pas de risque d\'effondrement',
+    'Barres en saillie protégées (chapeaux, bouchons)',
+    'Gants anti-coupures portés par tout le personnel',
+    'Allées de circulation dégagées dans la zone',
+    'Engins de manutention éloignés des opérateurs à pied',
+  ],
+  'Zone coffrage / Bétonnage': [
+    'Étaiement en place et vérifié avant coulage',
+    'Personnel éloigné lors de la mise en pression',
+    'Pompe à béton stable — contrôle flexible haute pression',
+    'EPI béton : lunettes, gants, chaussures S3',
+    'Évacuation fouilles sécurisée — blindage présent',
+  ],
+  'Voies de circulation': [
+    'Voies de circulation piétons séparées des engins',
+    'Signalisation de vitesse et de priorité visible',
+    'Aucun dépôt de matériaux sur les voies',
+    'Éclairage suffisant si travaux en lumière insuffisante',
+    'Miroirs aux angles morts des voies mixtes',
+  ],
+  'Installations électriques': [
+    'Armoires électriques fermées et cadenassées',
+    'Câbles hors de portée — pas de câble au sol',
+    'Prises et prolongateurs en bon état — aucune réparation bricolée',
+    'Tableau de chantier protégé de la pluie',
+    'Habilitations électriques à jour pour le personnel concerné',
+  ],
+  'EPI Personnel': [
+    'Casque porté par 100% du personnel actif',
+    'Chaussures S3 portées par 100% du personnel',
+    'Gilet haute visibilité visible sur chaque opérateur',
+    'Aucun EPI endommagé ou mal ajusté observé',
+    'EPI spécifiques présents pour les tâches à risque',
+  ],
+};
+
+// Types de tournée → zones pré-cochées
+var TOUR_TYPES_ZONES = {
+  'quotidienne': ['Zone grue / Levage','Travaux en hauteur','Zone soudage','Base vie / Accueil','Zone ferraillage','Voies de circulation'],
+  'securite': ['Travaux en hauteur','Zone soudage','Zone grue / Levage','Installations électriques'],
+  'epi': ['EPI Personnel'],
+  'hauteur': ['Travaux en hauteur'],
+  'levage': ['Zone grue / Levage'],
+  'permis': ['Zone soudage','Zone grue / Levage','Travaux en hauteur'],
+  'pre-demarrage': ['Base vie / Accueil','EPI Personnel','Voies de circulation','Installations électriques'],
+  'fin-journee': ['Zone grue / Levage','Zone soudage','Base vie / Accueil','Voies de circulation'],
+  'libre': [],
+};
+
+// ── État tournée en cours ─────────────────────────────────────
+var _tourActive = null;  // { id, type, inspecteur, startTime, zones:[{nom,points:[{label,etat,obs,photo}]}] }
+var _tourZoneIdx = null;  // index zone actuellement ouverte
+var _tourTimer = null;
+var _tourCustomZones = [];  // zones ajoutées manuellement
+
+function ouvrirNouvelleTournee() {
+  if (_tourActive) { showToast('Une tournée est déjà en cours — clôturez-la d\'abord', 'err'); return; }
+  _tourCustomZones = [];
+  var sel = document.getElementById('tour-zones-sel');
+  var type = document.getElementById('tour-type');
+  var insp = document.getElementById('tour-inspecteur');
+  type.value = '';
+  insp.value = DB.config.nom || '';
+  sel.innerHTML = '<div style="padding:12px;font-size:12px;color:var(--text3);text-align:center">Sélectionnez un type de tournée pour voir les zones</div>';
+  openModal('modal-tournee');
+}
+
+function tourTypeChange(type) {
+  var precoch = TOUR_TYPES_ZONES[type] || [];
+  renderTourZonesSel(precoch);
+}
+
+function renderTourZonesSel(precoch) {
+  var allZones = Object.keys(TOUR_ZONES_BASE).concat(_tourCustomZones.map(function(z){return z.nom;}));
+  var sel = document.getElementById('tour-zones-sel');
+  sel.innerHTML = allZones.map(function(nom, i) {
+    var checked = precoch.indexOf(nom) !== -1;
+    var chkStyle = checked
+      ? 'width:20px;height:20px;border-radius:5px;background:var(--orange);border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0'
+      : 'width:20px;height:20px;border-radius:5px;border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0';
+    var chkIcon = checked ? '<svg width="11" height="11" viewBox="0 0 24 24" stroke="#fff" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--border)" onclick="tourToggleZone(this,\''+nom+'\')">'
+      + '<div style="'+chkStyle+'" id="tzselbx-'+i+'">' + chkIcon + '</div>'
+      + '<div style="font-size:13px;font-weight:500;color:var(--text)">' + nom + '</div>'
+      + '<div style="margin-left:auto;font-size:10px;color:var(--text3)">' + (TOUR_ZONES_BASE[nom] ? TOUR_ZONES_BASE[nom].length : (_tourCustomZones.find(function(z){return z.nom===nom;})||{points:[]}).points.length) + ' pts</div>'
+      + '</div>';
+  }).join('');
+}
+
+function tourToggleZone(row, nom) {
+  var box = row.querySelector('div[id^="tzselbx"]');
+  var isOn = box.style.background.includes('orange') || box.style.background.includes('#D85A30') || box.style.background.includes('var(--orange)');
+  if (isOn) {
+    box.style.cssText = 'width:20px;height:20px;border-radius:5px;border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0';
+    box.innerHTML = '';
+  } else {
+    box.style.cssText = 'width:20px;height:20px;border-radius:5px;background:var(--orange);border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0';
+    box.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" stroke="#fff" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>';
+  }
+}
+
+function ajouterZoneCustom() {
+  var inp = document.getElementById('tour-zone-custom');
+  var nom = inp.value.trim();
+  if (!nom) { showToast('Saisissez un nom de zone', 'err'); return; }
+  if (TOUR_ZONES_BASE[nom]) { showToast('Cette zone existe déjà', 'err'); return; }
+  _tourCustomZones.push({ nom: nom, points: [
+    'Vérification visuelle générale de la zone',
+    'EPI adaptés portés par le personnel présent',
+    'Aucun risque immédiat identifié',
+    'Zone propre et accès dégagé',
+  ]});
+  inp.value = '';
+  var precoch = TOUR_TYPES_ZONES[document.getElementById('tour-type').value] || [];
+  precoch.push(nom);
+  renderTourZonesSel(precoch);
+  showToast('Zone "'+nom+'" ajoutée');
+}
+
+function demarrerTournee() {
+  var type = document.getElementById('tour-type').value;
+  var insp = document.getElementById('tour-inspecteur').value.trim();
+  if (!type) { showToast('Sélectionnez un type de tournée', 'err'); return; }
+  if (!insp) { showToast('Saisissez votre nom', 'err'); return; }
+
+  // Récupérer les zones cochées
+  var zonesChoisies = [];
+  var rows = document.querySelectorAll('#tour-zones-sel > div');
+  rows.forEach(function(row) {
+    var box = row.querySelector('div[id^="tzselbx"]');
+    if (!box) return;
+    var on = box.style.background.includes('orange') || box.innerHTML.includes('polyline');
+    if (!on) return;
+    var nom = row.querySelectorAll('div')[1] ? row.querySelectorAll('div')[1].textContent.trim() : '';
+    if (!nom) return;
+    var pointsDef = TOUR_ZONES_BASE[nom];
+    if (!pointsDef) {
+      var custom = _tourCustomZones.find(function(z){ return z.nom === nom; });
+      pointsDef = custom ? custom.points : ['Vérification générale'];
+    }
+    zonesChoisies.push({
+      nom: nom,
+      points: pointsDef.map(function(label) { return { label: label, etat: null, obs: '', photo: null }; })
+    });
+  });
+
+  if (zonesChoisies.length === 0) { showToast('Cochez au moins une zone', 'err'); return; }
+
+  _tourActive = {
+    id: Date.now(),
+    type: type,
+    typeLabel: document.getElementById('tour-type').options[document.getElementById('tour-type').selectedIndex].text,
+    inspecteur: insp,
+    startTime: Date.now(),
+    zones: zonesChoisies,
+  };
+  _tourZoneIdx = null;
+
+  closeModal('modal-tournee');
+  // Démarrer chrono
+  clearInterval(_tourTimer);
+  _tourTimer = setInterval(function() {
+    if (!_tourActive) { clearInterval(_tourTimer); return; }
+    var elapsed = Math.floor((Date.now() - _tourActive.startTime) / 1000);
+    var m = Math.floor(elapsed / 60), s = elapsed % 60;
+    var el = document.getElementById('tour-chrono');
+    if (el) el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }, 1000);
+
+  switchScreen('tournee');
+  showToast('Tournée démarrée — ' + zonesChoisies.length + ' zone(s)');
+}
+
+function renderTournee() {
+  var vide = document.getElementById('tour-vide');
+  var enCours = document.getElementById('tour-en-cours');
+
+  if (_tourActive) {
+    vide.style.display = 'none';
+    enCours.style.display = 'block';
+    document.getElementById('tour-topbar-sub').textContent = _tourActive.typeLabel + ' · ' + _tourActive.inspecteur;
+    document.getElementById('tour-en-cours-titre').textContent = _tourActive.typeLabel;
+    tourRefreshStats();
+    renderTourZonesGrid();
+    if (_tourZoneIdx !== null) ouvrirZoneDetail(_tourZoneIdx, false);
+  } else {
+    vide.style.display = 'block';
+    enCours.style.display = 'none';
+    document.getElementById('tour-topbar-sub').textContent = 'Aucune tournée en cours';
+  }
+  renderTourHistorique();
+}
+
+function tourRefreshStats() {
+  if (!_tourActive) return;
+  var ok = 0, nok = 0, na = 0, todo = 0;
+  _tourActive.zones.forEach(function(z) {
+    z.points.forEach(function(p) {
+      if (p.etat === 'ok') ok++;
+      else if (p.etat === 'nok') nok++;
+      else if (p.etat === 'na') na++;
+      else todo++;
+    });
+  });
+  var total = ok + nok + na + todo;
+  var done = ok + nok + na;
+  var pct = total > 0 ? Math.round(done / total * 100) : 0;
+
+  document.getElementById('ts-ok').textContent = ok;
+  document.getElementById('ts-nok').textContent = nok;
+  document.getElementById('ts-na').textContent = na;
+  document.getElementById('ts-todo').textContent = todo;
+  document.getElementById('tour-prog-label').textContent = done + ' / ' + total + ' points vérifiés';
+  document.getElementById('tour-prog-pct').textContent = pct + '%';
+  var fill = document.getElementById('tour-progress-fill');
+  fill.style.width = pct + '%';
+  fill.style.background = nok > 0 ? 'var(--red)' : pct === 100 ? 'var(--green-mid)' : 'var(--orange)';
+}
+
+function renderTourZonesGrid() {
+  if (!_tourActive) return;
+  var grid = document.getElementById('tour-zones-grid');
+  grid.innerHTML = _tourActive.zones.map(function(z, idx) {
+    var ok = z.points.filter(function(p){ return p.etat === 'ok'; }).length;
+    var nok = z.points.filter(function(p){ return p.etat === 'nok'; }).length;
+    var done = z.points.filter(function(p){ return p.etat !== null; }).length;
+    var total = z.points.length;
+    var state = done === 0 ? '' : (nok > 0 ? 'nok' : (done === total ? 'ok' : 'partial'));
+    var iconBg = state === 'ok' ? 'var(--green)' : state === 'nok' ? 'var(--red)' : state === 'partial' ? 'var(--amber)' : 'var(--gray-light)';
+    var statTxt = done === 0 ? '0 / ' + total + ' vérifié' : (nok > 0 ? nok + ' NC · ' + ok + ' OK' : done + ' / ' + total + ' OK');
+    return '<div class="tour-zone-card ' + state + '" onclick="ouvrirZoneDetail(' + idx + ', true)">'
+      + '<div class="tour-zone-icon" style="background:' + iconBg + '">'
+      + '<svg width="18" height="18" viewBox="0 0 24 24" stroke="'+(state?'#fff':'var(--text3)')+'" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>'
+      + '<div class="tour-zone-name">' + z.nom + '</div>'
+      + '<div class="tour-zone-stat">' + statTxt + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function ouvrirZoneDetail(idx, scroll) {
+  _tourZoneIdx = idx;
+  var z = _tourActive.zones[idx];
+  document.getElementById('tour-zone-detail-title').textContent = z.nom;
+  document.getElementById('tour-zone-detail').style.display = 'block';
+
+  var list = document.getElementById('tour-points-list');
+  list.innerHTML = z.points.map(function(p, pi) {
+    var etatBtns = ['ok','nok','na'].map(function(e) {
+      var labels = { ok:'✓ OK', nok:'✗ NC', na:'N/A' };
+      var cls = p.etat === e ? 'tour-btn ' + e : 'tour-btn';
+      return '<button class="' + cls + '" onclick="setPointEtat(' + idx + ',' + pi + ',\'' + e + '\')">' + labels[e] + '</button>';
+    }).join('');
+    var photoHtml = p.photo
+      ? '<img src="' + p.photo + '" class="tour-photo-mini" onclick="showToast(\'Photo enregistrée\')">'
+      : '<button class="tour-btn" onclick="tourPrendrePhoto(' + idx + ',' + pi + ')" style="font-size:11px;padding:5px 8px">📷 Photo</button>';
+    var ncBadge = p.etat === 'nok' ? '<div class="tour-nc-badge"><svg width="10" height="10" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="3"/></svg> Non-conformité</div>' : '';
+    return '<div class="tour-point">'
+      + '<div class="tour-point-left">'
+      + '<div class="tour-point-title">' + p.label + '</div>'
+      + ncBadge
+      + '<div class="tour-btn-group">' + etatBtns + '</div>'
+      + (p.etat === 'nok'
+          ? '<textarea class="tour-obs-input" placeholder="Décrivez la non-conformité…" onchange="setPointObs(' + idx + ',' + pi + ',this.value)">' + (p.obs||'') + '</textarea>'
+          : (p.obs ? '<div style="font-size:11px;color:var(--text3);margin-top:4px">' + p.obs + '</div>' : ''))
+      + '</div>'
+      + '<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;padding-top:4px">' + photoHtml + '</div>'
+      + '</div>';
+  }).join('');
+
+  if (scroll) document.getElementById('tour-zone-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fermerZoneDetail() {
+  _tourZoneIdx = null;
+  document.getElementById('tour-zone-detail').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function setPointEtat(zoneIdx, ptIdx, etat) {
+  if (!_tourActive) return;
+  var p = _tourActive.zones[zoneIdx].points[ptIdx];
+  p.etat = p.etat === etat ? null : etat;  // toggle
+  // Photo obligatoire si NC
+  if (p.etat === 'nok' && !p.photo) setTimeout(function(){ showToast('Pensez à prendre une photo de la non-conformité'); }, 300);
+  ouvrirZoneDetail(zoneIdx, false);
+  tourRefreshStats();
+  renderTourZonesGrid();
+}
+
+function setPointObs(zoneIdx, ptIdx, val) {
+  if (!_tourActive) return;
+  _tourActive.zones[zoneIdx].points[ptIdx].obs = val;
+}
+
+function tourPrendrePhoto(zoneIdx, ptIdx) {
+  var inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*'; inp.capture = 'environment';
+  inp.onchange = function() {
+    if (!inp.files[0]) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var c = document.createElement('canvas');
+        var MAX = 500; var w = img.width, h = img.height;
+        if (w > MAX || h > MAX) { if (w > h) { h = h*MAX/w; w = MAX; } else { w = w*MAX/h; h = MAX; } }
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        _tourActive.zones[zoneIdx].points[ptIdx].photo = c.toDataURL('image/jpeg', 0.65);
+        ouvrirZoneDetail(zoneIdx, false);
+        showToast('Photo ajoutée ✓');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(inp.files[0]);
+  };
+  inp.click();
+}
+
+function cloturerTournee() {
+  if (!_tourActive) return;
+  clearInterval(_tourTimer);
+  var duree = Math.floor((Date.now() - _tourActive.startTime) / 60000);
+  var ncs = [];
+  var ok = 0, nok = 0, na = 0, todo = 0;
+  _tourActive.zones.forEach(function(z) {
+    z.points.forEach(function(p) {
+      if (p.etat === 'ok') ok++;
+      else if (p.etat === 'nok') { nok++; ncs.push({ zone: z.nom, label: p.label, obs: p.obs, photo: p.photo }); }
+      else if (p.etat === 'na') na++;
+      else todo++;
+    });
+  });
+  var tournee = Object.assign({}, _tourActive, {
+    endTime: Date.now(),
+    duree: duree,
+    stats: { ok: ok, nok: nok, na: na, todo: todo },
+    ncs: ncs,
+    createdAt: nowISO(),
+    createdBy: _tourActive.inspecteur,
+  });
+  if (!DB.tournees) DB.tournees = [];
+  DB.tournees.unshift(tournee);
+  addActivity('Tournée ' + tournee.typeLabel + ' — ' + nok + ' NC', nok > 0 ? 'orange' : 'green');
+  // Créer CAPA auto pour chaque NC critique
+  ncs.forEach(function(nc) {
+    var capaNum = DB.capaCounter++;
+    DB.capas.push({
+      id: Date.now() + Math.random(),
+      num: capaNum, type: 'corrective',
+      titre: 'Tournée — NC : ' + nc.label + ' (' + nc.zone + ')',
+      desc: nc.obs || 'Non-conformité relevée lors de la tournée du ' + fmtDate(nowISO()),
+      resp: DB.config.nom, echeance: '', origine: 'Tournée d\'inspection',
+      status: 'open', createdAt: nowISO(), createdBy: DB.config.nom,
+    });
+  });
+  save();
+  _tourActive = null; _tourZoneIdx = null;
+  fermerZoneDetail();
+  renderTournee(); renderHome();
+  showToast('Tournée clôturée · ' + nok + ' NC · ' + (nok > 0 ? nok + ' CAPA créées auto' : 'Aucune CAPA'));
+  // Ouvrir PDF
+  setTimeout(function(){ pdfTournee(tournee); }, 400);
+}
+
+function annulerTournee() {
+  showConfirm('Annuler la tournée ?', 'Les données saisies seront perdues.', function() {
+    clearInterval(_tourTimer);
+    _tourActive = null; _tourZoneIdx = null;
+    fermerZoneDetail();
+    renderTournee();
+    showToast('Tournée annulée');
+  });
+}
+
+function renderTourHistorique() {
+  if (!DB.tournees) { DB.tournees = []; }
+  var cnt = document.getElementById('tour-hist-count');
+  if (cnt) cnt.textContent = DB.tournees.length;
+  var el = document.getElementById('tour-historique');
+  if (DB.tournees.length === 0) {
+    el.innerHTML = '<div class="card" style="padding:0;overflow:hidden"><div class="empty-state" style="padding:24px 16px"><div class="empty-desc">Les tournées clôturées apparaîtront ici.</div></div></div>';
+    return;
+  }
+  el.innerHTML = DB.tournees.slice(0, 10).map(function(t) {
+    var nok = t.stats ? t.stats.nok : 0;
+    var stateCol = nok > 0 ? 'var(--orange)' : 'var(--green)';
+    var ncHtml = '';
+    if (t.ncs && t.ncs.length > 0) {
+      ncHtml = '<div class="tour-nc-list">' + t.ncs.slice(0,3).map(function(nc){
+        return '<div class="tour-nc-item"><svg width="10" height="10" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="3"/></svg>' + nc.zone + ' — ' + nc.label + '</div>';
+      }).join('') + (t.ncs.length > 3 ? '<div class="tour-nc-item" style="color:var(--text3)">+ ' + (t.ncs.length-3) + ' autre(s)…</div>' : '') + '</div>';
+    }
+    return '<div class="tour-hist-card">'
+      + '<div class="tour-hist-top">'
+      + '<div><div class="tour-hist-title">' + (t.typeLabel||t.type) + '</div></div>'
+      + '<span class="badge" style="background:'+(nok>0?'var(--orange-light)':'var(--green-light)')+';color:'+stateCol+'">' + (nok>0 ? nok+' NC' : '✓ OK') + '</span>'
+      + '</div>'
+      + '<div class="tour-hist-meta">' + fmtDate(t.createdAt) + ' · ' + (t.duree||0) + ' min · ' + t.inspecteur + ' · ' + (t.stats?t.stats.ok:0) + ' conformes</div>'
+      + ncHtml
+      + '<div style="display:flex;gap:7px;margin-top:10px">'
+      + '<button class="btn-sm outline" onclick="pdfTournee(DB.tournees.find(function(x){return x.id=='+t.id+'}))">📄 PDF</button>'
+      + (nok>0?'<button class="btn-sm outline" onclick="switchScreen(\'toolbox\')">Voir CAPA</button>':'')
+      + '</div></div>';
+  }).join('');
+}
+
+// ── PDF Tournée ───────────────────────────────────────────────
+function pdfTournee(t) {
+  if (!t) return;
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var c = C();
+  var nok = t.stats ? t.stats.nok : 0;
+  var base = _pdfBase('RAPPORT DE TOURNÉE D\'INSPECTION', DB.chantier + ' · ' + fmtDate(t.createdAt||nowISO()));
+  var doc = base.doc, y = base.y, w = doc.internal.pageSize.width;
+
+  // Bannière statut
+  var banCol = nok > 0 ? c.orange : c.green;
+  doc.setFillColor(...banCol); doc.roundedRect(14, y, w-28, 12, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.setTextColor(255,255,255);
+  doc.text((nok > 0 ? nok + ' NON-CONFORMITÉ(S) RELEVÉE(S)' : '✓ TOURNÉE CONFORME — AUCUNE NC'), w/2, y+8.5, {align:'center'});
+  y += 16;
+
+  // Tableau synthèse
+  doc.autoTable({startY:y, margin:{left:14,right:14},
+    body:[
+      ['Type de tournée', t.typeLabel || t.type],
+      ['Inspecteur', t.inspecteur],
+      ['Date', fmtDate(t.createdAt||nowISO())],
+      ['Durée', (t.duree||0) + ' minutes'],
+      ['Points conformes (OK)', String(t.stats ? t.stats.ok : 0)],
+      ['Non-conformités (NC)', String(t.stats ? t.stats.nok : 0)],
+      ['Non applicable (N/A)', String(t.stats ? t.stats.na : 0)],
+      ['Non vérifiés', String(t.stats ? t.stats.todo : 0)],
+    ],
+    styles:{fontSize:9.5, cellPadding:4}, theme:'plain', tableLineColor:c.lightGray, tableLineWidth:0.3,
+    columnStyles:{0:{cellWidth:60, fontStyle:'bold', fillColor:[248,248,246], textColor:c.text2}}});
+  y = doc.lastAutoTable.finalY + 8;
+
+  // Détail par zone
+  y = pdfSectionTitle(doc, 'DÉTAIL PAR ZONE', y, c.blue);
+  t.zones.forEach(function(z) {
+    y = pageCheck(doc, y, 30, 'Tournée d\'inspection', t.typeLabel);
+    var zNok = z.points.filter(function(p){ return p.etat === 'nok'; }).length;
+    var zOk = z.points.filter(function(p){ return p.etat === 'ok'; }).length;
+    var zTot = z.points.length;
+    var zCol = zNok > 0 ? c.orange : (zOk === zTot ? c.green : c.gray);
+    doc.setFillColor(...zCol); doc.roundedRect(14,y,w-28,8,1.5,1.5,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(255,255,255);
+    doc.text(z.nom + '  ·  ' + zOk + '/' + zTot + ' OK' + (zNok>0?' · '+zNok+' NC':''), 18, y+5.5);
+    y += 11;
+    var rows = z.points.map(function(p) {
+      var st = p.etat === 'ok' ? '✓ OK' : p.etat === 'nok' ? '✗ NC' : p.etat === 'na' ? 'N/A' : '–';
+      return [st, p.label, p.obs||''];
+    });
+    doc.autoTable({startY:y, margin:{left:14,right:14},
+      body:rows,
+      styles:{fontSize:8.5, cellPadding:3},
+      theme:'striped', alternateRowStyles:{fillColor:[248,248,246]},
+      columnStyles:{
+        0:{cellWidth:16, halign:'center', fontStyle:'bold'},
+        1:{cellWidth:100},
+        2:{fontStyle:'italic', textColor:c.text2}
+      },
+      didParseCell:function(data){
+        if(data.column.index===0){
+          var v=data.cell.raw;
+          if(v==='✓ OK') data.cell.styles.textColor=c.green;
+          else if(v==='✗ NC') data.cell.styles.textColor=c.red;
+          else data.cell.styles.textColor=c.text2;
+        }
+      }
+    });
+    y = doc.lastAutoTable.finalY + 6;
+  });
+
+  // Section NC avec photos
+  if (t.ncs && t.ncs.length > 0) {
+    y = pageCheck(doc, y, 20, 'Tournée', '');
+    y = pdfSectionTitle(doc, 'NON-CONFORMITÉS — DÉTAIL ET PHOTOS', y, c.red);
+    t.ncs.forEach(function(nc, i) {
+      y = pageCheck(doc, y, 25, 'Tournée', '');
+      doc.setFillColor(252,245,243); doc.roundedRect(14,y,w-28,7,1.5,1.5,'F');
+      doc.setFillColor(...c.red); doc.roundedRect(14,y,3,7,1,1,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...c.red);
+      doc.text('NC #'+(i+1)+' — '+nc.zone, 19, y+5); y+=10;
+      doc.autoTable({startY:y, margin:{left:14,right:14},
+        body:[['Point de contrôle', nc.label], ['Observation', nc.obs||'(aucune observation saisie)']],
+        styles:{fontSize:9,cellPadding:3.5},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
+        columnStyles:{0:{cellWidth:45,fontStyle:'bold',fillColor:[255,245,243],textColor:c.text2}}});
+      y = doc.lastAutoTable.finalY + 4;
+      if (nc.photo) {
+        try { doc.addImage(nc.photo, 'JPEG', 14, y, 60, 40, '', 'FAST'); y += 45; } catch(e){}
+      }
+      y += 4;
+    });
+  }
+
+  // Signature
+  y = pageCheck(doc, y, 34, 'Tournée', '');
+  y = _rSignatures(doc, y, w, c,
+    {label:'Inspecteur', name: t.inspecteur || DB.config.nom},
+    {label:'Responsable HSE', name: DB.config.nom}
+  );
+
+  pdfFooter(doc);
+  doc.save('Tournee_' + (t.typeLabel||'').replace(/[^a-z0-9]/gi,'_').slice(0,20) + '_' + fmtDate(t.createdAt||nowISO()).replace(/\//g,'-') + '.pdf');
+  showToast('Rapport de tournée téléchargé ✓');
+}
+
+// ═══════════════ FIN MODULE TOURNÉES ═════════════════════
 </script>
 </body>
 </html>
