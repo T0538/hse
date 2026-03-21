@@ -8581,7 +8581,6 @@ function pdf5P() {
   }
   if (!inc) return;
 
-  // Récupérer les réponses actuelles du formulaire (pas forcément sauvegardées)
   var whys = [];
   for (var n = 1; n <= 5; n++) {
     var el = document.getElementById('p5-ans-' + n);
@@ -8589,150 +8588,324 @@ function pdf5P() {
   }
 
   if (!window.jspdf) { showToast('Librairie PDF en chargement', 'err'); return; }
-  var c = C();
-  var base = _pdfBase('ANALYSE DES CAUSES RACINES — 5 POURQUOI', DB.chantier + ' — ' + fmtDate(inc.createdAt));
-  var doc = base.doc, y = base.y;
-  var w = doc.internal.pageSize.width;
 
-  // Bloc incident source
-  y = pdfSectionTitle(doc, 'INCIDENT SOURCE', y, c.orange);
-  doc.autoTable({
-    startY: y, margin: {left:14, right:14},
-    body: [
-      ['Référence', 'Incident du ' + fmtDate(inc.date) + (inc.heure ? ' à ' + inc.heure : '')],
-      ['Type', inc.type],
-      ['Gravité', inc.sev || '—'],
-      ['Zone', inc.zone],
-      ['Personne(s)', inc.personnes || '—'],
-      ['Description', inc.desc || '—'],
-    ],
-    styles: {fontSize:8.5, cellPadding:3},
-    columnStyles: {0: {cellWidth:45, fontStyle:'bold', fillColor:[252,245,240], textColor:c.text2}},
-    theme: 'plain', tableLineColor: c.lightGray, tableLineWidth: 0.3,
-  });
-  y = doc.lastAutoTable.finalY + 10;
+  // ── FONCTION ENTIEREMENT REECRITE — design premium compact ──────
+  var P  = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W  = doc.internal.pageSize.width;
+  var H  = doc.internal.pageSize.height;
+  var ent = DB.config.entreprise || 'Vigilo';
 
-  // Chaîne 5P
-  y = pdfSectionTitle(doc, 'CHAÎNE DES 5 POURQUOI', y, c.red);
+  // ── guard compact ────────────────────────────────────────────────
+  function guard(y, needed) {
+    if (y + needed > H - 14) {
+      doc.addPage();
+      doc.setFillColor(...P.bg);
+      doc.rect(0, 0, W, H, 'F');
+      // mini-header de continuation
+      doc.setFillColor(...P.ink);
+      doc.rect(0, 0, W, 8, 'F');
+      doc.setFillColor(...P.red);
+      doc.rect(0, 0, W, 1.5, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(6.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text('ANALYSE 5 POURQUOI  -  ' + ent.toUpperCase(), 14, 5.5);
+      doc.text(DB.chantier, W - 14, 5.5, { align: 'right' });
+      return 12;
+    }
+    return y;
+  }
 
-  var labels5p = [
-    'Pourquoi cet événement s\'est-il produit ?',
-    'Mais pourquoi cette cause existe-t-elle ?',
-    'Et pourquoi cela n\'a-t-il pas été évité ?',
-    'Pourquoi cette défaillance existe-t-elle dans le système ?',
-    'Quelle est la cause racine fondamentale ?'
+  // ── section header ───────────────────────────────────────────────
+  function section(y, title, col) {
+    y = guard(y, 10);
+    doc.setFillColor(...(col || P.red));
+    doc.roundedRect(14, y, W - 28, 8, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(255, 255, 255);
+    doc.text(title, 18, y + 5.5);
+    return y + 11;
+  }
+
+  // ── HEADER ───────────────────────────────────────────────────────
+  doc.setFillColor(...P.bg);
+  doc.rect(0, 0, W, H, 'F');
+  doc.setFillColor(...P.ink);
+  doc.rect(0, 0, W, 20, 'F');
+  doc.setFillColor(...P.red);
+  doc.rect(0, 0, W, 2.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(255, 255, 255);
+  doc.text(ent.toUpperCase(), 14, 10);
+  doc.setFillColor(...P.red);
+  doc.roundedRect(W - 36, 5.5, 22, 8, 1.5, 1.5, 'F');
+  doc.setFontSize(7);
+  doc.text('VIGILO', W - 25, 10.8, { align: 'center' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(6.5);
+  doc.setTextColor(160, 170, 200);
+  doc.text('Genere le ' + fmtDate(nowISO()), W - 42, 16, { align: 'right' });
+
+  // Titre zone
+  doc.setFillColor(...P.bg);
+  doc.rect(0, 20, W, 24, 'F');
+  doc.setFillColor(...P.red);
+  doc.rect(14, 21, 4, 22, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(...P.ink);
+  doc.text('ANALYSE DES CAUSES RACINES', 22, 30);
+  doc.setFontSize(9);
+  doc.setTextColor(...P.red);
+  doc.text('METHODE 5 POURQUOI', 22, 37);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(...P.ink2);
+  doc.text(DB.chantier + '  -  ' + fmtDate(inc.createdAt || nowISO()), 22, 43);
+  doc.setDrawColor(...P.red);
+  doc.setLineWidth(0.4);
+  doc.line(14, 46, W - 14, 46);
+
+  var y = 50;
+
+  // ── INCIDENT SOURCE en 1 ligne de cards ─────────────────────────
+  y = section(y, 'INCIDENT SOURCE', P.orange);
+
+  var incFields = [
+    ['Type',    inc.type  || '-'],
+    ['Gravite', inc.sev   || '-'],
+    ['Date',    fmtDate(inc.date) + (inc.heure ? ' a ' + inc.heure : '')],
+    ['Zone',    inc.zone  || '-'],
   ];
-  var colorsStep = [c.amber, c.amber, c.orange, c.orange, c.red];
-  var answered = 0;
+  var fw = (W - 28 - 9) / 4;
+  incFields.forEach(function(f, i) {
+    var cx = 14 + i * (fw + 3);
+    doc.setFillColor(...P.white);
+    doc.roundedRect(cx, y, fw, 14, 1.5, 1.5, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.15);
+    doc.roundedRect(cx, y, fw, 14, 1.5, 1.5, 'S');
+    doc.setFillColor(...P.orange);
+    doc.roundedRect(cx, y, fw, 2, 1, 1, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(5.5);
+    doc.setTextColor(...P.ink3);
+    doc.text(f[0].toUpperCase(), cx + 4, y + 6.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...P.ink);
+    doc.text(doc.splitTextToSize(f[1], fw - 8)[0], cx + 4, y + 11);
+  });
+  y += 17;
+
+  // Description incident (si présente)
+  if (inc.desc) {
+    var descLines = doc.splitTextToSize(inc.desc, W - 44);
+    var descH = descLines.length * 4.2 + 8;
+    y = guard(y, descH + 2);
+    doc.setFillColor(...P.white);
+    doc.roundedRect(14, y, W - 28, descH, 1.5, 1.5, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.15);
+    doc.roundedRect(14, y, W - 28, descH, 1.5, 1.5, 'S');
+    doc.setFillColor(...P.orange);
+    doc.roundedRect(14, y, 3.5, descH, 1, 1, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(5.5);
+    doc.setTextColor(...P.ink3);
+    doc.text('DESCRIPTION DE L\'INCIDENT', 21, y + 4.5);
+    doc.setFontSize(8);
+    doc.setTextColor(...P.ink);
+    doc.text(descLines, 21, y + 8.5);
+    y += descH + 4;
+  } else {
+    y += 2;
+  }
+
+  // ── CHAINE 5 POURQUOI ────────────────────────────────────────────
+  y = section(y, 'CHAINE DES 5 POURQUOI', P.red);
+
+  var questions = [
+    'Pourquoi cet evenement s\'est-il produit ?',
+    'Mais pourquoi cette cause existe-t-elle ?',
+    'Et pourquoi cela n\'a-t-il pas ete evite ?',
+    'Pourquoi cette defaillance persiste dans le systeme ?',
+    'Quelle est la cause racine fondamentale ?',
+  ];
+  var stepCols = [P.amber, P.amber, P.orange, P.orange, P.red];
+  var stepBgs  = [P.amberLt, P.amberLt, P.orangeLt, P.orangeLt, P.redLt];
 
   whys.forEach(function(why, idx) {
-    y = pageCheck(doc, y, 30, 'Analyse 5 Pourquoi', inc.type);
-    var col = colorsStep[idx];
+    var col     = stepCols[idx];
+    var bg      = stepBgs[idx];
     var isEmpty = !why;
+    var rLines  = why ? doc.splitTextToSize(why, W - 56) : [];
+    // hauteur compacte : label (6) + trait (3) + reponse + padding
+    var cardH   = isEmpty ? 12 : Math.max(17, rLines.length * 4.2 + 13);
 
-    // Fond de case
-    doc.setFillColor(isEmpty ? 248 : 255, isEmpty ? 248 : 248, isEmpty ? 248 : 248);
-    doc.setDrawColor(isEmpty ? 220 : col[0], isEmpty ? 220 : col[1], isEmpty ? 220 : col[2]);
-    doc.setLineWidth(0.5);
-    doc.roundedRect(14, y, w - 28, isEmpty ? 12 : 20, 2, 2, isEmpty ? 'F' : 'FD');
+    y = guard(y, cardH + 7);
 
-    // Accent coloré gauche
+    // Fond carte
+    doc.setFillColor(...(isEmpty ? [250, 250, 252] : bg));
+    doc.roundedRect(14, y, W - 28, cardH, 2, 2, 'F');
+    doc.setDrawColor(...(isEmpty ? P.border : col));
+    doc.setLineWidth(isEmpty ? 0.15 : 0.4);
+    doc.roundedRect(14, y, W - 28, cardH, 2, 2, 'S');
+
+    // Barre accent gauche (seulement si rempli)
     if (!isEmpty) {
       doc.setFillColor(...col);
-      doc.roundedRect(14, y, 4, isEmpty ? 12 : 20, 1, 1, 'F');
+      doc.roundedRect(14, y, 4, cardH, 2, 2, 'F');
     }
 
-    // Cercle numéro
-    doc.setFillColor(...(isEmpty ? [210,210,210] : col));
-    doc.circle(23, y + (isEmpty ? 6 : 10), 4, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255, 255, 255);
-    doc.text(String(idx + 1), 23, y + (isEmpty ? 7.5 : 11.5), {align:'center'});
+    // Badge numéro
+    doc.setFillColor(...(isEmpty ? P.ink3 : col));
+    doc.circle(26, y + cardH / 2, 4.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text(String(idx + 1), 26, y + cardH / 2 + 3.2, { align: 'center' });
 
     // Question
-    doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
-    doc.setTextColor(...(isEmpty ? [180,180,180] : col));
-    doc.text(labels5p[idx], 31, y + 5);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...(isEmpty ? P.ink3 : col));
+    doc.text(questions[idx], 34, y + 6);
 
     if (!isEmpty) {
+      // Trait séparateur
+      doc.setDrawColor(...col);
+      doc.setLineWidth(0.12);
+      doc.line(34, y + 7.5, W - 18, y + 7.5);
       // Réponse
-      var lines = doc.splitTextToSize(why, w - 50);
-      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
-      doc.text(lines, 31, y + 11);
-      y += Math.max(24, lines.length * 4.5 + 10);
-      answered++;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...P.ink);
+      doc.text(rLines, 34, y + 11.5);
     } else {
-      doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(...[200,200,200]);
-      doc.text('(non renseigné)', 31, y + 8);
-      y += 16;
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(7);
+      doc.setTextColor(...P.ink3);
+      doc.text('(non renseigne)', 34, y + 8);
     }
 
-    // Flèche si pas le dernier
+    y += cardH + 2;
+
+    // Flèche entre étapes
     if (idx < 4) {
-      doc.setDrawColor(...(isEmpty ? [210,210,210] : col));
-      doc.setLineWidth(0.6);
-      doc.line(23, y, 23, y + 5);
-      doc.setFillColor(...(isEmpty ? [210,210,210] : col));
-      doc.triangle(20, y + 5, 26, y + 5, 23, y + 8, 'F');
-      y += 10;
+      var arrowCol = isEmpty ? P.border : col;
+      doc.setFillColor(...arrowCol);
+      doc.setDrawColor(...arrowCol);
+      doc.setLineWidth(0.7);
+      doc.line(26, y, 26, y + 2.5);
+      doc.triangle(23.5, y + 2.5, 28.5, y + 2.5, 26, y + 5.5, 'F');
+      y += 7;
     }
   });
 
-  // Bloc cause racine
-  y += 6;
-  y = pageCheck(doc, y, 35, 'Analyse 5 Pourquoi', '');
+  // ── CAUSE RACINE encart final ────────────────────────────────────
   var causeRacine = '';
   for (var r = whys.length - 1; r >= 0; r--) {
     if (whys[r].length > 0) { causeRacine = whys[r]; break; }
   }
-
   if (causeRacine) {
-    // Fond rouge
-    doc.setFillColor(...c.red);
-    doc.roundedRect(14, y, w - 28, 7, 2, 2, 'F');
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255);
-    doc.text('CAUSE RACINE IDENTIFIÉE', w / 2, y + 5, {align: 'center'});
-    y += 10;
+    y += 3;
+    var crLines = doc.splitTextToSize(causeRacine, W - 58);
+    var crH = Math.max(18, crLines.length * 4.5 + 12);
+    y = guard(y, crH + 14);
 
-    doc.setFillColor(253, 235, 235);
-    doc.setDrawColor(...c.red); doc.setLineWidth(0.5);
-    var causeLines = doc.splitTextToSize(causeRacine, w - 40);
-    var causeH = Math.max(18, causeLines.length * 5 + 8);
-    doc.roundedRect(14, y, w - 28, causeH, 2, 2, 'FD');
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...c.text);
-    doc.text(causeLines, 22, y + 7);
-    y += causeH + 8;
+    // Section header cause racine
+    doc.setFillColor(...P.ink);
+    doc.roundedRect(14, y, W - 28, 9, 2, 2, 'F');
+    doc.setFillColor(...P.red);
+    doc.roundedRect(14, y, 5, 9, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(255, 255, 255);
+    doc.text('CAUSE RACINE IDENTIFIEE', 22, y + 6.3);
+    // Cible déco à droite
+    doc.setDrawColor(255, 255, 255);
+    doc.setLineWidth(0.4);
+    doc.circle(W - 22, y + 4.5, 4, 'S');
+    doc.circle(W - 22, y + 4.5, 2, 'S');
+    doc.setFillColor(255, 255, 255);
+    doc.circle(W - 22, y + 4.5, 0.8, 'F');
+    y += 12;
+
+    doc.setFillColor(...P.redLt);
+    doc.roundedRect(14, y, W - 28, crH, 2, 2, 'F');
+    doc.setDrawColor(...P.red);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(14, y, W - 28, crH, 2, 2, 'S');
+    doc.setFillColor(...P.red);
+    doc.roundedRect(14, y, 5, crH, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...P.ink);
+    doc.text(crLines, 23, y + 8);
+    y += crH + 5;
   }
 
-  // Bloc CAPA associée
+  // ── CAPA liée ────────────────────────────────────────────────────
   if (inc.cinqP && inc.cinqP.capaId) {
-    y = pageCheck(doc, y, 20, 'Analyse 5 Pourquoi', '');
-    doc.setFillColor(...c.green);
-    doc.roundedRect(14, y, w - 28, 12, 2, 2, 'F');
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255);
-    doc.text('CAPA #' + (inc.cinqP.capaNum || '—') + ' générée automatiquement depuis cette analyse', w / 2, y + 8, {align:'center'});
-    y += 16;
+    y = guard(y, 14);
+    doc.setFillColor(...P.greenLt);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, 'F');
+    doc.setDrawColor(...P.green);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, 'S');
+    doc.setFillColor(...P.green);
+    doc.roundedRect(14, y, 4, 12, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...P.green);
+    doc.text('CAPA #' + (inc.cinqP.capaNum || '-') + '  -  Generee automatiquement depuis cette analyse', 22, y + 7.5);
+    y += 15;
   }
 
-  // Signatures
-  y = pageCheck(doc, y, 40, 'Analyse 5 Pourquoi', '');
-  y += 4;
-  doc.setDrawColor(...c.lightGray); doc.setLineWidth(0.3);
-  var hw = (w - 28) / 2 - 4;
-  doc.roundedRect(14, y, hw, 24, 2, 2, 'S');
-  doc.roundedRect(14 + hw + 8, y, hw, 24, 2, 2, 'S');
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...c.text2);
-  doc.text('Réalisé par', 20, y + 5);
-  doc.text('Validé par (HSE)', 20 + hw + 8, y + 5);
-  doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
-  doc.text(DB.config.nom || '—', 20, y + 14);
-  doc.text(DB.config.nom || '—', 20 + hw + 8, y + 14);
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...c.text2);
-  doc.text('Date : ' + fmtDate(nowISO()), 20, y + 20);
-  doc.text(DB.config.fonction || 'Responsable HSE', 20 + hw + 8, y + 20);
+  // ── SIGNATURES ───────────────────────────────────────────────────
+  y = guard(y, 34);
+  y += 3;
+  var hw = (W - 28 - 8) / 2;
+  [
+    { label: 'Realise par',      name: DB.config.nom || '-', sub: DB.config.fonction || 'Responsable HSE', x: 14 },
+    { label: 'Valide par (HSE)', name: DB.config.nom || '-', sub: DB.config.fonction || 'Responsable HSE', x: 14 + hw + 8 },
+  ].forEach(function(s) {
+    doc.setFillColor(...P.white);
+    doc.roundedRect(s.x, y, hw, 28, 2, 2, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(s.x, y, hw, 28, 2, 2, 'S');
+    doc.setFillColor(...P.red);
+    doc.roundedRect(s.x, y, hw, 2.5, 1, 1, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink3);
+    doc.text(s.label.toUpperCase(), s.x + 7, y + 9);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...P.ink);
+    doc.text(s.name, s.x + 7, y + 16);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...P.ink3);
+    doc.text(s.sub, s.x + 7, y + 21);
+    doc.setDrawColor(...P.line);
+    doc.setLineWidth(0.4);
+    doc.line(s.x + 7, y + 25.5, s.x + hw - 7, y + 25.5);
+    doc.setFontSize(6.5);
+    doc.text('Signature', s.x + 7, y + 28.5);
+    doc.text(fmtDate(nowISO()), s.x + hw - 7, y + 28.5, { align: 'right' });
+  });
 
-  pdfFooter(doc);
-  doc.save('5Pourquoi_' + inc.type.replace(/[^a-z0-9]/gi,'_').slice(0,25) + '_' + fmtDate(inc.date).replace(/\//g,'-') + '.pdf');
-  showToast('Rapport 5 Pourquoi téléchargé ✓');
+  _vFooter(doc, 'Analyse 5 Pourquoi', P.red);
+  doc.save('Vigilo_5Pourquoi_' + inc.type.replace(/[^a-z0-9]/gi,'_').slice(0,25) + '_' + fmtDate(inc.date).replace(/\//g,'-') + '.pdf');
+  showToast('Rapport 5 Pourquoi telecharge !');
+  return; // FIN FONCTION REECRITE
 }
 // ═══════════════════════════════════════════════════════════════
 // BIBLIOTHÈQUE DE RESSOURCES HSE — INVISIBLE SAUF DANS RECHERCHE
