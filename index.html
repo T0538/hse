@@ -10563,106 +10563,430 @@ function renderTourHistorique() {
   }).join('');
 }
 
-// ── PDF Tournée ───────────────────────────────────────────────
+// ── PDF Tournée — Design Premium Vigilo ─────────────────────
 function pdfTournee(t) {
   if (!t) return;
   if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
-  var c = C();
-  var nok = t.stats ? t.stats.nok : 0;
-  var base = _pdfBase('RAPPORT DE TOURNÉE D\'INSPECTION', DB.chantier + ' · ' + fmtDate(t.createdAt||nowISO()));
-  var doc = base.doc, y = base.y, w = doc.internal.pageSize.width;
 
-  // Bannière statut
-  var banCol = nok > 0 ? c.orange : c.green;
-  doc.setFillColor(...banCol); doc.roundedRect(14, y, w-28, 12, 2, 2, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.setTextColor(255,255,255);
-  doc.text((nok > 0 ? nok + ' NON-CONFORMITÉ(S) RELEVÉE(S)' : '✓ TOURNÉE CONFORME — AUCUNE NC'), w/2, y+8.5, {align:'center'});
-  y += 16;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = doc.internal.pageSize.width;   // 210
+  const H = doc.internal.pageSize.height;  // 297
 
-  // Tableau synthèse
-  doc.autoTable({startY:y, margin:{left:14,right:14},
-    body:[
-      ['Type de tournée', t.typeLabel || t.type],
-      ['Inspecteur', t.inspecteur],
-      ['Date', fmtDate(t.createdAt||nowISO())],
-      ['Durée', (t.duree||0) + ' minutes'],
-      ['Points conformes (OK)', String(t.stats ? t.stats.ok : 0)],
-      ['Non-conformités (NC)', String(t.stats ? t.stats.nok : 0)],
-      ['Non applicable (N/A)', String(t.stats ? t.stats.na : 0)],
-      ['Non vérifiés', String(t.stats ? t.stats.todo : 0)],
-    ],
-    styles:{fontSize:9.5, cellPadding:4}, theme:'plain', tableLineColor:c.lightGray, tableLineWidth:0.3,
-    columnStyles:{0:{cellWidth:60, fontStyle:'bold', fillColor:[248,248,246], textColor:c.text2}}});
-  y = doc.lastAutoTable.finalY + 8;
+  // ── Palette premium ──────────────────────────────────────────
+  const P = {
+    ink:      [12,  18,  38],   // quasi-noir navy
+    ink2:     [60,  68,  90],   // gris-bleu texte secondaire
+    ink3:     [140, 148, 165],  // gris clair labels
+    accent:   [30,  90, 200],   // bleu Vigilo
+    accentLt: [235, 242, 255],  // bleu très clair bg
+    green:    [22, 143,  82],
+    greenLt:  [230, 248, 238],
+    red:      [196,  48,  48],
+    redLt:    [253, 237, 237],
+    amber:    [190, 110,  20],
+    amberLt:  [254, 243, 224],
+    bg:       [248, 249, 252],  // fond page
+    white:    [255, 255, 255],
+    border:   [218, 222, 232],
+    line:     [232, 234, 240],
+  };
 
-  // Détail par zone
-  y = pdfSectionTitle(doc, 'DÉTAIL PAR ZONE', y, c.blue);
+  const entreprise = DB.config.entreprise || 'Vigilo';
+  var nok  = t.stats ? t.stats.nok  : 0;
+  var ok   = t.stats ? t.stats.ok   : 0;
+  var na   = t.stats ? t.stats.na   : 0;
+  var todo = t.stats ? t.stats.todo : 0;
+  var duree = t.duree || 0;
+  var dateStr = fmtDate(t.createdAt || nowISO());
+  var genStr  = fmtDate(nowISO()) + ' à ' + fmtTime(nowISO());
+
+  // ────────────────────────────────────────────────────────────
+  // ── HELPER : dessiner un header sur chaque page ───────────
+  // ────────────────────────────────────────────────────────────
+  function drawPageHeader() {
+    // Fond dark header
+    doc.setFillColor(...P.ink);
+    doc.rect(0, 0, W, 22, 'F');
+
+    // Accent line top
+    doc.setFillColor(...P.accent);
+    doc.rect(0, 0, W, 2, 'F');
+
+    // Nom entreprise
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...P.white);
+    doc.text(entreprise.toUpperCase(), 14, 12);
+
+    // Label VIGILO à droite
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...P.accent.map ? P.accent : [30, 90, 200]);
+    // petit badge accent
+    doc.setFillColor(30, 90, 200);
+    doc.roundedRect(W - 42, 6, 28, 8, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...P.white);
+    doc.text('VIGILO', W - 28, 11.5, { align: 'center' });
+
+    // Sous-ligne séparatrice
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+  }
+
+  // ────────────────────────────────────────────────────────────
+  // ── HELPER : footer ─────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────
+  function drawFooters() {
+    var pages = doc.internal.getNumberOfPages();
+    for (var i = 1; i <= pages; i++) {
+      doc.setPage(i);
+      doc.setFillColor(...P.ink);
+      doc.rect(0, H - 10, W, 10, 'F');
+      doc.setFillColor(...P.accent);
+      doc.rect(0, H - 10, W, 1.2, 'F');
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6.5);
+      doc.setTextColor(...P.ink3);
+      doc.setTextColor(200, 210, 230);
+      doc.text('Tournée d\'inspection  ·  ' + entreprise + '  ·  Généré le ' + genStr, 14, H - 3.5);
+      doc.text('Page ' + i + ' / ' + pages, W - 14, H - 3.5, { align: 'right' });
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────
+  // ── HELPER : nouvelle page ───────────────────────────────────
+  // ────────────────────────────────────────────────────────────
+  function newPage() {
+    doc.addPage();
+    drawPageHeader();
+    // fond bg page
+    doc.setFillColor(...P.bg);
+    doc.rect(0, 22, W, H - 32, 'F');
+    return 30;
+  }
+
+  function pageGuard(y, needed) {
+    if (y + needed > H - 18) return newPage();
+    return y;
+  }
+
+  // ────────────────────────────────────────────────────────────
+  // ── PAGE 1 ──────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────
+  drawPageHeader();
+  doc.setFillColor(...P.bg);
+  doc.rect(0, 22, W, H - 32, 'F');
+
+  var y = 28;
+
+  // ── Bloc titre document ─────────────────────────────────────
+  // Fond blanc carte titre
+  doc.setFillColor(...P.white);
+  doc.roundedRect(14, y, W - 28, 32, 3, 3, 'F');
+  doc.setDrawColor(...P.border);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(14, y, W - 28, 32, 3, 3, 'S');
+
+  // Accent gauche
+  doc.setFillColor(...P.accent);
+  doc.roundedRect(14, y, 4, 32, 2, 2, 'F');
+
+  // Badge statut
+  var statusCol = nok > 0 ? P.red : P.green;
+  var statusBg  = nok > 0 ? P.redLt : P.greenLt;
+  var statusTxt = nok > 0 ? (nok + ' NC RELEVÉE' + (nok > 1 ? 'S' : '')) : 'CONFORME';
+  doc.setFillColor(...statusBg);
+  doc.roundedRect(22, y + 6, 52, 8, 1.5, 1.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...statusCol);
+  doc.text(statusTxt, 48, y + 11.2, { align: 'center' });
+
+  // Titre principal
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.setTextColor(...P.ink);
+  doc.text('RAPPORT DE TOURNÉE', 22, y + 22);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...P.ink2);
+  doc.text('D\'INSPECTION', 22, y + 28);
+
+  // Date + chantier à droite
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9.5);
+  doc.setTextColor(...P.ink);
+  doc.text(dateStr, W - 18, y + 15, { align: 'right' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...P.ink2);
+  doc.text(DB.chantier, W - 18, y + 21, { align: 'right' });
+
+  y += 38;
+
+  // ── 4 KPI CARDS ─────────────────────────────────────────────
+  var kpis = [
+    { label: 'Conformes', val: ok,   unit: 'OK',  col: P.green,  bg: P.greenLt },
+    { label: 'Non-conf.', val: nok,  unit: 'NC',  col: P.red,    bg: P.redLt   },
+    { label: 'Non appl.', val: na,   unit: 'N/A', col: P.amber,  bg: P.amberLt },
+    { label: 'Durée',     val: duree,unit: 'min', col: P.accent, bg: P.accentLt},
+  ];
+  var cardW = (W - 28 - 9) / 4;
+  kpis.forEach(function(k, i) {
+    var cx = 14 + i * (cardW + 3);
+    // Fond carte
+    doc.setFillColor(...P.white);
+    doc.roundedRect(cx, y, cardW, 22, 2.5, 2.5, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(cx, y, cardW, 22, 2.5, 2.5, 'S');
+    // Barre top couleur
+    doc.setFillColor(...k.col);
+    doc.roundedRect(cx, y, cardW, 2.5, 1, 1, 'F');
+    // Valeur
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(...k.col);
+    doc.text(String(k.val), cx + cardW / 2, y + 14, { align: 'center' });
+    // Unité
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink3);
+    doc.text(k.label.toUpperCase(), cx + cardW / 2, y + 19.5, { align: 'center' });
+  });
+  y += 28;
+
+  // ── Infos tournée (2 colonnes) ───────────────────────────────
+  var fields = [
+    ['Type de tournée', t.typeLabel || t.type || '—'],
+    ['Inspecteur',       t.inspecteur || DB.config.nom || '—'],
+    ['Date de tournée',  dateStr],
+    ['Durée',            duree + ' minutes'],
+  ];
+  var halfW = (W - 28 - 6) / 2;
+  fields.forEach(function(f, i) {
+    var col = i % 2, row = Math.floor(i / 2);
+    var fx = 14 + col * (halfW + 6);
+    var fy = y + row * 14;
+    // Fond blanc
+    doc.setFillColor(...P.white);
+    doc.roundedRect(fx, fy, halfW, 12, 2, 2, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(fx, fy, halfW, 12, 2, 2, 'S');
+    // Label
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink3);
+    doc.text(f[0].toUpperCase(), fx + 8, fy + 5);
+    // Valeur
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...P.ink);
+    doc.text(f[1], fx + 8, fy + 9.5);
+  });
+  y += 2 * 14 + 8;
+
+  // ── Séparateur section ───────────────────────────────────────
+  function sectionHeader(label, col) {
+    y = pageGuard(y, 16);
+    doc.setFillColor(...(col || P.accent));
+    doc.roundedRect(14, y, W - 28, 10, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...P.white);
+    doc.text(label, 22, y + 7);
+    y += 15;
+  }
+
+  // ── DÉTAIL PAR ZONE ──────────────────────────────────────────
+  sectionHeader('DÉTAIL PAR ZONE', P.accent);
+
   t.zones.forEach(function(z) {
-    y = pageCheck(doc, y, 30, 'Tournée d\'inspection', t.typeLabel);
-    var zNok = z.points.filter(function(p){ return p.etat === 'nok'; }).length;
-    var zOk = z.points.filter(function(p){ return p.etat === 'ok'; }).length;
-    var zTot = z.points.length;
-    var zCol = zNok > 0 ? c.orange : (zOk === zTot ? c.green : c.gray);
-    doc.setFillColor(...zCol); doc.roundedRect(14,y,w-28,8,1.5,1.5,'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(255,255,255);
-    doc.text(z.nom + '  ·  ' + zOk + '/' + zTot + ' OK' + (zNok>0?' · '+zNok+' NC':''), 18, y+5.5);
-    y += 11;
+    var zNok  = z.points.filter(function(p){ return p.etat === 'nok'; }).length;
+    var zOk   = z.points.filter(function(p){ return p.etat === 'ok';  }).length;
+    var zTot  = z.points.length;
+    var zCol  = zNok > 0 ? P.red : (zOk === zTot ? P.green : P.amber);
+    var zBg   = zNok > 0 ? P.redLt : (zOk === zTot ? P.greenLt : P.amberLt);
+
+    y = pageGuard(y, 20 + zTot * 8);
+
+    // Carte zone header
+    doc.setFillColor(...P.white);
+    doc.roundedRect(14, y, W - 28, 11, 2, 2, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(14, y, W - 28, 11, 2, 2, 'S');
+    // Accent gauche couleur
+    doc.setFillColor(...zCol);
+    doc.roundedRect(14, y, 3.5, 11, 1.5, 1.5, 'F');
+    // Nom zone
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...P.ink);
+    doc.text(z.nom, 22, y + 7.5);
+    // Score à droite
+    doc.setFillColor(...zBg);
+    doc.roundedRect(W - 50, y + 2.5, 36, 6, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...zCol);
+    var scoreStr = zOk + '/' + zTot + ' OK' + (zNok > 0 ? '  ·  ' + zNok + ' NC' : '');
+    doc.text(scoreStr, W - 32, y + 6.5, { align: 'center' });
+    y += 15;
+
+    // Tableau points
     var rows = z.points.map(function(p) {
-      var st = p.etat === 'ok' ? '✓ OK' : p.etat === 'nok' ? '✗ NC' : p.etat === 'na' ? 'N/A' : '–';
-      return [st, p.label, p.obs||''];
+      var st = p.etat === 'ok' ? '✓ OK' : p.etat === 'nok' ? '✗ NC' : p.etat === 'na' ? 'N/A' : '—';
+      return [st, p.label, p.obs || ''];
     });
-    doc.autoTable({startY:y, margin:{left:14,right:14},
-      body:rows,
-      styles:{fontSize:8.5, cellPadding:3},
-      theme:'striped', alternateRowStyles:{fillColor:[248,248,246]},
-      columnStyles:{
-        0:{cellWidth:16, halign:'center', fontStyle:'bold'},
-        1:{cellWidth:100},
-        2:{fontStyle:'italic', textColor:c.text2}
+    doc.autoTable({
+      startY: y, margin: { left: 14, right: 14 },
+      body: rows,
+      styles: { fontSize: 8, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, font: 'helvetica', textColor: P.ink, lineColor: P.line, lineWidth: 0.15 },
+      theme: 'plain',
+      columnStyles: {
+        0: { cellWidth: 18, halign: 'center', fontStyle: 'bold' },
+        1: { cellWidth: 105 },
+        2: { fontStyle: 'italic', textColor: P.ink2, fontSize: 7.5 },
       },
-      didParseCell:function(data){
-        if(data.column.index===0){
-          var v=data.cell.raw;
-          if(v==='✓ OK') data.cell.styles.textColor=c.green;
-          else if(v==='✗ NC') data.cell.styles.textColor=c.red;
-          else data.cell.styles.textColor=c.text2;
+      alternateRowStyles: { fillColor: P.bg },
+      didParseCell: function(data) {
+        if (data.column.index === 0) {
+          var v = data.cell.raw;
+          if (v === '✓ OK')  { data.cell.styles.textColor = P.green; }
+          else if (v === '✗ NC') { data.cell.styles.textColor = P.red; data.cell.styles.fontStyle = 'bold'; }
+          else { data.cell.styles.textColor = P.ink3; }
+        }
+      },
+      didDrawCell: function(data) {
+        // Barre colorée très fine à gauche de chaque ligne statut
+        if (data.column.index === 0 && data.section === 'body') {
+          var v = data.cell.raw;
+          var lineCol = v === '✓ OK' ? P.green : v === '✗ NC' ? P.red : P.line;
+          doc.setFillColor(...lineCol);
+          doc.rect(data.cell.x, data.cell.y, 1.2, data.cell.height, 'F');
         }
       }
     });
-    y = doc.lastAutoTable.finalY + 6;
+    y = doc.lastAutoTable.finalY + 8;
   });
 
-  // Section NC avec photos
+  // ── NON-CONFORMITÉS DÉTAIL ───────────────────────────────────
   if (t.ncs && t.ncs.length > 0) {
-    y = pageCheck(doc, y, 20, 'Tournée', '');
-    y = pdfSectionTitle(doc, 'NON-CONFORMITÉS — DÉTAIL ET PHOTOS', y, c.red);
+    y = pageGuard(y, 20);
+    sectionHeader('NON-CONFORMITÉS — DÉTAIL & PHOTOS', P.red);
+
     t.ncs.forEach(function(nc, i) {
-      y = pageCheck(doc, y, 25, 'Tournée', '');
-      doc.setFillColor(252,245,243); doc.roundedRect(14,y,w-28,7,1.5,1.5,'F');
-      doc.setFillColor(...c.red); doc.roundedRect(14,y,3,7,1,1,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...c.red);
-      doc.text('NC #'+(i+1)+' — '+nc.zone, 19, y+5); y+=10;
-      doc.autoTable({startY:y, margin:{left:14,right:14},
-        body:[['Point de contrôle', nc.label], ['Observation', nc.obs||'(aucune observation saisie)']],
-        styles:{fontSize:9,cellPadding:3.5},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
-        columnStyles:{0:{cellWidth:45,fontStyle:'bold',fillColor:[255,245,243],textColor:c.text2}}});
-      y = doc.lastAutoTable.finalY + 4;
-      if (nc.photo) {
-        try { doc.addImage(nc.photo, 'JPEG', 14, y, 60, 40, '', 'FAST'); y += 45; } catch(e){}
+      y = pageGuard(y, 32);
+
+      // Card NC
+      var cardH = nc.photo ? 52 : 28;
+      doc.setFillColor(...P.white);
+      doc.roundedRect(14, y, W - 28, cardH, 2.5, 2.5, 'F');
+      doc.setDrawColor(...P.red);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(14, y, W - 28, cardH, 2.5, 2.5, 'S');
+      // Accent rouge gauche
+      doc.setFillColor(...P.red);
+      doc.roundedRect(14, y, 4, cardH, 2, 2, 'F');
+
+      // Numéro + zone
+      doc.setFillColor(...P.redLt);
+      doc.roundedRect(22, y + 4, 22, 7, 1.5, 1.5, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...P.red);
+      doc.text('NC #' + (i + 1), 33, y + 8.7, { align: 'center' });
+
+      // Zone label
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...P.ink3);
+      doc.text('Zone : ', 48, y + 8.7);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...P.ink);
+      doc.text(nc.zone, 62, y + 8.7);
+
+      // Point de contrôle
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...P.ink);
+      var labelLines = doc.splitTextToSize(nc.label, W - 80);
+      doc.text(labelLines, 22, y + 18);
+
+      // Observation
+      if (nc.obs) {
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(7.5);
+        doc.setTextColor(...P.ink2);
+        var obsLines = doc.splitTextToSize('→ ' + nc.obs, W - 80);
+        doc.text(obsLines, 22, y + 18 + labelLines.length * 4 + 2);
       }
-      y += 4;
+
+      // Photo
+      if (nc.photo) {
+        try {
+          doc.addImage(nc.photo, 'JPEG', W - 55, y + 4, 36, 42, '', 'FAST');
+          doc.setDrawColor(...P.border);
+          doc.setLineWidth(0.2);
+          doc.rect(W - 55, y + 4, 36, 42);
+        } catch(e) {}
+      }
+
+      y += cardH + 6;
     });
   }
 
-  // Signature
-  y = pageCheck(doc, y, 34, 'Tournée', '');
-  y = _rSignatures(doc, y, w, c,
-    {label:'Inspecteur', name: t.inspecteur || DB.config.nom},
-    {label:'Responsable HSE', name: DB.config.nom}
-  );
+  // ── SIGNATURE ───────────────────────────────────────────────
+  y = pageGuard(y, 44);
+  sectionHeader('SIGNATURES', P.ink2);
 
-  pdfFooter(doc);
-  doc.save('Tournee_' + (t.typeLabel||'').replace(/[^a-z0-9]/gi,'_').slice(0,20) + '_' + fmtDate(t.createdAt||nowISO()).replace(/\//g,'-') + '.pdf');
+  var sigW = (W - 28 - 8) / 2;
+  var sigLabels = [
+    { label: 'Inspecteur', name: t.inspecteur || DB.config.nom || '—' },
+    { label: 'Responsable HSE', name: DB.config.nom || '—' },
+  ];
+  sigLabels.forEach(function(s, i) {
+    var sx = 14 + i * (sigW + 8);
+    doc.setFillColor(...P.white);
+    doc.roundedRect(sx, y, sigW, 32, 2, 2, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(sx, y, sigW, 32, 2, 2, 'S');
+    doc.setFillColor(...P.accent);
+    doc.roundedRect(sx, y, sigW, 2.5, 1, 1, 'F');
+    // Label
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...P.ink3);
+    doc.text(s.label.toUpperCase(), sx + 8, y + 9);
+    // Nom
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...P.ink);
+    doc.text(s.name, sx + 8, y + 16);
+    // Ligne signature
+    doc.setDrawColor(...P.line);
+    doc.setLineWidth(0.4);
+    doc.line(sx + 8, y + 27, sx + sigW - 8, y + 27);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink3);
+    doc.text('Signature', sx + 8, y + 30.5);
+    // Date
+    doc.text(dateStr, sx + sigW - 8, y + 30.5, { align: 'right' });
+  });
+  y += 40;
+
+  // ── Footers toutes pages ─────────────────────────────────────
+  drawFooters();
+
+  // ── Save ─────────────────────────────────────────────────────
+  doc.save('Vigilo_Tournee_' + (t.typeLabel || '').replace(/[^a-z0-9]/gi,'_').slice(0,20) + '_' + dateStr.replace(/\//g,'-') + '.pdf');
   showToast('Rapport de tournée téléchargé ✓');
 }
 
