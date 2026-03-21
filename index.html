@@ -9774,189 +9774,1098 @@ window.pdfRes_bon_travail = function(res) {
 };
 
 // ─── PLAN INCENDIE ────────────────────────────────────────
-window.pdfRes_plan_urgence_incendie = function(res) {
-  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
-  var c=C(),base=_pdfBase("PLAN D'URGENCE — INCENDIE",DB.chantier+' — AFFICHAGE OBLIGATOIRE');
-  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
-  var adresse=gv('rpi-adresse'),serre=gv('rpi-serre'),rassemble=gv('rpi-rassemblement');
-  y=_rBanner(doc,y,w,'EN CAS DE FEU  ·  18 (POMPIERS)  ·  112 (URGENCES)',c.red,11.5);
-  y=_rSection(doc,y,w,'CONDUITE À TENIR — 5 ÉTAPES DANS L\'ORDRE',c.red);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    body:[['1 — ALARME','Crier "Au feu !" · Actionner le déclencheur d\'alarme le plus proche'],['2 — APPEL','Composer le 18 ou 112 · Donner adresse + situation · Ne pas raccrocher'],['3 — ÉVACUATION','Guider vers les sorties balisées · NE PAS utiliser les ascenseurs · Ne pas courir'],['4 — RASSEMBLEMENT','Rejoindre le point désigné · Rester groupé · NE PAS revenir en arrière'],['5 — APPEL NOMINAL','Vérifier la présence de chacun · Signaler les manquants aux pompiers']],
-    styles:{fontSize:9,cellPadding:4},theme:'striped',alternateRowStyles:{fillColor:[255,245,245]},
-    columnStyles:{0:{cellWidth:35,fontStyle:'bold',textColor:c.red}}});
-  y=doc.lastAutoTable.finalY+8;
-  y=_rSection(doc,y,w,'INFORMATIONS DU CHANTIER',c.orange);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    body:[['Adresse exacte',adresse||'À COMPLÉTER'],['Responsable évacuation (serre-file)',serre||DB.config.nom||'À COMPLÉTER'],['Point de rassemblement',rassemble||'À COMPLÉTER'],['Responsable HSE',DB.config.nom||'—']],
-    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
-    columnStyles:{0:{cellWidth:65,fontStyle:'bold',fillColor:[255,249,244],textColor:c.text2}}});
-  y=doc.lastAutoTable.finalY+8;
-  y=_rSection(doc,y,w,'RÈGLES EXTINCTEURS',c.orange);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    body:[['Quand intervenir','Feu à son début (taille corbeille) + sortie dans votre dos + vous êtes formé'],['Eau pulvérisée (ABC)','Bois, papier, liquides — NE JAMAIS utiliser sur équipement électrique'],['CO₂','Équipements électriques uniquement'],['Technique','2-3m de distance · Viser la BASE des flammes · Balayer en éventail'],['Si non maîtrisé','ÉVACUATION IMMÉDIATE — Ne pas insister']],
-    styles:{fontSize:9,cellPadding:3.5},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
-    columnStyles:{0:{cellWidth:42,fontStyle:'bold',fillColor:[255,249,244],textColor:c.text2}}});
-  pdfFooter(doc);doc.save('Plan_Incendie_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Plan Incendie téléchargé — À afficher ✓');
-};
 
-// ─── PLAN ACCIDENT GRAVE ──────────────────────────────────
-window.pdfRes_plan_urgence_accident = function(res) {
-  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
-  var c=C(),base=_pdfBase("PLAN D'URGENCE — ACCIDENT GRAVE",DB.chantier+' — AFFICHAGE OBLIGATOIRE');
-  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
-  y=_rBanner(doc,y,w,'PROTÉGER  →  ALERTER (15 / 18 / 112)  →  SECOURIR',c.red,11.5);
-  y=_rSection(doc,y,w,'MÉTHODE P·A·S — 3 ÉTAPES DANS L\'ORDRE',c.red);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    head:[['Étape','Action à effectuer']],
-    body:[['P — PROTÉGER','Sécuriser la zone · Supprimer le danger SANS risque pour le sauveteur · Baliser 10m autour'],['A — ALERTER','Appeler 15, 18 ou 112 · Donner : QUI / QUOI / OÙ (adresse précise) / ÉTAT victime / GESTES effectués · NE PAS RACCROCHER'],['S — SECOURIR','PLS si inconscient qui respire · RCP si arrêt respiratoire · Compression si hémorragie · NE PAS DÉPLACER si traumatisme']],
-    styles:{fontSize:9,cellPadding:4.5},theme:'striped',
-    headStyles:{fillColor:c.red,textColor:[255,255,255],fontStyle:'bold'},
-    alternateRowStyles:{fillColor:[255,245,245]},
-    columnStyles:{0:{cellWidth:32,fontStyle:'bold',textColor:c.red,halign:'center'}}});
-  y=doc.lastAutoTable.finalY+8;
-  y=_rSection(doc,y,w,'INFORMATIONS À DONNER AUX SECOURS',c.orange);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    body:[['Adresse',DB.chantier],['Votre nom + numéro','À préciser lors de l\'appel'],['Nature de l\'accident','À préciser'],['Nombre de victimes','À préciser'],['État de la victime','Conscient / Inconscient · Respire / Hémorragie…'],['Gestes effectués','PLS / RCP / Compression directe…']],
-    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
-    columnStyles:{0:{cellWidth:55,fontStyle:'bold',fillColor:[255,248,244],textColor:c.text2}}});
-  pdfFooter(doc);doc.save('Plan_AccidentGrave_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Plan Accident Grave téléchargé ✓');
-};
+// ═══════════════════════════════════════════════════════════════════
+// ── DESIGN SYSTEM PREMIUM VIGILO — shared helpers ──────────────────
+// ═══════════════════════════════════════════════════════════════════
+function _vPalette() {
+  return {
+    ink:      [12,  18,  38],
+    ink2:     [60,  68,  90],
+    ink3:     [140, 148, 165],
+    accent:   [30,  90, 200],
+    accentLt: [235, 242, 255],
+    green:    [22, 143,  82],
+    greenLt:  [228, 248, 236],
+    red:      [196,  48,  48],
+    redLt:    [253, 237, 237],
+    amber:    [190, 110,  20],
+    amberLt:  [254, 243, 224],
+    orange:   [216,  90,  48],
+    orangeLt: [255, 243, 235],
+    bg:       [248, 249, 252],
+    white:    [255, 255, 255],
+    border:   [218, 222, 232],
+    line:     [232, 234, 240],
+  };
+}
 
-// ─── PLAN ÉVACUATION ─────────────────────────────────────
-window.pdfRes_plan_urgence_evacuation = function(res) {
-  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
-  var c=C(),base=_pdfBase("PLAN D'ÉVACUATION DU CHANTIER",DB.chantier+' — AFFICHAGE OBLIGATOIRE');
-  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
-  var adresse=gv('rev-adresse'),pr1=gv('rev-pr1'),pr2=gv('rev-pr2'),resp=gv('rev-resp'),tel=gv('rev-tel');
-  y=_rBanner(doc,y,w,'ALARME  →  ARRÊT TRAVAUX  →  ÉVACUATION  →  RASSEMBLEMENT',c.orange,10.5);
-  y=_rSection(doc,y,w,'INFORMATIONS DU CHANTIER',c.orange);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    body:[['Adresse',adresse||'À compléter'],['Point de rassemblement principal',pr1||'À compléter'],['Point de rassemblement secondaire',pr2||'—'],['Responsable évacuation',resp||DB.config.nom],['Téléphone de crise',tel||'—']],
-    styles:{fontSize:9.5,cellPadding:4},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
-    columnStyles:{0:{cellWidth:65,fontStyle:'bold',fillColor:[255,249,244],textColor:c.text2}}});
-  y=doc.lastAutoTable.finalY+8;
-  y=_rSection(doc,y,w,'PROCÉDURE D\'ÉVACUATION — 5 ÉTAPES',c.orange);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    head:[['N°','Action','Consigne']],
-    body:[['1','Déclencher l\'alarme','Signal sonore · Alerter le responsable évacuation immédiatement'],['2','Arrêter les travaux','Poser les outils · Sécuriser les engins · Couper les alimentations'],['3','Évacuer calmement','Voies balisées · Ne pas courir · Ne pas revenir en arrière · Laisser les affaires'],['4','Rassemblement','Point désigné · Rester groupé · Ne pas quitter la zone avant l\'autorisation'],['5','Appel nominal','Vérifier la présence · Signaler les absents aux secours immédiatement']],
-    styles:{fontSize:9,cellPadding:4},theme:'striped',
-    headStyles:{fillColor:c.orange,textColor:[255,255,255],fontStyle:'bold'},
-    alternateRowStyles:{fillColor:[255,249,244]},
-    columnStyles:{0:{cellWidth:10,halign:'center',fontStyle:'bold'},1:{cellWidth:48,fontStyle:'bold',textColor:c.orange}}});
-  pdfFooter(doc);doc.save('Plan_Evacuation_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Plan Évacuation téléchargé — À afficher ✓');
-};
+// Header premium sombre
+function _vHeader(doc, titleTxt, subtitleTxt, accentCol) {
+  var W = doc.internal.pageSize.width;
+  var P = _vPalette();
+  var col = accentCol || P.accent;
+  // Fond ink
+  doc.setFillColor(...P.ink);
+  doc.rect(0, 0, W, 20, 'F');
+  // Barre accent top
+  doc.setFillColor(...col);
+  doc.rect(0, 0, W, 2.5, 'F');
+  // Nom entreprise
+  var ent = (DB.config.entreprise || 'Vigilo').toUpperCase();
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(255, 255, 255);
+  doc.text(ent, 14, 11);
+  // Badge VIGILO
+  doc.setFillColor(...col);
+  doc.roundedRect(W - 36, 6, 22, 8, 1.5, 1.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(255, 255, 255);
+  doc.text('VIGILO', W - 25, 11.2, { align: 'center' });
+  // Sous-texte date
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(6.5);
+  doc.setTextColor(160, 170, 200);
+  doc.text('Généré le ' + fmtDate(nowISO()), W - 42, 16.5, { align: 'right' });
 
-// ─── NUMÉROS URGENCE ─────────────────────────────────────
-window.pdfRes_numeros_urgence = function(res) {
-  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
-  var c=C(),base=_pdfBase("NUMÉROS D'URGENCE — À AFFICHER",DB.chantier);
-  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
-  var hse=gv('rnu-hse')||DB.config.nom,telHse=gv('rnu-tel-hse'),med=gv('rnu-med'),telMed=gv('rnu-tel-med'),hopital=gv('rnu-hopital'),dist=gv('rnu-dist'),adresse=gv('rnu-adresse');
-  y=_rSection(doc,y,w,'NUMÉROS NATIONAUX — À COMPOSER EN CAS D\'URGENCE',c.red);
-  var nums=[{num:'15',lbl:'SAMU\nUrgences médicales',col:c.red},{num:'18',lbl:'POMPIERS\nIncendie · Secours',col:c.orange},{num:'17',lbl:'POLICE\nGendarmerie',col:c.blue},{num:'112',lbl:'URGENCES\nEuropéen',col:c.red},{num:'3632',lbl:'ANTIPOISON',col:c.amber}];
-  var nb=nums.length,bw=(w-28-4*(nb-1))/nb;
-  nums.forEach(function(n,i){
-    var x=14+i*(bw+4);
-    doc.setFillColor(248,248,246);doc.setDrawColor(n.col[0],n.col[1],n.col[2]);doc.setLineWidth(0.8);
-    doc.roundedRect(x,y,bw,26,2,2,'FD');
-    doc.setFillColor(n.col[0],n.col[1],n.col[2]);doc.roundedRect(x,y,3,26,1,1,'F');
-    doc.setFont('helvetica','bold');doc.setFontSize(22);doc.setTextColor(n.col[0],n.col[1],n.col[2]);
-    doc.text(n.num,x+bw/2+1.5,y+14,{align:'center'});
-    var ll=n.lbl.split('\n');doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(95,94,90);
-    doc.text(ll[0],x+bw/2+1.5,y+19,{align:'center'});
-    if(ll[1])doc.text(ll[1],x+bw/2+1.5,y+23,{align:'center'});
+  // Zone titre — fond bg
+  doc.setFillColor(...P.bg);
+  doc.rect(0, 20, W, subtitleTxt ? 34 : 26, 'F');
+  // Accent gauche
+  doc.setFillColor(...col);
+  doc.rect(14, 22, 4, subtitleTxt ? 30 : 22, 'F');
+  // Titre
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(...P.ink);
+  doc.text(titleTxt, 22, subtitleTxt ? 33 : 31);
+  if (subtitleTxt) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...P.ink2);
+    doc.text(subtitleTxt, 22, 42);
+  }
+  // Ligne séparatrice
+  doc.setDrawColor(...col);
+  doc.setLineWidth(0.5);
+  var lineY = subtitleTxt ? 56 : 48;
+  doc.line(14, lineY - 2, W - 14, lineY - 2);
+  return subtitleTxt ? 60 : 52;
+}
+
+// Footer premium
+function _vFooter(doc, label, accentCol) {
+  var P = _vPalette();
+  var col = accentCol || P.accent;
+  var pages = doc.internal.getNumberOfPages();
+  var W = doc.internal.pageSize.width;
+  var H = doc.internal.pageSize.height;
+  var ent = DB.config.entreprise || 'Vigilo';
+  for (var i = 1; i <= pages; i++) {
+    doc.setPage(i);
+    doc.setFillColor(...P.ink);
+    doc.rect(0, H - 10, W, 10, 'F');
+    doc.setFillColor(...col);
+    doc.rect(0, H - 10, W, 1.2, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(180, 190, 215);
+    doc.text((label || 'Document HSE') + '  ·  ' + ent + '  ·  ' + DB.chantier, 14, H - 3.5);
+    doc.text('Page ' + i + ' / ' + pages, W - 14, H - 3.5, { align: 'right' });
+  }
+}
+
+// Section header sobre
+function _vSection(doc, y, W, title, col) {
+  var P = _vPalette();
+  y = pageCheck(doc, y, 18, title, '');
+  doc.setFillColor(...(col || P.accent));
+  doc.roundedRect(14, y, W - 28, 9, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(255, 255, 255);
+  doc.text(('  ' + title).toUpperCase(), 17, y + 6.2);
+  return y + 13;
+}
+
+// Encart citation / engagement
+function _vQuote(doc, y, W, text, col) {
+  var P = _vPalette();
+  var lines = doc.splitTextToSize(text, W - 48);
+  var h = lines.length * 5 + 14;
+  y = pageCheck(doc, y, h + 6, '', '');
+  doc.setFillColor(...P.white);
+  doc.roundedRect(14, y, W - 28, h, 3, 3, 'F');
+  doc.setDrawColor(...(col || P.accent));
+  doc.setLineWidth(0.3);
+  doc.roundedRect(14, y, W - 28, h, 3, 3, 'S');
+  doc.setFillColor(...(col || P.accent));
+  doc.roundedRect(14, y, 5, h, 2.5, 2.5, 'F');
+  // Guillemets déco
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(28);
+  doc.setTextColor(...(col || P.accent));
+  doc.setGState && doc.setGState(new doc.GState ? new doc.GState({opacity: 0.15}) : {});
+  doc.text('"', 23, y + 12);
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(...P.ink2);
+  doc.text(lines, 26, y + 8);
+  return y + h + 6;
+}
+
+// Card info (label / valeur)
+function _vInfoCard(doc, x, y, w, h, label, value, col) {
+  var P = _vPalette();
+  doc.setFillColor(...P.white);
+  doc.roundedRect(x, y, w, h, 2, 2, 'F');
+  doc.setDrawColor(...P.border);
+  doc.setLineWidth(0.2);
+  doc.roundedRect(x, y, w, h, 2, 2, 'S');
+  doc.setFillColor(...(col || P.accent));
+  doc.roundedRect(x, y, w, 2.2, 1, 1, 'F');
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(6.2);
+  doc.setTextColor(...P.ink3);
+  doc.text(label.toUpperCase(), x + 6, y + 7);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...P.ink);
+  var valLines = doc.splitTextToSize(value || '—', w - 12);
+  doc.text(valLines, x + 6, y + 12.5);
+}
+
+// Checklist premium
+function _vChecklist(doc, y, W, items, checked, col) {
+  var P = _vPalette();
+  var c = col || P.green;
+  var rows = items.map(function(item, i) {
+    var ok = checked ? checked[i] : false;
+    return [ok ? '✓' : '○', item];
   });
-  y+=31;
-  y=_rSection(doc,y,w,'CONTACTS DU CHANTIER',c.orange);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    head:[['Fonction','Nom / Établissement','Téléphone']],
-    body:[['Responsable HSE',hse,telHse||'—'],['Médecin du travail',med||'À compléter',telMed||'—'],['Hôpital / Clinique le plus proche',hopital||'À compléter',dist||'—']],
-    styles:{fontSize:9.5,cellPadding:4},theme:'striped',
-    headStyles:{fillColor:c.orange,textColor:[255,255,255],fontStyle:'bold'},
-    alternateRowStyles:{fillColor:[255,249,244]},
-    columnStyles:{0:{cellWidth:55,fontStyle:'bold'}}});
-  y=doc.lastAutoTable.finalY+6;
-  y=_rBanner(doc,y,w,'ADRESSE : '+(adresse||'À COMPLÉTER OBLIGATOIREMENT'),c.red,9);
-  pdfFooter(doc);doc.save('Numeros_Urgence_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Numéros urgence téléchargés — À plastifier ✓');
-};
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    body: rows,
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 5 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain',
+    columnStyles: { 0: { cellWidth: 10, halign: 'center', fontStyle: 'bold' }, 1: {} },
+    alternateRowStyles: { fillColor: P.bg },
+    didParseCell: function(data) {
+      if (data.column.index === 0) {
+        var ok = checked ? checked[data.row.index] : false;
+        data.cell.styles.textColor = ok ? c : P.ink3;
+        data.cell.styles.fillColor = ok ? [228, 248, 236] : P.bg;
+        data.cell.styles.fontStyle = 'bold';
+      }
+      if (data.column.index === 1) {
+        var ok2 = checked ? checked[data.row.index] : false;
+        data.cell.styles.fillColor = ok2 ? [228, 248, 236] : P.bg;
+        data.cell.styles.textColor = P.ink;
+      }
+    }
+  });
+  return doc.lastAutoTable.finalY + 6;
+}
 
-// ─── PLAN CHUTE HAUTEUR ───────────────────────────────────
-window.pdfRes_plan_urgence_chute_hauteur = function(res) {
-  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
-  var c=C(),base=_pdfBase("PLAN D'URGENCE — CHUTE DE HAUTEUR",DB.chantier+' — AFFICHAGE OBLIGATOIRE');
-  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
-  y=_rBanner(doc,y,w,'APPELER 15 ou 18 IMMÉDIATEMENT — NE PAS DÉPLACER LA VICTIME',c.red,11);
-  y=_rSection(doc,y,w,'SI LA PERSONNE EST EN SUSPENSION (harnais)',c.red);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    body:[['DANGER VITAL','Syndrome de suspension = risque vital en 10-15 minutes — agir vite'],['Action 1','Décrocher / descendre la victime LE PLUS VITE POSSIBLE'],['Action 2','Allonger à PLAT sur le dos IMMÉDIATEMENT — jamais assise'],['Action 3','Appeler 15 ou 18 EN MÊME TEMPS que la manœuvre'],['Action 4','Surveiller conscience et respiration jusqu\'aux secours']],
-    styles:{fontSize:9,cellPadding:4},theme:'striped',alternateRowStyles:{fillColor:[255,245,245]},
-    columnStyles:{0:{cellWidth:32,fontStyle:'bold',textColor:c.red}}});
-  y=doc.lastAutoTable.finalY+8;
-  y=_rSection(doc,y,w,'SI LA PERSONNE EST AU SOL (chute)',c.orange);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    body:[['INTERDIT','NE PAS DÉPLACER — risque fracture vertébrale ou lésion cervicale'],['Action 1','Maintenir la tête dans l\'axe du corps — ne jamais tourner la tête'],['Action 2','Surveiller conscience, respiration, pouls — parler à la victime'],['Action 3','RCP si arrêt respiratoire confirmé (SST uniquement)'],['Action 4','Appeler 15 ou 18 — indiquer hauteur de chute et état']],
-    styles:{fontSize:9,cellPadding:4},theme:'striped',alternateRowStyles:{fillColor:[255,249,244]},
-    columnStyles:{0:{cellWidth:32,fontStyle:'bold',textColor:c.orange}}});
-  y=doc.lastAutoTable.finalY+8;
-  y=_rSection(doc,y,w,'PRÉVENTION — RÈGLES ABSOLUES',c.blue);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    body:[['Seuil','Harnais dès 3m · Charpente métallique : dès 1m si chute libre possible'],['Vérification','Contrôle visuel harnais AVANT chaque prise de hauteur — coutures, longe, boucles'],['Ancrage','Point d\'ancrage certifié min. 10 kN — jamais sur tube d\'échafaudage'],['Après chute','Harnais ayant subi une chute = hors service IMMÉDIATEMENT'],['Travail isolé','INTERDIT en hauteur — binôme minimum à tout moment']],
-    styles:{fontSize:9,cellPadding:3.5},theme:'plain',tableLineColor:c.lightGray,tableLineWidth:0.3,
-    columnStyles:{0:{cellWidth:30,fontStyle:'bold',fillColor:[244,248,255],textColor:c.blue}}});
-  pdfFooter(doc);doc.save('Plan_ChuteHauteur_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Plan Chute de Hauteur téléchargé ✓');
-};
+// Signatures premium
+function _vSignatures(doc, y, W, left, right, col) {
+  var P = _vPalette();
+  var c = col || P.accent;
+  y = pageCheck(doc, y, 38, '', ''); y += 4;
+  var hw = (W - 28 - 8) / 2;
+  [{ s: left, x: 14 }, { s: right, x: 14 + hw + 8 }].forEach(function(item) {
+    doc.setFillColor(...P.white);
+    doc.roundedRect(item.x, y, hw, 30, 2, 2, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(item.x, y, hw, 30, 2, 2, 'S');
+    doc.setFillColor(...c);
+    doc.roundedRect(item.x, y, hw, 2.5, 1, 1, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink3);
+    doc.text((item.s.label || '').toUpperCase(), item.x + 7, y + 9);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...P.ink);
+    doc.text(item.s.name || '—', item.x + 7, y + 16);
+    if (item.s.sub) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(...P.ink3);
+      doc.text(item.s.sub, item.x + 7, y + 21);
+    }
+    doc.setDrawColor(...P.line);
+    doc.setLineWidth(0.4);
+    doc.line(item.x + 7, y + 27, item.x + hw - 7, y + 27);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink3);
+    doc.text('Signature', item.x + 7, y + 30);
+    doc.text(fmtDate(nowISO()), item.x + hw - 7, y + 30, { align: 'right' });
+  });
+  return y + 36;
+}
 
-// ─── OBJECTIFS HSE ────────────────────────────────────────
-window.pdfRes_objectifs_hse = function(res) {
-  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
-  var c=C(),base=_pdfBase('TABLEAU DE BORD DES OBJECTIFS HSE — '+new Date().getFullYear(),DB.chantier+' · '+(DB.config.entreprise||'Tetris Construction'));
-  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
-  var tf=gv('robj-tf')||'10',tb=gv('robj-tb')||'4',epi=gv('robj-epi')||'95',autre=gv('robj-autre');
-  var incidents=DB.incidents.length;
-  var capaOpen=DB.capas.filter(function(x){return x.status!=='closed';}).length;
-  var capaClosed=DB.capas.filter(function(x){return x.status==='closed';}).length;
-  var toolboxes=DB.toolboxes.length;
-  var jsat=0;
-  if(DB.config.dateDebut){var d1=new Date(DB.config.dateDebut);jsat=Math.max(0,Math.round((new Date()-d1)/86400000));}
-  y=_rSection(doc,y,w,'INDICATEURS EN COURS DU CHANTIER',c.blue);
-  doc.autoTable({startY:y,margin:{left:14,right:14},
-    head:[['Indicateur','Valeur actuelle','Objectif cible','Statut']],
-    body:[
-      ['Jours sans Accident du Travail',String(jsat),'> 365 jours',jsat>=30?'✓ Bon':'⚠ Surveiller'],
-      ['Incidents enregistrés (total)',String(incidents),'< 5 par mois',incidents<=5?'✓ OK':'⚠ Dépassé'],
-      ['CAPA ouvertes (en attente)',String(capaOpen),'< 5 ouvertes',capaOpen<5?'✓ Bon':'⚠ À traiter'],
-      ['CAPA clôturées (total)',String(capaClosed),'Maximum','✓ Bon suivi'],
-      ['Toolbox Talks réalisés',String(toolboxes),tb+'/mois',toolboxes>0?'✓ En cours':'⚠ À démarrer'],
+// pageGuard local
+function _vGuard(doc, y, needed, title, sub) {
+  return pageCheck(doc, y, needed, title, sub || '');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ── PLAN D'URGENCE — INCENDIE ──────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+window.pdfRes_plan_urgence_incendie = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var adresse  = gv('rpi-adresse');
+  var serre    = gv('rpi-serre');
+  var rassemble= gv('rpi-rassemblement');
+
+  var y = _vHeader(doc, "PLAN D'URGENCE — INCENDIE", DB.chantier + '  ·  AFFICHAGE OBLIGATOIRE', P.red);
+
+  // Banner alerte
+  doc.setFillColor(...P.red);
+  doc.roundedRect(14, y, W - 28, 14, 3, 3, 'F');
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(16, y + 2, 10, 10, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(...P.red);
+  doc.text('!', 21, y + 9.5, { align: 'center' });
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.text('EN CAS D\'INCENDIE — POMPIERS : 180  ·  URGENCES : 112', 32, y + 9.5);
+  y += 19;
+
+  // 5 étapes en cartes
+  y = _vSection(doc, y, W, 'CONDUITE À TENIR — 5 ÉTAPES DANS L\'ORDRE', P.red);
+  var steps = [
+    { n:'1', titre:'ALARME',         desc:'Crier "Au feu !" · Actionner le déclencheur d\'alarme le plus proche', col: P.red },
+    { n:'2', titre:'APPEL',          desc:'Composer le 180 · Donner adresse + situation précise · Ne pas raccrocher', col: P.red },
+    { n:'3', titre:'ÉVACUATION',     desc:'Guider vers les sorties balisées · NE PAS utiliser les ascenseurs · Ne pas courir', col: P.orange },
+    { n:'4', titre:'RASSEMBLEMENT',  desc:'Rejoindre le point désigné · Rester groupé · NE PAS revenir en arrière', col: P.orange },
+    { n:'5', titre:'APPEL NOMINAL',  desc:'Vérifier la présence de chacun · Signaler les manquants aux secours', col: P.amber },
+  ];
+  steps.forEach(function(s) {
+    y = _vGuard(doc, y, 14, 'Plan Incendie', '');
+    doc.setFillColor(...P.white);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.15);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, 'S');
+    // Numéro badge
+    doc.setFillColor(...s.col);
+    doc.circle(20, y + 6, 4, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text(s.n, 20, y + 7.5, { align: 'center' });
+    // Titre étape
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...s.col);
+    doc.text(s.titre, 28, y + 6);
+    // Description
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...P.ink2);
+    doc.text(s.desc, 28, y + 10.5);
+    y += 15;
+  });
+
+  // Infos chantier
+  y = _vSection(doc, y, W, 'INFORMATIONS DU CHANTIER', P.orange);
+  var infos = [
+    ['Adresse exacte', adresse || 'À COMPLÉTER'],
+    ['Responsable évacuation (serre-file)', serre || DB.config.nom || 'À COMPLÉTER'],
+    ['Point de rassemblement', rassemble || 'À COMPLÉTER'],
+    ['Responsable HSE', DB.config.nom || '—'],
+  ];
+  var halfW = (W - 28 - 5) / 2;
+  infos.forEach(function(inf, i) {
+    var cx = 14 + (i % 2) * (halfW + 5);
+    var cy = y + Math.floor(i / 2) * 16;
+    _vInfoCard(doc, cx, cy, halfW, 14, inf[0], inf[1], P.orange);
+  });
+  y += Math.ceil(infos.length / 2) * 16 + 4;
+
+  // Extincteurs
+  y = _vSection(doc, y, W, 'RÈGLES EXTINCTEURS', P.amber);
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    body: [
+      ['Quand intervenir', 'Feu à son début (taille corbeille) + sortie dans votre dos + vous êtes formé'],
+      ['Eau pulv. (ABC)', 'Bois, papier, liquides — NE JAMAIS utiliser sur équipement électrique'],
+      ['CO₂', 'Équipements électriques uniquement'],
+      ['Technique', '2-3m de distance · Viser la BASE des flammes · Balayer en éventail'],
+      ['Si non maîtrisé', 'ÉVACUATION IMMÉDIATE — Ne pas insister'],
     ],
-    styles:{fontSize:9.5,cellPadding:4},theme:'striped',
-    headStyles:{fillColor:c.blue,textColor:[255,255,255],fontStyle:'bold'},
-    alternateRowStyles:{fillColor:[244,248,255]},
-    columnStyles:{0:{cellWidth:65,fontStyle:'bold'},2:{cellWidth:32},3:{cellWidth:28}}});
-  y=doc.lastAutoTable.finalY+8;
-  y=_rSection(doc,y,w,'OBJECTIFS ANNUELS HSE — '+new Date().getFullYear(),c.blue);
-  var items=['Taux de Fréquence (TF) < '+tf,'Taux de Gravité (TG) < 1','100% des ouvriers induits avant leur démarrage sur chantier','Toolbox Talk au minimum '+tb+' fois par mois','Taux conformité EPI > '+epi+'%','0 accident grave avec arrêt de travail sur la durée du chantier','Toutes les CAPA clôturées dans les délais prévus','Audit HSE terrain réalisé au moins 1 fois par mois'];
-  y=_rChecklist(doc,y,w,c,items,gcbs('rescb-obj',8));
-  if(autre){y=_rSection(doc,y,w,'OBJECTIFS COMPLÉMENTAIRES',c.blue);y=_rTextBox(doc,y,w,c.text,autre,[244,248,255],c.blue);}
-  y=_rSignatures(doc,y,w,c,{label:'Responsable HSE',name:DB.config.nom},{label:'Direction / Chef de projet',name:'—'});
-  pdfFooter(doc);doc.save('Objectifs_HSE_'+new Date().getFullYear()+'_'+DB.chantier.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Tableau de bord Objectifs HSE téléchargé ✓');
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain',
+    alternateRowStyles: { fillColor: P.bg },
+    columnStyles: { 0: { cellWidth: 42, fontStyle: 'bold', textColor: P.amber } }
+  });
+  y = doc.lastAutoTable.finalY + 6;
+
+  _vFooter(doc, 'Plan d\'Urgence Incendie', P.red);
+  doc.save('Vigilo_Plan_Incendie_' + DB.chantier.replace(/[^a-z0-9]/gi,'_') + '.pdf');
+  showToast('Plan Incendie téléchargé — À afficher ✓');
 };
 
-// ─── POLITIQUE HSE ────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+// ── PLAN D'URGENCE — ACCIDENT GRAVE ────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+window.pdfRes_plan_urgence_accident = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+
+  var y = _vHeader(doc, "PLAN D'URGENCE — ACCIDENT GRAVE", DB.chantier + '  ·  AFFICHAGE OBLIGATOIRE', P.red);
+
+  // Banner PAS
+  doc.setFillColor(...P.red);
+  doc.roundedRect(14, y, W - 28, 14, 3, 3, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(255, 255, 255);
+  doc.text('PROTÉGER  →  ALERTER (185 / 180 / 112)  →  SECOURIR', W / 2, y + 9.5, { align: 'center' });
+  y += 19;
+
+  // Méthode PAS en 3 grandes cartes
+  y = _vSection(doc, y, W, 'MÉTHODE P·A·S — 3 ÉTAPES DANS L\'ORDRE', P.red);
+  var pas = [
+    { l:'P', t:'PROTÉGER',  d:'Sécuriser la zone · Supprimer le danger SANS risque pour le sauveteur · Baliser 10m autour', col: P.red },
+    { l:'A', t:'ALERTER',   d:'Appeler 185 (SAMU), 180 (Pompiers) ou 112 · Donner : QUI / QUOI / OÙ / ÉTAT victime / GESTES effectués · NE PAS RACCROCHER', col: P.orange },
+    { l:'S', t:'SECOURIR',  d:'PLS si inconscient qui respire · RCP si arrêt respiratoire · Compression si hémorragie · NE PAS DÉPLACER si traumatisme', col: P.amber },
+  ];
+  pas.forEach(function(s) {
+    y = _vGuard(doc, y, 22, 'Plan Accident Grave', '');
+    doc.setFillColor(...P.white);
+    doc.roundedRect(14, y, W - 28, 18, 2.5, 2.5, 'F');
+    doc.setDrawColor(...s.col);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(14, y, W - 28, 18, 2.5, 2.5, 'S');
+    doc.setFillColor(...s.col);
+    doc.roundedRect(14, y, 14, 18, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(255, 255, 255);
+    doc.text(s.l, 21, y + 12.5, { align: 'center' });
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...s.col);
+    doc.text(s.t, 32, y + 7);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...P.ink2);
+    var dlines = doc.splitTextToSize(s.d, W - 52);
+    doc.text(dlines, 32, y + 12);
+    y += 22;
+  });
+
+  // Infos à donner aux secours
+  y = _vSection(doc, y, W, 'INFORMATIONS À DONNER AUX SECOURS', P.orange);
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    body: [
+      ['Adresse / chantier', DB.chantier],
+      ['Votre nom + numéro', 'À préciser lors de l\'appel'],
+      ['Nature de l\'accident', 'À préciser'],
+      ['Nombre de victimes', 'À préciser'],
+      ['État de la victime', 'Conscient / Inconscient · Respire / Hémorragie…'],
+      ['Gestes effectués', 'PLS / RCP / Compression directe…'],
+    ],
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain',
+    alternateRowStyles: { fillColor: P.bg },
+    columnStyles: { 0: { cellWidth: 55, fontStyle: 'bold', textColor: P.ink2 } }
+  });
+
+  _vFooter(doc, 'Plan d\'Urgence Accident Grave', P.red);
+  doc.save('Vigilo_Plan_AccidentGrave_' + DB.chantier.replace(/[^a-z0-9]/gi,'_') + '.pdf');
+  showToast('Plan Accident Grave téléchargé ✓');
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// ── PLAN D'ÉVACUATION ──────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+window.pdfRes_plan_urgence_evacuation = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var adresse = gv('rev-adresse'), pr1 = gv('rev-pr1'), pr2 = gv('rev-pr2'), resp = gv('rev-resp'), tel = gv('rev-tel');
+
+  var y = _vHeader(doc, "PLAN D'ÉVACUATION DU CHANTIER", DB.chantier + '  ·  AFFICHAGE OBLIGATOIRE', P.orange);
+
+  // Banner séquence
+  doc.setFillColor(...P.orange);
+  doc.roundedRect(14, y, W - 28, 12, 3, 3, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9.5);
+  doc.setTextColor(255, 255, 255);
+  doc.text('ALARME  →  ARRÊT TRAVAUX  →  ÉVACUATION  →  RASSEMBLEMENT', W / 2, y + 8, { align: 'center' });
+  y += 17;
+
+  // 4 info cards
+  y = _vSection(doc, y, W, 'INFORMATIONS DU CHANTIER', P.orange);
+  var infoEvac = [
+    ['Adresse', adresse || 'À compléter'],
+    ['Point rassemblement principal', pr1 || 'À compléter'],
+    ['Point rassemblement secondaire', pr2 || '—'],
+    ['Responsable évacuation', resp || DB.config.nom],
+    ['Téléphone de crise', tel || '—'],
+    ['Responsable HSE', DB.config.nom || '—'],
+  ];
+  var hw = (W - 28 - 5) / 2;
+  infoEvac.forEach(function(inf, i) {
+    var cx = 14 + (i % 2) * (hw + 5);
+    var cy = y + Math.floor(i / 2) * 16;
+    _vInfoCard(doc, cx, cy, hw, 14, inf[0], inf[1], P.orange);
+  });
+  y += Math.ceil(infoEvac.length / 2) * 16 + 4;
+
+  // 5 étapes procédure
+  y = _vSection(doc, y, W, 'PROCÉDURE D\'ÉVACUATION — 5 ÉTAPES', P.orange);
+  var etapes = [
+    { n:'1', t:'Déclencher l\'alarme',  d:'Signal sonore · Alerter le responsable évacuation immédiatement' },
+    { n:'2', t:'Arrêter les travaux',   d:'Poser les outils · Sécuriser les engins · Couper les alimentations' },
+    { n:'3', t:'Évacuer calmement',     d:'Voies balisées · Ne pas courir · Ne pas revenir en arrière · Laisser les affaires' },
+    { n:'4', t:'Rassemblement',         d:'Point désigné · Rester groupé · Ne pas quitter la zone avant l\'autorisation' },
+    { n:'5', t:'Appel nominal',         d:'Vérifier la présence · Signaler les absents aux secours immédiatement' },
+  ];
+  etapes.forEach(function(s, i) {
+    y = _vGuard(doc, y, 14, 'Plan Évacuation', '');
+    doc.setFillColor(...P.white);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.15);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, 'S');
+    var stepCol = i < 2 ? P.orange : i < 4 ? P.amber : P.green;
+    doc.setFillColor(...stepCol);
+    doc.circle(20, y + 6, 4, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text(s.n, 20, y + 7.5, { align: 'center' });
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...stepCol);
+    doc.text(s.t, 28, y + 6);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...P.ink2);
+    doc.text(s.d, 28, y + 10.5);
+    y += 15;
+  });
+
+  // Règles absolues
+  y = _vSection(doc, y, W, 'RÈGLES ABSOLUES', P.red);
+  var regles = ['NE JAMAIS utiliser les ascenseurs lors d\'une évacuation','NE JAMAIS revenir en arrière pour récupérer des affaires','NE JAMAIS quitter le point de rassemblement sans autorisation','NE JAMAIS obstruer les voies d\'évacuation avec du matériel'];
+  regles.forEach(function(r) {
+    y = _vGuard(doc, y, 10, '', '');
+    doc.setFillColor(...P.redLt);
+    doc.roundedRect(14, y, W - 28, 9, 1.5, 1.5, 'F');
+    doc.setFillColor(...P.red);
+    doc.roundedRect(14, y, 3, 9, 1, 1, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...P.red);
+    doc.text('✗', 19.5, y + 6, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...P.ink);
+    doc.text(r, 25, y + 6);
+    y += 12;
+  });
+
+  _vFooter(doc, 'Plan d\'Évacuation', P.orange);
+  doc.save('Vigilo_Plan_Evacuation_' + DB.chantier.replace(/[^a-z0-9]/gi,'_') + '.pdf');
+  showToast('Plan Évacuation téléchargé — À afficher ✓');
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// ── NUMÉROS D'URGENCE — CÔTE D'IVOIRE ──────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+window.pdfRes_numeros_urgence = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var hse    = gv('rnu-hse') || DB.config.nom;
+  var telHse = gv('rnu-tel-hse');
+  var med    = gv('rnu-med');
+  var telMed = gv('rnu-tel-med');
+  var hopital= gv('rnu-hopital');
+  var dist   = gv('rnu-dist');
+  var adresse= gv('rnu-adresse');
+
+  var y = _vHeader(doc, "NUMÉROS D'URGENCE", DB.chantier + '  ·  À AFFICHER ET PLASTIFIER', P.red);
+
+  // Pays badge
+  doc.setFillColor(...P.accentLt);
+  doc.roundedRect(14, y, W - 28, 10, 2, 2, 'F');
+  doc.setDrawColor(...P.accent);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(14, y, W - 28, 10, 2, 2, 'S');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...P.accent);
+  doc.text('🇨🇮  NUMÉROS OFFICIELS — CÔTE D\'IVOIRE', W / 2, y + 6.8, { align: 'center' });
+  y += 15;
+
+  // Numéros nationaux CI — grandes cartes
+  y = _vSection(doc, y, W, 'NUMÉROS NATIONAUX — APPELER SANS DÉLAI', P.red);
+  var nums = [
+    { num: '180',  lbl1: 'POMPIERS',    lbl2: 'Incendie · Secours',       col: P.red,    bg: P.redLt    },
+    { num: '185',  lbl1: 'SAMU',        lbl2: 'Urgences médicales',       col: P.orange, bg: P.orangeLt },
+    { num: '110',  lbl1: 'POLICE',      lbl2: 'Police Nationale',         col: P.accent, bg: P.accentLt },
+    { num: '117',  lbl1: 'GENDARMERIE', lbl2: 'Gendarmerie Nationale',    col: P.accent, bg: P.accentLt },
+    { num: '112',  lbl1: 'URGENCES',    lbl2: 'Numéro européen',          col: P.red,    bg: P.redLt    },
+    { num: '+225\n27 21 24\n90 90', lbl1: 'ANTIPOISON', lbl2: 'Centre d\'Abidjan', col: P.amber, bg: P.amberLt },
+  ];
+  var nb = 3, bw = (W - 28 - (nb - 1) * 4) / nb, bh = 28;
+  nums.forEach(function(n, i) {
+    var col = i % nb, row = Math.floor(i / nb);
+    var cx = 14 + col * (bw + 4);
+    var cy = y + row * (bh + 5);
+    // Fond carte
+    doc.setFillColor(...n.bg);
+    doc.roundedRect(cx, cy, bw, bh, 3, 3, 'F');
+    doc.setDrawColor(...n.col);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(cx, cy, bw, bh, 3, 3, 'S');
+    // Barre top
+    doc.setFillColor(...n.col);
+    doc.roundedRect(cx, cy, bw, 3, 1.5, 1.5, 'F');
+    // Numéro
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(n.num.length > 5 ? 9 : 18);
+    doc.setTextColor(...n.col);
+    if (n.num.indexOf('\n') >= 0) {
+      var parts = n.num.split('\n');
+      doc.setFontSize(11);
+      doc.text(parts[0], cx + bw / 2, cy + 11, { align: 'center' });
+      doc.setFontSize(9);
+      doc.text(parts[1] + ' ' + parts[2], cx + bw / 2, cy + 17, { align: 'center' });
+    } else {
+      doc.text(n.num, cx + bw / 2, cy + 18, { align: 'center' });
+    }
+    // Labels
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...n.col);
+    doc.text(n.lbl1, cx + bw / 2, cy + 22, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink2);
+    doc.text(n.lbl2, cx + bw / 2, cy + 26.5, { align: 'center' });
+  });
+  y += Math.ceil(nums.length / nb) * (bh + 5) + 4;
+
+  // Numéros utiles secondaires
+  y = _vSection(doc, y, W, 'AUTRES NUMÉROS UTILES — CÔTE D\'IVOIRE', P.accent);
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    head: [['Service', 'Numéro', 'Note']],
+    body: [
+      ['Croix-Rouge Côte d\'Ivoire', '+225 27 21 26 15 15', 'Secours humanitaire'],
+      ['CHU de Cocody (Abidjan)', '+225 27 22 48 60 00', 'Hôpital universitaire'],
+      ['CHU de Treichville',       '+225 27 21 24 18 10', 'Urgences chirurgicales'],
+      ['Clinique Avicenne (Abi.)', '+225 27 22 42 61 61', 'Urgences médicales privé'],
+      ['Police Secours Abidjan',   '111',                  'Police de proximité'],
+      ['CIAPOL (pollution)',       '+225 27 22 40 88 79', 'Pollution / environnement'],
+    ],
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain',
+    alternateRowStyles: { fillColor: P.bg },
+    headStyles: { fillColor: P.ink, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
+    columnStyles: { 0: { cellWidth: 65, fontStyle: 'bold', textColor: P.ink2 }, 1: { cellWidth: 38, fontStyle: 'bold', textColor: P.accent } }
+  });
+  y = doc.lastAutoTable.finalY + 6;
+
+  // Contacts du chantier
+  y = _vSection(doc, y, W, 'CONTACTS DU CHANTIER', P.orange);
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    head: [['Fonction', 'Nom / Établissement', 'Téléphone']],
+    body: [
+      ['Responsable HSE', hse || '—', telHse || '—'],
+      ['Médecin du travail', med || 'À compléter', telMed || '—'],
+      ['Hôpital / Clinique le plus proche', hopital || 'À compléter', dist || '—'],
+    ],
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain',
+    alternateRowStyles: { fillColor: P.bg },
+    headStyles: { fillColor: P.orange, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
+    columnStyles: { 0: { cellWidth: 65, fontStyle: 'bold', textColor: P.ink2 }, 2: { fontStyle: 'bold', textColor: P.accent } }
+  });
+  y = doc.lastAutoTable.finalY + 6;
+
+  // Adresse encart
+  if (adresse) {
+    doc.setFillColor(...P.redLt);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, 'F');
+    doc.setDrawColor(...P.red);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, 'S');
+    doc.setFillColor(...P.red);
+    doc.roundedRect(14, y, 4, 12, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...P.ink3);
+    doc.text('ADRESSE DU CHANTIER', 22, y + 5);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...P.ink);
+    doc.text(adresse, 22, y + 10);
+  }
+
+  _vFooter(doc, 'Numéros d\'Urgence — Côte d\'Ivoire', P.red);
+  doc.save('Vigilo_Numeros_Urgence_' + DB.chantier.replace(/[^a-z0-9]/gi,'_') + '.pdf');
+  showToast('Numéros urgence téléchargés — À plastifier ✓');
+};
+
+// ─── PLAN CHUTE HAUTEUR (conservé, refonte design) ─────────────────
+window.pdfRes_plan_urgence_chute_hauteur = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+
+  var y = _vHeader(doc, "PLAN D'URGENCE — CHUTE DE HAUTEUR", DB.chantier + '  ·  AFFICHAGE OBLIGATOIRE', P.red);
+
+  doc.setFillColor(...P.red);
+  doc.roundedRect(14, y, W - 28, 12, 3, 3, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9.5);
+  doc.setTextColor(255, 255, 255);
+  doc.text('APPELER 185 ou 180 IMMÉDIATEMENT — NE PAS DÉPLACER LA VICTIME', W / 2, y + 8, { align: 'center' });
+  y += 17;
+
+  y = _vSection(doc, y, W, 'SI LA PERSONNE EST EN SUSPENSION (harnais)', P.red);
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    body: [
+      ['DANGER VITAL', 'Syndrome de suspension = risque vital en 10-15 minutes — agir vite'],
+      ['Action 1', 'Décrocher / descendre la victime LE PLUS VITE POSSIBLE'],
+      ['Action 2', 'Allonger à PLAT sur le dos IMMÉDIATEMENT — jamais assise'],
+      ['Action 3', 'Appeler 185 ou 180 EN MÊME TEMPS que la manœuvre'],
+      ['Action 4', 'Surveiller conscience et respiration jusqu\'aux secours'],
+    ],
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain', alternateRowStyles: { fillColor: P.bg },
+    columnStyles: { 0: { cellWidth: 32, fontStyle: 'bold', textColor: P.red } }
+  });
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'SI LA PERSONNE EST AU SOL (chute)', P.orange);
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    body: [
+      ['INTERDIT',  'NE PAS DÉPLACER — risque fracture vertébrale ou lésion cervicale'],
+      ['Action 1',  'Maintenir la tête dans l\'axe du corps — ne jamais tourner la tête'],
+      ['Action 2',  'Surveiller conscience, respiration, pouls — parler à la victime'],
+      ['Action 3',  'RCP si arrêt respiratoire confirmé (SST uniquement)'],
+      ['Action 4',  'Appeler 185 ou 180 — indiquer hauteur de chute et état'],
+    ],
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain', alternateRowStyles: { fillColor: P.bg },
+    columnStyles: { 0: { cellWidth: 32, fontStyle: 'bold', textColor: P.orange } }
+  });
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'PRÉVENTION — RÈGLES ABSOLUES', P.accent);
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    body: [
+      ['Seuil',       'Harnais dès 3m · Charpente métallique : dès 1m si chute libre possible'],
+      ['Vérification','Contrôle visuel harnais AVANT chaque prise de hauteur — coutures, longe, boucles'],
+      ['Ancrage',     'Point d\'ancrage certifié min. 10 kN — jamais sur tube d\'échafaudage'],
+      ['Après chute', 'Harnais ayant subi une chute = hors service IMMÉDIATEMENT'],
+      ['Travail isolé','INTERDIT en hauteur — binôme minimum à tout moment'],
+    ],
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain', alternateRowStyles: { fillColor: P.bg },
+    columnStyles: { 0: { cellWidth: 32, fontStyle: 'bold', textColor: P.accent } }
+  });
+
+  _vFooter(doc, 'Plan d\'Urgence Chute de Hauteur', P.red);
+  doc.save('Vigilo_Plan_ChuteHauteur_' + DB.chantier.replace(/[^a-z0-9]/gi,'_') + '.pdf');
+  showToast('Plan Chute de Hauteur téléchargé ✓');
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// ── OBJECTIFS HSE ──────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+window.pdfRes_objectifs_hse = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var ent = DB.config.entreprise || 'Vigilo';
+  var annee = new Date().getFullYear();
+  var tf    = gv('robj-tf') || '10';
+  var tb    = gv('robj-tb') || '4';
+  var epi   = gv('robj-epi') || '95';
+  var autre = gv('robj-autre');
+  var incidents   = DB.incidents.length;
+  var capaOpen    = DB.capas.filter(function(x){ return x.status !== 'closed'; }).length;
+  var capaClosed  = DB.capas.filter(function(x){ return x.status === 'closed'; }).length;
+  var toolboxes   = DB.toolboxes.length;
+  var jsat = 0;
+  if (DB.config.dateDebut) { var d1 = new Date(DB.config.dateDebut); jsat = Math.max(0, Math.round((new Date() - d1) / 86400000)); }
+
+  var y = _vHeader(doc, 'TABLEAU DE BORD OBJECTIFS HSE — ' + annee, ent + '  ·  ' + DB.chantier, P.accent);
+
+  // 4 KPI cards grande taille
+  var kpis = [
+    { label: 'Jours sans AT', val: jsat,       unit: 'j',    col: jsat >= 30 ? P.green : P.amber,  bg: jsat >= 30 ? P.greenLt : P.amberLt },
+    { label: 'Incidents',      val: incidents,  unit: 'tot.', col: incidents <= 5 ? P.green : P.red, bg: incidents <= 5 ? P.greenLt : P.redLt },
+    { label: 'CAPA ouvertes', val: capaOpen,   unit: 'open', col: capaOpen < 5 ? P.green : P.orange, bg: capaOpen < 5 ? P.greenLt : P.orangeLt },
+    { label: 'Toolbox Talks', val: toolboxes,  unit: 'séan', col: toolboxes > 0 ? P.green : P.amber, bg: toolboxes > 0 ? P.greenLt : P.amberLt },
+  ];
+  var kw = (W - 28 - 9) / 4;
+  kpis.forEach(function(k, i) {
+    var cx = 14 + i * (kw + 3);
+    doc.setFillColor(...P.white);
+    doc.roundedRect(cx, y, kw, 26, 3, 3, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(cx, y, kw, 26, 3, 3, 'S');
+    doc.setFillColor(...k.col);
+    doc.roundedRect(cx, y, kw, 3, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(...k.col);
+    doc.text(String(k.val), cx + kw / 2, y + 17, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink3);
+    doc.text(k.label.toUpperCase(), cx + kw / 2, y + 22.5, { align: 'center' });
+  });
+  y += 32;
+
+  // Tableau indicateurs
+  y = _vSection(doc, y, W, 'INDICATEURS EN COURS DU CHANTIER', P.accent);
+  doc.autoTable({
+    startY: y, margin: { left: 14, right: 14 },
+    head: [['Indicateur', 'Valeur actuelle', 'Objectif cible', 'Statut']],
+    body: [
+      ['Jours sans Accident du Travail', String(jsat), '> 365 jours', jsat >= 30 ? '✓ Bon' : '⚠ Surveiller'],
+      ['Incidents enregistrés (total)',  String(incidents), '< 5 par mois', incidents <= 5 ? '✓ OK' : '⚠ Dépassé'],
+      ['CAPA ouvertes (en attente)',     String(capaOpen),  '< 5 ouvertes', capaOpen < 5 ? '✓ Bon' : '⚠ À traiter'],
+      ['CAPA clôturées (total)',         String(capaClosed),'Maximum',       '✓ Bon suivi'],
+      ['Toolbox Talks réalisés',         String(toolboxes), tb + '/mois',    toolboxes > 0 ? '✓ En cours' : '⚠ À démarrer'],
+    ],
+    styles: { fontSize: 8.5, cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 4 }, lineColor: P.line, lineWidth: 0.15 },
+    theme: 'plain', alternateRowStyles: { fillColor: P.bg },
+    headStyles: { fillColor: P.ink, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
+    columnStyles: { 0: { cellWidth: 72, fontStyle: 'bold', textColor: P.ink2 }, 2: { cellWidth: 30 }, 3: { cellWidth: 28 } },
+    didParseCell: function(data) {
+      if (data.column.index === 3 && data.section === 'body') {
+        var v = data.cell.raw;
+        data.cell.styles.textColor = v && v[0] === '✓' ? P.green : P.amber;
+        data.cell.styles.fontStyle = 'bold';
+      }
+    }
+  });
+  y = doc.lastAutoTable.finalY + 6;
+
+  // Objectifs annuels
+  y = _vSection(doc, y, W, 'OBJECTIFS ANNUELS HSE — ' + annee, P.green);
+  var items = [
+    'Taux de Fréquence (TF) < ' + tf,
+    'Taux de Gravité (TG) < 1',
+    '100% des ouvriers induits avant leur démarrage sur chantier',
+    'Toolbox Talk au minimum ' + tb + ' fois par mois',
+    'Taux conformité EPI > ' + epi + '%',
+    '0 accident grave avec arrêt de travail sur la durée du chantier',
+    'Toutes les CAPA clôturées dans les délais prévus',
+    'Audit HSE terrain réalisé au moins 1 fois par mois',
+  ];
+  y = _vChecklist(doc, y, W, items, gcbs('rescb-obj', 8), P.green);
+
+  if (autre) {
+    y = _vSection(doc, y, W, 'OBJECTIFS COMPLÉMENTAIRES', P.accent);
+    y = _vQuote(doc, y, W, autre, P.accent);
+  }
+
+  y = _vSignatures(doc, y, W,
+    { label: 'Responsable HSE', name: DB.config.nom, sub: DB.config.fonction || 'Responsable HSE' },
+    { label: 'Direction / Chef de projet', name: '—', sub: 'Visa Direction' },
+    P.accent
+  );
+
+  _vFooter(doc, 'Tableau de Bord Objectifs HSE ' + annee, P.accent);
+  doc.save('Vigilo_Objectifs_HSE_' + annee + '_' + DB.chantier.replace(/[^a-z0-9]/gi,'_') + '.pdf');
+  showToast('Tableau de bord Objectifs HSE téléchargé ✓');
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// ── POLITIQUE HSE — compact, une page si possible ──────────────────
+// ═══════════════════════════════════════════════════════════════════
 window.pdfRes_politique_hse = function(res) {
-  if(!window.jspdf){showToast('PDF en chargement…','err');return;}
-  var c=C(),ent=DB.config.entreprise||'Tetris Construction';
-  var base=_pdfBase('POLITIQUE HSE — '+ent.toUpperCase(),'Charte Sécurité en vigueur · '+fmtDate(nowISO()));
-  var doc=base.doc,y=base.y,w=doc.internal.pageSize.width;
-  var sig=gv('rpol-sig');
-  y=_rBanner(doc,y,w,ent.toUpperCase()+' — ENGAGEMENT ZÉRO ACCIDENT',[0,80,140],12);
-  var decl='"'+ent+' s\'engage à réaliser l\'ensemble de ses activités de construction dans le strict respect de la santé, de la sécurité et de l\'environnement de ses collaborateurs, sous-traitants et de toutes les parties prenantes. Notre objectif absolu est zéro accident grave sur tous nos chantiers."';
-  y=_rTextBox(doc,y,w,[0,80,140],decl,[240,248,255],[0,120,200]);
-  y=_rSection(doc,y,w,'NOS ENGAGEMENTS — LA DIRECTION S\'ENGAGE À',[0,80,140]);
-  var items=['Identifier et évaluer TOUS les risques avant chaque démarrage de tâche','Fournir les EPI appropriés et vérifier leur port effectif 100% du temps','Former et sensibiliser chaque membre du personnel dès son arrivée sur chantier','Déclarer et analyser systématiquement tout incident, accident ou presqu\'accident','Appliquer le principe d\'amélioration continue via les actions correctives (CAPA)','Interdire formellement toute consommation d\'alcool et de drogues sur site','Respecter l\'ensemble des réglementations nationales et internationales en vigueur'];
-  y=_rChecklist(doc,y,w,c,items,gcbs('rescb-pol',7));
-  y=_rSignatures(doc,y,w,c,{label:'Responsable HSE',name:DB.config.nom,sub:DB.config.fonction||'Responsable HSE'},{label:'Signature Direction / Chef de Projet',name:sig||'—',sub:'Directeur · Chef de Projet'});
-  pdfFooter(doc);doc.save('Politique_HSE_'+ent.replace(/[^a-z0-9]/gi,'_')+'.pdf');showToast('Charte HSE téléchargée — À afficher sur chantier ✓');
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var H = doc.internal.pageSize.height;
+  var ent = DB.config.entreprise || 'Vigilo';
+  var sig = gv('rpol-sig');
+
+  // ── helper : nouvelle page si espace insuffisant ─────────────────
+  function guard(y, needed) {
+    if (y + needed > H - 14) {
+      doc.addPage();
+      doc.setFillColor(...P.bg);
+      doc.rect(0, 0, W, H, 'F');
+      return 12;
+    }
+    return y;
+  }
+
+  // ── helper section compacte ──────────────────────────────────────
+  function section(y, title, col) {
+    y = guard(y, 10);
+    doc.setFillColor(...(col || P.accent));
+    doc.roundedRect(14, y, W - 28, 8, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(255, 255, 255);
+    doc.text(title.toUpperCase(), 18, y + 5.5);
+    return y + 11;
+  }
+
+  // ── HEADER ───────────────────────────────────────────────────────
+  // Fond ink header
+  doc.setFillColor(...P.ink);
+  doc.rect(0, 0, W, 18, 'F');
+  doc.setFillColor(...P.accent);
+  doc.rect(0, 0, W, 2.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(255, 255, 255);
+  doc.text((DB.config.entreprise || 'Vigilo').toUpperCase(), 14, 10);
+  doc.setFillColor(...P.accent);
+  doc.roundedRect(W - 36, 5.5, 22, 8, 1.5, 1.5, 'F');
+  doc.setFontSize(7);
+  doc.text('VIGILO', W - 25, 10.8, { align: 'center' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(6.5);
+  doc.setTextColor(160, 170, 200);
+  doc.text('Généré le ' + fmtDate(nowISO()), W - 42, 16, { align: 'right' });
+
+  // Zone titre compacte
+  doc.setFillColor(...P.bg);
+  doc.rect(0, 18, W, 24, 'F');
+  doc.setFillColor(...P.accent);
+  doc.rect(14, 19, 4, 22, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(...P.ink);
+  doc.text('POLITIQUE HSE — ' + ent.toUpperCase(), 22, 29);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...P.ink2);
+  doc.text('Charte Sécurité en vigueur  ·  ' + fmtDate(nowISO()) + '  ·  ' + DB.chantier, 22, 36);
+  doc.setDrawColor(...P.accent);
+  doc.setLineWidth(0.5);
+  doc.line(14, 42, W - 14, 42);
+
+  var y = 46;
+
+  // ── BANNER ENGAGEMENT ────────────────────────────────────────────
+  doc.setFillColor(...P.ink);
+  doc.roundedRect(14, y, W - 28, 12, 2.5, 2.5, 'F');
+  doc.setFillColor(...P.accent);
+  doc.roundedRect(14, y, 4, 12, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.text(ent.toUpperCase() + ' — ENGAGEMENT ZÉRO ACCIDENT', 22, y + 8);
+  y += 15;
+
+  // ── DÉCLARATION compacte ─────────────────────────────────────────
+  var decl = '"' + ent + ' s\'engage à réaliser l\'ensemble de ses activités dans le strict respect de la santé, de la sécurité et de l\'environnement de ses collaborateurs, sous-traitants et parties prenantes. Notre objectif absolu : zéro accident grave sur tous nos chantiers."';
+  var declLines = doc.splitTextToSize(decl, W - 48);
+  var declH = declLines.length * 4.5 + 10;
+  y = guard(y, declH);
+  doc.setFillColor(...P.accentLt);
+  doc.roundedRect(14, y, W - 28, declH, 2, 2, 'F');
+  doc.setFillColor(...P.accent);
+  doc.roundedRect(14, y, 4, declH, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.setTextColor(...P.accent);
+  doc.text('\u201C', 20, y + 9);
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...P.ink2);
+  doc.text(declLines, 26, y + 7);
+  y += declH + 4;
+
+  // ── 3 PILIERS côte à côte ────────────────────────────────────────
+  y = guard(y, 22);
+  var piliers = [
+    { t: 'SÉCURITÉ', d: 'Aucune tâche ne justifie\nun risque pour la vie humaine', col: P.red,    bg: P.redLt    },
+    { t: 'SANTÉ',    d: 'Protéger le bien-être\nphysique et mental de chacun',  col: P.accent,  bg: P.accentLt },
+    { t: 'ENVIRONNEMENT', d: 'Minimiser notre impact\nenvironnemental sur site',     col: P.green,  bg: P.greenLt  },
+  ];
+  var pw = (W - 28 - 8) / 3;
+  piliers.forEach(function(p, i) {
+    var cx = 14 + i * (pw + 4);
+    doc.setFillColor(...p.bg);
+    doc.roundedRect(cx, y, pw, 20, 2, 2, 'F');
+    doc.setDrawColor(...p.col);
+    doc.setLineWidth(0.35);
+    doc.roundedRect(cx, y, pw, 20, 2, 2, 'S');
+    doc.setFillColor(...p.col);
+    doc.roundedRect(cx, y, pw, 3, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...p.col);
+    doc.text(p.t, cx + pw / 2, y + 10, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink2);
+    p.d.split('\n').forEach(function(line, li) {
+      doc.text(line, cx + pw / 2, y + 14 + li * 4, { align: 'center' });
+    });
+  });
+  y += 24;
+
+  // ── ENGAGEMENTS checklist compacte ───────────────────────────────
+  y = section(y, 'NOS ENGAGEMENTS — LA DIRECTION S\'ENGAGE À', P.accent);
+  var items = [
+    'Identifier et évaluer TOUS les risques avant chaque démarrage de tâche',
+    'Fournir les EPI appropriés et vérifier leur port effectif 100% du temps',
+    'Former et sensibiliser chaque membre du personnel dès son arrivée sur chantier',
+    'Déclarer et analyser systématiquement tout incident, accident ou presqu\'accident',
+    'Appliquer le principe d\'amélioration continue via les actions correctives (CAPA)',
+    'Interdire formellement toute consommation d\'alcool et de drogues sur site',
+    'Respecter l\'ensemble des réglementations nationales et internationales en vigueur',
+  ];
+  var checked = gcbs('rescb-pol', 7);
+  // Dessin manuel compact — pas d'autoTable qui gonfle l'espacement
+  items.forEach(function(item, i) {
+    var ok = checked ? checked[i] : false;
+    y = guard(y, 8);
+    var rowBg = ok ? P.greenLt : (i % 2 === 0 ? P.white : P.bg);
+    doc.setFillColor(...rowBg);
+    doc.roundedRect(14, y, W - 28, 7.5, 1, 1, 'F');
+    doc.setDrawColor(...P.line);
+    doc.setLineWidth(0.12);
+    doc.roundedRect(14, y, W - 28, 7.5, 1, 1, 'S');
+    // Indicateur
+    doc.setFillColor(...(ok ? P.green : P.ink3));
+    doc.roundedRect(15.5, y + 2, 8, 4, 1, 1, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(255, 255, 255);
+    doc.text(ok ? '✓' : '○', 19.5, y + 5.2, { align: 'center' });
+    // Texte
+    doc.setFont('helvetica', ok ? 'bold' : 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...(ok ? P.green : P.ink));
+    doc.text(item, 27, y + 5.2);
+    y += 8.5;
+  });
+  y += 3;
+
+  // ── RÈGLES D'OR 2 colonnes ───────────────────────────────────────
+  y = guard(y, 40);
+  y = section(y, 'REGLES D\'OR SUR CHANTIER', P.red);
+  var regles = [
+    { code: 'EPI',     txt: 'Port des EPI obligatoire en toute circonstance'       },
+    { code: 'ALCOOL',  txt: 'Alcool et drogues strictement interdits sur site'      },
+    { code: 'PERMIS',  txt: 'Permis de travail requis pour toute tache a risque'    },
+    { code: '24H',     txt: 'Tout incident doit etre declare dans les 24h'          },
+    { code: 'BINOME',  txt: 'Binome obligatoire pour tout travail en hauteur'       },
+    { code: 'RETRAIT', txt: 'Droit de retrait si danger grave et imminent'          },
+  ];
+  var rw = (W - 28 - 5) / 2;
+  var rh = 11;
+  regles.forEach(function(r, i) {
+    var cx = 14 + (i % 2) * (rw + 5);
+    var ry = y + Math.floor(i / 2) * (rh + 3);
+    // Fond carte
+    doc.setFillColor(...P.white);
+    doc.roundedRect(cx, ry, rw, rh, 1.5, 1.5, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.15);
+    doc.roundedRect(cx, ry, rw, rh, 1.5, 1.5, 'S');
+    // Accent gauche rouge
+    doc.setFillColor(...P.red);
+    doc.roundedRect(cx, ry, 3.5, rh, 1, 1, 'F');
+    // Badge code
+    doc.setFillColor(...P.redLt);
+    doc.roundedRect(cx + 6, ry + 2.5, 16, 6, 1, 1, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(5.5);
+    doc.setTextColor(...P.red);
+    doc.text(r.code, cx + 14, ry + 6.5, { align: 'center' });
+    // Texte regle
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...P.ink);
+    var tlines = doc.splitTextToSize(r.txt, rw - 28);
+    doc.text(tlines, cx + 25, ry + (tlines.length > 1 ? 5 : 6.8));
+  });
+  y += Math.ceil(regles.length / 2) * (rh + 3) + 4;
+
+  // ── SIGNATURES ───────────────────────────────────────────────────
+  y = guard(y, 34);
+  y += 2;
+  var hw = (W - 28 - 8) / 2;
+  [
+    { label: 'Responsable HSE', name: DB.config.nom, sub: DB.config.fonction || 'Responsable HSE', x: 14 },
+    { label: 'Direction / Chef de Projet', name: sig || '—', sub: 'Directeur · Chef de Projet', x: 14 + hw + 8 },
+  ].forEach(function(s) {
+    doc.setFillColor(...P.white);
+    doc.roundedRect(s.x, y, hw, 28, 2, 2, 'F');
+    doc.setDrawColor(...P.border);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(s.x, y, hw, 28, 2, 2, 'S');
+    doc.setFillColor(...P.accent);
+    doc.roundedRect(s.x, y, hw, 2.5, 1, 1, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...P.ink3);
+    doc.text(s.label.toUpperCase(), s.x + 7, y + 8);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...P.ink);
+    doc.text(s.name, s.x + 7, y + 15);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...P.ink3);
+    doc.text(s.sub, s.x + 7, y + 20);
+    doc.setDrawColor(...P.line);
+    doc.setLineWidth(0.4);
+    doc.line(s.x + 7, y + 25.5, s.x + hw - 7, y + 25.5);
+    doc.setFontSize(6.5);
+    doc.text('Signature', s.x + 7, y + 28.5);
+    doc.text(fmtDate(nowISO()), s.x + hw - 7, y + 28.5, { align: 'right' });
+  });
+
+  _vFooter(doc, 'Politique HSE', P.accent);
+  doc.save('Vigilo_Politique_HSE_' + ent.replace(/[^a-z0-9]/gi,'_') + '.pdf');
+  showToast('Charte HSE téléchargée — À afficher sur chantier ✓');
 };
 
 // ─── EPI OBLIGATOIRES ─────────────────────────────────────
