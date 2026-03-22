@@ -93,6 +93,19 @@ body.dark-mode input[type=checkbox]{accent-color:var(--orange)}
 .p5-mic{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;margin-top:2px}
 .p5-mic:active,.p5-mic.recording{background:var(--red-light)}
 .p5-mic.recording svg{stroke:var(--red)}
+/* ── VOICE INPUT (champs formulaires) ── */
+.voice-wrap{position:relative;display:block}
+.voice-wrap .form-textarea{padding-bottom:36px}
+.voice-mic-btn{position:absolute;bottom:8px;right:8px;width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,border-color .15s;z-index:2}
+.voice-mic-btn:active,.voice-mic-btn.recording{background:var(--red-light);border-color:var(--red)}
+.voice-mic-btn.recording svg{stroke:var(--red)!important}
+.voice-mic-btn svg{stroke:var(--text3);transition:stroke .15s}
+/* mic inline pour les input text */
+.voice-input-row{display:flex;align-items:center;gap:6px}
+.voice-input-row .form-input{flex:1}
+.voice-input-row .voice-mic-btn{position:static;flex-shrink:0;align-self:center}
+body.dark-mode .voice-mic-btn{background:var(--surface)}
+
 .p5-arrow{display:flex;justify-content:center;padding:4px 0;height:22px;flex-shrink:0}
 .p5-arrow svg{stroke:var(--border)}
 .p5-cause-racine{border-radius:12px;border:2px solid var(--red);background:var(--red-light);padding:14px;margin-top:4px}
@@ -383,15 +396,6 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .qa-icon.blue{background:var(--blue-light)}
 .qa-icon.amber{background:var(--amber-light)}
 .qa-label{font-size:10px;font-weight:500;color:var(--text2);text-align:center;line-height:1.3}
-/* ── MORE DRAWER NAV ── */
-.more-nav-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 4px 10px;border-radius:14px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
-.more-nav-btn:active{background:var(--gray-light)}
-.more-nav-btn.active-screen{border-color:var(--orange);background:var(--orange-light)}
-.more-nav-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.more-nav-lbl{font-size:9.5px;font-weight:700;color:var(--text2);text-align:center;line-height:1.3;letter-spacing:.2px}
-body.dark-mode .more-nav-btn{background:var(--surface);border-color:var(--border)}
-body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
-
 
 /* ── ACTIVITY ── */
 .activity-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
@@ -1373,11 +1377,11 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     </div>
     <div class="form-group">
       <label class="form-label">Animateur prévu</label>
-      <input class="form-input" type="text" id="qhs-slot-animateur" placeholder="Nom du responsable">
+      <div class="voice-input-row"><input class="form-input" type="text" id="qhs-slot-animateur" placeholder="Nom du responsable"><button type="button" class="voice-mic-btn" onclick="voiceDictate('qhs-slot-animateur',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Objectif / Message clé</label>
-      <textarea class="form-textarea" id="qhs-slot-objectif" placeholder="Ce que les équipes doivent retenir de cette session…" style="min-height:65px"></textarea>
+      <div class="voice-wrap"><textarea class="form-textarea" id="qhs-slot-objectif" placeholder="Ce que les équipes doivent retenir de cette session…" style="min-height:65px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('qhs-slot-objectif',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <button class="btn-primary" onclick="sauvegarderSlotQHS()">Enregistrer la planification</button>
     <button class="btn-secondary" onclick="closeModal('modal-qhs-slot')">Annuler</button>
@@ -1480,7 +1484,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     <div class="form-group">
       <label class="form-label">Ajouter une zone personnalisée</label>
       <div style="display:flex;gap:8px">
-        <input class="form-input" id="tour-zone-custom" type="text" placeholder="Ex: Toiture bâtiment B, Clôture nord…" style="flex:1">
+        <div class="voice-input-row"><input class="form-input" id="tour-zone-custom" type="text" placeholder="Ex: Toiture bâtiment B, Clôture nord…" style="flex:1"><button type="button" class="voice-mic-btn" onclick="voiceDictate('tour-zone-custom',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
         <button class="btn-sm orange" onclick="ajouterZoneCustom()">+</button>
       </div>
     </div>
@@ -1757,57 +1761,30 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     <div class="nav-label">Incidents</div>
   </button>
   <button class="nav-item" id="nav-jsa" onclick="switchScreen('jsa')">
-    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
     <div class="nav-label">Risques</div>
   </button>
   <button class="nav-item" id="nav-personnel" onclick="switchScreen('personnel')">
     <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
     <div class="nav-label">Personnel</div>
   </button>
-  <button class="nav-item" id="nav-more" onclick="toggleMoreDrawer()">
-    <div class="nav-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <circle cx="5" cy="12" r="1.8" fill="currentColor"/>
-        <circle cx="12" cy="12" r="1.8" fill="currentColor"/>
-        <circle cx="19" cy="12" r="1.8" fill="currentColor"/>
-      </svg>
-    </div>
-    <div class="nav-label">Plus</div>
+  <button class="nav-item" id="nav-toolbox" onclick="switchScreen('toolbox')">
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
+    <div class="nav-label">Animation</div>
+  </button>
+  <button class="nav-item" id="nav-tournee" onclick="switchScreen('tournee')">
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
+    <div class="nav-label">Tournées</div>
+  </button>
+  <button class="nav-item" id="nav-formation" onclick="switchScreen('formation')">
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+    <div class="nav-label">Formation</div>
+  </button>
+  <button class="nav-item" id="nav-exports" onclick="switchScreen('exports')">
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+    <div class="nav-label">Exports</div>
   </button>
 </nav>
-
-<!-- ═══════════════ TIROIR "PLUS" ═══════════════ -->
-<div id="more-drawer-overlay" onclick="closeMoreDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;backdrop-filter:blur(2px)"></div>
-<div id="more-drawer" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:20px 20px 0 0;border-top:1px solid var(--border);z-index:200;padding-bottom:calc(18px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)">
-  <div style="width:36px;height:4px;background:var(--gray-mid);border-radius:2px;margin:12px auto 18px"></div>
-  <div style="padding:0 18px 4px;font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--text3)">Navigation</div>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 18px 6px">
-    <button class="more-nav-btn" id="more-nav-toolbox" onclick="moreNavGo('toolbox')">
-      <div class="more-nav-icon" style="background:var(--amber-light)">
-        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-      </div>
-      <div class="more-nav-lbl">Animation</div>
-    </button>
-    <button class="more-nav-btn" id="more-nav-tournee" onclick="moreNavGo('tournee')">
-      <div class="more-nav-icon" style="background:var(--green-light)">
-        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-      </div>
-      <div class="more-nav-lbl">Tournées</div>
-    </button>
-    <button class="more-nav-btn" id="more-nav-formation" onclick="moreNavGo('formation')">
-      <div class="more-nav-icon" style="background:var(--blue-light)">
-        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      </div>
-      <div class="more-nav-lbl">Formation</div>
-    </button>
-    <button class="more-nav-btn" id="more-nav-exports" onclick="moreNavGo('exports')">
-      <div class="more-nav-icon" style="background:var(--gray-light)">
-        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--gray)" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </div>
-      <div class="more-nav-lbl">Exports</div>
-    </button>
-  </div>
-</div>
 
 <!-- ═══════════════════════════════════════════════
      MODALS
@@ -2067,15 +2044,15 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     </div>
     <div class="form-group">
       <label class="form-label">Zone / Localisation *</label>
-      <input class="form-input" type="text" id="inc-zone" placeholder="Ex: Zone A — Niveau 2, Travée 3">
+      <div class="voice-input-row"><input class="form-input" type="text" id="inc-zone" placeholder="Ex: Zone A — Niveau 2, Travée 3"><button type="button" class="voice-mic-btn" onclick="voiceDictate('inc-zone',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Personne(s) impliquée(s)</label>
-      <input class="form-input" type="text" id="inc-personnes" placeholder="Nom Prénom — Fonction">
+      <div class="voice-input-row"><input class="form-input" type="text" id="inc-personnes" placeholder="Nom Prénom — Fonction"><button type="button" class="voice-mic-btn" onclick="voiceDictate('inc-personnes',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Description des faits *</label>
-      <textarea class="form-textarea" id="inc-desc" placeholder="Décrivez précisément les circonstances de l'événement..."></textarea>
+      <div class="voice-wrap"><textarea class="form-textarea" id="inc-desc" placeholder="Décrivez précisément les circonstances de l'événement..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('inc-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Cause immédiate</label>
@@ -2102,7 +2079,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     </div>
     <div class="form-group">
       <label class="form-label">Action immédiate prise</label>
-      <textarea class="form-textarea" id="inc-action" placeholder="Quelles mesures immédiates ont été prises ?..." style="min-height:65px"></textarea>
+      <div class="voice-wrap"><textarea class="form-textarea" id="inc-action" placeholder="Quelles mesures immédiates ont été prises ?..." style="min-height:65px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('inc-action',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <button class="btn-primary" onclick="sauvegarderIncident()">Enregistrer la fiche</button>
     <button class="btn-secondary" onclick="closeModal('modal-incident')">Annuler</button>
@@ -2216,7 +2193,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Responsable *</label>
-        <input class="form-input" type="text" id="jsa-resp" placeholder="Chef d'équipe">
+        <div class="voice-input-row"><input class="form-input" type="text" id="jsa-resp" placeholder="Chef d'équipe"><button type="button" class="voice-mic-btn" onclick="voiceDictate('jsa-resp',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
       </div>
       <div class="form-group">
         <label class="form-label">Risque global</label>
@@ -2325,7 +2302,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     </div>
     <div class="form-group">
       <label class="form-label">Points discutés / Observations</label>
-      <textarea class="form-textarea" id="tb-obs" placeholder="Résumez les échanges, les points soulevés par les équipes..."></textarea>
+      <div class="voice-wrap"><textarea class="form-textarea" id="tb-obs" placeholder="Résumez les échanges, les points soulevés par les équipes..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('tb-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Photo de la session (optionnel)</label>
@@ -2349,7 +2326,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     <input type="hidden" id="capa-edit-id" value="">
     <div class="form-group">
       <label class="form-label">Titre de l'action *</label>
-      <input class="form-input" type="text" id="capa-titre" placeholder="Décrivez l'action corrective ou préventive">
+      <div class="voice-input-row"><input class="form-input" type="text" id="capa-titre" placeholder="Décrivez l'action corrective ou préventive"><button type="button" class="voice-mic-btn" onclick="voiceDictate('capa-titre',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Type *</label>
@@ -2373,7 +2350,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     </div>
     <div class="form-group">
       <label class="form-label">Description détaillée *</label>
-      <textarea class="form-textarea" id="capa-desc" placeholder="Décrivez le problème constaté et les mesures correctives à mettre en place..."></textarea>
+      <div class="voice-wrap"><textarea class="form-textarea" id="capa-desc" placeholder="Décrivez le problème constaté et les mesures correctives à mettre en place..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('capa-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -2569,7 +2546,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     <div class="permit-section-hdr" style="background:var(--orange-light);color:var(--orange)">📋 Description des travaux</div>
     <div class="form-group">
       <label class="form-label">Lieu d'exécution des travaux *</label>
-      <input class="form-input" id="pfeu-zone" type="text" placeholder="Bâtiment, niveau, zone précise…">
+      <div class="voice-input-row"><input class="form-input" id="pfeu-zone" type="text" placeholder="Bâtiment, niveau, zone précise…"><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfeu-zone',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Type de travaux (cocher)</label>
@@ -2584,7 +2561,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     </div>
     <div class="form-group">
       <label class="form-label">Description détaillée des travaux et du matériel *</label>
-      <textarea class="form-textarea" id="pfeu-travaux" style="min-height:80px" placeholder="Nature des travaux, matériaux, outillage utilisé, description du chantier…"></textarea>
+      <div class="voice-wrap"><textarea class="form-textarea" id="pfeu-travaux" style="min-height:80px" placeholder="Nature des travaux, matériaux, outillage utilisé, description du chantier…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfeu-travaux',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
 
     <!-- 3. RISQUES LIÉS À L'ENVIRONNEMENT -->
@@ -2604,11 +2581,11 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     <div class="permit-section-hdr" style="background:var(--red-light);color:var(--red)">🚨 En cas d'incendie ou d'accident</div>
     <div class="form-group">
       <label class="form-label">Moyens d'alerte à proximité (types)</label>
-      <input class="form-input" id="pfeu-alerte-types" type="text" placeholder="Sonnette, téléphone, déclencheur manuel…">
+      <div class="voice-input-row"><input class="form-input" id="pfeu-alerte-types" type="text" placeholder="Sonnette, téléphone, déclencheur manuel…"><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfeu-alerte-types',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Emplacement</label>
-      <input class="form-input" id="pfeu-alerte-empl" type="text" placeholder="Localisation des moyens d'alerte…">
+      <div class="voice-input-row"><input class="form-input" id="pfeu-alerte-empl" type="text" placeholder="Localisation des moyens d'alerte…"><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfeu-alerte-empl',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
     <div class="form-group">
       <label class="form-label">Numéro de téléphone à appeler</label>
@@ -2616,7 +2593,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     </div>
     <div class="form-group">
       <label class="form-label">Moyens de première intervention à proximité</label>
-      <input class="form-input" id="pfeu-moyens-inter" type="text" placeholder="Extincteurs, RIA, défibrillateur, trousse de secours…">
+      <div class="voice-input-row"><input class="form-input" id="pfeu-moyens-inter" type="text" placeholder="Extincteurs, RIA, défibrillateur, trousse de secours…"><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfeu-moyens-inter',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
 
     <!-- 5. DEMANDEUR / EXÉCUTANT -->
@@ -2632,8 +2609,8 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       <div class="form-group"><label class="form-label">Nom de l'entreprise *</label><input class="form-input" id="pfeu-entreprise" type="text" placeholder="Entreprise intervenante"></div>
       <div class="form-group"><label class="form-label">Représentant qualifié</label><input class="form-input" id="pfeu-exec-rep" type="text" placeholder="Nom, prénom, fonction"></div>
     </div>
-    <div class="form-group"><label class="form-label">Personne exécutant les travaux (nom – prénom, fonction, tél.) *</label><input class="form-input" id="pfeu-executant" type="text" placeholder="Nom Prénom — Fonction — 06 XX XX XX XX"></div>
-    <div class="form-group"><label class="form-label">Agent chargé de la sécurité générale (nom – prénom, fonction, tél.)</label><input class="form-input" id="pfeu-agent-secu" type="text" placeholder="Nom Prénom — Fonction — 06 XX XX XX XX"></div>
+    <div class="form-group"><label class="form-label">Personne exécutant les travaux (nom – prénom, fonction, tél.) *</label><div class="voice-input-row"><input class="form-input" id="pfeu-executant" type="text" placeholder="Nom Prénom — Fonction — 06 XX XX XX XX"><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfeu-executant',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Agent chargé de la sécurité générale (nom – prénom, fonction, tél.)</label><div class="voice-input-row"><input class="form-input" id="pfeu-agent-secu" type="text" placeholder="Nom Prénom — Fonction — 06 XX XX XX XX"><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfeu-agent-secu',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
 
     <!-- 6. MESURES DE PRÉVENTION -->
     <div class="permit-section-hdr" style="background:var(--green-light);color:var(--green)">✅ Mesures de prévention à mettre en œuvre</div>
@@ -2712,7 +2689,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       <div style="padding:6px 8px;text-align:center"><input type="checkbox" id="pfeu-m15e" style="accent-color:var(--orange)"></div>
     </div>
 
-    <div class="form-group"><label class="form-label">Mesure complémentaire / Autre</label><textarea class="form-textarea" id="pfeu-obs" style="min-height:56px" placeholder="Toute mesure spécifique non listée ci-dessus…"></textarea></div>
+    <div class="form-group"><label class="form-label">Mesure complémentaire / Autre</label><div class="voice-wrap"><textarea class="form-textarea" id="pfeu-obs" style="min-height:56px" placeholder="Toute mesure spécifique non listée ci-dessus…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfeu-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
 
     <!-- 7. PHOTOS -->
     <div class="form-group">
@@ -2761,8 +2738,8 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="plev-date" type="date"></div>
       <div class="form-group"><label class="form-label">Heure début</label><input class="form-input" id="plev-heure" type="time"></div>
     </div>
-    <div class="form-group"><label class="form-label">Zone / Localisation *</label><input class="form-input" id="plev-zone" type="text" placeholder="Ex : Grue tour – Zone C"></div>
-    <div class="form-group"><label class="form-label">Description de l'opération *</label><input class="form-input" id="plev-operation" type="text" placeholder="Ex : Levage poutre IPN 200 – 1,2 tonne"></div>
+    <div class="form-group"><label class="form-label">Zone / Localisation *</label><div class="voice-input-row"><input class="form-input" id="plev-zone" type="text" placeholder="Ex : Grue tour – Zone C"><button type="button" class="voice-mic-btn" onclick="voiceDictate('plev-zone',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Description de l'opération *</label><div class="voice-input-row"><input class="form-input" id="plev-operation" type="text" placeholder="Ex : Levage poutre IPN 200 – 1,2 tonne"><button type="button" class="voice-mic-btn" onclick="voiceDictate('plev-operation',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Engin / Appareil</label><input class="form-input" id="plev-engin" type="text" placeholder="Ex : Grue Liebherr 50T"></div>
       <div class="form-group"><label class="form-label">Grutier / Opérateur</label><input class="form-input" id="plev-operateur" type="text" placeholder="Nom prénom"></div>
@@ -2791,7 +2768,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
     <div class="form-group" style="margin-top:14px"><label class="form-label">Conditions météo du jour</label>
       <div style="display:flex;gap:8px"><input class="form-input" id="plev-meteo" type="text" placeholder="Ex : Ciel dégagé, vent 15 km/h" style="flex:1"><input class="form-input" id="plev-vent" type="number" placeholder="Vent km/h" style="width:100px;flex-shrink:0"></div>
     </div>
-    <div class="form-group"><label class="form-label">Observations / Contraintes</label><textarea class="form-textarea" id="plev-obs" placeholder="Obstacles, contraintes particulières…"></textarea></div>
+    <div class="form-group"><label class="form-label">Observations / Contraintes</label><div class="voice-wrap"><textarea class="form-textarea" id="plev-obs" placeholder="Obstacles, contraintes particulières…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('plev-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
     <div class="form-group"><label class="form-label">Photos (zone, engin, charge)</label>
       <div class="photo-zone" onclick="openPhotoPicker(function(inp){document.getElementById('plev-photo').files;var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});var el=document.getElementById('plev-photo');el.files=dt.files;el.dispatchEvent(new Event('change'));},true)"><input type="file" accept="image/*" id="plev-photo" multiple style="display:none" onchange="previewPhotos(this,'plev-photo-preview')">
         <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
@@ -2824,7 +2801,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="pfou-date" type="date"></div>
       <div class="form-group"><label class="form-label">Date fin prévue</label><input class="form-input" id="pfou-date-fin" type="date"></div>
     </div>
-    <div class="form-group"><label class="form-label">Zone / Localisation *</label><input class="form-input" id="pfou-zone" type="text" placeholder="Ex : Parking Est – côté route nationale"></div>
+    <div class="form-group"><label class="form-label">Zone / Localisation *</label><div class="voice-input-row"><input class="form-input" id="pfou-zone" type="text" placeholder="Ex : Parking Est – côté route nationale"><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfou-zone',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
     <div class="form-group"><label class="form-label">Nature de la fouille *</label>
       <select class="form-select" id="pfou-nature">
         <option value="">-- Sélectionner --</option>
@@ -2867,8 +2844,8 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c7"></div><div class="check-label">Eaux de ruissellement évacuées / pompage prévu</div></div>
       <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="pfou-c8"></div><div class="check-label">Signalisation chantier visible pour piétons et véhicules</div></div>
     </div>
-    <div class="form-group" style="margin-top:14px"><label class="form-label">Nature du terrain / risques particuliers</label><textarea class="form-textarea" id="pfou-terrain" placeholder="Remblaie, nappe phréatique, argile, rocher…"></textarea></div>
-    <div class="form-group"><label class="form-label">Observations</label><textarea class="form-textarea" id="pfou-obs" placeholder="Mesures complémentaires, contraintes…"></textarea></div>
+    <div class="form-group" style="margin-top:14px"><label class="form-label">Nature du terrain / risques particuliers</label><div class="voice-wrap"><textarea class="form-textarea" id="pfou-terrain" placeholder="Remblaie, nappe phréatique, argile, rocher…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfou-terrain',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Observations</label><div class="voice-wrap"><textarea class="form-textarea" id="pfou-obs" placeholder="Mesures complémentaires, contraintes…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('pfou-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
     <div class="form-group"><label class="form-label">Photos (zone, plan, réseaux)</label>
       <div class="photo-zone" onclick="openPhotoPicker(function(inp){document.getElementById('pfou-photo').files;var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});var el=document.getElementById('pfou-photo');el.files=dt.files;el.dispatchEvent(new Event('change'));},true)"><input type="file" accept="image/*" id="pfou-photo" multiple style="display:none" onchange="previewPhotos(this,'pfou-photo-preview')">
         <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
@@ -2907,8 +2884,8 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
         <option>Travaux en hauteur</option><option>Espace confiné</option><option>Travaux sous tension</option><option>Travaux par points chauds</option><option>Travaux sur installation process</option><option>Démolition / déconstruction</option><option>Travaux de nuit</option><option>Autre</option>
       </select>
     </div>
-    <div class="form-group"><label class="form-label">Description détaillée *</label><textarea class="form-textarea" id="ptrav-desc" placeholder="Nature et étendue des travaux à réaliser…"></textarea></div>
-    <div class="form-group"><label class="form-label">Zone / Localisation *</label><input class="form-input" id="ptrav-zone" type="text" placeholder="Bâtiment, niveau, zone…"></div>
+    <div class="form-group"><label class="form-label">Description détaillée *</label><div class="voice-wrap"><textarea class="form-textarea" id="ptrav-desc" placeholder="Nature et étendue des travaux à réaliser…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('ptrav-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Zone / Localisation *</label><div class="voice-input-row"><input class="form-input" id="ptrav-zone" type="text" placeholder="Bâtiment, niveau, zone…"><button type="button" class="voice-mic-btn" onclick="voiceDictate('ptrav-zone',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Entreprise intervenante</label><input class="form-input" id="ptrav-entreprise" type="text"></div>
       <div class="form-group"><label class="form-label">Responsable travaux *</label><input class="form-input" id="ptrav-responsable" type="text" placeholder="Nom prénom"></div>
@@ -2949,7 +2926,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c7"></div><div class="check-label">Secouriste / SST disponible sur chantier</div></div>
       <div class="check-row"><div class="custom-check" onclick="toggleCheck(this)" id="ptrav-c8"></div><div class="check-label">Permis affiché sur le lieu des travaux</div></div>
     </div>
-    <div class="form-group" style="margin-top:14px"><label class="form-label">Consignes particulières / mesures complémentaires</label><textarea class="form-textarea" id="ptrav-consignes" placeholder="Instructions spécifiques à l'opération…"></textarea></div>
+    <div class="form-group" style="margin-top:14px"><label class="form-label">Consignes particulières / mesures complémentaires</label><div class="voice-wrap"><textarea class="form-textarea" id="ptrav-consignes" placeholder="Instructions spécifiques à l'opération…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('ptrav-consignes',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
     <div class="form-group"><label class="form-label">Photos (zone, équipements, préparation)</label>
       <div class="photo-zone" onclick="openPhotoPicker(function(inp){document.getElementById('ptrav-photo').files;var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});var el=document.getElementById('ptrav-photo');el.files=dt.files;el.dispatchEvent(new Event('change'));},true)"><input type="file" accept="image/*" id="ptrav-photo" multiple style="display:none" onchange="previewPhotos(this,'ptrav-photo-preview')">
         <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
@@ -3086,7 +3063,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
         <button class="yn-btn oui" id="rj-inc-oui" onclick="ynSelect('rj-inc','oui')">✓ OUI</button>
       </div>
       <div class="yn-detail" id="rj-inc-detail">
-        <div class="form-group" style="margin-bottom:0"><label class="form-label" style="margin-bottom:5px">Description de l'incident</label><textarea class="form-textarea" id="rj-inc-desc" style="min-height:70px" placeholder="Nature, circonstances, blessés…"></textarea></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label" style="margin-bottom:5px">Description de l'incident</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-inc-desc" style="min-height:70px" placeholder="Nature, circonstances, blessés…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-inc-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
       </div>
     </div>
     <div class="form-group">
@@ -3096,7 +3073,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
         <button class="yn-btn oui" id="rj-pa-oui" onclick="ynSelect('rj-pa','oui')">✓ OUI</button>
       </div>
       <div class="yn-detail" id="rj-pa-detail">
-        <div class="form-group" style="margin-bottom:0"><label class="form-label" style="margin-bottom:5px">Description</label><textarea class="form-textarea" id="rj-pa-desc" style="min-height:70px" placeholder="Description de la situation dangereuse…"></textarea></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label" style="margin-bottom:5px">Description</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-pa-desc" style="min-height:70px" placeholder="Description de la situation dangereuse…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-pa-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
       </div>
     </div>
 
@@ -3113,7 +3090,7 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       </div>
       <div class="yn-detail" id="rj-insp-detail">
         <div class="form-group" style="margin-bottom:9px"><label class="form-label" style="margin-bottom:5px">Zone inspectée</label><input class="form-input" id="rj-insp-zone" type="text" placeholder="Zone, bâtiment…"></div>
-        <div class="form-group" style="margin-bottom:0"><label class="form-label" style="margin-bottom:5px">Observations</label><textarea class="form-textarea" id="rj-insp-obs" style="min-height:60px" placeholder="Points relevés…"></textarea></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label" style="margin-bottom:5px">Observations</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-insp-obs" style="min-height:60px" placeholder="Points relevés…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-insp-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
       </div>
     </div>
     <div class="form-group">
@@ -3132,9 +3109,9 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--gray)" stroke-width="2.5" fill="none"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       NON-CONFORMITÉS & ACTIONS
     </div>
-    <div class="form-group"><label class="form-label">Non-conformités détectées</label><textarea class="form-textarea" id="rj-nc" placeholder="Lister les non-conformités observées…"></textarea></div>
-    <div class="form-group"><label class="form-label">Actions correctives immédiates</label><textarea class="form-textarea" id="rj-actions" placeholder="Actions prises ou à prendre…"></textarea></div>
-    <div class="form-group"><label class="form-label">Observations générales</label><textarea class="form-textarea" id="rj-obs" placeholder="Tout point notable de la journée…"></textarea></div>
+    <div class="form-group"><label class="form-label">Non-conformités détectées</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-nc" placeholder="Lister les non-conformités observées…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-nc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Actions correctives immédiates</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-actions" placeholder="Actions prises ou à prendre…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-actions',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Observations générales</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-obs" placeholder="Tout point notable de la journée…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
 
     <!-- Photos -->
     <div class="form-group">
@@ -3219,18 +3196,18 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
       <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2.5" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
       BILANS QUALITATIFS
     </div>
-    <div class="form-group"><label class="form-label">Bilan incidents / accidents</label><textarea class="form-textarea" id="rm-bilan-inc" placeholder="Résumé des incidents survenus ce mois…"></textarea></div>
-    <div class="form-group"><label class="form-label">Bilan CAPA</label><textarea class="form-textarea" id="rm-bilan-capa" placeholder="Avancement des actions CAPA en cours…"></textarea></div>
-    <div class="form-group"><label class="form-label">Conformité EPI</label><textarea class="form-textarea" id="rm-epi" placeholder="État du stock EPI, taux de port, anomalies…"></textarea></div>
+    <div class="form-group"><label class="form-label">Bilan incidents / accidents</label><div class="voice-wrap"><textarea class="form-textarea" id="rm-bilan-inc" placeholder="Résumé des incidents survenus ce mois…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rm-bilan-inc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Bilan CAPA</label><div class="voice-wrap"><textarea class="form-textarea" id="rm-bilan-capa" placeholder="Avancement des actions CAPA en cours…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rm-bilan-capa',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Conformité EPI</label><div class="voice-wrap"><textarea class="form-textarea" id="rm-epi" placeholder="État du stock EPI, taux de port, anomalies…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rm-epi',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
 
     <!-- Synthèse -->
     <div style="background:var(--green-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:7px">
       <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2.5" fill="none"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       SYNTHÈSE & OBJECTIFS
     </div>
-    <div class="form-group"><label class="form-label">Points positifs du mois</label><textarea class="form-textarea" id="rm-positifs" placeholder="Bonnes pratiques, améliorations observées…"></textarea></div>
-    <div class="form-group"><label class="form-label">Axes d'amélioration</label><textarea class="form-textarea" id="rm-axes" placeholder="Points à corriger, risques persistants…"></textarea></div>
-    <div class="form-group"><label class="form-label">Objectifs mois prochain</label><textarea class="form-textarea" id="rm-objectifs" placeholder="Actions planifiées, formations, audits…"></textarea></div>
+    <div class="form-group"><label class="form-label">Points positifs du mois</label><div class="voice-wrap"><textarea class="form-textarea" id="rm-positifs" placeholder="Bonnes pratiques, améliorations observées…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rm-positifs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Axes d'amélioration</label><div class="voice-wrap"><textarea class="form-textarea" id="rm-axes" placeholder="Points à corriger, risques persistants…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rm-axes',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Objectifs mois prochain</label><div class="voice-wrap"><textarea class="form-textarea" id="rm-objectifs" placeholder="Actions planifiées, formations, audits…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rm-objectifs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
 
     <!-- Photos -->
     <div class="form-group">
@@ -3448,11 +3425,7 @@ function switchScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const s = document.getElementById('screen-'+name);
-  // Secondary screens go under "Plus" button
-  const secondaryScreens = ['toolbox','tournee','formation','exports'];
-  const n = secondaryScreens.includes(name)
-    ? document.getElementById('nav-more')
-    : document.getElementById('nav-'+name);
+  const n = document.getElementById('nav-'+name);
   if (s) s.classList.add('active');
   if (n) n.classList.add('active');
   currentScreen = name;
@@ -13883,43 +13856,48 @@ function _compressAndCallback(file, onDone) {
 }
 
 
-/* ── MORE DRAWER ── */
-function toggleMoreDrawer() {
-  var overlay = document.getElementById('more-drawer-overlay');
-  var drawer = document.getElementById('more-drawer');
-  var btn = document.getElementById('nav-more');
-  if (drawer.style.display === 'none' || !drawer.style.display) {
-    overlay.style.display = 'block';
-    drawer.style.display = 'block';
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        drawer.style.transform = 'translateY(0)';
-      });
-    });
-    btn.classList.add('active');
-    // highlight active secondary screen
-    ['toolbox','tournee','formation','exports'].forEach(function(s) {
-      var b = document.getElementById('more-nav-' + s);
-      if (b) b.classList.toggle('active-screen', currentScreen === s);
-    });
-  } else {
-    closeMoreDrawer();
+/* ── DICTÉE VOCALE UNIVERSELLE ── */
+var _voiceSpeechActive = null;
+var _voiceSpeechBtnActive = null;
+function voiceDictate(fieldId, btn) {
+  var field = document.getElementById(fieldId);
+  if (!field) return;
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('Dictée vocale non disponible sur ce navigateur', 'err'); return;
   }
-}
-function closeMoreDrawer() {
-  var overlay = document.getElementById('more-drawer-overlay');
-  var drawer = document.getElementById('more-drawer');
-  var btn = document.getElementById('nav-more');
-  drawer.style.transform = 'translateY(100%)';
-  btn.classList.remove('active');
-  setTimeout(function() {
-    drawer.style.display = 'none';
-    overlay.style.display = 'none';
-  }, 300);
-}
-function moreNavGo(screen) {
-  closeMoreDrawer();
-  setTimeout(function() { switchScreen(screen); }, 200);
+  // Arrêter session en cours
+  if (_voiceSpeechActive) {
+    try { _voiceSpeechActive.stop(); } catch(e) {}
+    _voiceSpeechActive = null;
+    if (_voiceSpeechBtnActive) _voiceSpeechBtnActive.classList.remove('recording');
+    _voiceSpeechBtnActive = null;
+    return;
+  }
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recog = new SR();
+  recog.lang = 'fr-FR';
+  recog.continuous = false;
+  recog.interimResults = false;
+  _voiceSpeechActive = recog;
+  _voiceSpeechBtnActive = btn;
+  if (btn) btn.classList.add('recording');
+  showToast('Parlez maintenant… (touchez à nouveau pour arrêter)');
+  recog.onresult = function(e) {
+    var t = e.results[0][0].transcript;
+    var prev = field.value.trim();
+    field.value = prev ? prev + ' ' + t : t;
+    field.dispatchEvent(new Event('input'));
+    showToast('Dictée enregistrée ✓');
+  };
+  recog.onerror = function(e) {
+    showToast('Dictée interrompue — ' + (e.error || 'erreur'), 'err');
+  };
+  recog.onend = function() {
+    if (btn) btn.classList.remove('recording');
+    _voiceSpeechActive = null;
+    _voiceSpeechBtnActive = null;
+  };
+  recog.start();
 }
 </script>
 
@@ -13979,7 +13957,7 @@ function moreNavGo(screen) {
 
     <div class="form-group">
       <label class="form-label">Description courte</label>
-      <textarea class="form-input" id="nf-desc" rows="2" placeholder="Objectif pédagogique de cette formation..."></textarea>
+      <div class="voice-wrap"><textarea class="form-input" id="nf-desc" rows="2" placeholder="Objectif pédagogique de cette formation..." style="padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('nf-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
 
     <!-- Slides builder -->
