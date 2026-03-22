@@ -383,26 +383,31 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .qa-label{font-size:10px;font-weight:500;color:var(--text2);text-align:center;line-height:1.3}
 
 /* ── ACTIVITY ── */
-.activity-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+.activity-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
 .activity-item:last-child{border-bottom:none}
-.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .activity-dot.orange{background:var(--orange)}
 .activity-dot.green{background:var(--green-mid)}
 .activity-dot.red{background:var(--red)}
 .activity-dot.amber{background:var(--amber)}
 .activity-dot.blue{background:var(--blue)}
-.activity-text{flex:1}
-.activity-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4}
-.activity-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.activity-text{flex:1;min-width:0}
+.activity-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.activity-meta{font-size:10.5px;color:var(--text3);margin-top:1px}
 
 /* ── PROGRESS BAR ── */
-.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
-.progress-label{font-size:12px;color:var(--text2);width:98px;flex-shrink:0}
-.progress-track{flex:1;height:6px;background:var(--gray-light);border-radius:3px;overflow:hidden}
+.progress-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.progress-row:last-child{border-bottom:none}
+.progress-label{font-size:13px;font-weight:500;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.progress-track{width:90px;height:5px;background:var(--gray-light);border-radius:3px;overflow:hidden;flex-shrink:0}
 .progress-fill{height:100%;border-radius:3px;transition:width .6s ease}
 .progress-fill.orange{background:var(--orange)}
 .progress-fill.green{background:var(--green-mid)}
-.progress-fill.red{background:var(--red)}
+.progress-fill.red{background:#DC2626}
+.progress-pct{font-size:12px;font-weight:700;width:30px;text-align:right;flex-shrink:0}
+.progress-pct.ok{color:var(--green-mid)}
+.progress-pct.warn{color:var(--orange)}
+.progress-pct.bad{color:#DC2626}
 .progress-fill.amber{background:var(--amber)}
 .progress-pct{font-size:11px;font-weight:600;color:var(--text2);width:33px;text-align:right}
 
@@ -1011,7 +1016,7 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
     <span class="home-section-hd-link" onclick="switchScreen('jsa')">Voir tout →</span>
   </div>
   <div style="padding:0 18px 4px">
-    <div class="card" id="home-epi-card" style="border-radius:14px;padding:0">
+    <div class="card" id="home-epi-card" style="border-radius:14px;padding:4px 14px">
       <div class="empty-state" style="padding:20px 16px">
         <div class="empty-desc" style="font-size:12px">Aucune donnée EPI. Configurez le stock dans l'onglet Risques.</div>
       </div>
@@ -1023,7 +1028,7 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
     <span class="home-section-hd-title">Activité récente</span>
   </div>
   <div style="padding:0 18px 4px">
-    <div class="card" id="activity-list" style="border-radius:14px;padding:4px 12px">
+    <div class="card" id="activity-list" style="border-radius:14px;padding:4px 14px">
       <div class="empty-state" style="padding:20px 4px">
         <div class="empty-desc" style="font-size:12px">Aucune activité. Commencez par déclarer un incident ou créer une JSA.</div>
       </div>
@@ -3456,29 +3461,37 @@ function renderHome() {
 function renderHomeEPI() {
   const el = document.getElementById('home-epi-card');
   if (DB.epis.length === 0) {
-    el.innerHTML = '<div class="empty-state" style="padding:24px 16px"><div class="empty-desc">Aucun EPI configuré. Ajoutez vos EPI dans l\'onglet Risques.</div></div>';
+    el.innerHTML = '<div class="empty-state" style="padding:20px 16px"><div class="empty-desc">Aucun EPI configuré. Ajoutez vos EPI dans l\'onglet Risques.</div></div>';
     return;
   }
+  const shown = DB.epis.slice(0, 5);
   let html = '';
-  DB.epis.forEach(epi => {
+  shown.forEach(epi => {
     const pct = epi.stock > 0 ? Math.round((epi.attrib / epi.stock) * 100) : 0;
-    const col = epi.etat === 'renouveler' ? 'red' : (pct >= 95 ? 'green' : (pct >= 70 ? 'orange' : 'red'));
+    const isRenew = epi.etat === 'renouveler';
+    const col = isRenew ? 'red' : (pct >= 90 ? 'green' : (pct >= 65 ? 'orange' : 'red'));
+    const pctClass = isRenew ? 'bad' : (pct >= 90 ? 'ok' : (pct >= 65 ? 'warn' : 'bad'));
+    const pctLabel = isRenew ? '⚠' : (epi.etat === 'moyen' ? '~OK' : (pct >= 90 ? '✓' : pct + '%'));
+    const fillW = isRenew ? 8 : Math.max(8, pct);
     html += `<div class="progress-row">
-      <div class="progress-label" style="font-size:11px">${epi.type.split(' ')[0]}</div>
-      <div class="progress-track"><div class="progress-fill ${col}" style="width:${epi.etat==='renouveler'?0:100}%"></div></div>
-      <div class="progress-pct">${epi.etat === 'renouveler' ? '⚠' : (epi.etat === 'moyen' ? '~OK' : '✓')}</div>
+      <div class="progress-label">${epi.type}</div>
+      <div class="progress-track"><div class="progress-fill ${col}" style="width:${fillW}%"></div></div>
+      <div class="progress-pct ${pctClass}">${pctLabel}</div>
     </div>`;
   });
+  if (DB.epis.length > 5) {
+    html += `<div style="text-align:center;padding:8px 0 2px;font-size:11px;color:var(--text3)">+${DB.epis.length - 5} autres EPI</div>`;
+  }
   el.innerHTML = html;
 }
 
 function renderActivity() {
   const el = document.getElementById('activity-list');
   if (DB.activity.length === 0) {
-    el.innerHTML = '<div class="empty-state" style="padding:24px 16px"><div class="empty-desc">Aucune activité. Commencez par déclarer un incident ou créer une JSA.</div></div>';
+    el.innerHTML = '<div class="empty-state" style="padding:20px 16px"><div class="empty-desc">Aucune activité. Commencez par déclarer un incident ou créer une JSA.</div></div>';
     return;
   }
-  el.innerHTML = DB.activity.slice(0, 8).map(a => `
+  el.innerHTML = DB.activity.slice(0, 6).map(a => `
     <div class="activity-item">
       <div class="activity-dot ${a.color || 'orange'}"></div>
       <div class="activity-text">
