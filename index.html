@@ -383,6 +383,15 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .qa-icon.blue{background:var(--blue-light)}
 .qa-icon.amber{background:var(--amber-light)}
 .qa-label{font-size:10px;font-weight:500;color:var(--text2);text-align:center;line-height:1.3}
+/* ── MORE DRAWER NAV ── */
+.more-nav-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 4px 10px;border-radius:14px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.more-nav-btn:active{background:var(--gray-light)}
+.more-nav-btn.active-screen{border-color:var(--orange);background:var(--orange-light)}
+.more-nav-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.more-nav-lbl{font-size:9.5px;font-weight:700;color:var(--text2);text-align:center;line-height:1.3;letter-spacing:.2px}
+body.dark-mode .more-nav-btn{background:var(--surface);border-color:var(--border)}
+body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
+
 
 /* ── ACTIVITY ── */
 .activity-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
@@ -1748,30 +1757,57 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
     <div class="nav-label">Incidents</div>
   </button>
   <button class="nav-item" id="nav-jsa" onclick="switchScreen('jsa')">
-    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
     <div class="nav-label">Risques</div>
   </button>
   <button class="nav-item" id="nav-personnel" onclick="switchScreen('personnel')">
     <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
     <div class="nav-label">Personnel</div>
   </button>
-  <button class="nav-item" id="nav-toolbox" onclick="switchScreen('toolbox')">
-    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
-    <div class="nav-label">Animation</div>
-  </button>
-  <button class="nav-item" id="nav-tournee" onclick="switchScreen('tournee')">
-    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
-    <div class="nav-label">Tournées</div>
-  </button>
-  <button class="nav-item" id="nav-formation" onclick="switchScreen('formation')">
-    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-    <div class="nav-label">Formation</div>
-  </button>
-  <button class="nav-item" id="nav-exports" onclick="switchScreen('exports')">
-    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-    <div class="nav-label">Exports</div>
+  <button class="nav-item" id="nav-more" onclick="toggleMoreDrawer()">
+    <div class="nav-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <circle cx="5" cy="12" r="1.8" fill="currentColor"/>
+        <circle cx="12" cy="12" r="1.8" fill="currentColor"/>
+        <circle cx="19" cy="12" r="1.8" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="nav-label">Plus</div>
   </button>
 </nav>
+
+<!-- ═══════════════ TIROIR "PLUS" ═══════════════ -->
+<div id="more-drawer-overlay" onclick="closeMoreDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;backdrop-filter:blur(2px)"></div>
+<div id="more-drawer" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:20px 20px 0 0;border-top:1px solid var(--border);z-index:200;padding-bottom:calc(18px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)">
+  <div style="width:36px;height:4px;background:var(--gray-mid);border-radius:2px;margin:12px auto 18px"></div>
+  <div style="padding:0 18px 4px;font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--text3)">Navigation</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 18px 6px">
+    <button class="more-nav-btn" id="more-nav-toolbox" onclick="moreNavGo('toolbox')">
+      <div class="more-nav-icon" style="background:var(--amber-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      </div>
+      <div class="more-nav-lbl">Animation</div>
+    </button>
+    <button class="more-nav-btn" id="more-nav-tournee" onclick="moreNavGo('tournee')">
+      <div class="more-nav-icon" style="background:var(--green-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+      </div>
+      <div class="more-nav-lbl">Tournées</div>
+    </button>
+    <button class="more-nav-btn" id="more-nav-formation" onclick="moreNavGo('formation')">
+      <div class="more-nav-icon" style="background:var(--blue-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <div class="more-nav-lbl">Formation</div>
+    </button>
+    <button class="more-nav-btn" id="more-nav-exports" onclick="moreNavGo('exports')">
+      <div class="more-nav-icon" style="background:var(--gray-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--gray)" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <div class="more-nav-lbl">Exports</div>
+    </button>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════
      MODALS
@@ -3412,7 +3448,11 @@ function switchScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const s = document.getElementById('screen-'+name);
-  const n = document.getElementById('nav-'+name);
+  // Secondary screens go under "Plus" button
+  const secondaryScreens = ['toolbox','tournee','formation','exports'];
+  const n = secondaryScreens.includes(name)
+    ? document.getElementById('nav-more')
+    : document.getElementById('nav-'+name);
   if (s) s.classList.add('active');
   if (n) n.classList.add('active');
   currentScreen = name;
@@ -13842,6 +13882,45 @@ function _compressAndCallback(file, onDone) {
   reader.readAsDataURL(file);
 }
 
+
+/* ── MORE DRAWER ── */
+function toggleMoreDrawer() {
+  var overlay = document.getElementById('more-drawer-overlay');
+  var drawer = document.getElementById('more-drawer');
+  var btn = document.getElementById('nav-more');
+  if (drawer.style.display === 'none' || !drawer.style.display) {
+    overlay.style.display = 'block';
+    drawer.style.display = 'block';
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        drawer.style.transform = 'translateY(0)';
+      });
+    });
+    btn.classList.add('active');
+    // highlight active secondary screen
+    ['toolbox','tournee','formation','exports'].forEach(function(s) {
+      var b = document.getElementById('more-nav-' + s);
+      if (b) b.classList.toggle('active-screen', currentScreen === s);
+    });
+  } else {
+    closeMoreDrawer();
+  }
+}
+function closeMoreDrawer() {
+  var overlay = document.getElementById('more-drawer-overlay');
+  var drawer = document.getElementById('more-drawer');
+  var btn = document.getElementById('nav-more');
+  drawer.style.transform = 'translateY(100%)';
+  btn.classList.remove('active');
+  setTimeout(function() {
+    drawer.style.display = 'none';
+    overlay.style.display = 'none';
+  }, 300);
+}
+function moreNavGo(screen) {
+  closeMoreDrawer();
+  setTimeout(function() { switchScreen(screen); }, 200);
+}
 </script>
 
 <!-- ═══════════════ PHOTO PICKER ═══════════════ -->
