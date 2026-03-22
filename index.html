@@ -757,6 +757,76 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .photo-picker-btn-label{font-size:15px;font-weight:700;color:var(--text)}
 .photo-picker-btn-sub{font-size:11px;color:var(--text3);margin-top:2px}
 .photo-picker-cancel{margin:14px 18px 0;padding:14px;border-radius:14px;background:var(--gray-light);border:none;width:calc(100% - 36px);font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;font-family:inherit}
+
+/* ══════════════════════════════════════════════
+   MODULE FORMATION HSE
+══════════════════════════════════════════════ */
+/* Cards */
+.form-card{background:var(--surface);border-radius:16px;border:1px solid var(--border);padding:16px;margin:0 16px 12px;cursor:pointer;transition:transform .12s,box-shadow .12s;position:relative;overflow:hidden}
+.form-card:active{transform:scale(.98)}
+.form-card-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:5px}
+.form-card-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3}
+.form-card-meta{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:8px}
+.form-card-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.form-card-badge.orange{background:var(--orange-light);color:var(--orange)}
+.form-card-badge.green{background:var(--green-light);color:var(--green-mid)}
+.form-card-badge.blue{background:var(--blue-light);color:var(--blue)}
+.form-card-badge.gray{background:var(--gray-light);color:var(--text3)}
+.form-card-accent{position:absolute;left:0;top:0;bottom:0;width:4px}
+.form-stats-row{display:flex;gap:10px;padding:0 16px 12px}
+.form-stat-box{flex:1;background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:12px 10px;text-align:center}
+.form-stat-val{font-family:var(--font-head);font-size:24px;font-weight:800;line-height:1}
+.form-stat-lbl{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-top:3px}
+/* Completions list */
+.completion-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.completion-item:last-child{border-bottom:none}
+.completion-avatar{width:36px;height:36px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:800;color:var(--green-mid)}
+.completion-info{flex:1;min-width:0}
+.completion-name{font-size:13px;font-weight:600;color:var(--text)}
+.completion-meta{font-size:10.5px;color:var(--text3);margin-top:1px}
+/* ── SLIDE READER FULLSCREEN ── */
+#slide-reader{position:fixed;inset:0;z-index:2000;background:#0C1226;display:none;flex-direction:column}
+#slide-reader.open{display:flex}
+.sr-header{padding:16px 18px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sr-close{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sr-title-wrap{flex:1;text-align:center;padding:0 10px}
+.sr-title{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-counter{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px}
+.sr-progress{height:3px;background:rgba(255,255,255,.1);flex-shrink:0}
+.sr-progress-fill{height:100%;background:var(--orange);transition:width .3s ease;border-radius:0 2px 2px 0}
+.sr-slide{flex:1;overflow-y:auto;padding:24px 20px}
+.sr-slide-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.4);margin-bottom:8px}
+.sr-slide-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:16px;line-height:1.2}
+.sr-slide-body{font-size:14px;line-height:1.75;color:rgba(255,255,255,.75)}
+.sr-slide-img{width:100%;border-radius:14px;margin:16px 0;object-fit:cover;max-height:260px}
+.sr-checklist-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:rgba(255,255,255,.06);border-radius:10px;margin-bottom:8px}
+.sr-check-icon{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;margin-top:1px}
+.sr-check-icon.checked{background:var(--orange);border-color:var(--orange)}
+.sr-check-lbl{font-size:13px;color:rgba(255,255,255,.8);line-height:1.4}
+.sr-key-point{background:rgba(255,165,0,.12);border:1px solid rgba(255,165,0,.3);border-radius:12px;padding:14px 16px;margin:12px 0}
+.sr-key-point-label{font-size:9px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.sr-key-point-text{font-size:13px;color:rgba(255,255,255,.85);line-height:1.5}
+.sr-footer{padding:14px 18px 20px;flex-shrink:0}
+.sr-btn-next{width:100%;padding:16px;border-radius:14px;border:none;background:var(--orange);color:#fff;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(216,90,48,.4)}
+.sr-btn-next:active{transform:scale(.98)}
+/* Signature screen inside reader */
+.sr-sig-wrap{background:rgba(255,255,255,.05);border-radius:16px;padding:20px;margin-bottom:16px}
+.sr-sig-canvas{width:100%;height:120px;background:rgba(255,255,255,.08);border-radius:10px;border:1.5px dashed rgba(255,255,255,.2);cursor:crosshair;touch-action:none;display:block}
+.sr-agent-field{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 14px;font-size:14px;color:#fff;font-family:inherit;outline:none;width:100%;box-sizing:border-box;margin-bottom:10px}
+.sr-agent-field::placeholder{color:rgba(255,255,255,.3)}
+.sr-agent-field:focus{border-color:var(--orange)}
+/* ── CREATION MODAL ── */
+.slide-builder{background:var(--bg);border-radius:12px;padding:0;margin-bottom:10px;border:1.5px solid var(--border);overflow:hidden}
+.slide-builder-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border)}
+.slide-builder-num{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.8px}
+.slide-builder-body{padding:12px 14px}
+.slide-type-tabs{display:flex;gap:6px;margin-bottom:12px}
+.slide-type-tab{flex:1;padding:7px 4px;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-size:11px;font-weight:700;color:var(--text3);cursor:pointer;text-align:center;transition:all .15s}
+.slide-type-tab.active{background:var(--orange-light);border-color:var(--orange);color:var(--orange)}
+/* Training categories */
+.form-cat-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.form-cat-chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;background:var(--surface)}
+.form-cat-chip.selected{background:var(--orange-light);border-color:var(--orange);color:var(--orange)}
 </style>
 </head>
 <body>
@@ -1583,6 +1653,91 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 <!-- ═══════════════════════════════════════════════
      BOTTOM NAV
 ═══════════════════════════════════════════════ -->
+
+<!-- ═══════════════════════════════════════════════
+     SCREEN — MODULE FORMATION HSE
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-formation">
+  <div class="topbar">
+    <div>
+      <div class="topbar-brand"><div class="brand-dot"></div><div class="topbar-title">Formation HSE</div></div>
+      <div class="topbar-sub">Créer · Diffuser · Certifier</div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" onclick="openNouvellFormation()" title="Nouvelle formation">
+        <svg width="18" height="18" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="form-stats-row" id="form-stats-row">
+    <div class="form-stat-box">
+      <div class="form-stat-val" style="color:var(--orange)" id="fstat-total">0</div>
+      <div class="form-stat-lbl">Formations</div>
+    </div>
+    <div class="form-stat-box">
+      <div class="form-stat-val" style="color:var(--green-mid)" id="fstat-completions">0</div>
+      <div class="form-stat-lbl">Certifications</div>
+    </div>
+    <div class="form-stat-box">
+      <div class="form-stat-val" style="color:var(--blue)" id="fstat-agents">0</div>
+      <div class="form-stat-lbl">Agents formés</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div style="display:flex;gap:0;padding:0 16px 12px">
+    <button id="ftab-liste" class="filter-chip" style="border-radius:10px 0 0 10px;border-right:none" onclick="switchFormationTab('liste')">Mes formations</button>
+    <button id="ftab-suivi" class="filter-chip" style="border-radius:0 10px 10px 0" onclick="switchFormationTab('suivi')">Suivi & Certifications</button>
+  </div>
+
+  <!-- Liste formations -->
+  <div id="ftab-content-liste">
+    <div id="formation-list">
+      <div class="empty-state" style="padding:40px 20px">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" style="margin:0 auto 12px;display:block"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <div class="empty-title">Aucune formation</div>
+        <div class="empty-desc">Créez votre première formation HSE avec le bouton +</div>
+        <button class="btn-primary" style="margin-top:16px" onclick="openNouvellFormation()">Créer une formation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suivi -->
+  <div id="ftab-content-suivi" style="display:none">
+    <div id="suivi-list" style="padding:0 16px">
+      <div class="empty-state" style="padding:40px 20px">
+        <div class="empty-title">Aucune certification</div>
+        <div class="empty-desc">Les signatures apparaîtront ici après que les agents auront complété une formation</div>
+      </div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ── SLIDE READER FULLSCREEN ── -->
+<div id="slide-reader">
+  <div class="sr-header">
+    <button class="sr-close" onclick="closeSlideReader()">
+      <svg width="16" height="16" viewBox="0 0 24 24" stroke="rgba(255,255,255,.7)" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="sr-title-wrap">
+      <div class="sr-title" id="sr-title">Formation</div>
+      <div class="sr-counter" id="sr-counter">Slide 1 / 5</div>
+    </div>
+    <div style="width:34px"></div>
+  </div>
+  <div class="sr-progress"><div class="sr-progress-fill" id="sr-progress-fill" style="width:20%"></div></div>
+  <div class="sr-slide" id="sr-slide-content"></div>
+  <div class="sr-footer">
+    <button class="sr-btn-next" id="sr-btn-next" onclick="srNext()">
+      <span id="sr-btn-label">Suivant</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</div>
+
 <nav class="bottom-nav" id="bottom-nav" style="display:none">
   <button class="nav-item active" id="nav-home" onclick="switchScreen('home')">
     <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
@@ -1607,6 +1762,10 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
   <button class="nav-item" id="nav-tournee" onclick="switchScreen('tournee')">
     <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
     <div class="nav-label">Tournées</div>
+  </button>
+  <button class="nav-item" id="nav-formation" onclick="switchScreen('formation')">
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+    <div class="nav-label">Formation</div>
   </button>
   <button class="nav-item" id="nav-exports" onclick="switchScreen('exports')">
     <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
@@ -3120,6 +3279,9 @@ function load() {
   if (!DB.permisCounter)       DB.permisCounter       = 1;
   if (!DB.tournees)            DB.tournees            = [];
   if (!DB.qhsPlan)             DB.qhsPlan             = {}; // clé: 'YYYY-MM', val: [{slot,theme,date,heure,animateur,objectif,toolboxId}]
+  if (!DB.formations)          DB.formations          = [];
+  if (!DB.completions)         DB.completions         = [];
+  if (!DB.formationCounter)    DB.formationCounter    = 1;
 }
 
 // ═══════════════════════════════════════════════
@@ -3243,6 +3405,10 @@ function openSettingsModal() {
 // ═══════════════════════════════════════════════
 let currentScreen = '';
 function switchScreen(name) {
+  if (name === 'formation') {
+    renderFormationList();
+    switchFormationTab('liste');
+  }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const s = document.getElementById('screen-'+name);
@@ -3458,6 +3624,9 @@ function renderHome() {
 
   // Activity
   renderActivity();
+
+  // Formation stats
+  renderFormationList();
 }
 
 function renderHomeEPI() {
@@ -12921,6 +13090,710 @@ window.pdfRes_prevention_paludisme_maladies = function(res) {
   showToast('Protocole maladies tropicales téléchargé ✓');
 };
 
+
+// ═══════════════════════════════════════════════════════════════
+// ██████████████  MODULE FORMATION HSE  ██████████████████████████
+// ═══════════════════════════════════════════════════════════════
+
+var _currentFormationId = null;  // formation en cours de lecture
+var _currentSlideIdx    = 0;
+var _slideStartTime     = 0;
+var _srChecksDone       = {};    // {slideIdx: [true,false,...]}
+var _srSigPad           = null;
+var _srAgentNom         = '';
+var _srAgentFonction    = '';
+var _srAgentEntreprise  = '';
+var _nfEditId           = null;  // null = nouveau, id = édition
+
+// ── Catégorie couleur ────────────────────────────────────────
+function formCatColor(cat) {
+  var map = {
+    'Risques physiques':'orange','Incendie':'red','EPI':'green',
+    'Hauteur':'orange','Electricite':'blue','Chimique':'amber',
+    'Tropical':'green','General':'gray'
+  };
+  return map[cat] || 'orange';
+}
+
+// ── Render liste formations ──────────────────────────────────
+function renderFormationList() {
+  var el = document.getElementById('formation-list');
+  if (!el) return;
+
+  // Stats
+  var completions = DB.completions || [];
+  var agentsSet = {};
+  completions.forEach(function(c){ agentsSet[c.nomAgent] = 1; });
+  document.getElementById('fstat-total').textContent = (DB.formations||[]).length;
+  document.getElementById('fstat-completions').textContent = completions.length;
+  document.getElementById('fstat-agents').textContent = Object.keys(agentsSet).length;
+
+  if (!DB.formations || DB.formations.length === 0) {
+    el.innerHTML = '<div class="empty-state" style="padding:40px 20px">'
+      + '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" style="margin:0 auto 12px;display:block"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>'
+      + '<div class="empty-title">Aucune formation</div>'
+      + '<div class="empty-desc">Créez votre première formation HSE avec le bouton +</div>'
+      + '<button class="btn-primary" style="margin-top:16px" onclick="openModal(\'modal-new-formation\')">Créer une formation</button></div>';
+    return;
+  }
+
+  var html = '';
+  DB.formations.forEach(function(f) {
+    var col = formCatColor(f.categorie);
+    var done = completions.filter(function(c){ return c.formationId === f.id; }).length;
+    html += '<div class="form-card" onclick="ouvrirDetailFormation(' + f.id + ')">'
+      + '<div class="form-card-accent" style="background:var(--' + col + ')"></div>'
+      + '<div style="padding-left:8px">'
+      + '<div class="form-card-cat">' + (f.categorie||'General') + '</div>'
+      + '<div class="form-card-title">' + f.titre + '</div>'
+      + '<div class="form-card-meta">'
+      + '<span class="form-card-badge ' + col + '">' + f.slides.length + ' slides</span>'
+      + '<span>' + done + ' certification' + (done>1?'s':'') + '</span>'
+      + '<span>' + fmtDate(f.createdAt) + '</span>'
+      + '</div></div></div>';
+  });
+  el.innerHTML = html;
+}
+
+// ── Render suivi ─────────────────────────────────────────────
+function renderSuivi() {
+  var el = document.getElementById('suivi-list');
+  if (!el) return;
+  var completions = DB.completions || [];
+  if (completions.length === 0) {
+    el.innerHTML = '<div class="empty-state" style="padding:40px 0">'
+      + '<div class="empty-title">Aucune certification</div>'
+      + '<div class="empty-desc">Les signatures apparaîtront ici</div></div>';
+    return;
+  }
+
+  // Group by formation
+  var byForm = {};
+  completions.forEach(function(c) {
+    if (!byForm[c.formationId]) byForm[c.formationId] = [];
+    byForm[c.formationId].push(c);
+  });
+
+  var html = '';
+  Object.keys(byForm).forEach(function(fid) {
+    var f = (DB.formations||[]).find(function(x){ return x.id == fid; });
+    var list = byForm[fid];
+    html += '<div style="margin-bottom:20px">'
+      + '<div class="home-section-hd-title" style="padding:12px 0 8px;font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.8px">'
+      + (f ? f.titre : 'Formation #'+fid) + '</div>'
+      + '<div class="card" style="border-radius:14px;padding:4px 14px">';
+    list.forEach(function(c) {
+      var initials = c.nomAgent.split(' ').map(function(w){ return w[0]||''; }).slice(0,2).join('').toUpperCase();
+      html += '<div class="completion-item">'
+        + '<div class="completion-avatar">' + initials + '</div>'
+        + '<div class="completion-info">'
+        + '<div class="completion-name">' + c.nomAgent + '</div>'
+        + '<div class="completion-meta">' + (c.fonction||'') + (c.entreprise?' · '+c.entreprise:'') + ' · ' + fmtDate(c.completedAt) + ' à ' + fmtTime(c.completedAt) + '</div>'
+        + '</div>'
+        + (c.signature ? '<img src="'+c.signature+'" style="height:32px;border-radius:6px;border:1px solid var(--border)">' : '')
+        + '</div>';
+    });
+    html += '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+// ── Tab switch ───────────────────────────────────────────────
+function switchFormationTab(tab) {
+  document.getElementById('ftab-content-liste').style.display = tab==='liste'?'':'none';
+  document.getElementById('ftab-content-suivi').style.display = tab==='suivi'?'':'none';
+  document.getElementById('ftab-liste').classList.toggle('active', tab==='liste');
+  document.getElementById('ftab-suivi').classList.toggle('active', tab==='suivi');
+  if (tab==='suivi') renderSuivi();
+}
+
+// ── Detail formation ─────────────────────────────────────────
+function ouvrirDetailFormation(id) {
+  var f = (DB.formations||[]).find(function(x){ return x.id===id; });
+  if (!f) return;
+  var done = (DB.completions||[]).filter(function(c){ return c.formationId===id; }).length;
+  var col = formCatColor(f.categorie);
+
+  var html = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">'
+    + '<div style="width:48px;height:48px;border-radius:14px;background:var(--' + col + '-light);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+    + '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--' + col + ')" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>'
+    + '<div><div style="font-size:17px;font-weight:800;color:var(--text)">' + f.titre + '</div>'
+    + '<div style="font-size:11px;color:var(--text3);margin-top:2px">' + f.categorie + ' · ' + f.slides.length + ' slides · ' + done + ' certifications</div></div></div>';
+
+  if (f.desc) {
+    html += '<div style="background:var(--bg);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px">' + f.desc + '</div>';
+  }
+
+  // Aperçu slides
+  html += '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Contenu</div>';
+  f.slides.forEach(function(s, i) {
+    var icon = s.type==='checklist' ? '☑' : s.type==='image' ? '🖼' : '📄';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">'
+      + '<div style="width:28px;height:28px;border-radius:8px;background:var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:13px">' + icon + '</div>'
+      + '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + (s.titre||'Slide '+(i+1)) + '</div>'
+      + '<div style="font-size:11px;color:var(--text3)">' + s.type + '</div></div></div>';
+  });
+
+  html += '<div style="display:flex;gap:8px;margin-top:20px">'
+    + '<button class="btn-primary" style="flex:2" onclick="closeModal(\'modal-detail-formation\');setTimeout(function(){preparerLancerFormation('+id+')},200)">Démarrer la formation →</button>'
+    + '<button class="btn-sm outline" style="padding:12px" onclick="nfEditer('+id+')">Modifier</button>'
+    + '<button class="btn-sm red" style="padding:12px" onclick="supprimerFormation('+id+')">Suppr.</button>'
+    + '</div>'
+    + (done > 0 ? '<button class="btn-secondary" style="width:100%;margin-top:8px" onclick="exportCertifPDF('+id+')">📄 Exporter certifications PDF</button>' : '');
+
+  document.getElementById('detail-formation-body').innerHTML = html;
+  openModal('modal-detail-formation');
+}
+
+// ── Préparer lancement ───────────────────────────────────────
+function preparerLancerFormation(id) {
+  _currentFormationId = id;
+  var f = (DB.formations||[]).find(function(x){ return x.id===id; });
+  if (!f) return;
+  document.getElementById('launch-form-title').textContent = f.titre;
+  document.getElementById('launch-agent-nom').value = DB.config.nom || '';
+  document.getElementById('launch-agent-fonction').value = DB.config.fonction || '';
+  document.getElementById('launch-agent-entreprise').value = DB.config.entreprise || '';
+  openModal('modal-launch-formation');
+}
+
+function lancerFormation() {
+  var nom = document.getElementById('launch-agent-nom').value.trim();
+  if (!nom) { showToast('Nom obligatoire', 'err'); return; }
+  _srAgentNom        = nom;
+  _srAgentFonction   = document.getElementById('launch-agent-fonction').value.trim();
+  _srAgentEntreprise = document.getElementById('launch-agent-entreprise').value.trim();
+  closeModal('modal-launch-formation');
+  setTimeout(function() { demarrerSlideReader(_currentFormationId); }, 200);
+}
+
+// ════════════════════════════════════════════════
+// ── SLIDE READER ENGINE ─────────────────────────
+// ════════════════════════════════════════════════
+function demarrerSlideReader(id) {
+  var f = (DB.formations||[]).find(function(x){ return x.id===id; });
+  if (!f) return;
+  _currentFormationId = id;
+  _currentSlideIdx    = 0;
+  _srChecksDone       = {};
+  _slideStartTime     = Date.now();
+  document.getElementById('sr-title').textContent = f.titre;
+  document.getElementById('slide-reader').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderSlide(f, _currentSlideIdx);
+}
+
+function closeSlideReader() {
+  if (confirm('Quitter la formation ? La progression ne sera pas sauvegardée.')) {
+    document.getElementById('slide-reader').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function renderSlide(f, idx) {
+  var total = f.slides.length + 1; // +1 for signature slide
+  var pct = Math.round(((idx+1)/total)*100);
+  document.getElementById('sr-counter').textContent = 'Slide ' + (idx+1) + ' / ' + f.slides.length;
+  document.getElementById('sr-progress-fill').style.width = pct + '%';
+
+  if (idx >= f.slides.length) {
+    renderSignatureSlide(f);
+    return;
+  }
+
+  var s = f.slides[idx];
+  var html = '';
+
+  if (s.type === 'text' || s.type === 'image') {
+    html += '<div class="sr-slide-cat">' + f.categorie + '</div>';
+    html += '<div class="sr-slide-title">' + (s.titre||'') + '</div>';
+    if (s.contenu) {
+      html += '<div class="sr-slide-body">' + s.contenu.replace(/\n/g,'<br>') + '</div>';
+    }
+    if (s.pointCle) {
+      html += '<div class="sr-key-point"><div class="sr-key-point-label">Point clé</div>'
+        + '<div class="sr-key-point-text">' + s.pointCle + '</div></div>';
+    }
+    if (s.photo) {
+      html += '<img class="sr-slide-img" src="' + s.photo + '">';
+    }
+  } else if (s.type === 'checklist') {
+    html += '<div class="sr-slide-cat">' + f.categorie + '</div>';
+    html += '<div class="sr-slide-title">' + (s.titre||'') + '</div>';
+    if (s.contenu) html += '<div class="sr-slide-body" style="margin-bottom:16px">' + s.contenu + '</div>';
+    if (s.items && s.items.length) {
+      s.items.forEach(function(item, i) {
+        var checked = _srChecksDone[idx] && _srChecksDone[idx][i];
+        html += '<div class="sr-checklist-item" onclick="srToggleCheck(' + idx + ',' + i + ',this)">'
+          + '<div class="sr-check-icon' + (checked?' checked':'') + '" id="srck-' + idx + '-' + i + '">'
+          + (checked ? '<svg width="12" height="12" viewBox="0 0 24 24" stroke="#fff" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>' : '')
+          + '</div>'
+          + '<div class="sr-check-lbl">' + item + '</div></div>';
+      });
+    }
+  }
+
+  document.getElementById('sr-slide-content').innerHTML = html;
+  document.getElementById('sr-slide-content').scrollTop = 0;
+
+  var isLast = (idx === f.slides.length - 1);
+  document.getElementById('sr-btn-label').textContent = isLast ? 'Signer & Certifier' : 'Suivant';
+  document.getElementById('sr-btn-next').querySelector('svg').style.display = isLast ? 'none' : '';
+}
+
+function srToggleCheck(slideIdx, itemIdx, el) {
+  if (!_srChecksDone[slideIdx]) _srChecksDone[slideIdx] = [];
+  _srChecksDone[slideIdx][itemIdx] = !_srChecksDone[slideIdx][itemIdx];
+  var icon = document.getElementById('srck-' + slideIdx + '-' + itemIdx);
+  if (icon) {
+    icon.classList.toggle('checked', _srChecksDone[slideIdx][itemIdx]);
+    icon.innerHTML = _srChecksDone[slideIdx][itemIdx]
+      ? '<svg width="12" height="12" viewBox="0 0 24 24" stroke="#fff" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"/></svg>'
+      : '';
+  }
+}
+
+function srNext() {
+  var f = (DB.formations||[]).find(function(x){ return x.id===_currentFormationId; });
+  if (!f) return;
+  _currentSlideIdx++;
+  renderSlide(f, _currentSlideIdx);
+  document.getElementById('sr-progress-fill').style.width =
+    Math.round(((_currentSlideIdx+1)/(f.slides.length+1))*100) + '%';
+}
+
+// ── Slide signature ──────────────────────────────────────────
+function renderSignatureSlide(f) {
+  document.getElementById('sr-counter').textContent = 'Signature';
+  document.getElementById('sr-progress-fill').style.width = '100%';
+  document.getElementById('sr-btn-label').textContent = 'Valider & Certifier';
+  document.getElementById('sr-btn-next').querySelector('svg').style.display = 'none';
+
+  var html = '<div class="sr-slide-cat">Certification</div>'
+    + '<div class="sr-slide-title">Signature de l\'agent</div>'
+    + '<div class="sr-slide-body" style="margin-bottom:20px">En signant, <strong style="color:#fff">' + _srAgentNom + '</strong> certifie avoir lu et compris l\'ensemble de la formation <em>' + f.titre + '</em>.</div>'
+    + '<div class="sr-sig-wrap">'
+    + '<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Signature ici</div>'
+    + '<canvas id="sr-sig-canvas" class="sr-sig-canvas" width="360" height="120"></canvas>'
+    + '<button onclick="srClearSig()" style="background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.5);font-size:11px;padding:6px 12px;border-radius:6px;margin-top:8px;cursor:pointer">Effacer</button>'
+    + '</div>'
+    + '<div style="font-size:12px;color:rgba(255,255,255,.4);text-align:center;margin-top:8px">'
+    + fmtDate(nowISO()) + ' · ' + (_srAgentFonction||'') + ((_srAgentEntreprise)?' · '+_srAgentEntreprise:'')
+    + '</div>';
+
+  document.getElementById('sr-slide-content').innerHTML = html;
+  document.getElementById('sr-slide-content').scrollTop = 0;
+
+  // Init signature pad
+  var canvas = document.getElementById('sr-sig-canvas');
+  var ctx = canvas.getContext('2d');
+  var drawing = false;
+  var lastX = 0, lastY = 0;
+
+  function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+  }
+
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  function startDraw(e) { e.preventDefault(); drawing=true; var p=getPos(e); lastX=p.x; lastY=p.y; }
+  function draw(e) {
+    e.preventDefault();
+    if (!drawing) return;
+    var p=getPos(e);
+    ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke();
+    lastX=p.x; lastY=p.y;
+  }
+  function endDraw(e) { e.preventDefault(); drawing=false; }
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('touchstart', startDraw, {passive:false});
+  canvas.addEventListener('touchmove', draw, {passive:false});
+  canvas.addEventListener('touchend', endDraw, {passive:false});
+
+  document.getElementById('sr-btn-next').onclick = function() { validerCertification(f); };
+}
+
+function srClearSig() {
+  var canvas = document.getElementById('sr-sig-canvas');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// ── Valider certification ─────────────────────────────────────
+function validerCertification(f) {
+  var canvas = document.getElementById('sr-sig-canvas');
+  // Check sig not empty
+  var ctx = canvas.getContext('2d');
+  var data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+  var hasSig = false;
+  for (var i=3; i<data.length; i+=4) { if (data[i]>0) { hasSig=true; break; } }
+  if (!hasSig) { showToast('Veuillez signer avant de valider', 'err'); return; }
+
+  var sigData = canvas.toDataURL('image/png');
+  var duree = Math.round((Date.now() - _slideStartTime) / 1000);
+
+  var completion = {
+    id: Date.now(),
+    formationId: f.id,
+    nomAgent: _srAgentNom,
+    fonction: _srAgentFonction,
+    entreprise: _srAgentEntreprise,
+    completedAt: nowISO(),
+    signature: sigData,
+    duree: duree
+  };
+
+  if (!DB.completions) DB.completions = [];
+  DB.completions.push(completion);
+  save();
+
+  // Activity
+  ajouterActivite('Formation "' + f.titre + '" certifiée — ' + _srAgentNom, 'green');
+
+  document.getElementById('slide-reader').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('sr-btn-next').onclick = srNext;
+
+  // Show confirmation
+  setTimeout(function() {
+    showCertifConfirm(completion, f);
+  }, 300);
+
+  renderFormationList();
+}
+
+function showCertifConfirm(c, f) {
+  var initials = c.nomAgent.split(' ').map(function(w){ return w[0]||''; }).slice(0,2).join('').toUpperCase();
+  var html = '<div style="text-align:center;padding:12px 0 8px">'
+    + '<div style="width:60px;height:60px;border-radius:18px;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">'
+    + '<svg width="28" height="28" viewBox="0 0 24 24" stroke="var(--green-mid)" stroke-width="2.5" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>'
+    + '<div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px">Certification validée</div>'
+    + '<div style="font-size:13px;color:var(--text3);margin-bottom:20px">' + f.titre + '</div>'
+    + '<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:20px;text-align:left">'
+    + '<div style="font-size:12px;color:var(--text3);margin-bottom:4px">Agent certifié</div>'
+    + '<div style="font-size:15px;font-weight:700;color:var(--text)">' + c.nomAgent + '</div>'
+    + '<div style="font-size:11px;color:var(--text3);margin-top:2px">' + (c.fonction||'') + (c.entreprise?' · '+c.entreprise:'') + '</div>'
+    + '<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">'
+    + '<img src="' + c.signature + '" style="height:36px;border-radius:6px">'
+    + '<div style="font-size:10px;color:var(--text3);margin-top:4px">' + fmtDate(c.completedAt) + ' à ' + fmtTime(c.completedAt) + '</div>'
+    + '</div></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn-primary" style="flex:1" onclick="exportCertifSinglePDF(' + c.id + ');closeModal(\'modal-certif-confirm\')">Télécharger PDF</button>'
+    + '<button class="btn-secondary" style="flex:1" onclick="closeModal(\'modal-certif-confirm\')">Fermer</button>'
+    + '</div></div>';
+
+  // Reuse modal-detail-formation for this
+  document.getElementById('detail-formation-body').innerHTML = html;
+  openModal('modal-detail-formation');
+}
+
+// ════════════════════════════════════════════════
+// ── CRÉATION DE FORMATION ────────────────────────
+// ════════════════════════════════════════════════
+var _nfSlides = [];
+var _nfCat = 'Risques physiques';
+
+function selectFormCat(el, cat) {
+  _nfCat = cat;
+  document.querySelectorAll('.form-cat-chip').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function nfAddSlide() {
+  if (_nfSlides.length >= 7) { showToast('Maximum 7 slides', 'err'); return; }
+  _nfSlides.push({ type: 'text', titre: '', contenu: '', pointCle: '', items: [], photo: null });
+  renderNfSlides();
+}
+
+function renderNfSlides() {
+  var container = document.getElementById('nf-slides-container');
+  var btn = document.getElementById('nf-add-slide-btn');
+  btn.style.display = _nfSlides.length >= 7 ? 'none' : '';
+
+  var html = '';
+  _nfSlides.forEach(function(s, i) {
+    html += '<div class="slide-builder" id="sb-' + i + '">'
+      + '<div class="slide-builder-header">'
+      + '<span class="slide-builder-num">Slide ' + (i+1) + '</span>'
+      + '<button onclick="nfRemoveSlide(' + i + ')" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;font-weight:700">Supprimer</button>'
+      + '</div>'
+      + '<div class="slide-builder-body">'
+      // Type tabs
+      + '<div class="slide-type-tabs">'
+      + '<button class="slide-type-tab' + (s.type==='text'?' active':'') + '" onclick="nfSetType(' + i + ',\'text\',this)">Texte</button>'
+      + '<button class="slide-type-tab' + (s.type==='image'?' active':'') + '" onclick="nfSetType(' + i + ',\'image\',this)">Image</button>'
+      + '<button class="slide-type-tab' + (s.type==='checklist'?' active':'') + '" onclick="nfSetType(' + i + ',\'checklist\',this)">Checklist</button>'
+      + '</div>'
+      // Titre
+      + '<input class="form-input" placeholder="Titre du slide" value="' + (s.titre||'').replace(/"/g,'&quot;') + '" oninput="_nfSlides[' + i + '].titre=this.value" style="margin-bottom:8px">'
+      // Contenu selon type
+      + (s.type !== 'checklist'
+        ? '<textarea class="form-input" placeholder="Contenu..." rows="3" oninput="_nfSlides[' + i + '].contenu=this.value" style="margin-bottom:8px;resize:vertical">' + (s.contenu||'') + '</textarea>'
+          + '<input class="form-input" placeholder="Point clé (optionnel — encadré orange)" value="' + (s.pointCle||'').replace(/"/g,'&quot;') + '" oninput="_nfSlides[' + i + '].pointCle=this.value" style="margin-bottom:8px">'
+        : '<div id="nf-items-' + i + '">' + renderNfCheckItems(s.items, i) + '</div>'
+          + '<button onclick="nfAddCheckItem(' + i + ')" class="btn-secondary" style="font-size:12px;padding:8px 14px;margin-bottom:8px">+ Ajouter un élément</button>'
+        )
+      // Photo
+      + (s.type !== 'checklist'
+        ? '<div style="display:flex;align-items:center;gap:8px">'
+          + (s.photo ? '<img src="' + s.photo + '" style="width:60px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">' : '')
+          + '<button onclick="nfPickPhoto(' + i + ')" class="btn-secondary" style="font-size:12px;padding:8px 14px">' + (s.photo?'Changer photo':'Ajouter photo') + '</button>'
+          + '</div>'
+        : '')
+      + '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderNfCheckItems(items, slideIdx) {
+  if (!items || items.length === 0) return '<div style="font-size:12px;color:var(--text3);padding:8px 0 8px">Aucun élément — cliquez + pour ajouter</div>';
+  return items.map(function(item, i) {
+    return '<div style="display:flex;gap:6px;margin-bottom:6px">'
+      + '<input class="form-input" value="' + (item||'').replace(/"/g,'&quot;') + '" placeholder="Élément ' + (i+1) + '" oninput="_nfSlides[' + slideIdx + '].items[' + i + ']=this.value" style="flex:1">'
+      + '<button onclick="nfRemoveCheckItem(' + slideIdx + ',' + i + ')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:0 12px;color:var(--red);cursor:pointer;font-size:14px">×</button>'
+      + '</div>';
+  }).join('');
+}
+
+function nfAddCheckItem(slideIdx) {
+  _nfSlides[slideIdx].items.push('');
+  document.getElementById('nf-items-' + slideIdx).innerHTML = renderNfCheckItems(_nfSlides[slideIdx].items, slideIdx);
+}
+
+function nfRemoveCheckItem(slideIdx, itemIdx) {
+  _nfSlides[slideIdx].items.splice(itemIdx, 1);
+  document.getElementById('nf-items-' + slideIdx).innerHTML = renderNfCheckItems(_nfSlides[slideIdx].items, slideIdx);
+}
+
+function nfSetType(slideIdx, type, el) {
+  _nfSlides[slideIdx].type = type;
+  el.parentElement.querySelectorAll('.slide-type-tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  renderNfSlides();
+}
+
+function nfRemoveSlide(i) {
+  _nfSlides.splice(i, 1);
+  renderNfSlides();
+}
+
+function nfPickPhoto(slideIdx) {
+  openPhotoPicker(function(inp) {
+    if (!inp.files[0]) return;
+    _compressAndCallback(inp.files[0], function(b64) {
+      _nfSlides[slideIdx].photo = b64;
+      renderNfSlides();
+    });
+  }, false);
+}
+
+function openNouvellFormation() {
+  _nfEditId = null;
+  _nfSlides = [];
+  _nfCat = 'Risques physiques';
+  document.getElementById('nf-titre').value = '';
+  document.getElementById('nf-desc').value = '';
+  document.getElementById('new-form-modal-title').textContent = 'Nouvelle Formation HSE';
+  document.querySelectorAll('.form-cat-chip').forEach(function(c,i){ c.classList.toggle('selected', i===0); });
+  nfAddSlide();
+  openModal('modal-new-formation');
+}
+
+function nfEditer(id) {
+  closeModal('modal-detail-formation');
+  var f = (DB.formations||[]).find(function(x){ return x.id===id; });
+  if (!f) return;
+  _nfEditId = id;
+  _nfSlides = JSON.parse(JSON.stringify(f.slides));
+  _nfCat = f.categorie;
+  document.getElementById('nf-titre').value = f.titre;
+  document.getElementById('nf-desc').value = f.desc || '';
+  document.getElementById('new-form-modal-title').textContent = 'Modifier la formation';
+  document.querySelectorAll('.form-cat-chip').forEach(function(c){
+    c.classList.toggle('selected', c.textContent === f.categorie);
+  });
+  renderNfSlides();
+  setTimeout(function(){ openModal('modal-new-formation'); }, 200);
+}
+
+function saveFormation() {
+  var titre = document.getElementById('nf-titre').value.trim();
+  if (!titre) { showToast('Titre obligatoire', 'err'); return; }
+  if (_nfSlides.length === 0) { showToast('Ajoutez au moins un slide', 'err'); return; }
+
+  // Sync checklist items from DOM
+  _nfSlides.forEach(function(s, i) {
+    if (s.type === 'checklist') {
+      var inputs = document.querySelectorAll('#nf-items-' + i + ' input');
+      s.items = Array.from(inputs).map(function(inp){ return inp.value.trim(); }).filter(Boolean);
+    }
+  });
+
+  var desc = document.getElementById('nf-desc').value.trim();
+
+  if (_nfEditId) {
+    var idx = (DB.formations||[]).findIndex(function(x){ return x.id===_nfEditId; });
+    if (idx >= 0) {
+      DB.formations[idx].titre = titre;
+      DB.formations[idx].categorie = _nfCat;
+      DB.formations[idx].desc = desc;
+      DB.formations[idx].slides = _nfSlides;
+      DB.formations[idx].updatedAt = nowISO();
+    }
+    showToast('Formation modifiée ✓');
+  } else {
+    if (!DB.formations) DB.formations = [];
+    var f = {
+      id: DB.formationCounter++,
+      titre: titre,
+      categorie: _nfCat,
+      desc: desc,
+      slides: _nfSlides,
+      createdAt: nowISO(),
+      createdBy: DB.config.nom
+    };
+    DB.formations.push(f);
+    ajouterActivite('Formation créée : ' + titre, 'blue');
+    showToast('Formation enregistrée ✓');
+  }
+  save();
+  closeModal('modal-new-formation');
+  renderFormationList();
+}
+
+function supprimerFormation(id) {
+  closeModal('modal-detail-formation');
+  showConfirm('Supprimer cette formation ?', 'Les certifications associées seront aussi supprimées.', function() {
+    DB.formations = (DB.formations||[]).filter(function(f){ return f.id !== id; });
+    DB.completions = (DB.completions||[]).filter(function(c){ return c.formationId !== id; });
+    save();
+    renderFormationList();
+    showToast('Formation supprimée');
+  });
+}
+
+// ════════════════════════════════════════════════
+// ── PDF CERTIFICATION ───────────────────────────
+// ════════════════════════════════════════════════
+function exportCertifSinglePDF(completionId) {
+  var c = (DB.completions||[]).find(function(x){ return x.id===completionId; });
+  if (!c) return;
+  var f = (DB.formations||[]).find(function(x){ return x.id===c.formationId; });
+  if (!f) return;
+  exportCertifPDFForCompletions(f, [c]);
+}
+
+function exportCertifPDF(formationId) {
+  var f = (DB.formations||[]).find(function(x){ return x.id===formationId; });
+  if (!f) return;
+  var list = (DB.completions||[]).filter(function(c){ return c.formationId===formationId; });
+  if (list.length === 0) { showToast('Aucune certification à exporter', 'err'); return; }
+  exportCertifPDFForCompletions(f, list);
+}
+
+function exportCertifPDFForCompletions(f, list) {
+  if (!window.jspdf) { showToast('PDF en chargement', 'err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var H = doc.internal.pageSize.height;
+  var ent = DB.config.entreprise || 'Vigilo';
+
+  list.forEach(function(c, ci) {
+    if (ci > 0) doc.addPage();
+
+    // Dark header
+    doc.setFillColor(...P.ink);
+    doc.rect(0, 0, W, 22, 'F');
+    doc.setFillColor(...P.orange);
+    doc.rect(0, 0, W, 2.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+    doc.text(ent.toUpperCase(), 14, 11);
+    doc.setFillColor(...P.orange); doc.roundedRect(W-36,5.5,22,8,1.5,1.5,'F');
+    doc.setFontSize(7); doc.text('VIGILO', W-25, 10.8, {align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(160,170,200);
+    doc.text('Généré le ' + fmtDate(nowISO()), W-42, 16, {align:'right'});
+
+    // BG
+    doc.setFillColor(...P.bg); doc.rect(0,22,W,H-22,'F');
+
+    // Decorative circle
+    doc.setFillColor(255,240,230); doc.circle(W/2, 65, 45, 'F');
+    doc.setFillColor(...P.orange); doc.circle(W/2, 65, 32, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(28); doc.setTextColor(255,255,255);
+    doc.text('✓', W/2, 71, {align:'center'});
+
+    // Title
+    doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(...P.ink);
+    doc.text('CERTIFICAT DE FORMATION', W/2, 118, {align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...P.ink2);
+    doc.text('HSE — Santé · Sécurité · Environnement', W/2, 126, {align:'center'});
+
+    // Separator
+    doc.setDrawColor(...P.orange); doc.setLineWidth(1); doc.line(W/2-25, 131, W/2+25, 131);
+
+    // Certifie que
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...P.ink2);
+    doc.text('Certifie que', W/2, 141, {align:'center'});
+    doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(...P.ink);
+    doc.text(c.nomAgent, W/2, 153, {align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...P.ink2);
+    if (c.fonction) doc.text(c.fonction + (c.entreprise ? ' · ' + c.entreprise : ''), W/2, 160, {align:'center'});
+
+    // Formation
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...P.ink2);
+    doc.text('a complété avec succès la formation', W/2, 172, {align:'center'});
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...P.orange);
+    var titleLines = doc.splitTextToSize(f.titre, W-50);
+    doc.text(titleLines, W/2, 181, {align:'center'});
+
+    // Info card
+    doc.setFillColor(255,255,255); doc.roundedRect(W/2-55, 190, 110, 26, 3,3,'F');
+    doc.setDrawColor(...P.border); doc.setLineWidth(0.3); doc.roundedRect(W/2-55,190,110,26,3,3,'S');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...P.ink3);
+    doc.text('Date de certification', W/2, 198, {align:'center'});
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...P.ink);
+    doc.text(fmtDate(c.completedAt) + ' à ' + fmtTime(c.completedAt), W/2, 207, {align:'center'});
+
+    // Signature
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...P.ink3);
+    doc.text('Signature de l\'agent', W/2, 225, {align:'center'});
+    if (c.signature) {
+      try { doc.addImage(c.signature,'PNG', W/2-25, 228, 50, 20, '','FAST'); } catch(e){}
+    }
+    doc.setDrawColor(...P.border); doc.setLineWidth(0.4);
+    doc.line(W/2-30, 250, W/2+30, 250);
+
+    // Slides completed
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...P.ink3);
+    doc.text(f.slides.length + ' slides complétés · ' + DB.chantier + ' · ' + ent, W/2, 260, {align:'center'});
+
+    // Footer
+    doc.setFillColor(...P.ink); doc.rect(0,H-10,W,10,'F');
+    doc.setFillColor(...P.orange); doc.rect(0,H-10,W,1.2,'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(180,190,215);
+    doc.text('Formation HSE · ' + ent + ' · Vigilo', 14, H-3.5);
+    doc.text('Page ' + (ci+1) + ' / ' + list.length, W-14, H-3.5, {align:'right'});
+  });
+
+  doc.save('Vigilo_Certif_' + f.titre.replace(/[^a-z0-9]/gi,'_').slice(0,30) + '.pdf');
+  showToast('Certifications exportées ✓');
+}
+
+// ── Hook openModal pour new-formation ──────────────────────────
+var _origOpenModal = typeof openModal === 'function' ? openModal : null;
+
 // ── PHOTO PICKER SYSTEM ──────────────────────────────────────────
 var _photoPickerCallback = null;
 var _photoPickerMultiple = false;
@@ -12999,5 +13872,85 @@ function _compressAndCallback(file, onDone) {
     <button class="photo-picker-cancel" onclick="closePhotoPicker()">Annuler</button>
   </div>
 </div>
+
+<!-- ── MODAL NOUVELLE FORMATION ── -->
+<div class="modal-overlay" id="modal-new-formation" onclick="closeModalOut(event,'modal-new-formation')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="new-form-modal-title">Nouvelle Formation HSE</div>
+
+    <div class="form-group">
+      <label class="form-label">Titre de la formation *</label>
+      <input class="form-input" id="nf-titre" type="text" placeholder="Ex: Sécurité électrique sur chantier">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Catégorie</label>
+      <div class="form-cat-chips" id="nf-cat-chips">
+        <div class="form-cat-chip selected" onclick="selectFormCat(this,'Risques physiques')">Risques physiques</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Incendie')">Incendie</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'EPI')">EPI</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Hauteur')">Hauteur</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Electricite')">Electricité</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Chimique')">Chimique</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Tropical')">Tropical</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'General')">Général</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description courte</label>
+      <textarea class="form-input" id="nf-desc" rows="2" placeholder="Objectif pédagogique de cette formation..."></textarea>
+    </div>
+
+    <!-- Slides builder -->
+    <label class="form-label" style="margin-bottom:10px;display:block">Slides (max 7)</label>
+    <div id="nf-slides-container"></div>
+    <button class="btn-secondary" style="width:100%;margin-bottom:16px" id="nf-add-slide-btn" onclick="nfAddSlide()">
+      + Ajouter un slide
+    </button>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1" onclick="saveFormation()">Enregistrer la formation</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-new-formation')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL LANCER FORMATION (choisir agent) ── -->
+<div class="modal-overlay" id="modal-launch-formation" onclick="closeModalOut(event,'modal-launch-formation')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="launch-form-title">Démarrer la formation</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:16px">L'agent doit renseigner ses informations avant de commencer</p>
+
+    <div class="form-group">
+      <label class="form-label">Nom complet de l'agent *</label>
+      <input class="form-input" id="launch-agent-nom" type="text" placeholder="Prénom Nom">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fonction</label>
+      <input class="form-input" id="launch-agent-fonction" type="text" placeholder="Maçon, Électricien, Chef d'équipe...">
+    </div>
+    <div class="form-group" style="margin-bottom:0">
+      <label class="form-label">Entreprise</label>
+      <input class="form-input" id="launch-agent-entreprise" type="text" placeholder="Nom de l'entreprise">
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn-primary" style="flex:1" onclick="lancerFormation()">Démarrer →</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-launch-formation')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL DETAIL FORMATION ── -->
+<div class="modal-overlay" id="modal-detail-formation" onclick="closeModalOut(event,'modal-detail-formation')">
+  <div class="modal-sheet" style="max-height:90vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div id="detail-formation-body"></div>
+  </div>
+</div>
+
 </body>
 </html>
