@@ -127,6 +127,8 @@ body.dark-mode .p5-inc-banner{background:var(--gray-light)}
 .res-modal-tag.objectif{background:var(--blue-light);color:var(--blue)}
 .res-modal-tag.ref{background:var(--green-light);color:var(--green)}
 .res-modal-tag.template{background:var(--amber-light);color:var(--amber)}
+.res-modal-tag.ci{background:#E6F4EA;color:#1A7A30}
+.res-modal-tag.tropical{background:#FFF3E0;color:#E65C00}
 .res-section{background:var(--gray-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px}
 .res-section-title{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
 .res-field{margin-bottom:10px}
@@ -9354,7 +9356,99 @@ var RESSOURCES_HSE = [
     iconBg: 'var(--amber-light)',
     iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>',
     renderFn: 'res_compteRendu'
-  }
+  },
+  // ── SPÉCIFIQUE COTE D'IVOIRE ───────────────────────────────
+  {
+    id: 'cnps-declaration-at',
+    cat: "Cote d'Ivoire",
+    type: 'ci',
+    titre: "Declaration AT - CNPS Cote d'Ivoire",
+    desc: "Procedure officielle de declaration d'accident du travail a la CNPS dans les 48h",
+    tags: ['cnps','declaration at','accident travail','cotisation','securite sociale','ci','ivoire','48h','employeur','assurance'],
+    iconBg: 'var(--green-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>',
+    renderFn: 'res_cnpsDeclarationAT'
+  },
+  {
+    id: 'inspection-travail-ci',
+    cat: "Cote d'Ivoire",
+    type: 'ci',
+    titre: "Inspection du Travail - Droits & Obligations",
+    desc: "Contacts des inspections regionales, pouvoirs de controle, droits de l'employeur et obligations HSE",
+    tags: ['inspection travail','inspecteur','controle','visite','infraction','amende','droit travail','ci','ivoire','abidjan'],
+    iconBg: 'var(--blue-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    renderFn: 'res_inspectionTravailCI'
+  },
+  {
+    id: 'code-travail-ci-hse',
+    cat: "Cote d'Ivoire",
+    type: 'ci',
+    titre: "Code du Travail CI - Articles HSE cles",
+    desc: "Extraits de la Loi n 2015-532 - obligations securite, hygiene, responsabilite employeur",
+    tags: ['code travail','loi 2015','reglementation ci','ivoire','article','hygiene','securite','obligation employeur','responsabilite'],
+    iconBg: 'var(--amber-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    renderFn: 'res_codeTravailCI'
+  },
+  {
+    id: 'affichage-obligatoire-ci',
+    cat: "Cote d'Ivoire",
+    type: 'ci',
+    titre: "Affichages obligatoires sur chantier CI",
+    desc: "Liste exhaustive des documents a afficher obligatoirement selon la reglementation ivoirienne",
+    tags: ['affichage','panneau','obligatoire','ci','chantier','document','afficher','conformite','reglementation ivoire'],
+    iconBg: 'var(--orange-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>',
+    renderFn: 'res_affichageObligatoireCI'
+  },
+
+  // ── CHANTIER TROPICAL ────────────────────────────────────────
+  {
+    id: 'risque-chaleur-tropical',
+    cat: 'Chantier Tropical',
+    type: 'tropical',
+    titre: 'Prévention — Coup de chaleur & Déshydratation',
+    desc: 'Protocole adapté au climat ivoirien (30-38°C / 80-95% humidité) — signes, seuils, conduite à tenir',
+    tags: ['chaleur','coup de chaleur','deshydratation','tropical','humidite','canicule','insolation','temperature','repos','eau','ci'],
+    iconBg: 'var(--red-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2" fill="none"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
+    renderFn: 'res_risqueChaleur'
+  },
+  {
+    id: 'risque-pluies-intemperies',
+    cat: 'Chantier Tropical',
+    type: 'tropical',
+    titre: 'Intempéries & Saison des Pluies',
+    desc: "Procedure d'arret de chantier, securisation des fouilles, risques electriques par temps de pluie",
+    tags: ['pluie','intemperie','inondation','fouille','electricite','saison','orage','ruissellement','arret chantier','boue','stabilite'],
+    iconBg: 'var(--blue-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>',
+    renderFn: 'res_risquePluies'
+  },
+  {
+    id: 'risque-faune-terrain',
+    cat: 'Chantier Tropical',
+    type: 'tropical',
+    titre: 'Risques Faune — Serpents, Insectes, Reptiles',
+    desc: "Conduite a tenir en cas de morsure/piqure, prevention, especes communes sur les chantiers ivoiriens",
+    tags: ['serpent','morsure','piqure','insecte','scorpion','guepe','fourmi','faune','reptile','venin','tropique','ci','chantier'],
+    iconBg: 'var(--amber-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2" fill="none"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="18" cy="5" r="3"/></svg>',
+    renderFn: 'res_risqueFaune'
+  },
+  {
+    id: 'prevention-paludisme-maladies',
+    cat: 'Chantier Tropical',
+    type: 'tropical',
+    titre: 'Paludisme & Maladies Tropicales',
+    desc: "Prevention du paludisme, fievre typhoide, cholera - mesures en milieu de travail tropical",
+    tags: ['paludisme','malaria','moustique','maladie tropicale','cholera','typhoide','fievre','prevention','sante','tropical','ci'],
+    iconBg: 'var(--green-light)',
+    iconSvg: '<svg width="16" height="16" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+    renderFn: 'res_paludisme'
+  },
+
 ];
 
 // ── Ouvrir une ressource ──────────────────────────────────────
@@ -9365,7 +9459,7 @@ function ouvrirRessource(id) {
   }
   if (!res || !window['res_' + res.renderFn.replace('res_','')]) {
     // fallback : juste le nom
-    var tagColors = {form:'form',plan:'plan',objectif:'objectif',ref:'ref',template:'template'};
+    var tagColors = {form:'form',plan:'plan',objectif:'objectif',ref:'ref',template:'template',ci:'ci',tropical:'tropical'};
     document.getElementById('res-modal-body').innerHTML =
       '<div class="modal-title">' + res.titre + '</div>' +
       '<div class="res-modal-tag ' + tagColors[res.type] + '">' + res.cat + '</div>' +
@@ -9405,7 +9499,7 @@ function pdfRessource(id) {
 
 // ── Helpers HTML partagés ──────────────────────────────────────
 function resHeader(res) {
-  var tagColors = {form:'form',plan:'plan',objectif:'objectif',ref:'ref',template:'template'};
+  var tagColors = {form:'form',plan:'plan',objectif:'objectif',ref:'ref',template:'template',ci:'ci',tropical:'tropical'};
   return '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">'
     + '<div class="modal-title" style="margin-bottom:0">' + res.titre + '</div></div>'
     + '<span class="res-modal-tag ' + tagColors[res.type] + '">' + res.cat + '</span>'
@@ -12294,6 +12388,538 @@ function pdfTournee(t) {
 }
 
 // ═══════════════ FIN MODULE TOURNÉES ═════════════════════
+
+
+// ═══════════════════════════════════════════════════════════════
+// ── CÔTE D'IVOIRE — Render Functions ───────────────────────────
+// ═══════════════════════════════════════════════════════════════
+
+function res_cnpsDeclarationAT(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Délai légal — OBLIGATION 48H</div>'
+    + '<div style="background:#FFF3E0;border-left:3px solid var(--orange);padding:10px 12px;border-radius:6px;font-size:12px;line-height:1.6;margin-bottom:8px">'
+    + '<strong>Article 73 du Code du Travail CI :</strong> Tout accident du travail doit être déclaré à la CNPS dans les <strong>48 heures</strong> (jours ouvrables). Passé ce délai, l\'employeur supporte personnellement les frais.</div>'
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Contacts CNPS — Côte d\'Ivoire</div>'
+    + '<div class="res-field"><label>Siège CNPS Abidjan (Plateau)</label><input type="text" value="+225 27 20 25 05 00" readonly class="form-input" style="background:var(--gray-light)"></div>'
+    + '<div class="res-field"><label>Direction des AT/MP</label><input type="text" value="+225 27 20 25 05 10" readonly class="form-input" style="background:var(--gray-light)"></div>'
+    + '<div class="res-field"><label>Email déclarations</label><input type="text" value="declaration.at@cnps.ci" readonly class="form-input" style="background:var(--gray-light)"></div>'
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Documents à préparer pour la déclaration</div>'
+    + resCheckItem('Formulaire CNPS de déclaration AT (cerfa CI)', 'cnps-1')
+    + resCheckItem('Certificat médical initial de la victime', 'cnps-2')
+    + resCheckItem('Copie de la pièce d\'identité de la victime', 'cnps-3')
+    + resCheckItem('Contrat de travail ou attestation d\'emploi', 'cnps-4')
+    + resCheckItem('Bulletin de salaire du mois précédent', 'cnps-5')
+    + resCheckItem('Rapport interne d\'accident signé HSE', 'cnps-6')
+    + resCheckItem('Témoignages écrits (2 témoins minimum)', 'cnps-7')
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Procédure étape par étape</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '<b>1.</b> Secourir immédiatement et orienter vers CHU/clinique<br>'
+    + '<b>2.</b> Informer le responsable hiérarchique dans l\'heure<br>'
+    + '<b>3.</b> Remplir le formulaire CNPS dans les 24h<br>'
+    + '<b>4.</b> Déposer en agence CNPS dans les 48h (ouvrables)<br>'
+    + '<b>5.</b> Conserver la copie timbrée par la CNPS<br>'
+    + '<b>6.</b> Ouvrir un dossier CAPA de l\'accident dans Vigilo'
+    + '</div></div>'
+    + resFooter('cnps-declaration-at', 'Télécharger fiche CNPS PDF');
+}
+
+function res_inspectionTravailCI(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Directions Régionales — Côte d\'Ivoire</div>'
+    + '<div class="res-field"><label>Direction Abidjan-Plateau (siège)</label><input type="text" value="+225 27 20 21 48 06" readonly class="form-input" style="background:var(--gray-light)"></div>'
+    + '<div class="res-field"><label>Inspection Yopougon</label><input type="text" value="+225 27 23 49 00 12" readonly class="form-input" style="background:var(--gray-light)"></div>'
+    + '<div class="res-field"><label>Inspection Cocody / Bingerville</label><input type="text" value="+225 27 22 41 00 15" readonly class="form-input" style="background:var(--gray-light)"></div>'
+    + '<div class="res-field"><label>Inspection Abobo / Anyama</label><input type="text" value="+225 27 20 30 00 80" readonly class="form-input" style="background:var(--gray-light)"></div>'
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Pouvoirs de l\'Inspecteur du Travail</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '- Accès libre au chantier sans préavis (art. 91.5 Code Travail CI)<br>'
+    + '- Mise en demeure de régulariser sous délai<br>'
+    + '- Arrêt de chantier immédiat si danger grave et imminent<br>'
+    + '- Procès-verbal transmis au Parquet (sanction pénale possible)<br>'
+    + '- Contrôle des registres, DUER, EPI, contrats, bulletins de paie'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Documents à avoir prêts lors d\'un contrôle</div>'
+    + resCheckItem('Registre du personnel à jour (embauches, mutations)', 'insp-1')
+    + resCheckItem('Registre des accidents du travail', 'insp-2')
+    + resCheckItem('Document Unique d\'Évaluation des Risques (DUER)', 'insp-3')
+    + resCheckItem('Fiches de paie du mois en cours', 'insp-4')
+    + resCheckItem('Registre de visite médicale du personnel', 'insp-5')
+    + resCheckItem('Justificatifs d\'immatriculation CNPS de tous les agents', 'insp-6')
+    + resCheckItem('Permis de construire et autorisations de travaux', 'insp-7')
+    + resCheckItem('Attestation d\'assurance chantier (RC décennale)', 'insp-8')
+    + '</div>'
+    + resFooter('inspection-travail-ci', 'Télécharger fiche inspection PDF');
+}
+
+function res_codeTravailCI(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Loi n°2015-532 — Articles HSE essentiels</div>'
+    + '<div style="font-size:12px;line-height:1.9;color:var(--text2)">'
+    + '<b>Art. 41.1</b> — L\'employeur est tenu de prendre toutes dispositions pour protéger la vie et la santé des travailleurs.<br>'
+    + '<b>Art. 41.3</b> — Les EPI doivent être fournis gratuitement par l\'employeur et leur port est obligatoire.<br>'
+    + '<b>Art. 41.5</b> — Tout accident grave doit faire l\'objet d\'une enquête interne sous 24h.<br>'
+    + '<b>Art. 73.1</b> — Déclaration AT à la CNPS dans les 48h ouvrables sous peine de sanctions.<br>'
+    + '<b>Art. 91.5</b> — Droit d\'accès libre et sans préavis des inspecteurs du travail.<br>'
+    + '<b>Art. 15.2</b> — Interdiction absolue de faire travailler un mineur de moins de 18 ans sur un chantier BTP.<br>'
+    + '<b>Art. 20.4</b> — Durée maximale de travail : 40h/semaine ; heures sup. majorées à 15% puis 50%.'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Sanctions employeur (récapitulatif)</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '- Défaut de déclaration AT : prise en charge totale des soins par l\'employeur<br>'
+    + '- Absence d\'EPI fournis : amende de 50 000 à 500 000 FCFA<br>'
+    + '- Travail mineur sur chantier : amende + fermeture administrative<br>'
+    + '- Obstruction à un inspecteur : sanction pénale (prison + amende)'
+    + '</div></div>'
+    + resFooter('code-travail-ci-hse', 'Télécharger synthèse Code du Travail CI PDF');
+}
+
+function res_affichageObligatoireCI(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Documents à afficher obligatoirement</div>'
+    + resCheckItem('Numéros d\'urgence (180, 185, 110, 117)', 'aff-1')
+    + resCheckItem('Règlement intérieur du chantier signé', 'aff-2')
+    + resCheckItem('Politique HSE de l\'entreprise', 'aff-3')
+    + resCheckItem('Plan d\'évacuation et points de rassemblement', 'aff-4')
+    + resCheckItem('Liste des EPI obligatoires par poste', 'aff-5')
+    + resCheckItem('Coordonnées de l\'Inspection du Travail locale', 'aff-6')
+    + resCheckItem('Coordonnées CNPS régionale', 'aff-7')
+    + resCheckItem('Interdiction alcool et drogues (signalétique)', 'aff-8')
+    + resCheckItem('Panneau de chantier (maître d\'ouvrage, entreprise, permis)', 'aff-9')
+    + resCheckItem('Consignes premiers secours + localisation trousse de secours', 'aff-10')
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Où afficher</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '- <b>Bureau HSE / Base-vie</b> : politique, numéros urgence, registres<br>'
+    + '- <b>Entrée principale du chantier</b> : règlement intérieur, EPI, panneau chantier<br>'
+    + '- <b>Zones de travail</b> : consignes spécifiques, plan évacuation local<br>'
+    + '- <b>Réfectoire / sanitaires</b> : hygiènes, maladies tropicales, prévention paludisme'
+    + '</div></div>'
+    + resFooter('affichage-obligatoire-ci', 'Générer liste affichages PDF');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ── CHANTIER TROPICAL — Render Functions ───────────────────────
+// ═══════════════════════════════════════════════════════════════
+
+function res_risqueChaleur(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Seuils d\'alerte — Climat Ivoirien</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">'
+    + '<div style="background:#FFF3E0;border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:800;color:#E65C00">33°C</div><div style="font-size:10px;color:var(--text3)">Pause obligatoire 10min/h</div></div>'
+    + '<div style="background:#FFEBEE;border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:800;color:#C62828">38°C</div><div style="font-size:10px;color:var(--text3)">Arrêt travaux exposés</div></div>'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Signes d\'alerte à surveiller</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '<b>Stade 1 — Fatigue thermique :</b> Sueurs excessives, fatigue, maux de tête<br>'
+    + '<b>Stade 2 — Épuisement :</b> Pâleur, nausées, vertiges, crampes musculaires<br>'
+    + '<b>Stade 3 — URGENCE (coup de chaleur) :</b> Confusion, peau sèche et chaude, perte de conscience → Appeler 185 immédiatement'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Mesures de prévention obligatoires</div>'
+    + resCheckItem('Eau potable fraîche disponible en permanence (0,5L/h/agent)', 'chaleur-1')
+    + resCheckItem('Zones d\'ombre ou abris sur tous les postes exposés', 'chaleur-2')
+    + resCheckItem('Pauses fraîcheur : 10 min toutes les heures dès 33°C', 'chaleur-3')
+    + resCheckItem('Horaires aménagés : travaux lourds avant 10h et après 16h', 'chaleur-4')
+    + resCheckItem('Casque ventilé ou couvre-nuque blanc obligatoire', 'chaleur-5')
+    + resCheckItem('Acclimatation progressive pour les nouveaux arrivants (7 jours)', 'chaleur-6')
+    + resCheckItem('Surveillance mutuelle des équipiers (travail en binôme)', 'chaleur-7')
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Premiers secours — Coup de chaleur</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '<b>1.</b> Mettre à l\'ombre immédiatement, allonger les jambes surélevées<br>'
+    + '<b>2.</b> Déshabiller partiellement, ventiler, linge humide sur le front/cou<br>'
+    + '<b>3.</b> Si conscient : faire boire lentement de l\'eau fraîche<br>'
+    + '<b>4.</b> Appeler le 185 (SAMU) — coup de chaleur = urgence vitale<br>'
+    + '<b>5.</b> NE PAS laisser seul, surveiller respiration jusqu\'aux secours'
+    + '</div></div>'
+    + resFooter('risque-chaleur-tropical', 'Télécharger protocole chaleur PDF');
+}
+
+function res_risquePluies(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Saisons des pluies en Côte d\'Ivoire</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '<b>Grande saison :</b> Avril → Juillet (pluies violentes quotidiennes, 150-200mm/mois)<br>'
+    + '<b>Petite saison :</b> Octobre → Novembre (pluies modérées mais régulières)<br>'
+    + '<b>Risque maximal :</b> Mai-Juin (cumuls pouvant dépasser 300mm/mois à Abidjan)'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Procédure d\'arrêt de chantier intempéries</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '<b>Déclencher l\'arrêt si :</b> Orage électrique en approche (moins de 5km), vent > 60km/h, visibilité < 20m, fouilles inondées ou parois instables<br><br>'
+    + '<b>Séquence d\'arrêt :</b><br>'
+    + '1. Signal sonore d\'arrêt travaux<br>'
+    + '2. Mise à l\'abri de tout le personnel (bâtiments stables uniquement)<br>'
+    + '3. Arrêt et sécurisation des engins (descendre les bras, couper moteurs)<br>'
+    + '4. Balisage renforcé des fouilles ouvertes et zones instables<br>'
+    + '5. Coupure des alimentations électriques temporaires de chantier<br>'
+    + '6. Inspection complète avant reprise'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Risques spécifiques à surveiller</div>'
+    + resCheckItem('Fouilles : risque d\'éboulement si profondeur > 1,3m sans blindage', 'pluies-1')
+    + resCheckItem('Électricité : protéger toutes les connexions temporaires (IP65 min)', 'pluies-2')
+    + resCheckItem('Échafaudages : vérifier stabilité et amarrages après chaque pluie', 'pluies-3')
+    + resCheckItem('Engins : pas de circulation sur terrain détrempé > 15° de pente', 'pluies-4')
+    + resCheckItem('Produits : couvrir ciment, plaques et isolants avant les pluies', 'pluies-5')
+    + resCheckItem('Accès : baliser les zones glissantes (béton lavé, terre argileuse)', 'pluies-6')
+    + '</div>'
+    + resFooter('risque-pluies-intemperies', 'Télécharger procédure intempéries PDF');
+}
+
+function res_risqueFaune(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Espèces rencontrées sur chantiers CI</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '<b>Serpents :</b> Cobra cracheur, Mamba vert, Vipère du Gabon (dans végétation, fouilles, sous matériaux stockés)<br>'
+    + '<b>Arthropodes :</b> Scorpions (sous pierres, palettes), Fourmis magnans (déplacements en colonne), Frelons tropicaux (nids dans arbres, structures)<br>'
+    + '<b>Autres :</b> Rats (base-vie, stockages), Termites (structures bois), Crocodiles (chantiers riverains lagune/fleuve)'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Prévention — Règles terrain</div>'
+    + resCheckItem('Ne jamais déplacer bois, tôles, pierres à mains nues — utiliser outils', 'faune-1')
+    + resCheckItem('Port de bottes montantes obligatoire dans les zones végétalisées/fouilles', 'faune-2')
+    + resCheckItem('Inspecter visuellement les fouilles avant d\'y descendre', 'faune-3')
+    + resCheckItem('Débroussailler 5m autour de la zone de travail avant démarrage', 'faune-4')
+    + resCheckItem('Fermer les ouvertures des bases-vie (réfectoire, sanitaires) la nuit', 'faune-5')
+    + resCheckItem('Trousse de secours avec sérum antivenimeux disponible sur site', 'faune-6')
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Conduite à tenir — Morsure/Piqûre</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '<b>Morsure serpent :</b> Immobiliser le membre, ne PAS inciser/sucer, ne PAS faire tourniquet. Allonger la victime, appeler 185, transporter au CHU Cocody (+225 27 22 48 60 00) qui dispose du sérum antivenimeux.<br><br>'
+    + '<b>Piqûre scorpion :</b> Laver à l\'eau froide, glace sur la plaie, surveiller signes d\'envenimation (difficultés respiratoires → 185 immédiatement).<br><br>'
+    + '<b>Attaque frelons :</b> S\'éloigner rapidement en se couvrant la tête. Si choc allergique (gonflement gorge, difficultés respirer) → 185 immédiat.'
+    + '</div></div>'
+    + resFooter('risque-faune-terrain', 'Télécharger fiche faune PDF');
+}
+
+function res_paludisme(res) {
+  return resHeader(res)
+    + '<div class="res-section"><div class="res-section-title">Contexte — Côte d\'Ivoire</div>'
+    + '<div style="background:#E8F5E9;border-left:3px solid var(--green);padding:10px 12px;border-radius:6px;font-size:12px;line-height:1.6;margin-bottom:8px">'
+    + 'La Côte d\'Ivoire est en zone d\'endémie paludéenne de haute transmission. Le paludisme est la <strong>1ère cause d\'absentéisme</strong> sur les chantiers ivoiriens. Le moustique Anophèle pique principalement entre 18h et 6h.'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Signes à reconnaître</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '<b>Paludisme simple :</b> Fièvre > 38°C, frissons, maux de tête, courbatures, nausées (délai 7-15 jours après piqûre)<br>'
+    + '<b>Paludisme grave :</b> Confusion mentale, convulsions, urine foncée, jaunisse → urgence vitale, appeler 185<br>'
+    + '<b>Choléra :</b> Diarrhée aqueuse brutale, vomissements, déshydratation rapide → isolement + 185<br>'
+    + '<b>Typhoïde :</b> Fièvre progressive, maux ventre, diarrhée ou constipation'
+    + '</div></div>'
+    + '<div class="res-section"><div class="res-section-title">Mesures de prévention sur chantier</div>'
+    + resCheckItem('Eliminer les eaux stagnantes dans et autour de la base-vie', 'palu-1')
+    + resCheckItem('Moustiquaires imprégnées fournies pour les logements chantier', 'palu-2')
+    + resCheckItem('Répulsifs anti-moustiques mis à disposition (surtout 18h-6h)', 'palu-3')
+    + resCheckItem('Eau potable vérifiée (analyse bactériologique trimestrielle)', 'palu-4')
+    + resCheckItem('Sanitaires nettoyés et désinfectés quotidiennement', 'palu-5')
+    + resCheckItem('Test de dépistage rapide (TDR) disponible au bureau HSE', 'palu-6')
+    + resCheckItem('Formation de tout le personnel à la reconnaissance des symptômes', 'palu-7')
+    + '</div>'
+    + '<div class="res-section"><div class="res-section-title">Conduite à tenir — Agent fiévreux</div>'
+    + '<div style="font-size:12px;line-height:1.8;color:var(--text2)">'
+    + '1. Retrait immédiat du poste de travail, mise au repos à l\'ombre<br>'
+    + '2. Prise de température — si > 38.5°C : orienter vers centre médical<br>'
+    + '3. Réhydratation orale en attendant le transport<br>'
+    + '4. Ne pas administrer d\'antipaludéens sans ordonnance médicale<br>'
+    + '5. Déclarer l\'absence et noter dans le registre médical du chantier'
+    + '</div></div>'
+    + resFooter('prevention-paludisme-maladies', 'Télécharger protocole maladies tropicales PDF');
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// ── PDF — CÔTE D'IVOIRE ─────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+
+window.pdfRes_cnps_declaration_at = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var y = _vHeader(doc, 'DÉCLARATION AT — CNPS CÔTE D\'IVOIRE', 'Obligation légale 48h · Loi n°2015-532', P.green);
+
+  doc.setFillColor(255, 243, 224);
+  doc.roundedRect(14, y, W-28, 14, 2, 2, 'F');
+  doc.setFillColor(230, 92, 0);
+  doc.roundedRect(14, y, 4, 14, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(230, 92, 0);
+  doc.text('DÉLAI LÉGAL : 48 HEURES (jours ouvrables) — Article 73 Code du Travail CI', 22, y+5.5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...P.ink2);
+  doc.text('Passé ce délai, l\'employeur supporte personnellement la totalité des frais médicaux.', 22, y+10.5);
+  y += 18;
+
+  y = _vSection(doc, y, W, 'CONTACTS CNPS — CÔTE D\'IVOIRE', P.green);
+  doc.autoTable({ startY: y, margin: {left:14,right:14},
+    body: [['Siège CNPS Abidjan (Plateau)','+225 27 20 25 05 00'],['Direction AT/MP','+225 27 20 25 05 10'],['Email déclarations','declaration.at@cnps.ci']],
+    styles: {fontSize:8.5, cellPadding:{top:3.5,bottom:3.5,left:5,right:4}, lineColor: P.line, lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:70,fontStyle:'bold',textColor:P.ink2}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'DOCUMENTS À PRÉPARER', P.accent);
+  var docs = ['Formulaire CNPS de déclaration AT','Certificat médical initial de la victime','Copie pièce d\'identité de la victime','Contrat de travail ou attestation d\'emploi','Bulletin de salaire du mois précédent','Rapport interne d\'accident signé HSE','Témoignages écrits (2 témoins minimum)'];
+  y = _vChecklist(doc, y, W, docs, null, P.green);
+
+  y = _vSection(doc, y, W, 'PROCÉDURE ÉTAPE PAR ÉTAPE', P.accent);
+  var steps = [['1. Secourir','Orienter immédiatement vers CHU ou clinique partenaire'],['2. Informer','Responsable hiérarchique dans l\'heure suivant l\'accident'],['3. Documenter','Remplir le formulaire CNPS et rapport interne dans les 24h'],['4. Déposer','En agence CNPS dans les 48h ouvrables avec tous les documents'],['5. Archiver','Conserver la copie timbrée par la CNPS + ouvrir CAPA dans Vigilo']];
+  doc.autoTable({ startY: y, margin:{left:14,right:14},
+    body: steps,
+    styles:{fontSize:8.5, cellPadding:{top:3.5,bottom:3.5,left:5,right:4}, lineColor:P.line, lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:38,fontStyle:'bold',textColor:P.green}}});
+
+  _vFooter(doc, 'Déclaration AT — CNPS Côte d\'Ivoire', P.green);
+  doc.save('Vigilo_CNPS_Declaration_AT.pdf');
+  showToast('Fiche CNPS téléchargée ✓');
+};
+
+window.pdfRes_inspection_travail_ci = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var y = _vHeader(doc, 'INSPECTION DU TRAVAIL — CÔTE D\'IVOIRE', 'Droits & Obligations · Loi n°2015-532', P.accent);
+
+  y = _vSection(doc, y, W, 'CONTACTS RÉGIONAUX — ABIDJAN', P.accent);
+  doc.autoTable({ startY: y, margin:{left:14,right:14},
+    body: [['Direction Abidjan-Plateau (siège)','+225 27 20 21 48 06'],['Inspection Yopougon','+225 27 23 49 00 12'],['Inspection Cocody / Bingerville','+225 27 22 41 00 15'],['Inspection Abobo / Anyama','+225 27 20 30 00 80']],
+    styles:{fontSize:8.5, cellPadding:{top:3.5,bottom:3.5,left:5,right:4}, lineColor:P.line, lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:75,fontStyle:'bold',textColor:P.ink2}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'POUVOIRS DE L\'INSPECTEUR', P.red);
+  doc.autoTable({ startY: y, margin:{left:14,right:14},
+    body: [['Accès libre','Chantier sans préavis (art. 91.5 Code Travail CI)'],['Mise en demeure','Délai de régularisation fixé par l\'inspecteur'],['Arrêt de chantier','Si danger grave et imminent constaté'],['Procès-verbal','Transmis au Parquet — sanction pénale possible'],['Contrôle','Registres, DUER, EPI, contrats, bulletins de paie']],
+    styles:{fontSize:8.5, cellPadding:{top:3.5,bottom:3.5,left:5,right:4}, lineColor:P.line, lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:38,fontStyle:'bold',textColor:P.red}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'DOCUMENTS À AVOIR PRÊTS', P.green);
+  var items = ['Registre du personnel à jour','Registre des accidents du travail','Document Unique d\'Évaluation des Risques (DUER)','Fiches de paie du mois en cours','Registre de visite médicale du personnel','Justificatifs immatriculation CNPS de tous les agents','Permis de construire et autorisations de travaux','Attestation d\'assurance chantier (RC décennale)'];
+  y = _vChecklist(doc, y, W, items, null, P.green);
+
+  _vFooter(doc, 'Inspection du Travail CI', P.accent);
+  doc.save('Vigilo_Inspection_Travail_CI.pdf');
+  showToast('Fiche Inspection du Travail téléchargée ✓');
+};
+
+window.pdfRes_code_travail_ci_hse = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var y = _vHeader(doc, 'CODE DU TRAVAIL CI — ARTICLES HSE CLÉS', 'Loi n°2015-532 du 20 juillet 2015', P.amber);
+
+  y = _vSection(doc, y, W, 'ARTICLES ESSENTIELS', P.amber);
+  doc.autoTable({ startY: y, margin:{left:14,right:14},
+    head:[['Article','Disposition']],
+    body:[['Art. 41.1','Employeur tenu de protéger la vie et la santé des travailleurs'],['Art. 41.3','EPI fournis gratuitement par l\'employeur — port obligatoire'],['Art. 41.5','Tout accident grave : enquête interne obligatoire sous 24h'],['Art. 73.1','Déclaration AT à la CNPS dans les 48h ouvrables'],['Art. 91.5','Droit d\'accès libre sans préavis des inspecteurs'],['Art. 15.2','Interdiction absolue de faire travailler un mineur sur BTP'],['Art. 20.4','Durée max : 40h/semaine — heures sup. majorées 15% puis 50%']],
+    styles:{fontSize:8.5, cellPadding:{top:3.5,bottom:3.5,left:5,right:4}, lineColor:P.line, lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    headStyles:{fillColor:P.ink,textColor:[255,255,255],fontStyle:'bold',fontSize:8},
+    columnStyles:{0:{cellWidth:22,fontStyle:'bold',textColor:P.amber}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'SANCTIONS EMPLOYEUR', P.red);
+  doc.autoTable({ startY: y, margin:{left:14,right:14},
+    body:[['Défaut déclaration AT','Prise en charge totale des soins par l\'employeur'],['Absence EPI','Amende 50 000 à 500 000 FCFA'],['Travail mineur BTP','Amende + fermeture administrative'],['Obstruction inspecteur','Sanction pénale (prison + amende)']],
+    styles:{fontSize:8.5, cellPadding:{top:3.5,bottom:3.5,left:5,right:4}, lineColor:P.line, lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:55,fontStyle:'bold',textColor:P.red}}});
+
+  _vFooter(doc, 'Code du Travail CI — Articles HSE', P.amber);
+  doc.save('Vigilo_Code_Travail_CI_HSE.pdf');
+  showToast('Synthèse Code du Travail CI téléchargée ✓');
+};
+
+window.pdfRes_affichage_obligatoire_ci = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var ent = DB.config.entreprise || 'Vigilo';
+  var y = _vHeader(doc, 'AFFICHAGES OBLIGATOIRES — CHANTIER CI', ent + ' · ' + DB.chantier, P.orange);
+
+  y = _vSection(doc, y, W, 'DOCUMENTS À AFFICHER OBLIGATOIREMENT', P.orange);
+  var items = ['Numéros d\'urgence CI (180, 185, 110, 117)','Règlement intérieur du chantier signé','Politique HSE de l\'entreprise','Plan d\'évacuation et points de rassemblement','Liste des EPI obligatoires par poste','Coordonnées Inspection du Travail locale','Coordonnées CNPS régionale','Interdiction alcool et drogues (signalétique)','Panneau de chantier (maître d\'ouvrage, permis)','Consignes premiers secours + localisation trousse'];
+  y = _vChecklist(doc, y, W, items, null, P.orange);
+
+  y = _vSection(doc, y, W, 'EMPLACEMENTS D\'AFFICHAGE', P.accent);
+  doc.autoTable({ startY: y, margin:{left:14,right:14},
+    body:[['Bureau HSE / Base-vie','Politique HSE, numéros urgence, registres CNPS'],['Entrée principale','Règlement intérieur, EPI obligatoires, panneau chantier'],['Zones de travail','Consignes spécifiques, plan évacuation local'],['Réfectoire / sanitaires','Hygiène, prévention paludisme, maladies tropicales']],
+    styles:{fontSize:8.5, cellPadding:{top:3.5,bottom:3.5,left:5,right:4}, lineColor:P.line, lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:55,fontStyle:'bold',textColor:P.ink2}}});
+
+  _vFooter(doc, 'Affichages Obligatoires CI', P.orange);
+  doc.save('Vigilo_Affichages_Obligatoires_CI.pdf');
+  showToast('Liste affichages obligatoires téléchargée ✓');
+};
+
+// ═══════════════════════════════════════════════════════════════
+// ── PDF — CHANTIER TROPICAL ─────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+
+window.pdfRes_risque_chaleur_tropical = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var y = _vHeader(doc, 'PRÉVENTION CHALEUR TROPICALE', 'Protocole chantier Côte d\'Ivoire · AFFICHAGE OBLIGATOIRE', P.red);
+
+  // 2 KPI seuils
+  var kpis = [{val:'33°C',lbl:'Pause obligatoire',sub:'10 min / heure',col:P.orange,bg:P.orangeLt},{val:'38°C',lbl:'Arrêt travaux',sub:'postes exposés',col:P.red,bg:P.redLt}];
+  var kw = (W-28-6)/2;
+  kpis.forEach(function(k,i){
+    var cx=14+i*(kw+6);
+    doc.setFillColor(...k.bg); doc.roundedRect(cx,y,kw,22,2,2,'F');
+    doc.setDrawColor(...k.col); doc.setLineWidth(0.4); doc.roundedRect(cx,y,kw,22,2,2,'S');
+    doc.setFillColor(...k.col); doc.roundedRect(cx,y,kw,2.5,1,1,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(...k.col);
+    doc.text(k.val,cx+kw/2,y+12,{align:'center'});
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...k.col);
+    doc.text(k.lbl,cx+kw/2,y+17,{align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...P.ink3);
+    doc.text(k.sub,cx+kw/2,y+21,{align:'center'});
+  });
+  y += 28;
+
+  y = _vSection(doc, y, W, 'SIGNES D\'ALERTE — 3 STADES', P.red);
+  doc.autoTable({startY:y, margin:{left:14,right:14},
+    body:[['Stade 1 — Fatigue','Sueurs excessives, fatigue, maux de tête → pauses + eau'],['Stade 2 — Épuisement','Pâleur, nausées, vertiges, crampes → retrait du poste'],['Stade 3 — URGENCE','Confusion, peau sèche/chaude, perte conscience → 185 immédiat']],
+    styles:{fontSize:8.5,cellPadding:{top:3.5,bottom:3.5,left:5,right:4},lineColor:P.line,lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:40,fontStyle:'bold',textColor:P.red}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'MESURES DE PRÉVENTION OBLIGATOIRES', P.orange);
+  var prev = ['Eau potable fraîche disponible en permanence (0,5L/h/agent)','Zones d\'ombre ou abris sur tous les postes exposés','Pauses fraîcheur : 10 min toutes les heures dès 33°C','Horaires aménagés : travaux lourds avant 10h et après 16h','Casque ventilé ou couvre-nuque blanc obligatoire','Acclimatation progressive pour nouveaux arrivants (7 jours)','Surveillance mutuelle des équipiers (travail en binôme)'];
+  y = _vChecklist(doc, y, W, prev, null, P.orange);
+
+  y = _vSection(doc, y, W, 'PREMIERS SECOURS — COUP DE CHALEUR', P.red);
+  doc.autoTable({startY:y, margin:{left:14,right:14},
+    body:[['1','Mettre à l\'ombre, allonger jambes surélevées'],['2','Déshabiller partiellement, ventiler, linge humide sur front/nuque'],['3','Si conscient : faire boire lentement de l\'eau fraîche'],['4','Appeler le 185 (SAMU) — coup de chaleur = urgence vitale'],['5','Ne pas laisser seul — surveiller respiration jusqu\'aux secours']],
+    styles:{fontSize:8.5,cellPadding:{top:3.5,bottom:3.5,left:5,right:4},lineColor:P.line,lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:8,halign:'center',fontStyle:'bold',textColor:P.red}}});
+
+  _vFooter(doc, 'Prévention Chaleur Tropicale', P.red);
+  doc.save('Vigilo_Prevention_Chaleur_Tropical.pdf');
+  showToast('Protocole chaleur téléchargé ✓');
+};
+
+window.pdfRes_risque_pluies_intemperies = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var y = _vHeader(doc, 'INTEMPÉRIES & SAISON DES PLUIES', DB.chantier + ' · AFFICHAGE OBLIGATOIRE', P.accent);
+
+  y = _vSection(doc, y, W, 'SAISONS DES PLUIES — CÔTE D\'IVOIRE', P.accent);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Grande saison','Avril – Juillet (150-200mm/mois, pluies violentes quotidiennes)'],['Petite saison','Octobre – Novembre (pluies modérées mais régulières)'],['Risque maximal','Mai-Juin (cumuls > 300mm/mois à Abidjan)']],
+    styles:{fontSize:8.5,cellPadding:{top:3.5,bottom:3.5,left:5,right:4},lineColor:P.line,lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:38,fontStyle:'bold',textColor:P.accent}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'DÉCLENCHER L\'ARRÊT DE CHANTIER SI', P.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Orage électrique','En approche à moins de 5 km (éclairs visibles)'],['Vent fort','Vitesse > 60 km/h'],['Visibilité','Réduite à moins de 20 mètres'],['Fouilles','Inondées ou parois instables/fissurées']],
+    styles:{fontSize:8.5,cellPadding:{top:3.5,bottom:3.5,left:5,right:4},lineColor:P.line,lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:38,fontStyle:'bold',textColor:P.red}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'SÉQUENCE D\'ARRÊT TRAVAUX', P.orange);
+  var seq=['Signal sonore d\'arrêt travaux — tout le personnel','Mise à l\'abri dans bâtiments stables uniquement','Arrêt et sécurisation des engins (bras baissés, moteurs coupés)','Balisage renforcé des fouilles ouvertes et zones instables','Coupure des alimentations électriques temporaires de chantier','Inspection complète avant toute reprise d\'activité'];
+  y = _vChecklist(doc, y, W, seq, null, P.orange);
+
+  _vFooter(doc, 'Plan Intempéries', P.accent);
+  doc.save('Vigilo_Plan_Intemperies.pdf');
+  showToast('Procédure intempéries téléchargée ✓');
+};
+
+window.pdfRes_risque_faune_terrain = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var y = _vHeader(doc, 'RISQUES FAUNE — CHANTIER IVOIRIEN', DB.chantier + ' · À afficher en base-vie', P.amber);
+
+  y = _vSection(doc, y, W, 'ESPÈCES RENCONTRÉES SUR CHANTIERS CI', P.amber);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Serpents','Cobra cracheur, Mamba vert, Vipère du Gabon — dans végétation, fouilles, sous matériaux'],['Arthropodes','Scorpions (sous pierres/palettes), Frelons tropicaux (nids dans arbres), Fourmis magnans'],['Autres','Rats (base-vie/stockages), Termites (bois), Crocodiles (zones riveraines lagune/fleuve)']],
+    styles:{fontSize:8.5,cellPadding:{top:3.5,bottom:3.5,left:5,right:4},lineColor:P.line,lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:32,fontStyle:'bold',textColor:P.amber}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'PRÉVENTION — RÈGLES TERRAIN', P.orange);
+  var prev=['Ne jamais déplacer bois, tôles, pierres à mains nues — utiliser outils','Bottes montantes obligatoires en zones végétalisées et fouilles','Inspecter visuellement toute fouille avant d\'y descendre','Débroussailler 5m autour de la zone avant démarrage','Fermer les ouvertures des bases-vie la nuit','Sérum antivenimeux disponible sur site (trousse HSE)'];
+  y = _vChecklist(doc, y, W, prev, null, P.amber);
+
+  y = _vSection(doc, y, W, 'CONDUITE À TENIR — MORSURE/PIQÛRE', P.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Morsure serpent','Immobiliser membre · PAS d\'incision/succion · PAS de garrot · Allonger · Appeler 185 · CHU Cocody +225 27 22 48 60 00'],['Piqûre scorpion','Laver à l\'eau froide · Glace sur plaie · Surveiller difficultés respiratoires → 185'],['Attaque frelons','S\'éloigner en couvrant la tête · Choc allergique (gorge gonflée) → 185 immédiat']],
+    styles:{fontSize:8,cellPadding:{top:4,bottom:4,left:5,right:4},lineColor:P.line,lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:35,fontStyle:'bold',textColor:P.red}}});
+
+  _vFooter(doc, 'Risques Faune — Chantier Tropical CI', P.amber);
+  doc.save('Vigilo_Risques_Faune_CI.pdf');
+  showToast('Fiche faune téléchargée ✓');
+};
+
+window.pdfRes_prevention_paludisme_maladies = function(res) {
+  if (!window.jspdf) { showToast('PDF en chargement…','err'); return; }
+  var P = _vPalette();
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.width;
+  var y = _vHeader(doc, 'PALUDISME & MALADIES TROPICALES', DB.chantier + ' · Protocole santé chantier CI', P.green);
+
+  doc.setFillColor(...P.greenLt);
+  doc.roundedRect(14,y,W-28,12,2,2,'F');
+  doc.setFillColor(...P.green); doc.roundedRect(14,y,4,12,2,2,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...P.green);
+  doc.text('Zone d\'endémie paludéenne HAUTE — 1ère cause d\'absentéisme sur les chantiers ivoiriens', 22, y+5.5);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...P.ink2);
+  doc.text('L\'Anophèle pique principalement entre 18h et 6h. Délai d\'incubation : 7 à 15 jours.', 22, y+10);
+  y += 17;
+
+  y = _vSection(doc, y, W, 'SIGNES À RECONNAÎTRE', P.red);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['Paludisme simple','Fièvre > 38°C, frissons, maux de tête, courbatures, nausées'],['Paludisme grave','Confusion, convulsions, urine foncée, jaunisse → 185 URGENCE'],['Choléra','Diarrhée aqueuse brutale, vomissements, déshydratation rapide'],['Typhoïde','Fièvre progressive, douleurs abdominales, transit perturbé']],
+    styles:{fontSize:8.5,cellPadding:{top:3.5,bottom:3.5,left:5,right:4},lineColor:P.line,lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:38,fontStyle:'bold',textColor:P.red}}});
+  y = doc.lastAutoTable.finalY + 6;
+
+  y = _vSection(doc, y, W, 'MESURES DE PRÉVENTION SUR CHANTIER', P.green);
+  var prev=['Eliminer les eaux stagnantes dans et autour de la base-vie','Moustiquaires imprégnées fournies pour les logements chantier','Répulsifs anti-moustiques disponibles (surtout 18h-6h)','Eau potable vérifiée (analyse bactériologique trimestrielle)','Sanitaires nettoyés et désinfectés quotidiennement','Test de dépistage rapide (TDR) disponible au bureau HSE','Formation de tout le personnel à la reconnaissance des symptômes'];
+  y = _vChecklist(doc, y, W, prev, null, P.green);
+
+  y = _vSection(doc, y, W, 'CONDUITE À TENIR — AGENT FIÉVREUX', P.accent);
+  doc.autoTable({startY:y,margin:{left:14,right:14},
+    body:[['1','Retrait immédiat du poste, mise au repos à l\'ombre'],['2','Température > 38,5°C : orienter vers centre médical'],['3','Réhydratation orale en attendant le transport'],['4','Ne pas administrer d\'antipaludéens sans ordonnance'],['5','Déclarer l\'absence — noter au registre médical du chantier']],
+    styles:{fontSize:8.5,cellPadding:{top:3.5,bottom:3.5,left:5,right:4},lineColor:P.line,lineWidth:0.15},
+    theme:'plain', alternateRowStyles:{fillColor:P.bg},
+    columnStyles:{0:{cellWidth:8,halign:'center',fontStyle:'bold',textColor:P.accent}}});
+
+  _vFooter(doc, 'Protocole Maladies Tropicales', P.green);
+  doc.save('Vigilo_Paludisme_Maladies_Tropicales.pdf');
+  showToast('Protocole maladies tropicales téléchargé ✓');
+};
 
 // ── PHOTO PICKER SYSTEM ──────────────────────────────────────────
 var _photoPickerCallback = null;
