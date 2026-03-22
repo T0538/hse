@@ -321,7 +321,7 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .home-section-hd-title{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px}
 .home-section-hd-link{font-size:11px;font-weight:600;color:var(--orange)}
 /* Quick actions redesign */
-.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 18px 6px}
+.qa-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:0 18px 6px}
 .qa-tile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--border);cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
 .qa-tile:active{transform:scale(.96)}
 .qa-tile-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center}
@@ -849,6 +849,71 @@ svg{display:block;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .more-nav-lbl{font-size:9.5px;font-weight:700;color:var(--text2);text-align:center;line-height:1.3;letter-spacing:.2px}
 body.dark-mode .more-nav-btn{background:var(--surface);border-color:var(--border)}
 body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
+
+/* ══════════════════════════════════════════
+   MODULE ENVIRONNEMENT HSSE
+══════════════════════════════════════════ */
+.env-tab-bar{display:flex;gap:6px;padding:10px 16px 6px;overflow-x:auto;scrollbar-width:none}
+.env-tab-bar::-webkit-scrollbar{display:none}
+.env-tab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s}
+.env-tab.active{background:var(--green-light);color:var(--green);border-color:var(--green-mid)}
+.env-section{display:none}
+.env-section.active{display:block}
+.env-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 4px}
+.env-kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
+.env-kpi-val{font-family:var(--font-head);font-size:26px;font-weight:800;line-height:1;color:var(--text)}
+.env-kpi-val.green{color:var(--green)}
+.env-kpi-val.orange{color:var(--orange)}
+.env-kpi-val.red{color:var(--red)}
+.env-kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-top:4px}
+.env-card{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:13px 14px;margin:0 16px 10px;cursor:pointer;transition:background .15s}
+.env-card:active{background:var(--gray-light)}
+.env-card-hd{display:flex;align-items:center;gap:10px}
+.env-card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.env-card-icon.green{background:var(--green-light)}
+.env-card-icon.red{background:var(--red-light)}
+.env-card-icon.orange{background:var(--orange-light)}
+.env-card-icon.blue{background:var(--blue-light)}
+.env-card-icon.amber{background:var(--amber-light)}
+.env-card-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.env-card-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.env-card-badge{margin-left:auto;flex-shrink:0}
+.env-empty{text-align:center;padding:32px 20px;color:var(--text3)}
+.env-empty-icon{font-size:36px;margin-bottom:10px;opacity:.5}
+.env-empty-txt{font-size:13px}
+.env-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.env-type-btn{padding:14px 8px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);text-align:center;cursor:pointer;transition:all .15s}
+.env-type-btn.selected{border-width:2px}
+.env-type-btn-icon{font-size:22px;margin-bottom:6px}
+.env-type-btn-lbl{font-size:12px;font-weight:600;color:var(--text2)}
+.env-type-btn.green.selected{border-color:var(--green);background:var(--green-light)}
+.env-type-btn.orange.selected{border-color:var(--orange);background:var(--orange-light)}
+.env-type-btn.blue.selected{border-color:var(--blue);background:var(--blue-light)}
+.env-type-btn.red.selected{border-color:var(--red);background:var(--red-light)}
+.env-type-btn.amber.selected{border-color:var(--amber);background:var(--amber-light)}
+.env-checklist-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text)}
+.env-checklist-item:last-child{border-bottom:none}
+.env-checklist-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--green);flex-shrink:0}
+.eies-step{border-radius:12px;border:1.5px solid var(--border);background:var(--surface);padding:13px 14px;margin-bottom:8px}
+.eies-step-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.eies-step-num{width:26px;height:26px;border-radius:50%;background:var(--green-light);color:var(--green);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.eies-step-title{font-size:13px;font-weight:600;color:var(--text)}
+.eies-impact-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.eies-impact-row:last-child{border-bottom:none}
+.eies-impact-lbl{flex:1;color:var(--text)}
+.eies-sev-btns{display:flex;gap:4px}
+.eies-sev{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;border:1px solid var(--border);background:transparent;cursor:pointer;transition:all .15s}
+.eies-sev.none.sel{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.eies-sev.mod.sel{background:var(--amber-light);border-color:var(--amber);color:var(--amber)}
+.eies-sev.maj.sel{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.env-modal-tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px}
+.env-modal-tab{flex:1;padding:8px 0;text-align:center;font-size:12px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;transition:all .15s}
+.env-modal-tab.active{color:var(--green);border-bottom-color:var(--green)}
+body.dark-mode .env-kpi{background:var(--surface)}
+body.dark-mode .env-card{background:var(--surface)}
+body.dark-mode .env-type-btn{background:var(--surface)}
+body.dark-mode .eies-step{background:var(--surface)}
+.qa-tile.qa-env .qa-tile-icon{background:rgba(46,110,14,.12)}
 </style>
 </head>
 <body>
@@ -1101,6 +1166,12 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
         <svg width="20" height="20" viewBox="0 0 24 24" stroke="#BE6E14" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
       </div>
       <div class="qa-tile-lbl">Toolbox</div>
+    </div>
+    <div class="qa-tile qa-env" onclick="switchScreen('env')">
+      <div class="qa-tile-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="#2E6E0E" stroke-width="2" fill="none"><path d="M12 2a9 9 0 0 1 0 18A9 9 0 0 1 12 2z"/><path d="M12 2c-2.5 4-2.5 14 0 18"/><path d="M2 12h20"/><path d="M4.2 7h15.6"/><path d="M4.2 17h15.6"/></svg>
+      </div>
+      <div class="qa-tile-lbl">Env HSSE</div>
     </div>
   </div>
 
@@ -1818,6 +1889,12 @@ body.dark-mode .more-nav-btn.active-screen{background:var(--orange-mid)}
         <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--gray)" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </div>
       <div class="more-nav-lbl">Exports</div>
+    </button>
+    <button class="more-nav-btn" id="more-nav-env" onclick="moreNavGo('env')">
+      <div class="more-nav-icon" style="background:var(--green-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M12 2a9 9 0 0 1 0 18A9 9 0 0 1 12 2z"/><path d="M12 2c-2.5 4-2.5 14 0 18"/><path d="M2 12h20"/></svg>
+      </div>
+      <div class="more-nav-lbl">Env HSSE</div>
     </button>
   </div>
 </div>
@@ -3297,7 +3374,12 @@ let DB = {
   rapportsJournaliers: [],
   rapportsMensuels: [],
   permis: [],
-  permisCounter: 1
+  permisCounter: 1,
+  envDechets: [],
+  envPollutions: [],
+  envIncidents: [],
+  envEies: [],
+  envCounter: 1
 };
 
 function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch(e){} }
@@ -3331,6 +3413,11 @@ function load() {
   if (!DB.formations)          DB.formations          = [];
   if (!DB.completions)         DB.completions         = [];
   if (!DB.formationCounter)    DB.formationCounter    = 1;
+  if (!DB.envDechets)          DB.envDechets          = [];
+  if (!DB.envPollutions)       DB.envPollutions        = [];
+  if (!DB.envIncidents)        DB.envIncidents         = [];
+  if (!DB.envEies)             DB.envEies              = [];
+  if (!DB.envCounter)          DB.envCounter           = 1;
 }
 
 // ═══════════════════════════════════════════════
@@ -3461,7 +3548,7 @@ function switchScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const s = document.getElementById('screen-'+name);
-  const _secondary = ['toolbox','tournee','formation','exports'];
+  const _secondary = ['toolbox','tournee','formation','exports','env'];
   const n = _secondary.includes(name)
     ? document.getElementById('nav-more')
     : document.getElementById('nav-'+name);
@@ -13951,7 +14038,7 @@ function toggleMoreDrawer() {
       drawer.style.transform = 'translateY(0)';
     });});
     if (btn) btn.classList.add('active');
-    ['toolbox','tournee','formation','exports'].forEach(function(s){
+    ['toolbox','tournee','formation','exports','env'].forEach(function(s){
       var b = document.getElementById('more-nav-'+s);
       if (b) b.classList.toggle('active-screen', currentScreen === s);
     });
@@ -13972,6 +14059,408 @@ function moreNavGo(screen) {
   closeMoreDrawer();
   setTimeout(function(){ switchScreen(screen); }, 200);
 }
+
+/* ══════════════════════════════════════════════════════
+   MODULE ENVIRONNEMENT HSSE — JAVASCRIPT
+══════════════════════════════════════════════════════ */
+
+var _envDechetType = '';
+var _envPollType   = '';
+var _envIncType    = '';
+var _envAndeVal    = 'non';
+
+// ── Tabs ─────────────────────────────────────────────
+function switchEnvTab(tab, btn) {
+  document.querySelectorAll('.env-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.env-section').forEach(s => s.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  var sec = document.getElementById('env-sec-' + tab);
+  if (sec) sec.classList.add('active');
+}
+
+// ── Type selectors ────────────────────────────────────
+function selectEnvType(el, gridId) {
+  var grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.querySelectorAll('.env-type-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function getEnvType(gridId) {
+  var grid = document.getElementById(gridId);
+  if (!grid) return '';
+  var sel = grid.querySelector('.env-type-btn.selected');
+  return sel ? sel.getAttribute('data-type') : '';
+}
+
+// ── Toggle bouton oui/non ─────────────────────────────
+function setEnvToggle(field, val) {
+  _envAndeVal = val;
+  var oui = document.getElementById(field + '-oui');
+  var non = document.getElementById(field + '-non');
+  if (!oui || !non) return;
+  if (val === 'oui') {
+    oui.style.borderColor = 'var(--green)'; oui.style.background = 'var(--green-light)'; oui.style.color = 'var(--green)';
+    non.style.borderColor = 'var(--border)'; non.style.background = 'transparent'; non.style.color = 'var(--text)';
+  } else {
+    non.style.borderColor = 'var(--red)'; non.style.background = 'var(--red-light)'; non.style.color = 'var(--red)';
+    oui.style.borderColor = 'var(--border)'; oui.style.background = 'transparent'; oui.style.color = 'var(--text)';
+  }
+}
+
+// ── EIES severity ─────────────────────────────────────
+function setEiesSev(btn) {
+  var row = btn.closest('.eies-impact-row');
+  if (!row) return;
+  row.querySelectorAll('.eies-sev').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function getEiesImpacts() {
+  var rows = document.querySelectorAll('#eies-impacts-list .eies-impact-row');
+  var result = [];
+  rows.forEach(function(row) {
+    var lbl = row.querySelector('.eies-impact-lbl');
+    var sel = row.querySelector('.eies-sev.sel');
+    if (lbl) result.push({ impact: lbl.textContent, niveau: sel ? sel.textContent : 'Nul' });
+  });
+  return result;
+}
+
+// ── Render ────────────────────────────────────────────
+function renderEnv() {
+  // KPIs
+  var kd = document.getElementById('ekpi-dechets');
+  var kp = document.getElementById('ekpi-pollutions');
+  var ki = document.getElementById('ekpi-incidents');
+  if (kd) kd.textContent = DB.envDechets.length;
+  if (kp) kp.textContent = DB.envPollutions.length;
+  if (ki) ki.textContent = DB.envIncidents.length;
+  renderEnvDechetsList();
+  renderEnvPollutionList();
+  renderEnvIncidentsList();
+  renderEnvEiesList();
+}
+
+function renderEnvDechetsList() {
+  var el = document.getElementById('env-dechets-list');
+  if (!el) return;
+  if (!DB.envDechets.length) {
+    el.innerHTML = '<div class="env-empty"><div class="env-empty-icon">♻️</div><div class="env-empty-txt">Aucune fiche déchet enregistrée.<br>Appuyez sur « + Nouvelle fiche »</div></div>';
+    return;
+  }
+  var colorMap = { 'Inerte':'green', 'Non dangereux':'orange', 'Dangereux':'red', 'Liquide':'blue' };
+  el.innerHTML = DB.envDechets.slice().reverse().map(function(d) {
+    var col = colorMap[d.type] || 'green';
+    return '<div class="env-card" onclick="editEnvDechet(' + d.id + ')">'
+      + '<div class="env-card-hd">'
+      + '<div class="env-card-icon ' + col + '"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--' + col + ')" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>'
+      + '<div style="flex:1;min-width:0"><div class="env-card-title">' + d.nature + '</div>'
+      + '<div class="env-card-meta">' + d.type + ' · ' + d.qte + ' ' + d.unite + (d.prestataire ? ' · ' + d.prestataire : '') + '</div></div>'
+      + '<div class="env-card-badge"><span class="badge ' + col + '">' + d.type + '</span></div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function renderEnvPollutionList() {
+  var el = document.getElementById('env-pollution-list');
+  if (!el) return;
+  if (!DB.envPollutions.length) {
+    el.innerHTML = '<div class="env-empty"><div class="env-empty-icon">💧</div><div class="env-empty-txt">Aucune pollution déclarée.<br>Appuyez sur « + Déclarer »</div></div>';
+    return;
+  }
+  var gravColor = { 'Faible':'green', 'Modérée':'amber', 'Grave':'red' };
+  el.innerHTML = DB.envPollutions.slice().reverse().map(function(p) {
+    var col = gravColor[p.gravite] || 'orange';
+    return '<div class="env-card" onclick="editEnvPollution(' + p.id + ')">'
+      + '<div class="env-card-hd">'
+      + '<div class="env-card-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>'
+      + '<div style="flex:1;min-width:0"><div class="env-card-title">' + p.type + ' — ' + (p.zone || 'Zone non précisée') + '</div>'
+      + '<div class="env-card-meta">' + (p.date || '') + ' · ANDE: ' + (p.ande === 'oui' ? '✓ Notifiée' : '✗ Non notifiée') + '</div></div>'
+      + '<div class="env-card-badge"><span class="badge ' + col + '">' + p.gravite + '</span></div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function renderEnvIncidentsList() {
+  var el = document.getElementById('env-incidents-list');
+  if (!el) return;
+  if (!DB.envIncidents.length) {
+    el.innerHTML = '<div class="env-empty"><div class="env-empty-icon">⚠️</div><div class="env-empty-txt">Aucun incident environnemental.<br>Appuyez sur « + Déclarer »</div></div>';
+    return;
+  }
+  el.innerHTML = DB.envIncidents.slice().reverse().map(function(i) {
+    return '<div class="env-card" onclick="editEnvIncident(' + i.id + ')">'
+      + '<div class="env-card-hd">'
+      + '<div class="env-card-icon orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>'
+      + '<div style="flex:1;min-width:0"><div class="env-card-title">' + i.type + '</div>'
+      + '<div class="env-card-meta">' + (i.date || '') + (i.zone ? ' · ' + i.zone : '') + '</div></div>'
+      + '<div class="env-card-badge"><span class="badge orange">Env</span></div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function renderEnvEiesList() {
+  var el = document.getElementById('env-eies-list');
+  if (!el) return;
+  if (!DB.envEies.length) {
+    el.innerHTML = '<div class="env-empty"><div class="env-empty-icon">📋</div><div class="env-empty-txt">Aucune EIES enregistrée.<br>Appuyez sur « + Nouvelle EIES »</div></div>';
+    return;
+  }
+  el.innerHTML = DB.envEies.slice().reverse().map(function(e) {
+    var majCount = e.impacts ? e.impacts.filter(function(i){ return i.niveau === 'Majeur'; }).length : 0;
+    var modCount = e.impacts ? e.impacts.filter(function(i){ return i.niveau === 'Modéré'; }).length : 0;
+    var col = majCount > 0 ? 'red' : modCount > 2 ? 'amber' : 'green';
+    return '<div class="env-card">'
+      + '<div class="env-card-hd">'
+      + '<div class="env-card-icon amber"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>'
+      + '<div style="flex:1;min-width:0"><div class="env-card-title">' + e.projet + '</div>'
+      + '<div class="env-card-meta">' + majCount + ' impact(s) majeur · ' + modCount + ' modéré</div></div>'
+      + '<div class="env-card-badge"><span class="badge ' + col + '">' + (majCount > 0 ? 'Risque élevé' : 'Conforme') + '</span></div>'
+      + '</div></div>';
+  }).join('');
+}
+
+// ── Quick menu ────────────────────────────────────────
+function openEnvQuickMenu() {
+  // Simple toast-style quick pick — open the most used modal (déchets)
+  var options = [
+    {label:'🗑️ Fiche déchet', fn: "openModal('modal-env-dechet')"},
+    {label:'💧 Pollution', fn: "openModal('modal-env-pollution')"},
+    {label:'⚠️ Incident env.', fn: "openModal('modal-env-incident')"},
+    {label:'📋 EIES', fn: "openModal('modal-env-eies')"},
+  ];
+  // Use existing quick-pick pattern - show a mini sheet
+  var existing = document.getElementById('env-quick-sheet');
+  if (existing) existing.remove();
+  var sheet = document.createElement('div');
+  sheet.id = 'env-quick-sheet';
+  sheet.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:20px 20px 0 0;border-top:1px solid var(--border);z-index:210;padding:12px 18px calc(18px + env(safe-area-inset-bottom));';
+  sheet.innerHTML = '<div style="width:36px;height:4px;background:var(--gray-mid);border-radius:2px;margin:0 auto 16px"></div>'
+    + '<div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Que voulez-vous déclarer ?</div>'
+    + options.map(function(o) {
+        return '<button onclick="closeEnvQuick();' + o.fn + '" style="display:block;width:100%;text-align:left;padding:13px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:14px;color:var(--text);margin-bottom:8px;cursor:pointer;font-family:var(--font-body)">' + o.label + '</button>';
+      }).join('')
+    + '<button onclick="closeEnvQuick()" style="display:block;width:100%;text-align:center;padding:10px;background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;font-family:var(--font-body)">Annuler</button>';
+  var overlay = document.createElement('div');
+  overlay.id = 'env-quick-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:209;';
+  overlay.onclick = closeEnvQuick;
+  document.body.appendChild(overlay);
+  document.body.appendChild(sheet);
+}
+function closeEnvQuick() {
+  var s = document.getElementById('env-quick-sheet');
+  var o = document.getElementById('env-quick-overlay');
+  if (s) s.remove();
+  if (o) o.remove();
+}
+
+// ── Reset helpers ─────────────────────────────────────
+function resetEnvDechetForm() {
+  document.getElementById('env-dechet-edit-id').value = '';
+  document.getElementById('env-dechet-nature').value = '';
+  document.getElementById('env-dechet-qte').value = '';
+  document.getElementById('env-dechet-prestataire').value = '';
+  document.getElementById('env-dechet-zone').value = '';
+  document.getElementById('env-dechet-date-evac').value = '';
+  document.getElementById('env-dechet-obs').value = '';
+  document.getElementById('env-dechet-elimination').value = '';
+  document.getElementById('env-dechet-unite').value = 'kg';
+  document.querySelectorAll('#env-dechet-type-grid .env-type-btn').forEach(b => b.classList.remove('selected'));
+}
+function resetEnvPollForm() {
+  document.getElementById('env-poll-edit-id').value = '';
+  document.getElementById('env-poll-source').value = '';
+  document.getElementById('env-poll-zone').value = '';
+  document.getElementById('env-poll-mesures').value = '';
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('env-poll-date').value = today;
+  document.getElementById('env-poll-gravite').value = 'Faible';
+  document.querySelectorAll('#env-poll-type-grid .env-type-btn').forEach(b => b.classList.remove('selected'));
+  setEnvToggle('env-poll-ande', 'non');
+}
+function resetEnvIncForm() {
+  document.getElementById('env-inc-edit-id').value = '';
+  document.getElementById('env-inc-desc').value = '';
+  document.getElementById('env-inc-zone').value = '';
+  document.getElementById('env-inc-actions').value = '';
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('env-inc-date').value = today;
+  document.querySelectorAll('#env-inc-type-grid .env-type-btn').forEach(b => b.classList.remove('selected'));
+}
+
+// ── Save DÉCHET ───────────────────────────────────────
+function saveEnvDechet() {
+  var type = getEnvType('env-dechet-type-grid');
+  var nature = document.getElementById('env-dechet-nature').value.trim();
+  var qte = document.getElementById('env-dechet-qte').value.trim();
+  var elim = document.getElementById('env-dechet-elimination').value;
+  if (!type) { showToast('Sélectionnez un type de déchet', 'err'); return; }
+  if (!nature) { showToast('La nature du déchet est obligatoire', 'err'); return; }
+  if (!qte) { showToast('La quantité est obligatoire', 'err'); return; }
+  if (!elim) { showToast("Le mode d'élimination est obligatoire", 'err'); return; }
+  var editId = document.getElementById('env-dechet-edit-id').value;
+  var obj = {
+    id: editId ? parseInt(editId) : DB.envCounter++,
+    type: type, nature: nature, qte: qte,
+    unite: document.getElementById('env-dechet-unite').value,
+    elimination: elim,
+    prestataire: document.getElementById('env-dechet-prestataire').value.trim(),
+    zone: document.getElementById('env-dechet-zone').value.trim(),
+    dateEvac: document.getElementById('env-dechet-date-evac').value,
+    obs: document.getElementById('env-dechet-obs').value.trim(),
+    date: new Date().toLocaleDateString('fr-FR')
+  };
+  if (editId) {
+    var idx = DB.envDechets.findIndex(function(d){ return d.id == editId; });
+    if (idx >= 0) DB.envDechets[idx] = obj;
+  } else {
+    DB.envDechets.push(obj);
+    addActivity('env', '♻️ Déchet enregistré — ' + nature + ' (' + type + ')');
+  }
+  save(); closeModal('modal-env-dechet'); renderEnv();
+  showToast('Fiche déchet enregistrée ✓');
+}
+
+function editEnvDechet(id) {
+  var d = DB.envDechets.find(function(x){ return x.id == id; });
+  if (!d) return;
+  resetEnvDechetForm();
+  document.getElementById('env-dechet-edit-id').value = d.id;
+  document.getElementById('env-dechet-nature').value = d.nature;
+  document.getElementById('env-dechet-qte').value = d.qte;
+  document.getElementById('env-dechet-unite').value = d.unite;
+  document.getElementById('env-dechet-elimination').value = d.elimination;
+  document.getElementById('env-dechet-prestataire').value = d.prestataire || '';
+  document.getElementById('env-dechet-zone').value = d.zone || '';
+  document.getElementById('env-dechet-date-evac').value = d.dateEvac || '';
+  document.getElementById('env-dechet-obs').value = d.obs || '';
+  var grid = document.getElementById('env-dechet-type-grid');
+  if (grid) grid.querySelectorAll('[data-type="' + d.type + '"]').forEach(function(b){ b.classList.add('selected'); });
+  openModal('modal-env-dechet');
+}
+
+// ── Save POLLUTION ────────────────────────────────────
+function saveEnvPollution() {
+  var type = getEnvType('env-poll-type-grid');
+  var source = document.getElementById('env-poll-source').value.trim();
+  if (!type) { showToast('Sélectionnez un milieu affecté', 'err'); return; }
+  if (!source) { showToast('La source est obligatoire', 'err'); return; }
+  var editId = document.getElementById('env-poll-edit-id').value;
+  var obj = {
+    id: editId ? parseInt(editId) : DB.envCounter++,
+    type: type, source: source,
+    zone: document.getElementById('env-poll-zone').value.trim(),
+    date: document.getElementById('env-poll-date').value,
+    gravite: document.getElementById('env-poll-gravite').value,
+    mesures: document.getElementById('env-poll-mesures').value.trim(),
+    ande: _envAndeVal
+  };
+  if (editId) {
+    var idx = DB.envPollutions.findIndex(function(p){ return p.id == editId; });
+    if (idx >= 0) DB.envPollutions[idx] = obj;
+  } else {
+    DB.envPollutions.push(obj);
+    addActivity('env', '💧 Pollution déclarée — ' + type + ' (' + obj.gravite + ')');
+  }
+  save(); closeModal('modal-env-pollution'); renderEnv();
+  showToast('Pollution enregistrée ✓');
+}
+
+function editEnvPollution(id) {
+  var p = DB.envPollutions.find(function(x){ return x.id == id; });
+  if (!p) return;
+  resetEnvPollForm();
+  document.getElementById('env-poll-edit-id').value = p.id;
+  document.getElementById('env-poll-source').value = p.source || '';
+  document.getElementById('env-poll-zone').value = p.zone || '';
+  document.getElementById('env-poll-date').value = p.date || '';
+  document.getElementById('env-poll-gravite').value = p.gravite || 'Faible';
+  document.getElementById('env-poll-mesures').value = p.mesures || '';
+  var grid = document.getElementById('env-poll-type-grid');
+  if (grid) grid.querySelectorAll('[data-type="' + p.type + '"]').forEach(function(b){ b.classList.add('selected'); });
+  setEnvToggle('env-poll-ande', p.ande || 'non');
+  openModal('modal-env-pollution');
+}
+
+// ── Save INCIDENT ENV ─────────────────────────────────
+function saveEnvIncident() {
+  var type = getEnvType('env-inc-type-grid');
+  var desc = document.getElementById('env-inc-desc').value.trim();
+  if (!type) { showToast('Sélectionnez une catégorie', 'err'); return; }
+  if (!desc) { showToast('La description est obligatoire', 'err'); return; }
+  var editId = document.getElementById('env-inc-edit-id').value;
+  var obj = {
+    id: editId ? parseInt(editId) : DB.envCounter++,
+    type: type, desc: desc,
+    date: document.getElementById('env-inc-date').value,
+    zone: document.getElementById('env-inc-zone').value.trim(),
+    actions: document.getElementById('env-inc-actions').value.trim()
+  };
+  if (editId) {
+    var idx = DB.envIncidents.findIndex(function(i){ return i.id == editId; });
+    if (idx >= 0) DB.envIncidents[idx] = obj;
+  } else {
+    DB.envIncidents.push(obj);
+    addActivity('env', '⚠️ Incident env. — ' + type);
+  }
+  save(); closeModal('modal-env-incident'); renderEnv();
+  showToast('Incident enregistré ✓');
+}
+
+function editEnvIncident(id) {
+  var i = DB.envIncidents.find(function(x){ return x.id == id; });
+  if (!i) return;
+  resetEnvIncForm();
+  document.getElementById('env-inc-edit-id').value = i.id;
+  document.getElementById('env-inc-desc').value = i.desc || '';
+  document.getElementById('env-inc-date').value = i.date || '';
+  document.getElementById('env-inc-zone').value = i.zone || '';
+  document.getElementById('env-inc-actions').value = i.actions || '';
+  var grid = document.getElementById('env-inc-type-grid');
+  if (grid) grid.querySelectorAll('[data-type="' + i.type + '"]').forEach(function(b){ b.classList.add('selected'); });
+  openModal('modal-env-incident');
+}
+
+// ── Save EIES ─────────────────────────────────────────
+function saveEnvEies() {
+  var projet = document.getElementById('eies-projet').value.trim();
+  if (!projet) { showToast("L'intitulé du projet est obligatoire", 'err'); return; }
+  var editId = document.getElementById('env-eies-edit-id').value;
+  var obj = {
+    id: editId ? parseInt(editId) : DB.envCounter++,
+    projet: projet,
+    envInitial: document.getElementById('eies-env-initial').value.trim(),
+    impacts: getEiesImpacts(),
+    mesures: document.getElementById('eies-mesures').value.trim(),
+    surveillance: document.getElementById('eies-surveillance').value.trim(),
+    date: new Date().toLocaleDateString('fr-FR')
+  };
+  if (editId) {
+    var idx = DB.envEies.findIndex(function(e){ return e.id == editId; });
+    if (idx >= 0) DB.envEies[idx] = obj;
+  } else {
+    DB.envEies.push(obj);
+    addActivity('env', '📋 EIES — ' + projet);
+  }
+  save(); closeModal('modal-env-eies'); renderEnv();
+  showToast('EIES enregistrée ✓');
+}
+
+// ── Hook dans switchScreen ────────────────────────────
+(function() {
+  var _origSwitch = switchScreen;
+  switchScreen = function(name) {
+    _origSwitch(name);
+    if (name === 'env') {
+      resetEnvDechetForm();
+      resetEnvPollForm();
+      resetEnvIncForm();
+      renderEnv();
+    }
+  };
+})();
 </script>
 
 <!-- ═══════════════ PHOTO PICKER ═══════════════ -->
@@ -14079,6 +14568,331 @@ function moreNavGo(screen) {
   <div class="modal-sheet" style="max-height:90vh;overflow-y:auto">
     <div class="modal-handle"></div>
     <div id="detail-formation-body"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     SCREEN — ENVIRONNEMENT HSSE
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-env">
+  <div class="topbar">
+    <div>
+      <div class="topbar-brand"><div class="brand-dot" style="background:var(--green)"></div><div class="topbar-title">Environnement</div></div>
+      <div class="topbar-sub">Déchets · Pollution · EIES · Côte d'Ivoire</div>
+    </div>
+    <button class="btn-sm" style="background:var(--green-light);color:var(--green);border-color:var(--green-mid)" onclick="openEnvQuickMenu()">+ Déclarer</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="env-kpi-row" id="env-kpi-row">
+    <div class="env-kpi"><div class="env-kpi-val green" id="ekpi-dechets">0</div><div class="env-kpi-lbl">Fiches déchets</div></div>
+    <div class="env-kpi"><div class="env-kpi-val orange" id="ekpi-pollutions">0</div><div class="env-kpi-lbl">Pollutions</div></div>
+    <div class="env-kpi"><div class="env-kpi-val red" id="ekpi-incidents">0</div><div class="env-kpi-lbl">Incidents env.</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="env-tab-bar">
+    <button class="env-tab active" onclick="switchEnvTab('dechets',this)">🗑️ Déchets</button>
+    <button class="env-tab" onclick="switchEnvTab('pollution',this)">💧 Pollution</button>
+    <button class="env-tab" onclick="switchEnvTab('incidents',this)">⚠️ Incidents env.</button>
+    <button class="env-tab" onclick="switchEnvTab('eies',this)">📋 EIES</button>
+  </div>
+
+  <!-- ── ONGLET DÉCHETS ── -->
+  <div class="env-section active" id="env-sec-dechets">
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Registre des déchets</span>
+      <button onclick="openModal('modal-env-dechet')" style="font-size:11px;font-weight:600;color:var(--green);background:none;border:none;cursor:pointer">+ Nouvelle fiche</button>
+    </div>
+
+    <!-- Légende ANASUR -->
+    <div style="margin:0 16px 10px;background:var(--green-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div style="font-size:11px;color:var(--green);line-height:1.5">Conforme au plan de gestion des déchets ANASUR — Côte d'Ivoire. Tout déchet dangereux doit être remis à un prestataire agréé ANASUR.</div>
+    </div>
+
+    <div id="env-dechets-list"></div>
+  </div>
+
+  <!-- ── ONGLET POLLUTION ── -->
+  <div class="env-section" id="env-sec-pollution">
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Déclarations de pollution</span>
+      <button onclick="openModal('modal-env-pollution')" style="font-size:11px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer">+ Déclarer</button>
+    </div>
+
+    <!-- Rappel légal -->
+    <div style="margin:0 16px 10px;background:var(--blue-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div style="font-size:11px;color:var(--blue);line-height:1.5">Décret n°2012-1047 CI — Toute pollution accidentelle doit être déclarée à l'ANDE (Agence Nationale De l'Environnement) sous 24h.</div>
+    </div>
+
+    <div id="env-pollution-list"></div>
+  </div>
+
+  <!-- ── ONGLET INCIDENTS ENV ── -->
+  <div class="env-section" id="env-sec-incidents">
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Incidents environnementaux</span>
+      <button onclick="openModal('modal-env-incident')" style="font-size:11px;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer">+ Déclarer</button>
+    </div>
+    <div id="env-incidents-list"></div>
+  </div>
+
+  <!-- ── ONGLET EIES ── -->
+  <div class="env-section" id="env-sec-eies">
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Évaluation d'impact environnemental</span>
+      <button onclick="openModal('modal-env-eies')" style="font-size:11px;font-weight:600;color:var(--amber);background:none;border:none;cursor:pointer">+ Nouvelle EIES</button>
+    </div>
+
+    <!-- EIES intro -->
+    <div style="margin:0 16px 10px;background:var(--amber-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <div style="font-size:11px;color:var(--amber);line-height:1.5">EIES simplifiée conforme au Code de l'Environnement CI (loi n°96-766). Obligatoire pour tout projet susceptible d'affecter l'environnement.</div>
+    </div>
+
+    <div id="env-eies-list"></div>
+  </div>
+
+  <div class="spacer"></div>
+</div>
+
+<!-- ═══════════════ MODAL DÉCHET ═══════════════ -->
+<div class="modal-overlay" id="modal-env-dechet" onclick="closeModalOut(event,'modal-env-dechet')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Fiche Déchet</div>
+    <input type="hidden" id="env-dechet-edit-id" value="">
+
+    <div class="form-group">
+      <label class="form-label">Type de déchet *</label>
+      <div class="env-type-grid" id="env-dechet-type-grid">
+        <div class="env-type-btn green" data-type="Inerte" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">🪨</div><div class="env-type-btn-lbl">Inerte</div></div>
+        <div class="env-type-btn orange" data-type="Non dangereux" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">♻️</div><div class="env-type-btn-lbl">Non dangereux</div></div>
+        <div class="env-type-btn red" data-type="Dangereux" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">☢️</div><div class="env-type-btn-lbl">Dangereux</div></div>
+        <div class="env-type-btn blue" data-type="Liquide" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">🪣</div><div class="env-type-btn-lbl">Liquide</div></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nature précise *</label>
+      <input class="form-input" id="env-dechet-nature" type="text" placeholder="Ex: Huiles usagées, Béton, Peintures, Amiante…">
+    </div>
+
+    <div style="display:flex;gap:8px" class="form-group">
+      <div style="flex:1">
+        <label class="form-label">Quantité *</label>
+        <input class="form-input" id="env-dechet-qte" type="number" min="0" step="0.1" placeholder="0">
+      </div>
+      <div style="width:110px">
+        <label class="form-label">Unité</label>
+        <select class="form-select" id="env-dechet-unite">
+          <option>kg</option><option>tonne</option><option>litre</option><option>m³</option><option>unité</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mode d'élimination *</label>
+      <select class="form-select" id="env-dechet-elimination">
+        <option value="">Choisir…</option>
+        <option>Décharge autorisée ANASUR</option>
+        <option>Recyclage (prestataire agréé)</option>
+        <option>Incinération contrôlée</option>
+        <option>Collecte déchets ménagers</option>
+        <option>Réutilisation sur site</option>
+        <option>Remise à un prestataire spécialisé</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Transporteur / Prestataire</label>
+      <input class="form-input" id="env-dechet-prestataire" type="text" placeholder="Nom de l'entreprise de collecte…">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Zone de stockage temporaire</label>
+      <input class="form-input" id="env-dechet-zone" type="text" placeholder="Ex: Local déchets — Zone B">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Date d'évacuation prévue</label>
+      <input class="form-input" id="env-dechet-date-evac" type="date">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Observations</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-dechet-obs" placeholder="Conditions de stockage, précautions particulières…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-dechet-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" onclick="saveEnvDechet()">Enregistrer la fiche</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-dechet')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL POLLUTION ═══════════════ -->
+<div class="modal-overlay" id="modal-env-pollution" onclick="closeModalOut(event,'modal-env-pollution')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Déclaration de Pollution</div>
+    <input type="hidden" id="env-poll-edit-id" value="">
+
+    <div class="form-group">
+      <label class="form-label">Milieu affecté *</label>
+      <div class="env-type-grid" id="env-poll-type-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="env-type-btn blue" data-type="Eau" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">💧</div><div class="env-type-btn-lbl">Eau</div></div>
+        <div class="env-type-btn amber" data-type="Sol" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">🌱</div><div class="env-type-btn-lbl">Sol</div></div>
+        <div class="env-type-btn green" data-type="Air" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">💨</div><div class="env-type-btn-lbl">Air</div></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Source / Cause *</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-poll-source" placeholder="Ex: Fuite de carburant, déversement produit chimique, émission poussières…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-poll-source',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Zone concernée</label>
+      <input class="form-input" id="env-poll-zone" type="text" placeholder="Localisation précise sur le chantier…">
+    </div>
+
+    <div style="display:flex;gap:8px" class="form-group">
+      <div style="flex:1">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="env-poll-date" type="date">
+      </div>
+      <div style="flex:1">
+        <label class="form-label">Gravité</label>
+        <select class="form-select" id="env-poll-gravite">
+          <option value="Faible">Faible</option>
+          <option value="Modérée">Modérée</option>
+          <option value="Grave">Grave</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mesures d'urgence prises</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-poll-mesures" placeholder="Confinement, neutralisation, alerte autorités (ANDE)…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-poll-mesures',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">ANDE notifiée ?</label>
+      <div style="display:flex;gap:8px">
+        <button id="env-poll-ande-oui" style="flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-family:var(--font-body);font-size:13px;cursor:pointer" onclick="setEnvToggle('env-poll-ande','oui')">✓ Oui</button>
+        <button id="env-poll-ande-non" style="flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--red);background:var(--red-light);color:var(--red);font-family:var(--font-body);font-size:13px;cursor:pointer" onclick="setEnvToggle('env-poll-ande','non')">✗ Non</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;background:var(--blue);border-color:var(--blue)" onclick="saveEnvPollution()">Enregistrer</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-pollution')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL INCIDENT ENV ═══════════════ -->
+<div class="modal-overlay" id="modal-env-incident" onclick="closeModalOut(event,'modal-env-incident')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Incident Environnemental</div>
+    <input type="hidden" id="env-inc-edit-id" value="">
+
+    <div class="form-group">
+      <label class="form-label">Catégorie *</label>
+      <div class="env-type-grid" id="env-inc-type-grid">
+        <div class="env-type-btn orange" data-type="Déversement" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🛢️</div><div class="env-type-btn-lbl">Déversement</div></div>
+        <div class="env-type-btn red" data-type="Incendie végétation" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🔥</div><div class="env-type-btn-lbl">Incendie végétat.</div></div>
+        <div class="env-type-btn blue" data-type="Pollution nappe" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🏞️</div><div class="env-type-btn-lbl">Pollution nappe</div></div>
+        <div class="env-type-btn amber" data-type="Destruction habitat" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🌿</div><div class="env-type-btn-lbl">Habitat naturel</div></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description *</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-inc-desc" placeholder="Décrivez précisément l'incident environnemental observé…" style="padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-inc-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div style="display:flex;gap:8px" class="form-group">
+      <div style="flex:1">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="env-inc-date" type="date">
+      </div>
+      <div style="flex:1">
+        <label class="form-label">Zone</label>
+        <input class="form-input" id="env-inc-zone" type="text" placeholder="Localisation…">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Actions correctives immédiates</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-inc-actions" placeholder="Mesures prises pour limiter l'impact…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-inc-actions',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;background:var(--orange);border-color:var(--orange)" onclick="saveEnvIncident()">Enregistrer</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-incident')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL EIES ═══════════════ -->
+<div class="modal-overlay" id="modal-env-eies" onclick="closeModalOut(event,'modal-env-eies')">
+  <div class="modal-sheet" style="max-height:94vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">EIES Simplifiée</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Évaluation d'Impact Environnemental et Social — Code de l'Environnement CI</div>
+    <input type="hidden" id="env-eies-edit-id" value="">
+
+    <div class="form-group">
+      <label class="form-label">Intitulé du projet / activité *</label>
+      <input class="form-input" id="eies-projet" type="text" placeholder="Ex: Terrassement zone C — Extension bâtiment">
+    </div>
+
+    <div class="eies-step">
+      <div class="eies-step-hd"><div class="eies-step-num">1</div><div class="eies-step-title">Description de l'environnement existant</div></div>
+      <div class="form-group" style="margin-bottom:8px">
+        <div class="voice-wrap"><textarea class="form-textarea" id="eies-env-initial" placeholder="Végétation, cours d'eau, faune, proximité habitations, sol…" style="min-height:70px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-env-initial',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+      </div>
+    </div>
+
+    <div class="eies-step">
+      <div class="eies-step-hd"><div class="eies-step-num">2</div><div class="eies-step-title">Impacts identifiés — Évaluation</div></div>
+      <div id="eies-impacts-list">
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Déforestation / déboisement</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Pollution des eaux de surface</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Pollution de la nappe phréatique</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Érosion / dégradation sol</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Émissions de poussières / gaz</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Bruit et vibrations</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Perturbation faune / biodiversité</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Impact sur populations riveraines</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Génération de déchets dangereux</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+      </div>
+    </div>
+
+    <div class="eies-step">
+      <div class="eies-step-hd"><div class="eies-step-num">3</div><div class="eies-step-title">Mesures d'atténuation proposées</div></div>
+      <div class="form-group" style="margin-bottom:8px">
+        <div class="voice-wrap"><textarea class="form-textarea" id="eies-mesures" placeholder="Plan de reboisement, bassin de rétention, barrières anti-bruit, signalisation riverains…" style="min-height:80px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-mesures',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+      </div>
+    </div>
+
+    <div class="eies-step">
+      <div class="eies-step-hd"><div class="eies-step-num">4</div><div class="eies-step-title">Plan de surveillance et suivi</div></div>
+      <div class="form-group" style="margin-bottom:8px">
+        <div class="voice-wrap"><textarea class="form-textarea" id="eies-surveillance" placeholder="Fréquence des contrôles, indicateurs de suivi, responsable environnement…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-surveillance',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;background:var(--amber);border-color:var(--amber)" onclick="saveEnvEies()">Enregistrer l'EIES</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-eies')">Annuler</button>
+    </div>
   </div>
 </div>
 
