@@ -914,6 +914,43 @@ body.dark-mode .env-card{background:var(--surface)}
 body.dark-mode .env-type-btn{background:var(--surface)}
 body.dark-mode .eies-step{background:var(--surface)}
 .qa-tile.qa-env .qa-tile-icon{background:rgba(46,110,14,.12)}
+
+/* ══════════════════════════════════════════════════════
+   SUGGESTIONS INTELLIGENTES — SYSTÈME SANS IA
+══════════════════════════════════════════════════════ */
+.smart-panel{border-radius:12px;border:1.5px solid var(--green-mid);background:var(--green-light);padding:12px 14px;margin-bottom:12px;animation:smartIn .25s ease}
+.smart-panel.orange{border-color:var(--orange-mid);background:var(--orange-light)}
+.smart-panel.blue{border-color:#8BBCE8;background:var(--blue-light)}
+.smart-panel.amber{border-color:#D4A04A;background:var(--amber-light)}
+@keyframes smartIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.smart-panel-hd{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.smart-panel-icon{font-size:14px}
+.smart-panel-title{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.3px;flex:1}
+.smart-panel.orange .smart-panel-title{color:var(--orange)}
+.smart-panel.blue .smart-panel-title{color:var(--blue)}
+.smart-panel.amber .smart-panel-title{color:var(--amber)}
+.smart-panel-close{width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.06);border:none;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;color:var(--text2);flex-shrink:0}
+.smart-chips{display:flex;flex-wrap:wrap;gap:6px}
+.smart-chip{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--green-mid);background:var(--surface);color:var(--green);cursor:pointer;transition:all .15s;line-height:1.3;text-align:left}
+.smart-chip:active{background:var(--green-light)}
+.smart-panel.orange .smart-chip{border-color:var(--orange-mid);color:var(--orange)}
+.smart-panel.orange .smart-chip:active{background:var(--orange-light)}
+.smart-panel.blue .smart-chip{border-color:#8BBCE8;color:var(--blue)}
+.smart-panel.blue .smart-chip:active{background:var(--blue-light)}
+.smart-panel.amber .smart-chip{border-color:#D4A04A;color:var(--amber)}
+.smart-panel.amber .smart-chip:active{background:var(--amber-light)}
+.smart-chip-full{width:100%;border-radius:8px;text-align:left}
+.smart-badge{display:inline-flex;align-items:center;gap:4px;background:var(--green-light);color:var(--green);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.2px}
+.smart-local-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.smart-local-item:last-child{border-bottom:none}
+.smart-local-item:active{background:var(--gray-light)}
+.smart-local-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0}
+.smart-local-text{font-size:12px;color:var(--text);flex:1;line-height:1.4}
+.smart-local-freq{font-size:10px;font-weight:700;color:var(--text3);white-space:nowrap}
+body.dark-mode .smart-chip{background:var(--surface)}
+body.dark-mode .smart-panel{background:var(--gray-light)}
+
+@keyframes smartIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -2124,7 +2161,7 @@ body.dark-mode .eies-step{background:var(--surface)}
     <div class="modal-title">Nouvelle Fiche Incident</div>
     <div class="form-group">
       <label class="form-label">Type d'événement *</label>
-      <select class="form-select" id="inc-type">
+      <select class="form-select" id="inc-type" onchange="smartIncOnType(this.value)">
         <option value="">-- Sélectionner --</option>
         <option>Presqu'accident (Near Miss)</option>
         <option>Accident bénin (sans arrêt)</option>
@@ -2145,6 +2182,9 @@ body.dark-mode .eies-step{background:var(--surface)}
       </div>
       <input type="hidden" id="inc-sev" value="">
     </div>
+    <!-- SMART PANEL INCIDENT -->
+    <div id="smart-inc-panel" style="display:none"></div>
+
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Date *</label>
@@ -2270,7 +2310,7 @@ body.dark-mode .eies-step{background:var(--surface)}
     <!-- ÉTAPE 0 : Infos générales -->
     <div class="form-group">
       <label class="form-label">Type de travaux *</label>
-      <select class="form-select" id="jsa-type" onchange="jsaChargerActivite(this.value)">
+      <select class="form-select" id="jsa-type" onchange="jsaChargerActivite(this.value);smartJsaOnType(this.value)">
         <option value="">-- Sélectionner une activité --</option>
         <optgroup label="Structure & Génie Civil">
           <option>Ferraillage</option>
@@ -2302,6 +2342,9 @@ body.dark-mode .eies-step{background:var(--surface)}
         </optgroup>
       </select>
     </div>
+
+    <!-- SMART PANEL JSA -->
+    <div id="smart-jsa-panel" style="display:none"></div>
 
     <div class="form-row">
       <div class="form-group">
@@ -2362,7 +2405,7 @@ body.dark-mode .eies-step{background:var(--surface)}
     <div class="modal-title">Quart d'heure Sécurité</div>
     <div class="form-group">
       <label class="form-label">Thème du Talk *</label>
-      <select class="form-select" id="tb-theme-select" onchange="tbThemeSelect(this.value)">
+      <select class="form-select" id="tb-theme-select" onchange="tbThemeSelect(this.value);smartToolboxOnTheme(this.value)">
         <option value="">-- Sélectionner un thème --</option>
         <option>Travaux en hauteur — Risques & Prévention</option>
         <option>Sécurité levage — Grue et élingage</option>
@@ -2413,6 +2456,9 @@ body.dark-mode .eies-step{background:var(--surface)}
       <div id="tb-participants-list" style="margin-top:8px"></div>
       <div class="form-hint" id="tb-count-hint">0 participant(s) sélectionné(s)</div>
     </div>
+    <!-- SMART PANEL TOOLBOX -->
+    <div id="smart-tb-panel" style="display:none"></div>
+
     <div class="form-group">
       <label class="form-label">Points discutés / Observations</label>
       <div class="voice-wrap"><textarea class="form-textarea" id="tb-obs" placeholder="Résumez les échanges, les points soulevés par les équipes..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('tb-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
@@ -2463,8 +2509,13 @@ body.dark-mode .eies-step{background:var(--surface)}
     </div>
     <div class="form-group">
       <label class="form-label">Description détaillée *</label>
-      <div class="voice-wrap"><textarea class="form-textarea" id="capa-desc" placeholder="Décrivez le problème constaté et les mesures correctives à mettre en place..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('capa-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+      <!-- SMART PANEL CAPA -->
+    <div id="smart-capa-panel" style="display:none"></div>
+    <div class="voice-wrap"><textarea class="form-textarea" id="capa-desc" placeholder="Décrivez le problème constaté et les mesures correctives à mettre en place..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('capa-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
+    <!-- SMART PANEL JSA -->
+    <div id="smart-jsa-panel" style="display:none"></div>
+
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Responsable *</label>
@@ -14461,6 +14512,275 @@ function saveEnvEies() {
     }
   };
 })();
+
+
+
+
+
+/* ════════════════════════════════════════════════════════════════
+   SUGGESTIONS INTELLIGENTES v2 — zéro problème apostrophe
+   Pattern : stockage dans tableau global, onclick par index
+════════════════════════════════════════════════════════════════ */
+
+// Tableau global pour les callbacks — évite tout problème d'échappement
+var _SA = [];
+function _saCall(i) { if (_SA[i]) _SA[i](); }
+
+/* ── Données : actions par type d'incident ── */
+var D_INC = {
+  "Presqu'accident (Near Miss)": { color:'amber', icon:'🔍', title:"Actions recommandées — Presqu'accident",
+    actions:["Sécuriser la zone immédiatement pour éviter la répétition","Informer l'encadrement dans les 30 minutes","Photographier les lieux et les équipements impliqués","Identifier toutes les personnes témoins de l'événement","Ouvrir une fiche CAPA — Analyse des causes","Partager en Toolbox Talk avec l'équipe sous 48h"]},
+  "Accident bénin (sans arrêt)": { color:'orange', icon:'🩹', title:"Actions requises — Accident bénin",
+    actions:["Prodiguer les premiers soins — infirmier ou secouriste","Documenter la lésion : nature, localisation, heure exacte","Déclarer au CNPS Côte d'Ivoire dans les 48h","Analyser les causes — méthode 5 Pourquoi recommandée","Mettre à jour le registre des accidents du travail","Informer la famille de l'agent si nécessaire"]},
+  "Accident avec arrêt de travail": { color:'red', icon:'🚨', title:"Procédure obligatoire — Accident avec arrêt",
+    actions:["URGENCE : appeler le SAMU (185) ou CHU Cocody si grave","Ne pas déplacer le blessé sans avis médical","Déclarer à l'inspection du travail sous 24h","Déclaration CNPS dans les 48h — formulaire DAT","Préserver la scène : photos + témoignages immédiats","Déclencher l'analyse 5 Pourquoi sous 72h","Rapport HSE direction + client sous 24h"]},
+  "Accident grave": { color:'red', icon:'🆘', title:"PROTOCOLE URGENCE — Accident grave",
+    actions:["SAMU : 185 — Pompiers : 180 — Police : 111","Sécuriser le périmètre — arrêter tous travaux alentour","Nommer un responsable de la gestion de crise","Prévenir DRH et direction dans l'heure","Pas de déclaration presse sans accord direction","Déclarer à l'inspection du travail CI immédiatement","Cellule de soutien psychologique pour les témoins","Rapport préliminaire dans les 4h — rapport final 72h"]},
+  "Dommage matériel": { color:'amber', icon:'🔧', title:"Gestion dommage matériel",
+    actions:["Sécuriser l'équipement endommagé — consignation si nécessaire","Estimer le coût du dommage et documenter","Notifier le responsable matériel et le chef de chantier","Déclarer à l'assurance chantier sous 5 jours ouvrés","Analyser la cause — usure, mauvaise utilisation, entretien","Mettre à jour le registre de maintenance"]},
+  "Situation dangereuse observée": { color:'orange', icon:'⚠️', title:"Traitement situation dangereuse",
+    actions:["Arrêter l'activité si risque grave imminent","Isoler la zone — signalisation et balisage","Informer le chef de chantier dans les 15 minutes","Prendre en photo avant toute modification","Ouvrir une CAPA préventive","Intégrer au prochain Toolbox Talk"]},
+  "Pollution / Incident environnemental": { color:'green', icon:'🌿', title:"Protocole incident environnemental",
+    actions:["Stopper immédiatement la source de pollution","Confiner la pollution — kit anti-pollution ou sable absorbant","Notifier l'ANDE Côte d'Ivoire sous 24h (décret 2012-1047)","Photographier l'étendue de la pollution","Ouvrir une fiche dans l'onglet Environnement","Plan de dépollution et réhabilitation sous 48h"]}
+};
+
+/* ── Données : mesures JSA par activité ── */
+var D_JSA = {
+  "Ferraillage":["Établir un plan de stockage séparé des armatures","Protéger les extrémités en saillie avec des capuchons plastiques","Utiliser des engins pour la manutention des barres > 20 kg","Vérifier le blindage des fouilles avant toute intervention","Délimiter la zone de battage des aciers — ruban de signalisation"],
+  "Coffrage et décoffrage":["Vérifier l'état des banches avant montage","Installer des garde-corps périphériques H ≥ 1m avant montage","Décoffrer uniquement après confirmation résistance béton (7 jours min)","Utiliser des produits décoffrants conformes — stocker avec FDS","Étayer les banches verticalement dès la mise en place"],
+  "Travail en hauteur":["Vérifier le harnais avant chaque utilisation — check-list","Point d'ancrage ≥ 15 kN — certifié EN795","Zone d'évolution balisée au sol — interdire le passage dessous","Monte-matériaux pour toute charge > 5 kg","Arrêter si vent > 45 km/h ou orage annoncé"],
+  "Levage et manutention lourde":["Plan de levage validé par conducteur travaux avant chaque opération","Vérifier le certificat de conformité de l'élingue et du crochet","Zone de levage : R = 1,5 x hauteur de levage","Signal sonore et visuel actif pendant toute la manoeuvre","Charge < 80% CMU — jamais à 100%","Chef de manoeuvre désigné — communication radio obligatoire"],
+  "Travaux électriques BT/HT":["Consignation électrique LOTO avant toute intervention","Vérifier l'absence de tension avec VAT homologué","Habilitation électrique B1/B2 ou BR vérifiée","Matériel de protection classe adaptée à la tension","Périmètre de sécurité : 0,3m BT — 3m HTA"],
+  "Soudage et oxycoupage":["Permis de feu obligatoire — valider avant chaque séance","Extincteur CO2 à portée immédiate","Masque de soudeur filtre teinte 11-13 obligatoire","Ventilation forcée en espace semi-ouvert","Ronde de sécurité 1h après la fin des travaux chauds"],
+  "Terrassement / Fouilles":["Sondage réseau DICT avant terrassement — obligatoire","Blindage des parois dès H > 1,30m","Interdire la présence sous les godets des engins","Vérifier la stabilité des talus après pluie","Éclairage et ventilation si profondeur > 1,5m"],
+  "Conduite d'engins de chantier":["Vérifier le CACES valide — R372 ou R482 selon engin","Inspection journalière obligatoire avant prise de poste","Piétons et engins : séparation physique des flux","Angle mort : signaler présence au conducteur avant approche","Klaxon obligatoire en marche arrière"],
+  "Travaux en espace confiné":["Permis espace confiné obligatoire avant entrée","Mesure atmosphérique : O2 19,5-23%, LEL < 10%, CO < 25 ppm","Équipier de sécurité extérieur formé — communication permanente","Trépied de sauvetage et harnais antichutte à l'entrée","Ventilation mécanique continue pendant toute la durée"],
+  "Peinture et traitement de surface":["FDS disponible sur chantier — affichée au poste","Masque à cartouche vapeurs organiques FFP3","Interdire toute source d'ignition dans la zone de 5m","Douche oculaire d'urgence accessible sous 10 secondes","Élimination des déchets selon filière agréée ANASUR"],
+  "Coulage et vibrage béton":["Vérifier la résistance du coffrage avant coulage","Vibrer le béton uniformément — éviter sur-vibration","Chaussures de sécurité imperméables obligatoires — béton corrosif","Douche oculaire disponible — projection alcaline","Pause régulière — travail physique intense en chaleur"],
+  "Maçonnerie et hourdage":["Échafaudage vérifié et réceptionné avant montée","Hauteur de pose par vague max 1,20m — laisser durcir","Protection respiratoire fine poussières de ciment FFP2","Stockage des blocs à moins de 0,5m du bord — anti-chute","Éclairage suffisant si travaux en zone couverte"]
+};
+
+/* ── Données : plan de session Toolbox ── */
+var D_TB = {
+  "Travaux en hauteur — Risques & Prévention": { color:'orange',
+    points:["Rappel : harnais à vérifier AVANT de monter — 3 points d'accroche","Ne jamais travailler seul en hauteur — règle absolue","Météo défavorable = arrêt immédiat des travaux en hauteur","Identifier les zones de risque chute sur notre chantier aujourd'hui","Question : avez-vous observé des situations dangereuses cette semaine ?"],
+    questions:["Qui sait où est l'extincteur le plus proche ?","Montrer comment vérifier correctement une longe"]},
+  "Sécurité levage — Grue et élingage": { color:'blue',
+    points:["Plan de levage : a-t-il été validé ce matin ?","Élingue : contrôle visuel — pas de fil cassé, marquage lisible","Zone de levage : personne ne doit se trouver sous la charge","Signal chef de manoeuvre : 1 seul responsable à la fois","CMU de l'élingue ≥ charge x facteur d'élingage"],
+    questions:["Montrer les gestes de communication grutier et sol","Qui est chef de manoeuvre désigné aujourd'hui ?"]},
+  "Prévention chaleur et hydratation": { color:'red',
+    points:["Température prévue — arrêt si > 38°C ressenti","Boire 250ml toutes les 20 minutes même sans soif","Signes coup de chaleur : maux de tête, confusion, peau sèche chaude","Pause obligatoire à l'ombre entre 12h et 14h","Paludisme : prendre les traitements préventifs prescrits","Signaler IMMÉDIATEMENT tout collègue qui ne va pas bien"],
+    questions:["Tout le monde a suffisamment d'eau ?","Qui a des antécédents de malaise sur chantier ?"]},
+  "Port obligatoire des EPI": { color:'orange',
+    points:["EPI obligatoires sur ce chantier aujourd'hui — rappel liste","EPI = dernière barrière — ne remplace pas la prévention","Un EPI endommagé ne protège pas — signaler immédiatement","Casque : vérifier la date de fabrication (max 5 ans)","Contrôle EPI à l'entrée — pas d'EPI = pas de travail"],
+    questions:["Nommer les 5 EPI minimum requis ici","Démonstration : comment ajuster correctement un harnais"]},
+  "Procédures d'urgence et évacuation": { color:'red',
+    points:["Point de rassemblement : rappeler la localisation exacte","Numéros CI : SAMU 185 — Pompiers 180 — Police 111","Sirène d'évacuation : son continu = évacuation immédiate","Rôle du responsable d'évacuation de votre équipe","Ne jamais re-rentrer sans autorisation"],
+    questions:["Simulation : que faites-vous si vous entendez la sirène ?","Qui connaît l'emplacement des extincteurs dans votre zone ?"]},
+  "Signalement incidents et presqu'accidents": { color:'amber',
+    points:["Un presqu'accident signalé = un accident évité demain","Pas de punition pour signalement — culture positive","Comment déclarer via Vigilo : 2 minutes maximum","Chaque signalement est analysé et donne lieu à une action"],
+    questions:["Y a-t-il des situations que vous hésitez à signaler ?","Quel incident de la semaine mérite d'être discuté ?"]},
+  "Conduite sécurisée des engins": { color:'amber',
+    points:["Inspection pré-utilisation : niveaux, freins, klaxon, éclairage","Tout conducteur doit avoir son CACES valide","Vitesse maximum sur ce chantier : 10 km/h","Piéton et engin ne se croisent pas — séparation stricte","Marche arrière : toujours klaxonner — vérifier visuellement"],
+    questions:["Qui a remarqué un comportement dangereux d'engin cette semaine ?"]},
+  "Risques électriques sur chantier": { color:'blue',
+    points:["Ne jamais intervenir sur une installation sans consignation LOTO","Distance de sécurité ligne HTA aérienne : minimum 3 mètres","Armoire électrique : toujours fermée à clé","Câble endommagé = mis hors service immédiatement","Habilitation électrique : vérifier validité avant intervention"],
+    questions:["Montrer : comment identifier un câble defectueux ?"]},
+  "Ordre et rangement — Méthode 5S": { color:'green',
+    points:["5S : Seiri, Seiton, Seiso, Seiketsu, Shitsuke","Un chantier rangé = moins de chutes, moins d'accidents","Règle : ranger après chaque tâche avant de passer à la suivante","Respecter les emplacements définis pour le stockage","Objectif : noter votre zone 5S cette semaine"],
+    questions:["Nommer 3 situations de désordre qui causent un accident"]},
+  "Soudage sécurisé — Risques incendie": { color:'red',
+    points:["Permis de feu validé avant CHAQUE session de soudage","Zone dégagée de tout combustible dans un rayon de 5m","Extincteur à portée de main — type CO2 ou poudre","Ronde de surveillance 1h après la fin des travaux chauds","Masque de soudeur : teinte 11 minimum pour TIG/MIG"],
+    questions:["Qui peut montrer comment déclencher un extincteur ?"]}
+};
+
+/* ── Données : CAPA par mots-clés ── */
+var D_CAPA = {
+  hauteur:["Installer des garde-corps réglementaires H ≥ 1m","Mettre en place un filet de sécurité sous la zone de travail","Former les agents au harnais — exercice pratique","Réviser la procédure travail en hauteur — affichage obligatoire"],
+  epi:["Renforcer le contrôle EPI à l'entrée du chantier","Reconstituer le stock EPI manquant sous 48h","Sensibilisation EPI au prochain Toolbox Talk","Photographier et afficher les EPI obligatoires par zone"],
+  electrique:["Consignation LOTO obligatoire — procédure écrite affichée","Vérifier les habilitations électriques de toute l'équipe","Contrôle des tableaux et câbles par électricien qualifié","Interdire l'accès à la zone électrique aux non-habilités"],
+  incendie:["Vérifier les extincteurs — date de péremption et charge","Dégager les issues de secours — aucun obstacle toléré","Afficher les plans d'évacuation mis à jour","Organiser un exercice évacuation dans les 15 jours"],
+  manutention:["Former les agents aux gestes et postures PRAP","Utiliser des aides mécaniques pour toute charge > 20 kg","Rotation des postes — 2h maximum par session","Évaluation médicale pour agents avec antécédents dorsaux"],
+  engin:["Vérifier les CACES de tous les conducteurs","Matérialiser les voies piétons séparées des voies engins","Inspection journalière obligatoire — check-list signée","Réduire la vitesse de zone — panneaux 10 km/h"],
+  chimique:["Mettre à jour les FDS et les afficher sur les postes","Vérifier la ventilation de la zone chimique","Former les agents à la lecture des pictogrammes CLP","Kit déversement accidentel à portée immédiate"],
+  defaut:["Analyser les causes profondes — méthode 5 Pourquoi","Mettre en place une surveillance renforcée de la zone","Informer et former les équipes concernées","Définir un délai et un responsable de vérification"]
+};
+
+/* ── Helpers visuels ── */
+var COLOR_BORDER = {green:'var(--green-mid)',orange:'var(--orange-mid)',red:'var(--red)',amber:'#D4A04A',blue:'#8BBCE8'};
+var COLOR_BG     = {green:'var(--green-light)',orange:'var(--orange-light)',red:'var(--red-light)',amber:'var(--amber-light)',blue:'var(--blue-light)'};
+var COLOR_TEXT   = {green:'var(--green)',orange:'var(--orange)',red:'var(--red)',amber:'var(--amber)',blue:'var(--blue)'};
+
+function _buildPanel(color, icon, title, subtitle, chips, extraHtml) {
+  var border = COLOR_BORDER[color] || COLOR_BORDER.green;
+  var bg     = COLOR_BG[color]     || COLOR_BG.green;
+  var text   = COLOR_TEXT[color]   || COLOR_TEXT.green;
+  var html = '<div style="border-radius:12px;border:1.5px solid '+border+';background:'+bg+';padding:12px 14px;margin-bottom:12px;animation:smartIn .25s ease">'
+    + '<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">'
+    + '<span style="font-size:15px">'+icon+'</span>'
+    + '<span style="font-size:11px;font-weight:700;color:'+text+';letter-spacing:.3px;flex:1">'+title+'</span>'
+    + '<button onclick="this.closest(\'div[style]\').parentElement.innerHTML=\'\'" style="width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.07);border:none;cursor:pointer;font-size:11px;color:var(--text3)">✕</button>'
+    + '</div>';
+  if (subtitle) html += '<div style="font-size:11px;color:'+text+';opacity:.8;margin-bottom:8px">'+subtitle+'</div>';
+  if (chips && chips.length) {
+    html += '<div style="display:flex;flex-wrap:wrap;gap:6px">';
+    chips.forEach(function(ch) {
+      html += '<button onclick="_saCall('+ch.idx+')" style="padding:5px 11px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid '+border+';background:var(--surface);color:'+text+';cursor:pointer;text-align:left;line-height:1.3;width:100%;border-radius:8px">'+ch.label+'</button>';
+    });
+    html += '</div>';
+  }
+  if (extraHtml) html += extraHtml;
+  html += '</div>';
+  return html;
+}
+
+function _chips(items, fn) {
+  return items.map(function(item) {
+    var idx = _SA.length;
+    _SA.push(function() { fn(item); });
+    return { idx: idx, label: item };
+  });
+}
+
+/* ── MOTEUR 1 : incidents ── */
+function smartIncOnType(type) {
+  var panel = document.getElementById('smart-inc-panel');
+  if (!panel) return;
+  var data = D_INC[type];
+  if (!data) { panel.style.display='none'; panel.innerHTML=''; return; }
+  var chips = _chips(data.actions, function(a) {
+    var f = document.getElementById('inc-action');
+    if (!f) return;
+    f.value = f.value.trim() ? f.value.trim()+'\n• '+a : '• '+a;
+    showToast('Action ajoutée ✓');
+  });
+  panel.innerHTML = _buildPanel(data.color, data.icon, data.title, 'Tap pour copier dans les actions immédiates', chips, null);
+  panel.style.display = 'block';
+}
+
+/* ── MOTEUR 2 : JSA ── */
+function smartJsaOnType(type) {
+  var panel = document.getElementById('smart-jsa-panel');
+  if (!panel) return;
+  var mesures = D_JSA[type];
+  if (!mesures) { panel.style.display='none'; panel.innerHTML=''; return; }
+  var chips = _chips(mesures, function(m) {
+    var tas = document.querySelectorAll('[id^="jsa-etape-"][id$="-mesures"]');
+    var target = null;
+    tas.forEach(function(ta) { if (document.activeElement === ta) target = ta; });
+    if (!target) tas.forEach(function(ta) { if (!target && !ta.value.trim()) target = ta; });
+    if (!target && tas.length) target = tas[0];
+    if (!target) { showToast("Sélectionnez d'abord une étape", 'err'); return; }
+    target.value = target.value.trim() ? target.value.trim()+'\n• '+m : '• '+m;
+    target.scrollIntoView({behavior:'smooth',block:'center'});
+    showToast('Mesure ajoutée ✓');
+  });
+  panel.innerHTML = _buildPanel('green', '💡', 'Mesures clés — '+type, 'Tap pour ajouter dans l\'étape active', chips, null);
+  panel.style.display = 'block';
+}
+
+/* ── MOTEUR 3 : Toolbox ── */
+function smartToolboxOnTheme(theme) {
+  var panel = document.getElementById('smart-tb-panel');
+  if (!panel) return;
+  var data = D_TB[theme];
+  if (!data || theme === '__custom__') { panel.style.display='none'; panel.innerHTML=''; return; }
+
+  var allItems = data.points.concat(data.questions ? data.questions.map(function(q){ return '❓ '+q; }) : []);
+  var chips = _chips(allItems, function(p) {
+    var obs = document.getElementById('tb-obs');
+    if (!obs) return;
+    obs.value = obs.value.trim() ? obs.value.trim()+'\n• '+p : '• '+p;
+    showToast('Point ajouté ✓');
+  });
+
+  var insertAllIdx = _SA.length;
+  _SA.push(function() {
+    var obs = document.getElementById('tb-obs');
+    if (!obs) return;
+    var lines = data.points.map(function(p){ return '• '+p; });
+    if (data.questions && data.questions.length) { lines.push(''); lines.push('--- Questions au groupe ---'); data.questions.forEach(function(q){ lines.push('❓ '+q); }); }
+    obs.value = lines.join('\n');
+    if (panel) { panel.style.display='none'; panel.innerHTML=''; }
+    showToast('Plan de session inséré ✓');
+  });
+  var extra = '<div style="margin-top:10px"><button onclick="_saCall('+insertAllIdx+')" style="width:100%;padding:10px;border-radius:8px;border:none;background:'+COLOR_TEXT[data.color]+';color:#fff;font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer">⚡ Tout insérer dans les observations</button></div>';
+
+  panel.innerHTML = _buildPanel(data.color, '📋', 'Plan de session — '+theme, 'Tap sur un point pour l\'ajouter', chips, extra);
+  panel.style.display = 'block';
+}
+
+/* ── MOTEUR 4 : CAPA détection mots-clés ── */
+var _capaTimer = null;
+function smartCapaDetect() {
+  clearTimeout(_capaTimer);
+  _capaTimer = setTimeout(function() {
+    var panel = document.getElementById('smart-capa-panel');
+    if (!panel) return;
+    var t1 = document.getElementById('capa-titre');
+    var t2 = document.getElementById('capa-desc');
+    var text = ((t1 ? t1.value : '') + ' ' + (t2 ? t2.value : '')).toLowerCase();
+    if (text.trim().length < 8) { panel.style.display='none'; panel.innerHTML=''; return; }
+
+    var kw = {
+      hauteur:   ['hauteur','chute','harnais','garde-corps','echafaud','toiture','balcon'],
+      epi:       ['epi','casque','chaussure','gilet','gant','lunette','protec'],
+      electrique:['electr','courant','habilit','tension','cable','tableau','bt','ht'],
+      incendie:  ['incendie','feu','extincteur','flamme','chaleur','combustible','evacu'],
+      manutention:['manuten','charge','dos','tms','soulev','lourd','port'],
+      engin:     ['engin','grue','chariot','caces','conducteur','collision'],
+      chimique:  ['chimique','produit','solvant','peinture','fds','vapeur','gaz','inhal']
+    };
+    var matched = 'defaut';
+    for (var k in kw) {
+      if (kw[k].some(function(w){ return text.indexOf(w) !== -1; })) { matched = k; break; }
+    }
+    var mesures = D_CAPA[matched] || D_CAPA.defaut;
+    var chips = _chips(mesures, function(m) {
+      var f = document.getElementById('capa-desc');
+      if (!f) return;
+      f.value = f.value.trim() ? f.value.trim()+'\n• '+m : '• '+m;
+      showToast('Action ajoutée ✓');
+    });
+    panel.innerHTML = _buildPanel('blue', '💡', 'Actions correctives suggérées', 'Basé sur le contenu de votre fiche', chips, null);
+    panel.style.display = 'block';
+  }, 600);
+}
+
+/* ── Attacher les écouteurs CAPA ── */
+document.addEventListener('DOMContentLoaded', function() {
+  var t = document.getElementById('capa-titre');
+  var d = document.getElementById('capa-desc');
+  if (t) t.addEventListener('input', smartCapaDetect);
+  if (d) d.addEventListener('input', smartCapaDetect);
+});
+
+/* ── MOTEUR 5 : historique local chantier ── */
+function smartShowIncHistory() {
+  var panel = document.getElementById('smart-inc-panel');
+  if (!panel || panel.innerHTML) return;
+  var freq = {};
+  (DB.incidents || []).forEach(function(i) { if (i.type) freq[i.type] = (freq[i.type]||0)+1; });
+  var items = Object.keys(freq).filter(function(k){ return freq[k] >= 2; }).sort(function(a,b){ return freq[b]-freq[a]; }).slice(0,4);
+  if (!items.length) return;
+  var chips = _chips(items, function(type) {
+    var sel = document.getElementById('inc-type');
+    if (sel) { sel.value = type; smartIncOnType(type); }
+  });
+  panel.innerHTML = _buildPanel('amber', '📊', 'Récurrent sur ce chantier', 'Ces types ont été signalés plusieurs fois — cliquer pour pré-remplir',
+    chips.map(function(ch, i) { ch.label = ch.label + ' (×'+freq[items[i]]+')'; return ch; }), null);
+  panel.style.display = 'block';
+}
+
+/* ── Hook openModal pour afficher l'historique ── */
+(function() {
+  var orig = openModal;
+  openModal = function(id) {
+    orig(id);
+    if (id === 'modal-incident') setTimeout(smartShowIncHistory, 150);
+  };
+})();
+
 </script>
 
 <!-- ═══════════════ PHOTO PICKER ═══════════════ -->
