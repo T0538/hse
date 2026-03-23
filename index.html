@@ -951,6 +951,18 @@ body.dark-mode .smart-chip{background:var(--surface)}
 body.dark-mode .smart-panel{background:var(--gray-light)}
 
 @keyframes smartIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── EPI INDUCTION ── */
+.epi-ind-table{width:100%;border-collapse:collapse;font-size:12px}
+.epi-ind-table th{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);padding:4px 8px;border-bottom:1.5px solid var(--border);text-align:center}
+.epi-ind-table th:first-child{text-align:left}
+.epi-ind-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.epi-ind-table tr:last-child td{border-bottom:none}
+.epi-ind-table td:first-child{font-weight:500;color:var(--text)}
+.epi-ind-table td.epi-cb{text-align:center;width:52px}
+.epi-ind-cb{width:20px;height:20px;accent-color:var(--green);cursor:pointer;display:block;margin:0 auto}
+.epi-ind-tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:9px;font-weight:700;margin-left:5px}
+.epi-ind-tag.req{background:var(--orange-light);color:var(--orange)}
 </style>
 </head>
 <body>
@@ -2286,6 +2298,11 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
       <div class="form-hint">Signez avec le doigt dans la zone ci-dessus</div>
     </div>
     <div class="form-group">
+      <label class="form-label">Signature du RHSE</label>
+      <div class="sig-pad"><canvas id="sig-canvas-ind-rhse" width="400" height="100"></canvas><button class="sig-clear" onclick="clearSig('sig-canvas-ind-rhse')">Effacer</button></div>
+      <div class="form-hint">Responsable HSE — valide l'induction</div>
+    </div>
+        <div class="form-group">
       <label class="form-label">Photo de la session (optionnel)</label>
       <div class="photo-zone" onclick="openPhotoPicker(function(inp){document.getElementById('ind-photo').files;var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});var el=document.getElementById('ind-photo');el.files=dt.files;el.dispatchEvent(new Event('change'));},false)">
         <input type="file" accept="image/*" id="ind-photo" style="display:none" onchange="previewPhotos(this,'ind-photo-preview')">
@@ -2463,7 +2480,65 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
       <label class="form-label">Points discutés / Observations</label>
       <div class="voice-wrap"><textarea class="form-textarea" id="tb-obs" placeholder="Résumez les échanges, les points soulevés par les équipes..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('tb-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
     </div>
+    <!-- ── EPI REMIS / PORTÉS ── -->
     <div class="form-group">
+      <label class="form-label" style="margin-bottom:10px">EPI remis et vérifiés</label>
+      <div style="border-radius:10px;border:1px solid var(--border);overflow:hidden">
+        <table class="epi-ind-table">
+          <thead>
+            <tr>
+              <th>Équipement</th>
+              <th>Remis</th>
+              <th>Porté / OK</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Casque de chantier<span class="epi-ind-tag req">Obligatoire</span></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-casque-r"></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-casque-p"></td>
+            </tr>
+            <tr>
+              <td>Chaussures de sécurité S3<span class="epi-ind-tag req">Obligatoire</span></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-chaussures-r"></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-chaussures-p"></td>
+            </tr>
+            <tr>
+              <td>Gilet haute visibilité<span class="epi-ind-tag req">Obligatoire</span></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-gilet-r"></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-gilet-p"></td>
+            </tr>
+            <tr>
+              <td>Gants de protection</td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-gants-r"></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-gants-p"></td>
+            </tr>
+            <tr>
+              <td>Lunettes de protection</td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-lunettes-r"></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-lunettes-p"></td>
+            </tr>
+            <tr>
+              <td>Masque anti-poussières FFP2</td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-masque-r"></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-masque-p"></td>
+            </tr>
+            <tr>
+              <td>Protection auditive</td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-auditif-r"></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-auditif-p"></td>
+            </tr>
+            <tr>
+              <td>Harnais complet</td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-harnais-r"></td>
+              <td class="epi-cb"><input class="epi-ind-cb" type="checkbox" id="epi-harnais-p"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <div class="form-group">
       <label class="form-label">Photo de la session (optionnel)</label>
       <div class="photo-zone" onclick="openPhotoPicker(function(inp){document.getElementById('tb-photo').files;var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});var el=document.getElementById('tb-photo');el.files=dt.files;el.dispatchEvent(new Event('change'));},false)">
         <input type="file" accept="image/*" id="tb-photo" style="display:none" onchange="previewPhotos(this,'tb-photo-preview')">
@@ -3625,6 +3700,7 @@ function openModal(id) {
   if (id === 'modal-settings') openSettingsModal();
   if (id === 'modal-toolbox') initToolboxParticipants();
   if (id === 'modal-incident') { setDefaultDates(); resetIncidentForm(); }
+  if (id === 'modal-induction') { setTimeout(function(){ initSig('sig-canvas-ind'); initSig('sig-canvas-ind-rhse'); }, 80); }
   if (id === 'modal-jsa' && !document.getElementById('jsa-edit-id').value) resetJSAForm();
   if (id === 'modal-capa' && !document.getElementById('capa-edit-id').value) resetCapaForm();
   if (id === 'modal-personnel' && !document.getElementById('pers-edit-id').value) resetPersForm();
@@ -3993,6 +4069,7 @@ function sauvegarderInduction() {
   const role = document.getElementById('ind-role').value;
   if (!nom || !ent || !role) { showToast('Champs obligatoires manquants', 'err'); return; }
   const checks = document.querySelectorAll('#ind-checklist .ind-btn.ok').length;
+
   const photosB64 = getPhotos('ind-photo-preview');
   // Capturer la signature (canvas → base64), null si vide
   var sigData = null;
@@ -4004,6 +4081,15 @@ function sauvegarderInduction() {
     for (var pi = 3; pi < px.length; pi += 4) { if (px[pi] > 0) { hasContent = true; break; } }
     if (hasContent) sigData = sigCanvas.toDataURL('image/png');
   }
+  var sigRhse = null;
+  var sigCanvasRhse = document.getElementById('sig-canvas-ind-rhse');
+  if (sigCanvasRhse) {
+    var ctxR = sigCanvasRhse.getContext('2d');
+    var pxR = ctxR.getImageData(0, 0, sigCanvasRhse.width, sigCanvasRhse.height).data;
+    var hasR = false;
+    for (var ri = 3; ri < pxR.length; ri += 4) { if (pxR[ri] > 0) { hasR = true; break; } }
+    if (hasR) sigRhse = sigCanvasRhse.toDataURL('image/png');
+  }
   const editId = document.getElementById('ind-edit-id').value;
   if (editId) {
     // Mode édition — mettre à jour l'induction existante
@@ -4014,6 +4100,7 @@ function sauvegarderInduction() {
       DB.inductions[idx].role = role;
       DB.inductions[idx].checksDone = checks;
       if (sigData) DB.inductions[idx].signature = sigData;
+      if (sigRhse) DB.inductions[idx].signatureRhse = sigRhse;
       if (photosB64.length) DB.inductions[idx].photos = photosB64;
       DB.inductions[idx].updatedAt = nowISO();
     }
@@ -4028,6 +4115,7 @@ function sauvegarderInduction() {
       checksTotal: 6,
       photos: photosB64,
       signature: sigData,
+      signatureRhse: sigRhse,
       createdAt: nowISO(), createdBy: DB.config.nom, status: 'closed'
     };
     DB.inductions.push(item);
@@ -4042,7 +4130,9 @@ function sauvegarderInduction() {
   ['ind-nom','ind-ent'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('ind-role').value = '';
   document.querySelectorAll('#ind-checklist .ind-btn').forEach(b => { b.classList.remove('ok'); b.innerHTML = ''; });
+
   clearSig('sig-canvas-ind');
+  clearSig('sig-canvas-ind-rhse');
   clearPhotos('ind-photo-preview');
   if (currentScreen === 'incidents') renderIncidents();
 }
@@ -4067,7 +4157,27 @@ function editerInduction(id) {
     }
   });
   clearSig('sig-canvas-ind');
+  clearSig('sig-canvas-ind-rhse');
   clearPhotos('ind-photo-preview');
+  // Restore signatures after modal opens
+  setTimeout(function() {
+    if (item.signature) {
+      var img = new Image();
+      img.onload = function() {
+        var cv = document.getElementById('sig-canvas-ind');
+        if (cv) cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      };
+      img.src = item.signature;
+    }
+    if (item.signatureRhse) {
+      var imgR = new Image();
+      imgR.onload = function() {
+        var cvR = document.getElementById('sig-canvas-ind-rhse');
+        if (cvR) cvR.getContext('2d').drawImage(imgR, 0, 0, cvR.width, cvR.height);
+      };
+      imgR.src = item.signatureRhse;
+    }
+  }, 200);
   openModal('modal-induction');
 }
 function supprimerInduction(id) {
@@ -6344,115 +6454,139 @@ function pdfFicheIncident(id) {
   const inc = DB.incidents.find(i => i.id == id);
   if (!inc) return;
   const c = C();
-  const { doc, y: y0 } = _pdfBase('FICHE INCIDENT / ACCIDENT', `${DB.chantier} — ${fmtDate(nowISO())}`);
+  const { doc, y: y0 } = _pdfBase('FICHE INCIDENT / ACCIDENT', `${DB.chantier} \u2014 ${fmtDate(nowISO())}`);
   let y = y0;
   const w = doc.internal.pageSize.width;
 
-  // Status banner
+  // Bandeau sévérité
   const bannerCol = inc.sev === 'Critique' ? c.red : inc.sev === 'Sérieux' ? c.orange : inc.sev === 'Modéré' ? c.amber : c.green;
-  doc.setFillColor(...bannerCol); doc.roundedRect(14, y, w-28, 10, 2, 2, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(255,255,255);
-  doc.text(`${inc.type.toUpperCase()}  ·  GRAVITÉ : ${(inc.sev||'').toUpperCase()}  ·  ${statusLabel(inc.status).toUpperCase()}`, w/2, y+7, {align:'center'});
-  y += 15;
+  doc.setFillColor(...bannerCol);
+  doc.roundedRect(14, y, w-28, 10, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255,255,255);
+  doc.text(`${inc.type.toUpperCase()}  \u00b7  GRAVIT\u00c9 : ${(inc.sev||'').toUpperCase()}  \u00b7  ${statusLabel(inc.status).toUpperCase()}`, w/2, y+7, {align:'center'});
+  y += 14;
 
-  // Main table
+  // Tableau infos
   doc.autoTable({
     startY: y, margin:{left:14, right:14},
     body: [
-      ['Date & Heure', `${fmtDate(inc.date)} à ${inc.heure||'—'}`],
-      ['Zone / Lieu', inc.zone],
-      ['Type d\'incident', inc.type],
-      ['Gravité', inc.sev],
-      ['Cause probable', inc.cause || '—'],
-      ['Personnes impliquées', inc.personnes || '—'],
-      ['Description détaillée', inc.desc],
-      ['Actions immédiates prises', inc.action || '—'],
-      ['Déclaré par', inc.createdBy || DB.config.nom],
-      ['Date de déclaration', fmtDate(inc.createdAt)],
-      ['Statut', statusLabel(inc.status)],
+      ['Date & Heure',              `${fmtDate(inc.date)} \u00e0 ${inc.heure||'\u2014'}`],
+      ['Zone / Lieu',               inc.zone || '\u2014'],
+      ['Type d\'incident',          inc.type],
+      ['Gravité',                   inc.sev || '\u2014'],
+      ['Cause probable',            inc.cause || '\u2014'],
+      ['Personnes impliquées',      inc.personnes || '\u2014'],
+      ['Description détaillée',     inc.desc || '\u2014'],
+      ['Actions immédiates',        inc.action || '\u2014'],
+      ['Déclaré par',               inc.createdBy || DB.config.nom],
+      ['Statut',                    statusLabel(inc.status)],
     ],
-    styles: {fontSize:9, cellPadding:3.5, valign:'middle'},
-    columnStyles: {
-      0: {cellWidth:50, fontStyle:'bold', fillColor:[249,246,244], textColor:c.text2}
-    },
-    theme: 'plain',
-    tableLineColor: c.lightGray, tableLineWidth: 0.3,
+    styles: {fontSize:8.5, cellPadding:3, valign:'middle'},
+    columnStyles: {0:{cellWidth:48, fontStyle:'bold', fillColor:[249,246,244], textColor:c.text2}},
+    theme:'plain', tableLineColor:c.lightGray, tableLineWidth:0.3,
   });
-  y = doc.lastAutoTable.finalY + 8;
+  y = doc.lastAutoTable.finalY + 6;
 
   // Photos
   y = _pdfAddPhotos(doc, inc.photos, y, 'Fiche Incident');
 
-  // ── Section 5 Pourquoi ──
+  // ── 5 Pourquoi ─────────────────────────────────────
   if (inc.cinqP && inc.cinqP.whys && inc.cinqP.whys.filter(w=>w).length > 0) {
-    y = pageCheck(doc, y, 60, 'Fiche Incident', '');
-    y = pdfSectionTitle(doc, 'ANALYSE DES CAUSES RACINES — 5 POURQUOI', y, c.red);
-    const whys = inc.cinqP.whys.filter(w=>w);
-    const stepColors = [c.orange, c.orange, c.red, c.red, c.red];
-    whys.forEach(function(why, i) {
-      y = pageCheck(doc, y, 30, 'Fiche Incident', '');
-      // Numéro coloré
-      doc.setFillColor(...(stepColors[i] || c.red));
-      doc.circle(17, y+4, 3.5, 'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
-      doc.text(String(i+1), 17, y+5.5, {align:'center'});
-      // Flèche de liaison
-      if (i < whys.length - 1) {
-        doc.setDrawColor(...c.lightGray); doc.setLineWidth(0.5);
-        doc.line(17, y+8, 17, y+14);
-      }
-      // Label question
-      const labels = [
-        'Pourquoi cet événement s\'est-il produit ?',
-        'Mais pourquoi cette cause existe-t-elle ?',
-        'Et pourquoi cela n\'a-t-il pas été évité ?',
-        'Pourquoi cette défaillance existe-t-elle ?',
-        'Quelle est la cause racine fondamentale ?'
-      ];
-      doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...(stepColors[i] || c.red));
-      doc.text(labels[i], 24, y+3);
-      // Réponse
-      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
-      const whyLines = doc.splitTextToSize(why, w-42);
-      doc.text(whyLines, 24, y+8.5);
-      y += Math.max(14, whyLines.length * 4.5 + 6);
+    const whys = inc.cinqP.whys.filter(w => w);
+
+    // Un seul pageCheck avant toute la section
+    y = pageCheck(doc, y, 200, 'Fiche Incident', '');
+
+    // Titre compact
+    doc.setFillColor(...c.red);
+    doc.roundedRect(14, y, w-28, 6, 1, 1, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(255,255,255);
+    doc.text('ANALYSE DES CAUSES RACINES \u2014 5 POURQUOI', 18, y+4.3);
+    y += 9;
+
+    // Tableau compact pour tous les whys
+    const labels = [
+      'Pourquoi cet\u00e9v\u00e9nement s\'est-il produit ?',
+      'Mais pourquoi cette cause existe-t-elle ?',
+      'Et pourquoi cela n\'a-t-il pas \u00e9t\u00e9 \u00e9vit\u00e9 ?',
+      'Pourquoi cette d\u00e9faillance existe-t-elle ?',
+      'Quelle est la cause racine fondamentale ?'
+    ];
+    const numColors = [[216,90,48],[216,90,48],[163,45,45],[163,45,45],[163,45,45]];
+
+    const bodyRows = whys.map(function(why, i) {
+      return [String(i+1), labels[i] || ('Pourquoi ' + (i+1)), why];
     });
-    // Cause racine encadrée
+
+    doc.autoTable({
+      startY: y, margin:{left:14, right:14},
+      head: [['N°', 'Question', 'R\u00e9ponse / Cause identifi\u00e9e']],
+      body: bodyRows,
+      headStyles: {
+        fillColor: [240,240,240], textColor: c.text2,
+        fontStyle: 'bold', fontSize: 7.5, cellPadding: 2.5
+      },
+      styles: {fontSize: 8.5, cellPadding: 3, valign:'top', overflow:'linebreak'},
+      columnStyles: {
+        0: {cellWidth: 9,  fontStyle:'bold', halign:'center', textColor:c.red, fillColor:[255,250,250]},
+        1: {cellWidth: 62, fontStyle:'italic', textColor:c.text2, fillColor:[255,252,250]},
+        2: {fontStyle:'normal', textColor:c.text}
+      },
+      theme:'plain', tableLineColor:c.lightGray, tableLineWidth:0.3,
+      didDrawCell: function(data) {
+        // Pastille colorée dans la colonne N°
+        if (data.column.index === 0 && data.row.section === 'body') {
+          var i = data.row.index;
+          var col = numColors[i] || numColors[numColors.length-1];
+          var cx = data.cell.x + data.cell.width/2;
+          var cy = data.cell.y + data.cell.height/2;
+          doc.setFillColor(...col);
+          doc.circle(cx, cy, 3.2, 'F');
+          doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(255,255,255);
+          doc.text(String(i+1), cx, cy+0.9, {align:'center'});
+        }
+      }
+    });
+    y = doc.lastAutoTable.finalY + 6;
+
+    // Cause racine encadrée (compacte)
     if (inc.cinqP.causeRacine) {
-      y = pageCheck(doc, y, 25, 'Fiche Incident', '');
-      doc.setFillColor(...c.red); doc.roundedRect(14, y, w-28, 4, 1, 1, 'F');
-      y += 7;
-      doc.setFillColor(253, 235, 235); doc.roundedRect(14, y, w-28, 18, 1, 1, 'F');
-      doc.setDrawColor(...c.red); doc.setLineWidth(0.5); doc.roundedRect(14, y, w-28, 18, 1, 1, 'S');
-      doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...c.red);
-      doc.text('CAUSE RACINE IDENTIFIÉE :', 18, y+5);
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...c.text);
-      const racineLines = doc.splitTextToSize(inc.cinqP.causeRacine, w-38);
-      doc.text(racineLines, 18, y+12);
-      y += Math.max(22, racineLines.length * 4.5 + 8);
+      const racineLines = doc.splitTextToSize(inc.cinqP.causeRacine, w-44);
+      const boxH = Math.max(14, racineLines.length * 4.5 + 8);
+      doc.setFillColor(253,235,235);
+      doc.roundedRect(14, y, w-28, boxH, 2, 2, 'F');
+      doc.setDrawColor(...c.red); doc.setLineWidth(0.4);
+      doc.roundedRect(14, y, w-28, boxH, 2, 2, 'S');
+      doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...c.red);
+      doc.text('CAUSE RACINE :', 18, y+5);
+      doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
+      doc.text(racineLines, 18, y+11);
+      y += boxH + 5;
     }
+
     if (inc.cinqP.capaId) {
-      doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(...c.green);
-      doc.text('CAPA générée automatiquement : #' + (inc.cinqP.capaNum||'—'), 14, y+4);
-      y += 10;
+      doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(...c.green);
+      doc.text('CAPA g\u00e9n\u00e9r\u00e9e : #' + (inc.cinqP.capaNum||'\u2014'), 14, y+4);
+      y += 8;
     }
-    y += 4;
+    y += 2;
   }
 
-  // Signature zone
-  y = pageCheck(doc, y, 235, 'Fiche Incident', '');
+  // Zone signatures
+  y = pageCheck(doc, y, 238, 'Fiche Incident', '');
+  const hw = (w-28)/2 - 4;
   doc.setDrawColor(...c.lightGray); doc.setLineWidth(0.3);
-  doc.roundedRect(14, y, (w-28)/2 - 4, 26, 2, 2, 'S');
-  doc.roundedRect(14+(w-28)/2+4, y, (w-28)/2 - 4, 26, 2, 2, 'S');
+  doc.roundedRect(14, y, hw, 26, 2, 2, 'S');
+  doc.roundedRect(14+hw+4, y, hw, 26, 2, 2, 'S');
   doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...c.text2);
-  doc.text('Signature Déclarant', 14+6, y+5);
-  doc.text('Signature Responsable HSE', 14+(w-28)/2+10, y+5);
+  doc.text('Signature D\u00e9clarant', 20, y+5);
+  doc.text('Signature Responsable HSE', 14+hw+10, y+5);
   doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...c.text);
-  doc.text(inc.createdBy || DB.config.nom, 14+6, y+14);
-  doc.text(DB.config.nom, 14+(w-28)/2+10, y+14);
+  doc.text(inc.createdBy || DB.config.nom, 20, y+14);
+  doc.text(DB.config.nom, 14+hw+10, y+14);
   doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...c.text2);
-  doc.text('Date: ' + fmtDate(inc.createdAt), 14+6, y+22);
-  doc.text('Date: ' + fmtDate(nowISO()), 14+(w-28)/2+10, y+22);
+  doc.text('Date: ' + fmtDate(inc.createdAt), 20, y+22);
+  doc.text('Date: ' + fmtDate(nowISO()), 14+hw+10, y+22);
 
   pdfFooter(doc);
   doc.save(`Incident_${inc.type.replace(/[^a-z0-9]/gi,'_')}_${fmtDate(inc.date).replace(/\//g,'-')}.pdf`);
@@ -6461,96 +6595,118 @@ function pdfFicheIncident(id) {
 
 function pdfFicheInduction(id) {
   if (!window.jspdf) { showToast('Librairie PDF en chargement', 'err'); return; }
-  const ind = DB.inductions.find(i => i.id == id);
+  var ind = DB.inductions.find(function(i){ return i.id == id; });
   if (!ind) return;
-  const c = C();
-  const { doc, y: y0 } = _pdfBase('FICHE INDUCTION HSE', `${DB.chantier} — ${fmtDate(ind.createdAt)}`);
-  let y = y0;
-  const w = doc.internal.pageSize.width;
+  var col = C();
+  var res = _pdfBase('FICHE INDUCTION HSE', DB.chantier + ' - ' + fmtDate(ind.createdAt));
+  var doc = res.doc;
+  var y   = res.y;
+  var W   = doc.internal.pageSize.width;
+  var M   = 14;
 
-  // Badge
-  doc.setFillColor(...c.blue); doc.roundedRect(14, y, w-28, 10, 2, 2, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255,255,255);
-  doc.text(`INDUCTION VALIDÉE  ·  ${ind.checksDone}/${ind.checksTotal} POINTS COUVERTS`, w/2, y+7, {align:'center'});
-  y += 15;
+  /* ── Bandeau statut ─────────────────────────────── */
+  doc.setFillColor(...col.blue);
+  doc.roundedRect(M, y, W-M*2, 9, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+  doc.text('INDUCTION VALIDEE  -  ' + ind.checksDone + '/' + ind.checksTotal + ' POINTS COUVERTS', W/2, y+6, {align:'center'});
+  y += 14;
 
+  /* ── Tableau infos agent ────────────────────────── */
   doc.autoTable({
-    startY: y, margin:{left:14, right:14},
+    startY: y, margin: {left: M, right: M},
     body: [
-      ['Nom complet', ind.nom],
-      ['Entreprise', ind.entreprise],
-      ['Rôle / Fonction', ind.role],
-      ['Date d\'induction', fmtDate(ind.createdAt)],
-      ['Animé par', ind.createdBy || DB.config.nom],
-      ['Points de sensibilisation', `${ind.checksDone} / ${ind.checksTotal} validés`],
+      ['Nom complet',       ind.nom],
+      ['Entreprise',        ind.entreprise],
+      ['Fonction',          ind.role],
+      ["Date d'induction",  fmtDate(ind.createdAt)],
+      ['Anime par',         ind.createdBy || DB.config.nom],
+      ['Points valides',    ind.checksDone + ' / ' + ind.checksTotal],
     ],
-    styles: {fontSize:9, cellPadding:3.5},
-    columnStyles: {0:{cellWidth:55, fontStyle:'bold', fillColor:[247,250,255], textColor:c.text2}},
-    theme:'plain', tableLineColor:c.lightGray, tableLineWidth:0.3,
+    styles:        {fontSize: 8.5, cellPadding: 2.8},
+    columnStyles:  {0: {cellWidth: 48, fontStyle: 'bold', fillColor: [247,250,255], textColor: col.text2}},
+    theme: 'plain', tableLineColor: col.lightGray, tableLineWidth: 0.3,
   });
-  y = doc.lastAutoTable.finalY + 8;
+  y = doc.lastAutoTable.finalY + 7;
 
-  // Checklist points
-  y = pdfSectionTitle(doc, 'POINTS DE SENSIBILISATION HSE', y, c.blue);
-  const points = [
-    'Règles générales du chantier et zones d\'accès autorisées',
-    'EPI obligatoires — Vérification et attribution',
-    'Risques spécifiques du chantier (hauteur, levage, soudage…)',
-    'Procédures d\'urgence et points de rassemblement',
-    'Signalement obligatoire de tout incident ou presqu\'accident',
-    'Politique zéro alcool / drogue sur site',
+  /* ── Section points sensibilisation ────────────── */
+  // Titre section (inline, compact)
+  doc.setFillColor(...col.blue);
+  doc.roundedRect(M, y, W-M*2, 6, 1, 1, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(255,255,255);
+  doc.text('POINTS DE SENSIBILISATION HSE', M+4, y+4.3);
+  y += 9;
+
+  var pts = [
+    "Regles generales du chantier et zones d'acces autorisees",
+    "EPI obligatoires - Verification et attribution",
+    "Risques specifiques du chantier (hauteur, levage, soudage...)",
+    "Procedures d'urgence et points de rassemblement",
+    "Signalement obligatoire de tout incident ou presqu'accident",
+    "Politique zero alcool / drogue sur site",
   ];
-  points.forEach((pt, i) => {
-    const ok = i < ind.checksDone;
-    doc.setFillColor(ok ? 46 : 200, ok ? 110 : 200, ok ? 14 : 200, ok ? 1 : 0.3);
-    doc.setFillColor(...(ok ? c.green : c.lightGray));
-    doc.roundedRect(14, y, 6, 6, 1, 1, 'F');
+  pts.forEach(function(pt, i) {
+    var ok = i < ind.checksDone;
+    // Case
     if (ok) {
+      doc.setFillColor(...col.green);
+      doc.roundedRect(M, y+0.5, 5, 5, 1, 1, 'F');
       doc.setDrawColor(255,255,255); doc.setLineWidth(0.8);
-      doc.line(15.2, y+3.5, 16.5, y+5); doc.line(16.5, y+5, 19.2, y+1.5);
+      doc.line(M+0.9, y+3, M+2.1, y+4.3); doc.line(M+2.1, y+4.3, M+4.4, y+1.2);
+    } else {
+      doc.setDrawColor(...col.lightGray); doc.setLineWidth(0.35);
+      doc.roundedRect(M, y+0.5, 5, 5, 1, 1, 'S');
     }
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(8.5);
-    if(ok) doc.setTextColor(...c.text); else doc.setTextColor(...c.text2);
-    doc.text(pt, 23, y+5);
-    y += 9;
+    // Texte
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+    doc.setTextColor(...(ok ? col.text : col.text2));
+    doc.text(pt, M+8, y+4.5);
+    // Séparateur léger
+    if (i < pts.length-1) {
+      doc.setDrawColor(...col.lightGray); doc.setLineWidth(0.15);
+      doc.line(M+8, y+7.5, W-M, y+7.5);
+    }
+    y += 8;
   });
-  y += 4;
+  y += 7;
 
-  // Photos
-  y = _pdfAddPhotos(doc, ind.photos, y, 'Fiche Induction');
+  /* ── Signatures ─────────────────────────────────── */
+  var halfW = (W - M*2) / 2 - 4;
+  // Cadres
+  doc.setDrawColor(...col.lightGray); doc.setLineWidth(0.3);
+  doc.roundedRect(M,          y, halfW, 38, 2, 2, 'S');
+  doc.roundedRect(M+halfW+8,  y, halfW, 38, 2, 2, 'S');
+  // En-têtes cadres
+  doc.setFillColor(247,250,255);
+  doc.roundedRect(M,          y, halfW, 7, 2, 2, 'F');
+  doc.roundedRect(M+halfW+8,  y, halfW, 7, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...col.text2);
+  doc.text("Signature de l'arrivant",  M+4,         y+5);
+  doc.text('Signature du RHSE',        M+halfW+12,  y+5);
 
-  // Signature zone
-  y = pageCheck(doc, y, 235, 'Fiche Induction', '');
-  const halfW = (w - 28) / 2 - 4;
-  doc.setDrawColor(...c.lightGray); doc.setLineWidth(0.3);
-  doc.roundedRect(14, y, halfW, 38, 2, 2, 'S');
-  doc.roundedRect(14 + halfW + 8, y, halfW, 38, 2, 2, 'S');
-
-  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...c.text2);
-  doc.text('Signature de l\'arrivant', 14 + 4, y + 5);
-  doc.text('Signature Responsable HSE', 14 + halfW + 12, y + 5);
-
-  // Insérer la signature de l'arrivant si disponible
+  // Images signatures
   if (ind.signature) {
-    try {
-      doc.addImage(ind.signature, 'PNG', 14 + 2, y + 7, halfW - 4, 22);
-    } catch(e) { /* image invalide, on laisse vide */ }
+    try { doc.addImage(ind.signature, 'PNG', M+2, y+8, halfW-4, 20); } catch(e) {}
   } else {
-    doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(...c.text3);
-    doc.text('(pas de signature numérique)', 14 + halfW/2, y + 20, {align:'center'});
+    doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(...col.text3);
+    doc.text('(non signee)', M+halfW/2, y+20, {align:'center'});
   }
-
-  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...c.text);
-  doc.text(ind.nom, 14 + 4, y + 31);
-  doc.text(DB.config.nom, 14 + halfW + 12, y + 20);
-  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...c.text2);
-  doc.text(ind.entreprise + ' · ' + ind.role, 14 + 4, y + 36);
-  doc.text(DB.config.fonction || 'Responsable HSE', 14 + halfW + 12, y + 26);
+  if (ind.signatureRhse) {
+    try { doc.addImage(ind.signatureRhse, 'PNG', M+halfW+10, y+8, halfW-4, 20); } catch(e) {}
+  } else {
+    doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(...col.text3);
+    doc.text('(non signee)', M+halfW+8+halfW/2, y+20, {align:'center'});
+  }
+  // Noms
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...col.text);
+  doc.text(ind.nom,         M+4,         y+31);
+  doc.text(DB.config.nom,   M+halfW+12,  y+31);
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...col.text2);
+  doc.text(ind.entreprise + ' · ' + ind.role,        M+4,         y+36);
+  doc.text(DB.config.fonction || 'Responsable HSE',  M+halfW+12,  y+36);
 
   pdfFooter(doc);
-  doc.save(`Induction_${ind.nom.replace(/[^a-z0-9]/gi,'_')}_${fmtDate(ind.createdAt).replace(/\//g,'-')}.pdf`);
-  showToast('Fiche induction téléchargée ✓');
+  doc.save('Induction_' + ind.nom.replace(/[^a-z0-9]/gi,'_') + '_' + fmtDate(ind.createdAt).replace(/\//g,'-') + '.pdf');
+  showToast('Fiche induction telechargee !');
 }
 
 function pdfFicheToolbox(id) {
@@ -8855,6 +9011,7 @@ function afficherLogoPreview() {
 // ═══════════════════════════════════════════════
 function initSignaturePads() {
   initSig('sig-canvas-ind');
+  initSig('sig-canvas-ind-rhse');
 }
 function initSig(canvasId) {
   const canvas = document.getElementById(canvasId);
