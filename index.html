@@ -3544,6 +3544,11 @@ function load() {
   if (!DB.envIncidents)        DB.envIncidents         = [];
   if (!DB.envEies)             DB.envEies              = [];
   if (!DB.envCounter)          DB.envCounter           = 1;
+  // Précharger les formations HSE si la bibliothèque est vide
+  if (!DB.formations || DB.formations.length === 0) {
+    DB.formations = _getFormationsDefaut();
+    DB.formationCounter = DB.formations.length + 1;
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -14937,6 +14942,215 @@ function smartShowIncHistory() {
     if (id === 'modal-incident') setTimeout(smartShowIncHistory, 150);
   };
 })();
+
+
+
+/* ════════════════════════════════════════════════════════════════
+   BIBLIOTHÈQUE FORMATIONS HSE — Côte d'Ivoire
+   10 formations prêtes à l'emploi, percutantes, terrain
+════════════════════════════════════════════════════════════════ */
+function _getFormationsDefaut() {
+  var t = new Date('2026-01-01').toISOString();
+  return [
+
+  /* 1 ─ TRAVAIL EN HAUTEUR ─────────────────────────────────── */
+  { id:1, titre:"Travail en Hauteur — Zéro Chute", categorie:"Risques physiques",
+    desc:"Formation critique sur la prévention des chutes, première cause de décès sur les chantiers en Côte d'Ivoire.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"⚠️ Réalité chantier CI",
+        contenu:"En Côte d'Ivoire, les chutes de hauteur représentent 38% des accidents mortels sur chantier. Chaque semaine, un ouvrier perd la vie en tombant. Ce n'est pas une fatalité — c'est évitable.",
+        pointCle:"38% des décès = chutes. Chaque mort était évitable.", items:[], photo:null },
+      { type:"text", titre:"📏 La règle des 1,80m",
+        contenu:"Au-delà de 1,80m de hauteur, le port du harnais est OBLIGATOIRE sans exception. En dessous, les EPI restent recommandés. Une chute de 2m sur une surface dure peut être mortelle.",
+        pointCle:"1,80m = harnais obligatoire. Pas de négociation.", items:[], photo:null },
+      { type:"checklist", titre:"✅ Vérification avant de monter",
+        contenu:"Avant chaque montée, vérifier systématiquement :", pointCle:"Check 5 points avant de monter — chaque fois, sans exception.",
+        items:["Harnais complet — sangles, boucles, coutures OK","Point d'ancrage certifié ≥ 15 kN (marquage EN795)","Longe de liaison sans déchirure ni coupure","Échafaudage réceptionné — plaque verte visible","Météo acceptable — pas de vent > 45 km/h, pas de pluie"], photo:null },
+      { type:"text", titre:"🚫 Les erreurs qui tuent",
+        contenu:"ERREUR 1 : 'Juste 2 minutes, je n'attache pas.' — Un accident prend 2 secondes.\nERREUR 2 : Utiliser une corde d'amarrage comme longe.\nERREUR 3 : S'attacher à un garde-corps provisoire non certifié.\nERREUR 4 : Travailler seul en hauteur sans surveillance.",
+        pointCle:"Les raccourcis en hauteur = accident garanti.", items:[], photo:null },
+      { type:"text", titre:"🆘 Si quelqu'un chute",
+        contenu:"1. NE PAS déplacer la victime — risque de lésion cervicale\n2. Appeler le SAMU : 185\n3. Sécuriser la zone — empêcher une 2e chute\n4. Rester avec la victime jusqu'à l'arrivée des secours\n5. Informer le chef de chantier immédiatement",
+        pointCle:"Chute = SAMU 185. Ne pas déplacer. Sécuriser.", items:[], photo:null }
+    ]},
+
+  /* 2 ─ RISQUES TROPICAUX CI ───────────────────────────────── */
+  { id:2, titre:"Risques Tropicaux — Santé sur Chantier CI", categorie:"Tropical",
+    desc:"Formation spécifique Côte d'Ivoire : coup de chaleur, paludisme, serpents, déshydratation. Ce que tout ouvrier doit savoir.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"🌡️ Le coup de chaleur — ennemi invisible",
+        contenu:"À Abidjan, la température ressentie dépasse souvent 40°C en saison sèche. Le coup de chaleur peut tuer en moins d'une heure. Les travailleurs BTP sont les plus exposés.",
+        pointCle:"40°C ressenti + effort physique = danger de mort.", items:[], photo:null },
+      { type:"checklist", titre:"💧 Règles d'hydratation obligatoires",
+        contenu:"Sur ce chantier, la règle d'hydratation est non négociable :", pointCle:"Boire sans attendre la soif — 250ml toutes les 20 min.",
+        items:["Boire 250ml toutes les 20 minutes — même sans soif","Minimum 3 litres d'eau par jour en saison sèche","Éviter boissons sucrées — eau fraîche uniquement","Pause obligatoire à l'ombre de 12h à 14h","Signaler immédiatement : maux de tête, confusion, nausées"], photo:null },
+      { type:"text", titre:"🦟 Paludisme — comment se protéger",
+        contenu:"Le paludisme tue encore en Côte d'Ivoire. Sur chantier, les mares d'eau stagnante autour des fondations sont des foyers à moustiques.\n\nProtection :\n• Répulsif anti-moustiques (DEET) sur les zones découvertes\n• Manche longue en fin de journée\n• Dormir sous moustiquaire\n• Traitement préventif si prescrit par le médecin",
+        pointCle:"Eau stagnante = foyer paludisme. Répulsif + moustiquaire.", items:[], photo:null },
+      { type:"text", titre:"🐍 Serpents et animaux venimeux",
+        contenu:"Lors des terrassements et débroussaillages, le risque de rencontre avec un serpent est réel. En Côte d'Ivoire : mamba, vipère du Gabon, cobra.\n\nSi morsure :\n1. Immobiliser le membre mordu\n2. Retirer bagues et montre\n3. NE PAS sucer, NE PAS inciser\n4. Transport URGENT au CHU Cocody : 22 44 15 00\n5. Décrire le serpent si possible",
+        pointCle:"Morsure serpent : immobiliser, CHU Cocody 22 44 15 00. Jamais sucer.", items:[], photo:null },
+      { type:"text", titre:"☀️ Signes d'alarme — agir vite",
+        contenu:"APPELER LES SECOURS IMMÉDIATEMENT si un collègue présente :\n• Confusion mentale ou agressivité soudaine\n• Peau chaude, rouge et SÈCHE (ne sue plus)\n• Température corporelle > 40°C\n• Perte de connaissance\n\nEn attendant les secours : mettre à l'ombre, déshabiller, appliquer des linges humides froids.",
+        pointCle:"Peau sèche + confusion + chaleur = urgence vitale. SAMU 185.", items:[], photo:null }
+    ]},
+
+  /* 3 ─ EPI ─────────────────────────────────────────────────── */
+  { id:3, titre:"EPI — Les Équipements qui Sauvent", categorie:"EPI",
+    desc:"Pourquoi, comment et quand porter ses EPI. Le guide pratique terrain pour les ouvriers de construction.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"🦺 L'EPI : ta dernière barrière",
+        contenu:"L'EPI n'est pas un accessoire. C'est ta dernière ligne de défense quand tout le reste a échoué. Un casque mal réglé ne protège pas. Des chaussures non lacées ne protègent pas. L'EPI doit être PORTÉ, CORRECTEMENT, TOUT LE TEMPS.",
+        pointCle:"EPI = dernière barrière. Mal porté = pas de protection.", items:[], photo:null },
+      { type:"checklist", titre:"🪖 Check EPI journalier",
+        contenu:"Avant de commencer, vérifier chaque équipement :", pointCle:"Vérifier son EPI chaque matin — 2 minutes qui sauvent.",
+        items:["Casque : pas de fissure, jugulaire réglée, date de fabrication < 5 ans","Chaussures S3 : semelle intacte, lacées, embout visible","Gilet HV : bandes réfléchissantes visibles, pas de déchirure","Gants : pas de trou ni d'usure excessive","Lunettes : pas de rayure obstruant la vision","Harnais (si hauteur) : coutures et boucles OK"], photo:null },
+      { type:"text", titre:"❌ EPI endommagé = EPI mort",
+        contenu:"Un casque qui a subi un choc DOIT être remplacé, même s'il semble intact. L'absorption d'énergie est irréversible.\n\nSignes de remplacement immédiat :\n• Casque fissuré ou choqué\n• Semelle décollée ou percée\n• Harnais avec couture lâche ou coupure\n• Gants avec trou (risque chimique ou coupure)",
+        pointCle:"Un EPI choqué ou fissuré ne protège plus. Signaler = remplacer.", items:[], photo:null },
+      { type:"text", titre:"💬 'J'ai oublié' n'est pas une excuse",
+        contenu:"Sur ce chantier : tout agent sans EPI complet sera renvoyé à l'entrée.\n\nNous ne le faisons pas pour punir. Nous le faisons parce que :\n→ Un oeil perdu ne repousse pas\n→ Un pied écrasé peut mener à l'amputation\n→ Ta famille t'attend chaque soir\n\nL'EPI est disponible. Le mettre est ta responsabilité.",
+        pointCle:"Sans EPI = pas de chantier. Ta sécurité, ta responsabilité.", items:[], photo:null }
+    ]},
+
+  /* 4 ─ INCENDIE ─────────────────────────────────────────────── */
+  { id:4, titre:"Incendie — Prévention et Évacuation", categorie:"Incendie",
+    desc:"Connaître les risques d'incendie sur chantier, utiliser un extincteur, et évacuer rapidement et calmement.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"🔥 Le triangle du feu",
+        contenu:"Un incendie a besoin de 3 éléments : un combustible (bois, carburant, tissu), un comburant (oxygène) et une source de chaleur (flamme, étincelle).\n\nSur chantier, les risques majeurs sont : bidons de carburant, gaz pour soudage, déchets entassés, travaux à la flamme près de matériaux combustibles.",
+        pointCle:"Feu = combustible + oxygène + chaleur. Enlever un des 3 = éteindre.", items:[], photo:null },
+      { type:"checklist", titre:"🧯 Utiliser un extincteur : méthode PASA",
+        contenu:"PASA : la méthode en 4 étapes pour utiliser un extincteur :", pointCle:"PASA : Pointer, Actionner, Sweeper, Avancer. 5 secondes à retenir.",
+        items:["P — Pointer le bec vers la base du feu (pas vers les flammes)","A — Actionner la gâchette en maintenant l'extincteur droit","S — Sweeper (balayer) lentement de gauche à droite","A — Avancer progressivement si le feu recule","⚠️ Ne jamais tourner le dos au feu même éteint"], photo:null },
+      { type:"text", titre:"🚨 Évacuation : les règles d'or",
+        contenu:"En cas d'incendie sur chantier :\n\n1. ALERTER : crier 'AU FEU', déclencher l'alarme\n2. APPELER : Pompiers 180 — donner l'adresse exacte\n3. COMBATTRE si feu petit (pas plus d'une poubelle)\n4. ÉVACUER : marcher vite, ne pas courir, ne pas utiliser les ascenseurs\n5. SE RASSEMBLER au point de rassemblement désigné\n6. NE PAS RETOURNER chercher des affaires",
+        pointCle:"Alerter, Appeler 180, Évacuer. Point de rassemblement = obligatoire.", items:[], photo:null },
+      { type:"text", titre:"🛢️ Travaux chauds — règles strictes",
+        contenu:"Soudage, meulage, oxycoupage à moins de 5m d'un combustible :\n→ Permis de feu OBLIGATOIRE avant de commencer\n→ Extincteur CO2 à portée de main\n→ Ronde de surveillance 1 heure après la fin des travaux (les feux couvent)\n→ Arrosage des surfaces chaudes si possible",
+        pointCle:"Travaux chauds = permis de feu + extincteur + ronde post-travaux.", items:[], photo:null }
+    ]},
+
+  /* 5 ─ LEVAGE ─────────────────────────────────────────────── */
+  { id:5, titre:"Sécurité Levage et Manutention", categorie:"Risques physiques",
+    desc:"Prévenir les accidents de levage — grue, élingage, charges suspendues. Formation indispensable avant toute opération.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"⚖️ Un kg qui tombe tue",
+        contenu:"Un objet de 10kg tombant de 10m a l'énergie d'impact d'un coup de masse. Une poutrelle de 500kg qui oscille détruit tout sur son passage. Le levage est l'opération la plus dangereuse du BTP.",
+        pointCle:"Aucun passage sous une charge suspendue. Jamais.", items:[], photo:null },
+      { type:"checklist", titre:"📋 Avant chaque levage",
+        contenu:"Check-list obligatoire avant toute opération de levage :", pointCle:"Plan de levage + élingues + zone balisée = les 3 non-négociables.",
+        items:["Plan de levage validé et signé par le conducteur travaux","Élingues : marquage CE visible, CMU lisible, pas de fil cassé","Charge pesée ou estimée < 80% CMU de la grue","Zone de levage balisée R = 1,5 × hauteur de levage","Un seul chef de manœuvre désigné — communication radio établie","Grutier informé du plan exact et de la masse"], photo:null },
+      { type:"text", titre:"🤝 Gestes de communication grutier",
+        contenu:"Ces gestes sont universels — tout le monde doit les connaître :\n\n↑ Lever : poing fermé, pouce en haut\n↓ Descendre : poing fermé, pouce en bas\n⏹ Stop : main ouverte, paume vers le grutier\n🔄 Rotation : index pointé, mouvement circulaire\n🚨 Urgence : deux bras levés et agités",
+        pointCle:"5 gestes à connaître par coeur. Un seul chef de manœuvre parle.", items:[], photo:null },
+      { type:"text", titre:"🚫 Erreurs fatales à ne jamais commettre",
+        contenu:"INTERDIT ABSOLU :\n× Passer ou rester sous une charge suspendue\n× Chevaucher une charge pour être transporté\n× Utiliser une élingue au-delà de sa CMU\n× Lever par vent fort (> 50 km/h pour la plupart des grues)\n× Commencer sans que la zone soit dégagée et balisée",
+        pointCle:"Sous la charge = mort certaine. Balisage = protection de tous.", items:[], photo:null }
+    ]},
+
+  /* 6 ─ ÉLECTRICITÉ ─────────────────────────────────────────── */
+  { id:6, titre:"Risques Électriques sur Chantier", categorie:"Electricite",
+    desc:"Comprendre les dangers de l'électricité, respecter les distances de sécurité et appliquer la consignation LOTO.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"⚡ L'électricité : silencieuse et mortelle",
+        contenu:"On ne voit pas le courant électrique. On ne l'entend pas. On le sent UNE seule fois — et parfois c'est la dernière.\n\nSur les chantiers CI, les accidents électriques touchent souvent des ouvriers qui pensaient que l'installation était coupée ou que la distance était suffisante.",
+        pointCle:"Le courant ne se voit pas. Un seul contact peut tuer.", items:[], photo:null },
+      { type:"checklist", titre:"🔒 La consignation LOTO",
+        contenu:"LOTO = Lock Out Tag Out. Protocole obligatoire avant toute intervention :", pointCle:"LOTO : couper, condamner, vérifier l'absence de tension. Toujours.",
+        items:["L — Lock : couper le disjoncteur / interrupteur","O — Out : condamner (cadenas personnel) pour empêcher la remise sous tension","T — Tag : accrocher une étiquette 'NE PAS ENCLENCHER — Travaux en cours'","O — Out (verify) : vérifier l'absence de tension avec un VAT homologué","Toujours utiliser SON PROPRE cadenas — ne jamais partager"], photo:null },
+      { type:"text", titre:"📐 Distances de sécurité obligatoires",
+        contenu:"BT (220V-400V) : distance de sécurité 0,3m\nHTA (1kV à 50kV) : distance de sécurité 3m minimum\nLigne aérienne HTB (> 50kV) : distance de sécurité 5m\n\nEn pratique sur chantier : si une ligne passe au-dessus ou à côté du chantier, signaler au chef de chantier AVANT de commencer les travaux à proximité.",
+        pointCle:"Ligne aérienne visible = 5m de distance. Signaler au chef avant de démarrer.", items:[], photo:null },
+      { type:"text", titre:"🩺 Si électrocution — les bons gestes",
+        contenu:"1. NE PAS toucher la victime si elle est encore en contact avec la source\n2. Couper le courant EN URGENCE\n3. Appeler le SAMU : 185\n4. Si arrêt cardiaque : RCR immédiat (30 compressions + 2 insufflations)\n5. Si disponible : utiliser le défibrillateur AED",
+        pointCle:"Électrocution : couper le courant D'ABORD. Puis SAMU 185. Puis RCR.", items:[], photo:null }
+    ]},
+
+  /* 7 ─ SIGNALEMENT ─────────────────────────────────────────── */
+  { id:7, titre:"Signalement — Presqu'accidents et Culture HSE", categorie:"General",
+    desc:"Pourquoi signaler est un acte de courage et comment la culture de sécurité positive protège toute l'équipe.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"🔭 L'iceberg des accidents",
+        contenu:"Pour 1 accident grave, il existe en moyenne :\n• 10 accidents bénins non signalés\n• 30 incidents matériels ignorés\n• 600 comportements dangereux banalisés\n\nChaque presqu'accident non signalé est un accident grave qui attend d'arriver.",
+        pointCle:"1 accident grave = 600 signaux ignorés avant. Signaler brise la chaîne.", items:[], photo:null },
+      { type:"text", titre:"💪 Signaler c'est un acte de courage",
+        contenu:"Signaler un presqu'accident ce n'est pas se plaindre. Ce n'est pas accuser. C'est :\n\n✓ Protéger tes collègues qui passent au même endroit\n✓ Montrer que tu es un professionnel responsable\n✓ Aider l'entreprise à s'améliorer\n✓ Peut-être sauver une vie",
+        pointCle:"Signaler = protéger son équipe. Pas de punition — c'est la règle.", items:[], photo:null },
+      { type:"checklist", titre:"📱 Comment signaler avec Vigilo",
+        contenu:"Signaler un incident ou presqu'accident en 3 étapes :", pointCle:"2 minutes sur Vigilo = un accident évité demain.",
+        items:["Ouvrir Vigilo → Incidents → + Nouvelle fiche","Choisir 'Presqu-accident (Near Miss)'","Décrire ce qui s'est passé (dictée vocale disponible)","Prendre une photo si possible","Valider — l'équipe HSE est alertée immédiatement"], photo:null },
+      { type:"text", titre:"📊 Ce que ça change concrètement",
+        contenu:"Sur les chantiers qui pratiquent le signalement systématique :\n\n→ 70% de réduction des accidents graves en 2 ans\n→ Les zones dangereuses sont identifiées et corrigées\n→ Les équipes se sentent écoutées et respectées\n→ Les primes sécurité augmentent\n\nLe silence ne protège personne. La parole protège tout le monde.",
+        pointCle:"Chantiers qui signalent = 70% moins d'accidents graves. La preuve.", items:[], photo:null }
+    ]},
+
+  /* 8 ─ 5S ORDRE ─────────────────────────────────────────────── */
+  { id:8, titre:"5S — Ordre et Rangement sur Chantier", categorie:"General",
+    desc:"La méthode 5S pour un chantier propre, organisé et moins accidentogène. Simple, efficace, prouvé.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"🏗️ Un chantier en désordre est un chantier dangereux",
+        contenu:"Les études montrent que 40% des accidents sont liés directement au désordre : chute sur des matériaux au sol, outil qui tombe sur un passage, câble tendu en travers d'une allée, matériaux stockés en instabilité.",
+        pointCle:"40% des accidents = désordre. Un chantier rangé sauve des vies.", items:[], photo:null },
+      { type:"checklist", titre:"5️⃣ Les 5S expliqués",
+        contenu:"La méthode 5S, originaire du Japon, s'applique parfaitement aux chantiers BTP :", pointCle:"5S = Trier, Ranger, Nettoyer, Standardiser, Maintenir. Dans cet ordre.",
+        items:["S1 — SEIRI (Trier) : garder seulement ce qui est utile aujourd'hui","S2 — SEITON (Ranger) : une place pour chaque chose, chaque chose à sa place","S3 — SEISO (Nettoyer) : nettoyer = inspecter = détecter les problèmes","S4 — SEIKETSU (Standardiser) : créer des règles visuelles que tous respectent","S5 — SHITSUKE (Maintenir) : faire de l'ordre une habitude quotidienne"], photo:null },
+      { type:"text", titre:"🔧 Règle des 30 secondes",
+        contenu:"Règle simple à appliquer immédiatement :\n\n'Si ça m'a pris moins de 30 secondes pour créer ce désordre, j'ai 30 secondes pour le ranger.'\n\nExemple : poser un outil à terre = 2 secondes. Le ranger à sa place = 5 secondes. L'accident qu'on évite = une vie.",
+        pointCle:"Règle 30 secondes : créer un désordre = 2s, le ranger = 5s, l'accident = une vie.", items:[], photo:null },
+      { type:"text", titre:"📍 Ce qu'on attend de vous",
+        contenu:"Sur ce chantier, les règles 5S sont :\n\n• Allées et issues de secours : toujours libres\n• Outils : rangés dans leur zone après chaque utilisation\n• Déchets : dans les bennes désignées (tri sélectif si possible)\n• Fin de journée : 10 minutes de rangement collectif obligatoire\n\nL'inspection 5S hebdomadaire est notée sur 10.",
+        pointCle:"Allées libres + outils rangés + 10 min de rangement = chantier sûr.", items:[], photo:null }
+    ]},
+
+  /* 9 ─ ESPACE CONFINÉ ─────────────────────────────────────── */
+  { id:9, titre:"Travaux en Espace Confiné", categorie:"Risques physiques",
+    desc:"Les espaces confinés tuent silencieusement. Formation obligatoire avant toute intervention en fosse, citerne ou galerie.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"⚠️ Le piège invisible",
+        contenu:"Un espace confiné peut sembler normal mais contenir un air irrespirable. Les gaz (CO, H2S, méthane) ne se voient pas, ne se sentent pas pour certains. Un homme qui descend dans une fosse sans mesure peut perdre conscience en 30 secondes.",
+        pointCle:"Fosse, citerne, galerie = mesurer l'atmosphère AVANT d'entrer. Sans exception.", items:[], photo:null },
+      { type:"checklist", titre:"🔬 Check atmosphérique obligatoire",
+        contenu:"Avant toute entrée en espace confiné :", pointCle:"O2 entre 19,5% et 23%. LEL < 10%. CO < 25 ppm. Sinon = danger.",
+        items:["Mesurer O2 : taux normal 19,5% à 23% (< 19,5% = danger immédiat)","Mesurer LEL (limite explosive inférieure) : < 10% requis","Mesurer CO (monoxyde carbone) : < 25 ppm requis","Mesurer H2S si risque d'eaux usées : < 1 ppm","Ventiler mécaniquement avant et pendant toute l'intervention","Permis espace confiné signé et daté"], photo:null },
+      { type:"text", titre:"👥 L'équipier de surface : ton gardien",
+        contenu:"Obligatoire : 1 équipier de surface formé RESTE à l'extérieur en communication permanente.\n\nSon rôle :\n• Communication radio ou visuelle constante\n• Trépied de sauvetage prêt à l'emploi\n• Numéros de secours en main\n• NE JAMAIS descendre sans équipement s'il y a un accident\n\nUn équipier non formé qui descend pour secourir = 2 victimes au lieu d'une.",
+        pointCle:"Équipier de surface = obligatoire. Il ne descend JAMAIS sans équipement.", items:[], photo:null },
+      { type:"text", titre:"🆘 Si accident en espace confiné",
+        contenu:"ERREUR MORTELLE : descendre sans équipement pour secourir un collègue inconscient.\n\nProtocole correct :\n1. Appeler les secours : SAMU 185 / Pompiers 180\n2. Ventiler au maximum\n3. N'entrer QUE si équipé (ARI ou appareil respiratoire)\n4. Utiliser le trépied pour remonter la victime\n5. RCR si arrêt cardiaque dès la sortie",
+        pointCle:"Espace confiné accidenté : ventiler + secours + ARI. Jamais mains nues.", items:[], photo:null }
+    ]},
+
+  /* 10 ─ PREMIERS SECOURS ─────────────────────────────────── */
+  { id:10, titre:"Premiers Secours sur Chantier", categorie:"General",
+    desc:"Les gestes qui sauvent : RCR, plaie hémorragique, brûlure, fracture. Ce que tout ouvrier de chantier doit savoir faire.",
+    createdAt:t, createdBy:"Vigilo HSE",
+    slides:[
+      { type:"text", titre:"⏱️ Les 3 premières minutes comptent",
+        contenu:"Après un arrêt cardiaque, les chances de survie chutent de 10% par minute sans RCR. Le SAMU met en moyenne 12 minutes à arriver. Entre l'accident et les secours, seul un collègue formé peut faire la différence.",
+        pointCle:"RCR immédiat = survie possible. Sans RCR dans les 3 min = survie improbable.", items:[], photo:null },
+      { type:"checklist", titre:"❤️ RCR en 4 étapes",
+        contenu:"Réanimation Cardio-Respiratoire (RCR) — méthode simplifiée :", pointCle:"30 compressions + 2 souffles. Répéter. Ne pas s'arrêter avant les secours.",
+        items:["1. Sécuriser : s'assurer que la zone est sûre avant d'approcher","2. Appeler : SAMU 185 — rester en ligne, suivre les instructions","3. Comprimer : 30 compressions thoraciques fortes et rapides (100/min)","4. Ventiler : 2 insufflations bouche-à-bouche (ou continuer compressions seul)","5. Répéter : 30/2 sans s'arrêter jusqu'à l'arrivée des secours"], photo:null },
+      { type:"text", titre:"🩸 Plaie hémorragique — arrêter le saignement",
+        contenu:"Une hémorragie sévère peut tuer en 3 à 5 minutes.\n\nGeste : comprimer FORT et EN CONTINU avec n'importe quel tissu propre. Ne jamais retirer le tissu si il est imbibé — en rajouter par-dessus.\n\nGarrot en dernier recours pour les membres : serrer fort 5cm au-dessus de la plaie, noter l'heure, ne pas desserrer.",
+        pointCle:"Hémorragie = comprimer FORT, EN CONTINU. Garrot si membre, noter l'heure.", items:[], photo:null },
+      { type:"text", titre:"🔥 Brûlure — refroidir, protéger",
+        contenu:"Brûlure thermique (feu, métal chaud) :\n→ Refroidir IMMÉDIATEMENT à l'eau courante froide 15 minutes\n→ NE PAS appliquer huile, dentifrice, citron ou glace\n→ Couvrir avec un linge propre\n→ Transport CHU si surface > paume de main\n\nBrûlure chimique (acide, base) :\n→ Rincer abondamment à l'eau 20 minutes minimum\n→ Transport CHU urgent quelle que soit la surface",
+        pointCle:"Brûlure = eau courante 15 min. Rien d'autre. CHU si surface > paume.", items:[], photo:null }
+    ]}
+
+  ]; // end return
+}
 
 </script>
 
