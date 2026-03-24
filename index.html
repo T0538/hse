@@ -16,6 +16,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -132,6 +133,22 @@ body.dark-mode .p5-inc-banner{background:var(--gray-light)}
 /* ── BOUTON THÈME ── */
 .theme-toggle{width:36px;height:36px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
 .theme-toggle:active{background:var(--gray-mid)}
+
+/* ── CHART TENDANCES ── */
+.trend-card{margin:0 18px 6px;background:var(--surface);border-radius:18px;border:1px solid var(--border);padding:16px 16px 14px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.trend-card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.trend-card-title{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px}
+.trend-tabs{display:flex;gap:4px;background:var(--gray-light);border-radius:8px;padding:3px}
+.trend-tab{font-size:10px;font-weight:700;color:var(--text3);padding:4px 9px;border-radius:6px;cursor:pointer;border:none;background:transparent;transition:all .15s;letter-spacing:.2px}
+.trend-tab.active{background:var(--surface);color:var(--orange);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.trend-chart-wrap{position:relative;height:155px}
+.trend-legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
+.trend-legend-item{display:flex;align-items:center;gap:5px}
+.trend-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.trend-legend-lbl{font-size:10px;font-weight:600;color:var(--text3)}
+body.dark-mode .trend-card{background:var(--surface)}
+body.dark-mode .trend-tabs{background:var(--gray-light)}
+body.dark-mode .trend-tab.active{background:var(--surface)}
 
 /* ── BIBLIOTHÈQUE RESSOURCES HSE ── */
 .res-modal-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px;margin-bottom:10px}
@@ -1184,6 +1201,33 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
         <div class="kpi-tile-dot" style="background:#D85A30"></div>
         <span class="kpi-tile-trend" id="kpi-capa-trend">En attente</span>
       </div>
+    </div>
+  </div>
+
+  <!-- ── Graphique Tendances HSE ── -->
+  <div class="home-section-hd" style="padding-bottom:8px">
+    <span class="home-section-hd-title">Tendances HSE</span>
+    <span class="home-section-hd-link" id="trend-period-label">6 mois</span>
+  </div>
+  <div class="trend-card">
+    <div class="trend-card-hd">
+      <div style="display:flex;align-items:center;gap:6px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span class="trend-card-title">Vue d'ensemble</span>
+      </div>
+      <div class="trend-tabs">
+        <button class="trend-tab active" onclick="switchTrendPeriod(3,this)">3M</button>
+        <button class="trend-tab" onclick="switchTrendPeriod(6,this)">6M</button>
+        <button class="trend-tab" onclick="switchTrendPeriod(12,this)">12M</button>
+      </div>
+    </div>
+    <div class="trend-chart-wrap">
+      <canvas id="trend-chart"></canvas>
+    </div>
+    <div class="trend-legend">
+      <div class="trend-legend-item"><div class="trend-legend-dot" style="background:#D85A30"></div><span class="trend-legend-lbl">Incidents</span></div>
+      <div class="trend-legend-item"><div class="trend-legend-dot" style="background:#1A5FA3"></div><span class="trend-legend-lbl">CAPA créées</span></div>
+      <div class="trend-legend-item"><div class="trend-legend-dot" style="background:#2E6E0E"></div><span class="trend-legend-lbl">Inspections</span></div>
     </div>
   </div>
 
@@ -3898,6 +3942,142 @@ function renderHome() {
 
   // Formation stats
   renderFormationList();
+
+  // Trend chart
+  renderTrendChart(window._trendMonths || 6);
+}
+
+function renderTrendChart(months) {
+  if (!window.Chart) return;
+  var isDark = document.body.classList.contains('dark-mode');
+  var gridCol = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  var textCol = isDark ? '#6A6860' : '#8A8880';
+
+  // Build labels and data for last N months
+  var now = new Date();
+  var labels = [], incData = [], capaData = [], inspData = [];
+  for (var i = months - 1; i >= 0; i--) {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    var y = d.getFullYear(), m = d.getMonth();
+    var mStr = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'][m];
+    labels.push(mStr + (y !== now.getFullYear() ? ' ' + String(y).slice(2) : ''));
+
+    var mStart = new Date(y, m, 1).toISOString();
+    var mEnd   = new Date(y, m + 1, 1).toISOString();
+
+    incData.push(DB.incidents.filter(function(x){
+      var t = x.createdAt || x.date || '';
+      return t >= mStart && t < mEnd && x.type !== 'Induction';
+    }).length);
+
+    capaData.push((DB.capas||[]).filter(function(x){
+      var t = x.createdAt || x.date || '';
+      return t >= mStart && t < mEnd;
+    }).length);
+
+    inspData.push((DB.tournees||[]).filter(function(x){
+      var t = x.createdAt || x.date || '';
+      return t >= mStart && t < mEnd;
+    }).length);
+  }
+
+  var ctx = document.getElementById('trend-chart');
+  if (!ctx) return;
+
+  if (window._trendChartInstance) { window._trendChartInstance.destroy(); }
+
+  window._trendChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Incidents',
+          data: incData,
+          borderColor: '#D85A30',
+          backgroundColor: 'rgba(216,90,48,0.10)',
+          borderWidth: 2.2,
+          pointRadius: 4,
+          pointBackgroundColor: '#D85A30',
+          pointBorderColor: isDark ? '#242422' : '#fff',
+          pointBorderWidth: 2,
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'CAPA',
+          data: capaData,
+          borderColor: '#1A5FA3',
+          backgroundColor: 'rgba(26,95,163,0.08)',
+          borderWidth: 2,
+          pointRadius: 3.5,
+          pointBackgroundColor: '#1A5FA3',
+          pointBorderColor: isDark ? '#242422' : '#fff',
+          pointBorderWidth: 2,
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Inspections',
+          data: inspData,
+          borderColor: '#2E6E0E',
+          backgroundColor: 'rgba(46,110,14,0.08)',
+          borderWidth: 2,
+          pointRadius: 3.5,
+          pointBackgroundColor: '#2E6E0E',
+          pointBorderColor: isDark ? '#242422' : '#fff',
+          pointBorderWidth: 2,
+          tension: 0.4,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: isDark ? '#2A2A28' : '#fff',
+          titleColor: isDark ? '#E8E6DE' : '#2B2B29',
+          bodyColor: isDark ? '#B0AEA6' : '#5F5E5A',
+          borderColor: isDark ? '#383836' : '#E8E6DF',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 10,
+          boxPadding: 4,
+          titleFont: { weight: '700', size: 11 },
+          bodyFont: { size: 11 }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridCol, drawBorder: false },
+          ticks: { color: textCol, font: { size: 10, weight: '600' }, maxRotation: 0 },
+          border: { display: false }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: gridCol, drawBorder: false },
+          ticks: {
+            color: textCol,
+            font: { size: 10 },
+            stepSize: 1,
+            precision: 0
+          },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function switchTrendPeriod(months, btn) {
+  window._trendMonths = months;
+  document.querySelectorAll('.trend-tab').forEach(function(t){ t.classList.remove('active'); });
+  btn.classList.add('active');
+  renderTrendChart(months);
 }
 
 function renderHomeEPI() {
@@ -7215,6 +7395,8 @@ function toggleTheme() {
   localStorage.setItem('hse_dark', isDark ? '0' : '1');
   _appliquerTheme();
   showToast(isDark ? '☀️ Thème clair activé' : '🌙 Thème sombre activé');
+  // Redraw chart to match new theme
+  if (currentScreen === 'home') renderTrendChart(window._trendMonths || 6);
 }
 
 // ═══════════════════════════════════════════════
