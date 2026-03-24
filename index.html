@@ -3668,12 +3668,31 @@ let DB = {
   envCounter: 1
 };
 
-function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch(e){} }
+function save() {
+  try {
+    const payload = JSON.stringify(DB);
+    localStorage.setItem(KEY, payload);
+  } catch(e) {
+    try {
+      sessionStorage.setItem(KEY + '_session', JSON.stringify(DB));
+      console.warn('[Vigilo] localStorage indisponible, fallback sessionStorage:', e.message);
+    } catch(e2) {
+      console.error('[Vigilo] SAUVEGARDE IMPOSSIBLE:', e2.message);
+      if (typeof showToast === 'function') showToast('⚠️ Sauvegarde impossible – vérifiez les permissions navigateur', 'err');
+    }
+  }
+}
 function load() {
   try {
-    const d = localStorage.getItem(KEY);
-    if (d) DB = JSON.parse(d);
-  } catch(e) {}
+    let d = localStorage.getItem(KEY);
+    if (!d) d = sessionStorage.getItem(KEY + '_session');
+    if (d) {
+      const parsed = JSON.parse(d);
+      if (parsed && typeof parsed === 'object') DB = parsed;
+    }
+  } catch(e) {
+    console.warn('[Vigilo] Erreur chargement données:', e.message);
+  }
   // Garantir que tous les tableaux existent (compatibilité ancienne version)
   if (!DB.incidents)  DB.incidents  = [];
   if (!DB.inductions) DB.inductions = [];
@@ -3684,6 +3703,7 @@ function load() {
   if (!DB.personnel)  DB.personnel  = [];
   if (!DB.activity)   DB.activity   = [];
   if (!DB.config)     DB.config     = { nom:'', fonction:'', entreprise:'', dateDebut:'' };
+  if (!DB.config.urgence) DB.config.urgence = {};
   // Forcer la date de début au 23 fév si elle n'est pas renseignée
   if (!DB.config.dateDebut || DB.config.dateDebut === '') {
     DB.config.dateDebut = '2026-02-23';
