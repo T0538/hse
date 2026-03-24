@@ -1211,7 +1211,7 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
       </div>
       <div class="urgence-strip-text">
         <div class="urgence-strip-title">🆘 Urgence — Appeler</div>
-        <div class="urgence-strip-sub" id="urgence-strip-sub">18 · 15 · 17 · 112 — Numéros du chantier</div>
+        <div class="urgence-strip-sub" id="urgence-strip-sub">185 · 180 · 111 · 170 — Numéros d'urgence CI</div>
       </div>
       <div class="urgence-pulse"></div>
       <svg class="urgence-strip-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
@@ -2117,6 +2117,34 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
         <input class="form-input" id="s-urg-hop-dist" type="text" placeholder="Ex: 3 km — 7 min">
       </div>
     </div>
+
+    <!-- Numéros nationaux CI -->
+    <div style="margin:16px 0 10px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:4px;display:flex;align-items:center;gap:6px">
+        🇨🇮 Numéros nationaux — Côte d'Ivoire
+      </div>
+      <div class="form-hint" style="margin-bottom:12px">Modifiables si vos numéros locaux diffèrent (ex : sous-préfecture, zone franche).</div>
+      <div class="form-group">
+        <label class="form-label">🚑 SAMU — Urgences médicales</label>
+        <input class="form-input" id="s-nat-samu" type="tel" placeholder="185">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🚒 Pompiers — Incendie / Secours</label>
+        <input class="form-input" id="s-nat-pompiers" type="tel" placeholder="180">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🚓 Police Nationale</label>
+        <input class="form-input" id="s-nat-police" type="tel" placeholder="111">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🪖 Gendarmerie Nationale</label>
+        <input class="form-input" id="s-nat-gendarmerie" type="tel" placeholder="170">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">🛡️ Protection Civile (ONPC)</label>
+        <input class="form-input" id="s-nat-protection" type="tel" placeholder="110">
+      </div>
+    </div>
     <div class="form-group" style="margin-bottom:0">
       <label class="form-label">Logo de l'entreprise (affiché sur les PDF)</label>
       <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
@@ -2960,7 +2988,7 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
     </div>
     <div class="form-group">
       <label class="form-label">Numéro de téléphone à appeler</label>
-      <input class="form-input" id="pfeu-tel-urgence" type="tel" placeholder="Ex : 15 · 17 · 18 · 112 ou numéro interne">
+      <input class="form-input" id="pfeu-tel-urgence" type="tel" placeholder="Ex : 185 · 180 · 111 ou numéro interne">
     </div>
     <div class="form-group">
       <label class="form-label">Moyens de première intervention à proximité</label>
@@ -3784,6 +3812,12 @@ function sauvegarderSettings() {
   DB.config.urgence.medTel   = document.getElementById('s-urg-med-tel').value.trim();
   DB.config.urgence.hopNom   = document.getElementById('s-urg-hop-nom').value.trim();
   DB.config.urgence.hopDist  = document.getElementById('s-urg-hop-dist').value.trim();
+  // Numéros nationaux CI
+  DB.config.urgence.natSamu        = document.getElementById('s-nat-samu').value.trim();
+  DB.config.urgence.natPompiers    = document.getElementById('s-nat-pompiers').value.trim();
+  DB.config.urgence.natPolice      = document.getElementById('s-nat-police').value.trim();
+  DB.config.urgence.natGendarmerie = document.getElementById('s-nat-gendarmerie').value.trim();
+  DB.config.urgence.natProtection  = document.getElementById('s-nat-protection').value.trim();
   save();
   closeModal('modal-settings');
   updateTopbar();
@@ -3812,6 +3846,11 @@ function openSettingsModal() {
   document.getElementById('s-urg-med-tel').value  = u.medTel   || '';
   document.getElementById('s-urg-hop-nom').value  = u.hopNom   || '';
   document.getElementById('s-urg-hop-dist').value = u.hopDist  || '';
+  document.getElementById('s-nat-samu').value        = u.natSamu        || '';
+  document.getElementById('s-nat-pompiers').value    = u.natPompiers    || '';
+  document.getElementById('s-nat-police').value      = u.natPolice      || '';
+  document.getElementById('s-nat-gendarmerie').value = u.natGendarmerie || '';
+  document.getElementById('s-nat-protection').value  = u.natProtection  || '';
   afficherLogoPreview();
   // NE PAS appeler openModal ici — c'est openModal qui appelle openSettingsModal
 }
@@ -4195,12 +4234,31 @@ function updateUrgenceStrip() {
   if (u.hseTel) parts.push('HSE : ' + u.hseTel);
   if (u.medTel) parts.push('Médecin : ' + u.medTel);
   if (u.hopNom) parts.push(u.hopNom);
-  sub.textContent = parts.length ? parts.join(' · ') : '18 · 15 · 17 · 112 — Numéros du chantier';
+  sub.textContent = parts.length ? parts.join(' · ') : '185 · 180 · 111 · 170 — Numéros d\'urgence CI';
 }
 
 // ── Rendu de la modale urgence ────────────────────────────────────
 function renderUrgenceModal() {
   var u = (DB.config && DB.config.urgence) || {};
+
+  // Numéros nationaux CI (éditables depuis les paramètres)
+  var natList = document.getElementById('urg-nationaux-list');
+  if (natList) {
+    var nationals = [
+      { icon: '🚑', name: 'SAMU — Urgences médicales',    sub: 'Service d\'Aide Médicale Urgente',       num: u.natSamu        || '185' },
+      { icon: '🚒', name: 'Pompiers — Incendie / Secours', sub: 'Sapeurs-pompiers — intervention terrain', num: u.natPompiers    || '180' },
+      { icon: '🚓', name: 'Police Nationale',               sub: 'Sécurité publique',                       num: u.natPolice      || '111' },
+      { icon: '🪖', name: 'Gendarmerie Nationale',          sub: 'Brigade / sous-groupement territorial',   num: u.natGendarmerie || '170' },
+      { icon: '🛡️', name: 'Protection Civile (ONPC)',       sub: 'Office National de Protection Civile',    num: u.natProtection  || '110' },
+    ];
+    natList.innerHTML = nationals.map(function(n) {
+      return '<a class="urg-num-row" href="tel:' + n.num + '">'
+        + '<div class="urg-num-icon">' + n.icon + '</div>'
+        + '<div class="urg-num-label"><div class="urg-num-name">' + n.name + '</div><div class="urg-num-sub">' + n.sub + '</div></div>'
+        + '<div class="urg-num-val">' + n.num + '</div>'
+        + '</a>';
+    }).join('');
+  }
 
   // Adresse chantier
   var adresseZone = document.getElementById('urg-adresse-zone');
@@ -15964,29 +16022,8 @@ function _getFormationsDefaut() {
     <div id="urg-adresse-zone"></div>
 
     <!-- Numéros nationaux -->
-    <div class="urg-section-title">Numéros nationaux</div>
-    <div class="urg-num-bloc">
-      <a class="urg-num-row" href="tel:15">
-        <div class="urg-num-icon">🚑</div>
-        <div class="urg-num-label"><div class="urg-num-name">SAMU — Urgences médicales</div><div class="urg-num-sub">Service d'Aide Médicale Urgente</div></div>
-        <div class="urg-num-val">15</div>
-      </a>
-      <a class="urg-num-row" href="tel:18">
-        <div class="urg-num-icon">🚒</div>
-        <div class="urg-num-label"><div class="urg-num-name">Pompiers — Incendie / Secours</div><div class="urg-num-sub">Intervention incendie et sauvetage</div></div>
-        <div class="urg-num-val">18</div>
-      </a>
-      <a class="urg-num-row" href="tel:17">
-        <div class="urg-num-icon">🚓</div>
-        <div class="urg-num-label"><div class="urg-num-name">Police / Gendarmerie</div><div class="urg-num-sub">Sécurité publique</div></div>
-        <div class="urg-num-val">17</div>
-      </a>
-      <a class="urg-num-row" href="tel:112">
-        <div class="urg-num-icon">📞</div>
-        <div class="urg-num-label"><div class="urg-num-name">Urgences européennes</div><div class="urg-num-sub">Numéro universel — tout réseau</div></div>
-        <div class="urg-num-val">112</div>
-      </a>
-    </div>
+    <div class="urg-section-title">Numéros nationaux — Côte d'Ivoire</div>
+    <div class="urg-num-bloc" id="urg-nationaux-list"></div>
 
     <!-- Contacts chantier -->
     <div class="urg-section-title">Contacts du chantier</div>
