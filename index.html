@@ -1320,6 +1320,12 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
       </div>
       <div class="qa-tile-lbl">Env HSSE</div>
     </div>
+    <div class="qa-tile" style="background:var(--blue-light);border:1.5px solid var(--blue)" onclick="switchScreen('hsse')">
+      <div class="qa-tile-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div class="qa-tile-lbl" style="color:var(--blue)">Politique</div>
+    </div>
   </div>
 
   <!-- ── EPI Compliance ── -->
@@ -2042,6 +2048,12 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
         <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M12 2a9 9 0 0 1 0 18A9 9 0 0 1 12 2z"/><path d="M12 2c-2.5 4-2.5 14 0 18"/><path d="M2 12h20"/></svg>
       </div>
       <div class="more-nav-lbl">Env HSSE</div>
+    </button>
+    <button class="more-nav-btn" id="more-nav-hsse" onclick="moreNavGo('hsse')">
+      <div class="more-nav-icon" style="background:var(--blue-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div class="more-nav-lbl">Politique</div>
     </button>
   </div>
 </div>
@@ -3724,6 +3736,7 @@ function load() {
   if (!DB.envIncidents)        DB.envIncidents         = [];
   if (!DB.envEies)             DB.envEies              = [];
   if (!DB.envCounter)          DB.envCounter           = 1;
+  if (!DB.hsse)                DB.hsse                 = {};
   // Précharger les formations HSE si la bibliothèque est vide
   if (!DB.formations || DB.formations.length === 0) {
     DB.formations = _getFormationsDefaut();
@@ -3887,7 +3900,7 @@ function switchScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const s = document.getElementById('screen-'+name);
-  const _secondary = ['toolbox','tournee','formation','exports','env'];
+  const _secondary = ['toolbox','tournee','formation','exports','env','hsse'];
   const n = _secondary.includes(name)
     ? document.getElementById('nav-more')
     : document.getElementById('nav-'+name);
@@ -3902,6 +3915,7 @@ function switchScreen(name) {
   if (name === 'personnel') renderPersonnel();
   if (name === 'exports') renderExports();
   if (name === 'tournee') renderTournee();
+  if (name === 'hsse') renderHSSE();
 }
 
 // ═══════════════════════════════════════════════
@@ -15592,6 +15606,283 @@ function _getFormationsDefaut() {
   ]; // end return
 }
 
+
+// ═══════════════════════════════════════════════
+// MODULE POLITIQUE & RÉGLEMENTATION HSSE
+// ═══════════════════════════════════════════════
+
+const HSSE_PRINCIPES_DEFAUT = [
+  { icon:'🦺', titre:'Zéro accident mortel',        desc:"Aucun travail ne vaut la vie d'un homme. La sécurité prime sur les délais." },
+  { icon:'🌿', titre:"Protection de l'environnement", desc:'Réduire les impacts sur les sols, eaux et biodiversité du site.' },
+  { icon:'📋', titre:'Conformité réglementaire',     desc:'Respecter le Code du Travail CI, les arrêtés MSHP et les normes OHSAS.' },
+  { icon:'🔄', titre:'Amélioration continue',        desc:'Analyser chaque incident pour en tirer des enseignements durables.' },
+  { icon:'🤝', titre:'Engagement collectif',         desc:'Chaque intervenant est acteur de la sécurité sur son poste.' },
+];
+
+const HSSE_REGLEMENTATION_CI = [
+  {
+    categorie:'Code du Travail — Loi n°2015-532',
+    couleur:'var(--blue)',
+    couleurLight:'var(--blue-light)',
+    articles:[
+      { ref:'Art. 41.1', texte:"Obligation de l'employeur de protéger la santé physique et mentale des travailleurs." },
+      { ref:'Art. 41.5', texte:"Fourniture obligatoire des EPI adaptés et gratuitement à chaque travailleur." },
+      { ref:'Art. 42.3', texte:"Formation à la sécurité lors de l'embauche et lors de tout changement de poste." },
+      { ref:'Art. 96',   texte:"Déclaration obligatoire de tout accident du travail dans les 48 heures à la CNPS." },
+    ]
+  },
+  {
+    categorie:"Décret n°96-204 — Hygiène & Sécurité",
+    couleur:'var(--amber)',
+    couleurLight:'var(--amber-light)',
+    articles:[
+      { ref:'Art. 12',  texte:"Obligation de constituer un CHSCT dès 50 salariés." },
+      { ref:'Art. 25',  texte:"Registre de sécurité obligatoire tenu à disposition de l'inspection du travail." },
+      { ref:'Art. 33',  texte:"Signalisation de sécurité conforme aux normes ISO 7010 sur l'ensemble du chantier." },
+      { ref:'Art. 51',  texte:"Plan d'évacuation et point de rassemblement identifié et communiqué à tous." },
+    ]
+  },
+  {
+    categorie:"Code de l'Environnement — Loi n°96-766",
+    couleur:'var(--green)',
+    couleurLight:'var(--green-light)',
+    articles:[
+      { ref:'Art. 22',  texte:"EIES obligatoire pour tout projet d'envergure." },
+      { ref:'Art. 49',  texte:"Interdiction de déverser des polluants dans les cours d'eau, nappes phréatiques et sols." },
+      { ref:'Art. 61',  texte:"Gestion des déchets dangereux par des prestataires agréés CIAPOL." },
+      { ref:'Art. 75',  texte:"Responsabilité civile et pénale en cas de pollution environnementale." },
+    ]
+  },
+  {
+    categorie:"Arrêté n°2017-008 — Travaux de BTP",
+    couleur:'var(--red)',
+    couleurLight:'var(--red-light)',
+    articles:[
+      { ref:'Art. 4',   texte:"Plan de Sécurité et de Protection de la Santé (PSPS) obligatoire avant ouverture du chantier." },
+      { ref:'Art. 11',  texte:"Clôture obligatoire du périmètre chantier avec signalisation lumineuse la nuit." },
+      { ref:'Art. 18',  texte:"Installations sanitaires et eau potable obligatoires pour tout effectif > 20 personnes." },
+      { ref:'Art. 27',  texte:"Présence obligatoire d'une trousse de premiers secours et d'un secouriste par équipe." },
+    ]
+  },
+];
+
+const HSSE_AFFICHES = [
+  { titre:'Port des EPI obligatoire',        icone:'🦺', couleur:'var(--orange)', desc:"Casque, gilet, chaussures, lunettes, gants — obligation sur l'ensemble du chantier" },
+  { titre:'Consignes incendie',               icone:'🔥', couleur:'var(--red)',    desc:'Extincteurs, numéro pompiers CI : 180, point de rassemblement' },
+  { titre:'Interdiction de fumer',            icone:'🚭', couleur:'var(--red)',    desc:'Interdiction stricte de fumer sur la zone de travaux et dépôts de matériaux' },
+  { titre:'Vitesse limitée — 10 km/h',        icone:'🚧', couleur:'var(--amber)',  desc:"Limitation de vitesse pour tous les engins et véhicules sur l'emprise du chantier" },
+  { titre:'Consignes électriques',            icone:'⚡', couleur:'var(--amber)',  desc:'Ne jamais intervenir sans habilitation électrique — consigner avant intervention' },
+  { titre:'Travail en hauteur',               icone:'📐', couleur:'var(--blue)',   desc:'Harnais obligatoire au-delà de 2 m — vérification quotidienne des échafaudages' },
+  { titre:'Gestion des déchets',              icone:'♻️', couleur:'var(--green)',  desc:'Tri sélectif obligatoire — déchets dangereux stockés dans zone identifiée CIAPOL' },
+  { titre:'Numéros urgence affichés',         icone:'🆘', couleur:'var(--red)',    desc:'SAMU 185 · Pompiers 180 · Police 111 · Gendarmerie 170 · Protection Civile 110' },
+];
+
+const OBJECTIFS_HSSE_DEFAUT = [
+  { label:'Taux de fréquence (TF)', cible:'0', unite:'accidents / million h', progres:100, couleur:'var(--green)' },
+  { label:'Taux de gravité (TG)',   cible:'0', unite:'jours perdus / 1000 h', progres:100, couleur:'var(--green)' },
+  { label:'Toolbox talks',          cible:'4', unite:'sessions / mois',        progres:0,   couleur:'var(--orange)' },
+  { label:'Formations HSE',         cible:'2', unite:'formations / trimestre', progres:0,   couleur:'var(--blue)' },
+  { label:'Tournées HSE',           cible:'8', unite:'tournées / mois',        progres:0,   couleur:'var(--amber)' },
+  { label:'Non-conformités clôturées', cible:'90', unite:'% sous 30 jours',   progres:0,   couleur:'var(--red)' },
+];
+
+function renderHSSE() {
+  // Mettre à jour le nom du chantier dans la politique
+  var polCh = document.getElementById('hsse-pol-chantier');
+  if (polCh) polCh.textContent = (DB.chantier || 'Chantier') + ' — ' + (DB.config.entreprise || '');
+
+  var hsse = DB.hsse || {};
+
+  // Texte politique
+  var polTexte = document.getElementById('hsse-pol-texte');
+  if (polTexte)   if (polTexte) polTexte.textContent = hsse.politiqueTexte || "Notre engagement : zéro accident, zéro atteinte à l'environnement. La sécurité est une valeur non négociable.";
+
+  // Signataire
+  var sig = document.getElementById('hsse-pol-signataire');
+  if (sig) sig.textContent = hsse.signataire || 'Non renseigné — modifiez via ✏️';
+
+  // Principes
+  renderHSSEPrincipes();
+  // Objectifs
+  renderHSSEObjectifs();
+  // Réglementation
+  renderHSSEReglementation();
+  // Affiches
+  renderHSSEAffiches();
+}
+
+function renderHSSEPrincipes() {
+  var el = document.getElementById('hsse-principes-list');
+  if (!el) return;
+  el.innerHTML = HSSE_PRINCIPES_DEFAUT.map(function(p) {
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">'
+      + '<div style="font-size:20px;flex-shrink:0;margin-top:1px">' + p.icon + '</div>'
+      + '<div><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">' + p.titre + '</div>'
+      + '<div style="font-size:12px;color:var(--text2);line-height:1.4">' + p.desc + '</div></div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderHSSEObjectifs() {
+  var el = document.getElementById('hsse-objectifs-list');
+  if (!el) return;
+  var hsse = DB.hsse || {};
+  var objectifs = (hsse.objectifs && hsse.objectifs.length) ? hsse.objectifs : OBJECTIFS_HSSE_DEFAUT;
+  el.innerHTML = objectifs.map(function(o, i) {
+    var pct = Math.min(100, Math.max(0, parseInt(o.progres) || 0));
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:10px">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+      + '<div style="font-size:13px;font-weight:600;color:var(--text)">' + o.label + '</div>'
+      + '<div style="font-size:12px;font-weight:700;color:' + o.couleur + '">' + pct + '%</div>'
+      + '</div>'
+      + '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">Cible : <b>' + o.cible + '</b> ' + o.unite + '</div>'
+      + '<div style="height:7px;background:var(--gray-light);border-radius:4px;overflow:hidden">'
+      + '<div style="height:100%;width:' + pct + '%;background:' + o.couleur + ';border-radius:4px;transition:width .5s"></div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderHSSEReglementation() {
+  var el = document.getElementById('hsse-reglem-list');
+  if (!el) return;
+  el.innerHTML = HSSE_REGLEMENTATION_CI.map(function(cat) {
+    var articles = cat.articles.map(function(a) {
+      return '<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">'
+        + '<span style="font-size:11px;font-weight:700;color:' + cat.couleur + ';min-width:52px;flex-shrink:0;margin-top:1px">' + a.ref + '</span>'
+        + '<span style="font-size:12px;color:var(--text2);line-height:1.45">' + a.texte + '</span>'
+        + '</div>';
+    }).join('');
+    return '<div style="background:var(--surface);border:1.5px solid ' + cat.couleur + ';border-radius:12px;padding:13px 14px;margin-bottom:12px">'
+      + '<div style="font-size:12px;font-weight:800;color:' + cat.couleur + ';margin-bottom:10px;display:flex;align-items:center;gap:6px">'
+      + '<div style="width:8px;height:8px;border-radius:50%;background:' + cat.couleur + ';flex-shrink:0"></div>' + cat.categorie + '</div>'
+      + articles + '</div>';
+  }).join('');
+}
+
+function renderHSSEAffiches() {
+  var el = document.getElementById('hsse-affiches-list');
+  if (!el) return;
+  el.innerHTML = HSSE_AFFICHES.map(function(a, i) {
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="genererAfficheHSSE(' + i + ')">'
+      + '<div style="width:40px;height:40px;border-radius:10px;background:var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">' + a.icone + '</div>'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="font-size:13px;font-weight:600;color:var(--text)">' + a.titre + '</div>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">' + a.desc + '</div>'
+      + '</div>'
+      + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>'
+      + '</div>';
+  }).join('');
+}
+
+function switchHSSETab(tab, btn) {
+  ['politique','objectifs','reglementation','affiches'].forEach(function(t) {
+    var el = document.getElementById('hsse-tab-' + t);
+    if (el) el.style.display = (t === tab) ? 'block' : 'none';
+  });
+  document.querySelectorAll('#screen-hsse .env-tab').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+}
+
+function ouvrirEditHSSE() {
+  var hsse = DB.hsse || {};
+  document.getElementById('hsse-edit-texte').value = hsse.politiqueTexte || '';
+  document.getElementById('hsse-edit-signataire').value = hsse.signataire || '';
+  // Rendre la liste d'objectifs éditables
+  renderHSSEObjectifsEdit();
+  openModal('modal-hsse-edit');
+}
+
+function renderHSSEObjectifsEdit() {
+  var el = document.getElementById('hsse-edit-objectifs-list');
+  if (!el) return;
+  var hsse = DB.hsse || {};
+  var objectifs = (hsse.objectifs && hsse.objectifs.length) ? hsse.objectifs : JSON.parse(JSON.stringify(OBJECTIFS_HSSE_DEFAUT));
+  window._hsseEditObjectifs = JSON.parse(JSON.stringify(objectifs));
+  el.innerHTML = objectifs.map(function(o, i) {
+    return '<div style="background:var(--gray-light);border-radius:10px;padding:10px 12px;margin-bottom:8px">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">'
+      + '<input class="form-input" data-idx="' + i + '" data-field="label" style="flex:1;font-size:12px;padding:6px 8px" value="' + o.label + '" placeholder="Libellé" oninput="hsseObjInput(this)">'
+      + '<button onclick="supprimerObjectifHSSE(' + i + ')" style="border:none;background:transparent;color:var(--red);font-size:16px;cursor:pointer;flex-shrink:0">✕</button>'
+      + '</div>'
+      + '<div style="display:flex;gap:6px;margin-bottom:6px">'
+      + '<input class="form-input" data-idx="' + i + '" data-field="cible" style="width:60px;font-size:12px;padding:6px 8px" value="' + o.cible + '" placeholder="Cible" oninput="hsseObjInput(this)">'
+      + '<input class="form-input" data-idx="' + i + '" data-field="unite" style="flex:1;font-size:12px;padding:6px 8px" value="' + o.unite + '" placeholder="Unité" oninput="hsseObjInput(this)">'
+      + '</div>'
+      + '<div style="display:flex;align-items:center;gap:8px">'
+      + '<span style="font-size:11px;color:var(--text3);flex-shrink:0">Progression %</span>'
+      + '<input type="range" data-idx="' + i + '" data-field="progres" min="0" max="100" value="' + (o.progres||0) + '" style="flex:1" oninput="hsseObjInput(this);this.nextElementSibling.textContent=this.value+\'%\'">'
+      + '<span style="font-size:12px;font-weight:700;min-width:32px;color:var(--orange)">' + (o.progres||0) + '%</span>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function hsseObjInput(el) {
+  var i = parseInt(el.dataset.idx);
+  var field = el.dataset.field;
+  if (!window._hsseEditObjectifs) return;
+  if (window._hsseEditObjectifs[i]) window._hsseEditObjectifs[i][field] = el.value;
+}
+
+function updateObjectifHSSE(i, field, val) {
+  if (!window._hsseEditObjectifs) return;
+  if (window._hsseEditObjectifs[i]) window._hsseEditObjectifs[i][field] = val;
+}
+
+function ajouterObjectifHSSE() {
+  if (!window._hsseEditObjectifs) window._hsseEditObjectifs = [];
+  var couleurs = ['var(--orange)','var(--blue)','var(--green)','var(--amber)','var(--red)'];
+  window._hsseEditObjectifs.push({ label:'Nouvel objectif', cible:'—', unite:'', progres:0, couleur: couleurs[window._hsseEditObjectifs.length % couleurs.length] });
+  renderHSSEObjectifsEdit();
+}
+
+function supprimerObjectifHSSE(i) {
+  if (!window._hsseEditObjectifs) return;
+  window._hsseEditObjectifs.splice(i, 1);
+  renderHSSEObjectifsEdit();
+}
+
+function sauvegarderHSSE() {
+  if (!DB.hsse) DB.hsse = {};
+  DB.hsse.politiqueTexte = document.getElementById('hsse-edit-texte').value.trim();
+  DB.hsse.signataire = document.getElementById('hsse-edit-signataire').value.trim();
+  DB.hsse.objectifs = window._hsseEditObjectifs || OBJECTIFS_HSSE_DEFAUT;
+  save();
+  closeModal('modal-hsse-edit');
+  renderHSSE();
+  showToast('Politique HSSE enregistrée');
+}
+
+function genererAfficheHSSE(idx) {
+  var affiche = HSSE_AFFICHES[idx];
+  if (!affiche) return;
+  showToast('Impression : ' + affiche.titre);
+  var chantier = DB.chantier || 'Chantier';
+  var entreprise = (DB.config && DB.config.entreprise) || '';
+  var win = window.open('', '_blank');
+  if (!win) { showToast('Autorisez les popups pour imprimer', 'err'); return; }
+  win.document.write('<html><head><title>' + affiche.titre + '</title><style>'
+    + 'body{font-family:Arial,sans-serif;margin:0;padding:40px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center}'
+    + '.icon{font-size:90px;margin-bottom:20px}.titre{font-size:36px;font-weight:900;color:#1A1A18;margin-bottom:14px}'
+    + '.desc{font-size:18px;color:#5F5E5A;max-width:500px;line-height:1.6;margin-bottom:30px}'
+    + '.footer{font-size:13px;color:#8A8880;border-top:1px solid #eee;padding-top:14px;width:100%;max-width:500px}'
+    + '@media print{body{padding:60px}}'
+    + '</style></head><body>');
+  win.document.write('<div class="icon">' + affiche.icone + '</div>');
+  win.document.write('<div class="titre">' + affiche.titre + '</div>');
+  win.document.write('<div class="desc">' + affiche.desc + '</div>');
+  win.document.write('<div class="footer">' + chantier + (entreprise ? ' — ' + entreprise : '') + '</div>');
+  win.document.write('</body></html>');
+  win.document.close();
+  setTimeout(function() { win.print(); }, 400);
+}
+
+// Garantir hsse dans DB au load
+(function() {
+  var _origLoad = load;
+})();
+
 </script>
 
 <!-- ═══════════════ PHOTO PICKER ═══════════════ -->
@@ -16026,6 +16317,111 @@ function _getFormationsDefaut() {
     </div>
   </div>
 </div>
+<!-- ═══════════════════════════════════════════════
+     SCREEN — POLITIQUE & RÉGLEMENTATION HSSE
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-hsse">
+  <div class="topbar">
+    <div>
+      <div class="topbar-brand"><div class="brand-dot" style="background:var(--blue)"></div><div class="topbar-title">Politique HSSE</div></div>
+      <div class="topbar-sub">Engagements · Objectifs · Réglementation CI</div>
+    </div>
+    <button class="icon-btn" onclick="ouvrirEditHSSE()" title="Modifier">
+      <svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2.5" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    </button>
+  </div>
+
+  <!-- Tabs HSSE -->
+  <div class="env-tab-bar" style="overflow-x:auto">
+    <button class="env-tab active" onclick="switchHSSETab('politique',this)">📜 Politique</button>
+    <button class="env-tab" onclick="switchHSSETab('objectifs',this)">🎯 Objectifs</button>
+    <button class="env-tab" onclick="switchHSSETab('reglementation',this)">⚖️ Réglementation CI</button>
+    <button class="env-tab" onclick="switchHSSETab('affiches',this)">📋 Consignes</button>
+  </div>
+
+  <!-- ── TAB : POLITIQUE ── -->
+  <div id="hsse-tab-politique">
+    <div style="padding:14px 16px 6px">
+      <div style="border-radius:14px;background:linear-gradient(135deg,var(--blue-light),#EEF5FF);border:1.5px solid var(--blue);padding:16px 16px 14px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--font-head);font-size:16px;font-weight:800;color:var(--blue)">Engagement de la Direction</div>
+            <div style="font-size:11px;color:var(--text3)" id="hsse-pol-chantier">—</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text);line-height:1.65;white-space:pre-wrap" id="hsse-pol-texte">Appuyez sur ✏️ pour rédiger la politique HSSE du chantier.</div>
+      </div>
+
+      <div style="border-radius:14px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:10px">🧭 Principes directeurs</div>
+        <div id="hsse-principes-list"></div>
+      </div>
+
+      <div style="border-radius:14px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:10px">✍️ Signature &amp; Date</div>
+        <div style="font-size:13px;color:var(--text2)" id="hsse-pol-signataire">Non renseigné — modifiez via ✏️</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB : OBJECTIFS ── -->
+  <div id="hsse-tab-objectifs" style="display:none">
+    <div style="padding:14px 16px 6px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Définissez vos objectifs HSSE annuels et suivez leur progression. Modifiables via ✏️.</div>
+      <div id="hsse-objectifs-list"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB : RÉGLEMENTATION CI ── -->
+  <div id="hsse-tab-reglementation" style="display:none">
+    <div style="padding:14px 16px 6px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Principales obligations légales applicables aux chantiers en Côte d'Ivoire.</div>
+      <div id="hsse-reglem-list"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB : CONSIGNES / AFFICHES ── -->
+  <div id="hsse-tab-affiches" style="display:none">
+    <div style="padding:14px 16px 6px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Consignes de sécurité à afficher sur le chantier. Appuyez pour télécharger ou partager.</div>
+      <div id="hsse-affiches-list"></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+</div>
+
+<!-- ── MODAL EDIT HSSE ── -->
+<div class="modal-overlay" id="modal-hsse-edit" onclick="closeModalOut(event,'modal-hsse-edit')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Modifier la Politique HSSE</div>
+
+    <div class="form-group">
+      <label class="form-label">Texte de la politique HSSE</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="hsse-edit-texte" rows="6" placeholder="Rédigez ici l'engagement de la direction envers la santé, sécurité et environnement..." style="min-height:120px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('hsse-edit-texte',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Signataire (ex : Directeur des Travaux)</label>
+      <input class="form-input" id="hsse-edit-signataire" type="text" placeholder="Nom, Fonction — Date">
+    </div>
+
+    <div style="margin:14px 0 10px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:10px">🎯 Objectifs HSSE du chantier</div>
+      <div id="hsse-edit-objectifs-list"></div>
+      <button class="btn-sm outline" style="width:100%;margin-top:8px" onclick="ajouterObjectifHSSE()">+ Ajouter un objectif</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn-primary" style="flex:1" onclick="sauvegarderHSSE()">Enregistrer</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-hsse-edit')">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════ MODAL URGENCE ═══════════════ -->
 <div class="modal-overlay" id="modal-urgence" onclick="closeModalOut(event,'modal-urgence')">
   <div class="modal-sheet" style="max-height:90vh;overflow-y:auto">
