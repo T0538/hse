@@ -13,6 +13,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
@@ -1019,9 +1021,314 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
 .epi-ind-cb{width:20px;height:20px;accent-color:var(--green);cursor:pointer;display:block;margin:0 auto}
 .epi-ind-tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:9px;font-weight:700;margin-left:5px}
 .epi-ind-tag.req{background:var(--orange-light);color:var(--orange)}
+
+/* ── ADMIN DASHBOARD ── */
+.admin-kpi{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center}
+.admin-kpi-val{font-family:var(--font-head);font-size:24px;font-weight:800;color:var(--text)}
+.admin-kpi-lbl{font-size:10px;color:var(--text3);margin-top:2px}
+.admin-chantier-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.admin-chantier-card:active{transform:scale(.98)}
+.admin-chantier-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.admin-tab{flex:1;min-width:80px;padding:11px 8px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s}
+.admin-tab.active{color:var(--orange);border-bottom-color:var(--orange);font-weight:700}
+.admin-tab:hover:not(.active){color:var(--text);background:var(--gray-light)}
+body.dark-mode .admin-tab:hover:not(.active){background:var(--gray-light)}
+.admin-row-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.admin-row-item:last-child{border-bottom:none}
+.admin-row-badge{flex-shrink:0;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px}
+/* ── FIREBASE OVERLAY SCREENS ── */
+.fb-screen{position:fixed;inset:0;background:var(--bg);z-index:900;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+.fb-card{max-width:400px;width:100%}
+.fb-title{font-family:var(--font-head);font-size:24px;font-weight:800;color:var(--text);text-align:center;margin-bottom:6px}
+.fb-sub{font-size:13px;color:var(--text3);text-align:center;line-height:1.5;margin-bottom:24px}
+.role-btn{width:100%;margin-bottom:12px;padding:18px 16px;border-radius:14px;border-width:1.5px;border-style:solid;cursor:pointer;text-align:left;display:flex;align-items:center;gap:14px;background:transparent}
+.role-btn-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.role-btn-title{font-family:var(--font-head);font-size:16px;font-weight:800}
+.role-btn-sub{font-size:12px;color:var(--text3);margin-top:2px}
+/* ── ADMIN BANNER ── */
 </style>
 </head>
 <body>
+
+<!-- ═══════════════ FIREBASE SCREENS ═══════════════ -->
+
+<!-- ── ÉCRAN A : Config Firebase (1 seule fois) ── -->
+<!-- firebase-setup-screen supprimé : config embarquée directement dans VIGILO_FIREBASE_CONFIG -->
+
+<!-- ── ÉCRAN B : Connexion (Admin ou Agent) ── -->
+<!-- ══════════════════════════════════════════
+     ÉCRAN B1 : CHOIX DU RÔLE
+════════════════════════════════════════════ -->
+<div id="role-screen" class="fb-screen" style="display:none">
+  <div class="fb-card" style="max-width:380px;width:100%">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="width:68px;height:68px;background:var(--orange);border-radius:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(255,255,255,.2)"/><polyline points="9,12 11,14 15,10" stroke-width="2.5"/></svg>
+      </div>
+      <div class="fb-title" style="font-size:30px">VIGILO</div>
+      <div class="fb-sub" style="margin-bottom:0;font-size:12px">Sécurité · Santé · Environnement</div>
+    </div>
+
+    <!-- Reprise rapide session agent mémorisée -->
+    <div id="role-resume-zone" style="display:none;margin-bottom:20px">
+      <button id="role-resume-btn" onclick="resumeAgentSession()" style="width:100%;padding:16px;border-radius:14px;border:2px solid var(--blue);background:var(--blue-light);cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🦺</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:var(--font-head);font-size:16px;font-weight:800;color:var(--blue)">Continuer ma session</div>
+          <div id="role-resume-label" style="font-size:12px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Chantier —</div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div style="text-align:center;font-size:11px;color:var(--text3);margin:12px 0 4px">— ou se connecter autrement —</div>
+    </div>
+
+    <!-- Bouton Admin -->
+    <button onclick="showFirebaseScreen('admin-auth-screen')" style="width:100%;padding:18px 16px;border-radius:14px;border:2px solid var(--orange);background:var(--orange-light);cursor:pointer;text-align:left;display:flex;align-items:center;gap:14px;margin-bottom:12px">
+      <div style="width:44px;height:44px;border-radius:13px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏛️</div>
+      <div style="flex:1">
+        <div style="font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--orange)">Administrateur</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Connexion ou création de compte</div>
+      </div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+
+    <!-- Bouton Agent -->
+    <button onclick="showFirebaseScreen('agent-join-screen')" style="width:100%;padding:18px 16px;border-radius:14px;border:2px solid var(--blue);background:var(--blue-light);cursor:pointer;text-align:left;display:flex;align-items:center;gap:14px">
+      <div style="width:44px;height:44px;border-radius:13px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🦺</div>
+      <div style="flex:1">
+        <div style="font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--blue)">Agent de terrain</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Rejoindre un chantier existant</div>
+      </div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN B2 : AUTH ADMIN (Connexion / Inscription)
+════════════════════════════════════════════ -->
+<style>
+.auth-tabs{display:flex;gap:0;border-radius:12px;background:var(--gray-light);padding:4px;margin-bottom:22px}
+.auth-tab{flex:1;padding:10px 8px;border:none;border-radius:9px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .18s}
+.auth-tab.active{background:var(--surface);color:var(--orange);box-shadow:0 1px 6px rgba(0,0,0,.1)}
+body.dark-mode .auth-tabs{background:var(--gray-light)}
+body.dark-mode .auth-tab.active{background:var(--surface)}
+.auth-panel{display:none}.auth-panel.active{display:block}
+.admin-field-row{display:flex;gap:10px}
+.admin-field-row .form-group{flex:1}
+</style>
+
+<div id="admin-auth-screen" class="fb-screen" style="display:none">
+  <div class="fb-card" style="max-width:400px;width:100%">
+    <button onclick="showFirebaseScreen('role-screen')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--text3);font-size:13px;padding:0;margin-bottom:20px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Retour
+    </button>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="width:60px;height:60px;background:var(--orange);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">🏛️</div>
+      <div class="fb-title">Espace Administrateur</div>
+      <div class="fb-sub" style="margin-bottom:0;font-size:12px">Gérez vos chantiers et partagez les accès</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login-btn" onclick="switchAdminAuthTab('login')">🔑 Connexion</button>
+      <button class="auth-tab" id="tab-register-btn" onclick="switchAdminAuthTab('register')">✨ Créer un compte</button>
+    </div>
+
+    <!-- ── PANNEAU CONNEXION ── -->
+    <div class="auth-panel active" id="auth-panel-login">
+      <div id="admin-login-status" style="display:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:600;text-align:center;margin-bottom:12px;line-height:1.4"></div>
+      <div class="form-group">
+        <label class="form-label" style="font-size:12px;font-weight:700">ADRESSE E-MAIL</label>
+        <input class="form-input" id="admin-login-email" type="email" placeholder="votre@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')document.getElementById('admin-login-pass').focus()">
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="font-size:12px;font-weight:700">MOT DE PASSE</label>
+        <div style="position:relative">
+          <input class="form-input" id="admin-login-pass" type="password" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px" onkeydown="if(event.key==='Enter')connexionAdminEmail()">
+          <button type="button" onclick="togglePassVisibility('admin-login-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px">👁</button>
+        </div>
+      </div>
+      <button class="btn-primary" id="admin-login-btn" style="background:var(--orange);border-color:var(--orange);padding:15px;font-size:15px;margin-top:6px" onclick="connexionAdminEmail()">
+        Se connecter →
+      </button>
+    </div>
+
+    <!-- ── PANNEAU INSCRIPTION ── -->
+    <div class="auth-panel" id="auth-panel-register">
+      <div id="admin-register-status" style="display:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:600;text-align:center;margin-bottom:12px;line-height:1.4"></div>
+      <div class="admin-field-row">
+        <div class="form-group">
+          <label class="form-label" style="font-size:11px;font-weight:700">NOM COMPLET <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="reg-nom" type="text" placeholder="Prénom Nom" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="font-size:11px;font-weight:700">TÉLÉPHONE <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="reg-tel" type="tel" placeholder="+225 07 00 00 00">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="font-size:11px;font-weight:700">ADRESSE E-MAIL <span style="color:var(--red)">*</span></label>
+        <input class="form-input" id="reg-email" type="email" placeholder="votre@email.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="font-size:11px;font-weight:700">ENTREPRISE / ORGANISATION</label>
+        <input class="form-input" id="reg-entreprise" type="text" placeholder="Nom de l'entreprise">
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="font-size:11px;font-weight:700">FONCTION / POSTE</label>
+        <input class="form-input" id="reg-fonction" type="text" placeholder="Ex : Directeur HSE, Chef de projet…">
+      </div>
+      <div class="admin-field-row">
+        <div class="form-group">
+          <label class="form-label" style="font-size:11px;font-weight:700">MOT DE PASSE <span style="color:var(--red)">*</span></label>
+          <div style="position:relative">
+            <input class="form-input" id="reg-pass" type="password" placeholder="Min. 6 car." autocomplete="new-password" style="padding-right:40px">
+            <button type="button" onclick="togglePassVisibility('reg-pass',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;font-size:13px">👁</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="font-size:11px;font-weight:700">CONFIRMER <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="reg-pass2" type="password" placeholder="Répéter" autocomplete="new-password" onkeydown="if(event.key==='Enter')creerCompteAdmin()">
+        </div>
+      </div>
+      <button class="btn-primary" id="admin-register-btn" style="background:var(--orange);border-color:var(--orange);padding:15px;font-size:15px;margin-top:6px" onclick="creerCompteAdmin()">
+        ✨ Créer mon compte →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN B4 : CRÉER UN CHANTIER (après inscription ou depuis dashboard)
+════════════════════════════════════════════ -->
+<div id="admin-create-chantier-screen" class="fb-screen" style="display:none">
+  <div class="fb-card" style="max-width:400px;width:100%">
+    <button onclick="showFirebaseScreen('admin-auth-screen')" id="create-chantier-back-btn" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--text3);font-size:13px;padding:0;margin-bottom:20px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Retour
+    </button>
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--orange),#F08040);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">🏗️</div>
+      <div class="fb-title">Créer un chantier</div>
+      <div class="fb-sub" style="margin-bottom:0;font-size:12px">Un code unique sera généré et partageable avec votre équipe</div>
+    </div>
+
+    <div id="create-chantier-status" style="display:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:600;text-align:center;margin-bottom:12px;line-height:1.4"></div>
+
+    <div class="form-group">
+      <label class="form-label" style="font-size:11px;font-weight:700">NOM DU CHANTIER <span style="color:var(--red)">*</span></label>
+      <input class="form-input" id="nc-nom" type="text" placeholder="Ex : Construction Immeuble Cocody R+5">
+    </div>
+    <div class="admin-field-row">
+      <div class="form-group">
+        <label class="form-label" style="font-size:11px;font-weight:700">TYPE DE CHANTIER</label>
+        <select class="form-input" id="nc-type" style="padding:12px">
+          <option value="">— Choisir —</option>
+          <option>Construction neuve</option>
+          <option>Rénovation / Réhabilitation</option>
+          <option>Génie Civil / Infrastructure</option>
+          <option>Installation industrielle</option>
+          <option>Voirie & Réseaux divers</option>
+          <option>Démolition</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="font-size:11px;font-weight:700">DATE DÉBUT <span style="color:var(--red)">*</span></label>
+        <input class="form-input" id="nc-date" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="font-size:11px;font-weight:700">LOCALISATION / ADRESSE</label>
+      <input class="form-input" id="nc-adresse" type="text" placeholder="Ex : Cocody, Abidjan — Côte d'Ivoire">
+    </div>
+    <div class="admin-field-row">
+      <div class="form-group">
+        <label class="form-label" style="font-size:11px;font-weight:700">ENTREPRISE TITULAIRE</label>
+        <input class="form-input" id="nc-entreprise" type="text" placeholder="Nom de l'entreprise">
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="font-size:11px;font-weight:700">RESPONSABLE HSE</label>
+        <input class="form-input" id="nc-responsable" type="text" placeholder="Nom du responsable">
+      </div>
+    </div>
+    <button class="btn-primary" id="create-chantier-btn" style="background:var(--orange);border-color:var(--orange);padding:15px;font-size:15px;margin-top:6px" onclick="validerCreationChantier()">
+      🏗️ Créer le chantier →
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN B5 : CODE UNIQUE DU CHANTIER
+════════════════════════════════════════════ -->
+<div id="admin-code-display-screen" class="fb-screen" style="display:none">
+  <div class="fb-card" style="max-width:380px;width:100%;text-align:center">
+    <!-- Icône succès -->
+    <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--green),#4CAF50);border-radius:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px">✅</div>
+    <div class="fb-title" style="color:var(--green);margin-bottom:6px">Chantier créé !</div>
+    <div style="font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:20px" id="code-display-chantier-name">—</div>
+
+    <!-- Code en grand -->
+    <div style="background:linear-gradient(135deg,var(--orange-light),#FFF5F0);border:2.5px solid var(--orange);border-radius:18px;padding:20px 16px 16px;margin-bottom:16px">
+      <div style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:10px">🔑 CODE UNIQUE DU CHANTIER</div>
+      <div id="code-display-value" style="font-family:var(--font-head);font-size:48px;font-weight:800;letter-spacing:14px;color:var(--text);margin-bottom:12px">———</div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.5;margin-bottom:14px">Partagez ce code avec les membres de votre équipe pour qu'ils puissent rejoindre ce chantier</div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button onclick="copierCodeChantier()" style="display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;border:1.5px solid var(--orange);background:var(--surface);color:var(--orange);font-size:13px;font-weight:600;cursor:pointer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copier
+        </button>
+        <button onclick="partagerCodeChantier()" id="btn-share-code" style="display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;border:1.5px solid var(--blue);background:var(--blue-light);color:var(--blue);font-size:13px;font-weight:600;cursor:pointer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Partager
+        </button>
+      </div>
+    </div>
+
+    <!-- Info membres -->
+    <div style="background:var(--blue-light);border:1.5px solid var(--blue);border-radius:12px;padding:12px 14px;margin-bottom:18px;text-align:left">
+      <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:6px">📲 Comment partager ?</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6">Les membres de votre équipe doivent choisir <b>«&nbsp;Agent de terrain&nbsp;»</b> sur l'écran d'accueil, puis saisir ce code pour rejoindre le chantier.</div>
+    </div>
+
+    <button class="btn-primary" style="background:var(--orange);border-color:var(--orange);padding:15px;font-size:15px;width:100%" onclick="accederChantierDepuisCode()">
+      🏗️ Accéder à mon chantier →
+    </button>
+    <button onclick="showFirebaseScreen('admin-create-chantier-screen')" style="background:none;border:none;font-size:12px;color:var(--text3);cursor:pointer;padding:10px 0;width:100%;margin-top:6px">
+      + Créer un autre chantier
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN B3 : AGENT — CODE CHANTIER
+════════════════════════════════════════════ -->
+<div id="agent-join-screen" class="fb-screen" style="display:none">
+  <div class="fb-card" style="max-width:380px;width:100%">
+    <button onclick="showFirebaseScreen('role-screen')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--text3);font-size:13px;padding:0;margin-bottom:24px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Retour
+    </button>
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="width:60px;height:60px;background:var(--blue);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px">🦺</div>
+      <div class="fb-title">Accès Chantier</div>
+      <div class="fb-sub" style="margin-bottom:0">Entrez le code communiqué par votre responsable HSE</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="font-size:12px;font-weight:700;text-align:center;display:block">CODE CHANTIER</label>
+      <input class="form-input" id="agent-code-input" type="text" placeholder="• • • • • •" style="text-transform:uppercase;font-size:28px;letter-spacing:10px;text-align:center;font-weight:800;font-family:var(--font-head);padding:16px" maxlength="8" onkeydown="if(event.key==='Enter')validerAgentCode()" oninput="var s=document.getElementById('agent-status');if(s)s.style.display='none'">
+    </div>
+    <!-- Zone d'erreur -->
+    <div id="agent-status" style="display:none;background:var(--red-light);color:var(--red);border-radius:10px;padding:10px 14px;font-size:12px;font-weight:600;text-align:center;margin-bottom:4px;line-height:1.4"></div>
+    <button id="agent-join-btn" class="btn-primary" style="background:var(--blue);border-color:var(--blue);padding:15px;font-size:15px;margin-top:8px" onclick="validerAgentCode()">
+      Rejoindre le chantier →
+    </button>
+  </div>
+</div>
 
 <!-- ═══════════════ SPLASH SCREEN ═══════════════ -->
 <div id="splash-screen">
@@ -1135,6 +1442,11 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
     </button>
   </div>
 </div>
+
+
+
+
+
 
 <!-- ═══════════════ TOAST ═══════════════ -->
 <div class="toast" id="toast">
@@ -1984,6 +2296,60 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════
+     INTERFACE ADMIN — SHELL AUTONOME
+     Complètement séparé de l'app agent
+═══════════════════════════════════════════════ -->
+<div id="admin-shell" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:800;flex-direction:column;overflow:hidden">
+
+  <!-- TOPBAR ADMIN -->
+  <div style="background:var(--surface);border-bottom:2px solid var(--orange);padding:0 14px;height:58px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px">
+    <div style="display:flex;align-items:center;gap:8px;min-width:0">
+      <button id="admin-back-btn" onclick="adminRetourDashboard()" style="display:none;background:none;border:none;cursor:pointer;padding:6px 2px;flex-shrink:0">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="width:34px;height:34px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🏛️</div>
+      <div style="min-width:0">
+        <div id="admin-shell-title" style="font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--text);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Dashboard Admin</div>
+        <div id="admin-shell-sub" style="font-size:10px;color:var(--text3)">Vue globale · Tous les chantiers</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+      <button id="admin-refresh-btn" class="btn-sm outline" style="font-size:11px" onclick="actualiserDashboardAdmin()">↻</button>
+      <button id="admin-new-btn" class="btn-sm" style="background:var(--orange);color:#fff;font-size:11px;white-space:nowrap" onclick="adminCreerChantierModal()">+ Code</button>
+      <button class="btn-sm outline" style="font-size:11px;color:var(--red);border-color:var(--red);white-space:nowrap" onclick="deconnexionAdmin()">Quitter</button>
+    </div>
+  </div>
+
+  <!-- VUE 1 : LISTE DES CHANTIERS -->
+  <div id="admin-view-liste" style="flex:1;overflow-y:auto;display:flex;flex-direction:column">
+    <div id="admin-kpi-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 16px 10px;flex-shrink:0">
+      <div class="admin-kpi"><div class="admin-kpi-val" id="akpi-chantiers">—</div><div class="admin-kpi-lbl">Chantiers</div></div>
+      <div class="admin-kpi"><div class="admin-kpi-val" id="akpi-incidents" style="color:var(--red)">—</div><div class="admin-kpi-lbl">Incidents</div></div>
+      <div class="admin-kpi"><div class="admin-kpi-val" id="akpi-agents" style="color:var(--blue)">—</div><div class="admin-kpi-lbl">Agents</div></div>
+      <div class="admin-kpi"><div class="admin-kpi-val" id="akpi-capas" style="color:var(--amber)">—</div><div class="admin-kpi-lbl">CAPA ouv.</div></div>
+    </div>
+    <div style="padding:2px 16px 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3)">Chantiers actifs</div>
+    <div id="admin-chantiers-list" style="padding:4px 16px 40px;flex:1">
+      <div style="text-align:center;padding:50px;color:var(--text3)">⏳ Chargement...</div>
+    </div>
+  </div>
+
+  <!-- VUE 2 : DÉTAIL D'UN CHANTIER -->
+  <div id="admin-view-chantier" style="display:none;flex:1;overflow-y:auto;flex-direction:column">
+    <div id="admin-chantier-header" style="background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;flex-shrink:0"></div>
+    <div id="admin-tabs-bar" style="display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0">
+      <button class="admin-tab active" onclick="adminSwitchTab('incidents',this)">⚠️ Incidents</button>
+      <button class="admin-tab" onclick="adminSwitchTab('capas',this)">🔧 CAPA</button>
+      <button class="admin-tab" onclick="adminSwitchTab('personnel',this)">👷 Personnel</button>
+      <button class="admin-tab" onclick="adminSwitchTab('toolboxes',this)">🗣️ Toolbox</button>
+      <button class="admin-tab" onclick="adminSwitchTab('jsas',this)">📋 JSA</button>
+    </div>
+    <div id="admin-tab-content" style="padding:14px 16px 40px;flex:1"></div>
+  </div>
+
+</div>
+
 <nav class="bottom-nav" id="bottom-nav" style="display:none">
   <button class="nav-item active" id="nav-home" onclick="switchScreen('home')">
     <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
@@ -2002,13 +2368,7 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
     <div class="nav-label">Personnel</div>
   </button>
   <button class="nav-item" id="nav-more" onclick="toggleMoreDrawer()">
-    <div class="nav-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <circle cx="5" cy="12" r="1.8" fill="currentColor"/>
-        <circle cx="12" cy="12" r="1.8" fill="currentColor"/>
-        <circle cx="19" cy="12" r="1.8" fill="currentColor"/>
-      </svg>
-    </div>
+    <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg></div>
     <div class="nav-label">Plus</div>
   </button>
 </nav>
@@ -2048,6 +2408,12 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
         <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M12 2a9 9 0 0 1 0 18A9 9 0 0 1 12 2z"/><path d="M12 2c-2.5 4-2.5 14 0 18"/><path d="M2 12h20"/></svg>
       </div>
       <div class="more-nav-lbl">Env HSSE</div>
+    </button>
+    <button class="more-nav-btn" id="more-nav-admin" onclick="moreNavGo('admin')">
+      <div class="more-nav-icon" style="background:var(--orange-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </div>
+      <div class="more-nav-lbl">Dashboard</div>
     </button>
     <button class="more-nav-btn" id="more-nav-hsse" onclick="moreNavGo('hsse')">
       <div class="more-nav-icon" style="background:var(--blue-light)">
@@ -2177,6 +2543,7 @@ body.dark-mode .smart-panel{background:var(--gray-light)}
     </div>
     <button class="btn-primary" style="margin-top:16px" onclick="sauvegarderSettings()">Enregistrer</button>
     <button class="btn-secondary" style="margin-top:8px;border-color:var(--red);color:var(--red)" onclick="demanderReset()">Réinitialiser l'application</button>
+
   </div>
 </div>
 
@@ -3693,6 +4060,10 @@ function save() {
       if (typeof showToast === 'function') showToast('⚠️ Sauvegarde impossible – vérifiez les permissions navigateur', 'err');
     }
   }
+  // Sync Firestore si connecté
+  if (typeof fbDB !== 'undefined' && fbDB && typeof _fbCode !== 'undefined' && _fbCode) {
+    saveToFirestore();
+  }
 }
 function load() {
   try {
@@ -3751,24 +4122,104 @@ load();
 document.addEventListener('DOMContentLoaded', () => {
   setDefaultDates();
 
-  // Splash screen animation
   const splash = document.getElementById('splash-screen');
-  const splashDuration = DB.chantier ? 1600 : 2400;
 
-  setTimeout(() => {
-    splash.classList.add('fade-out');
-    setTimeout(() => {
-      splash.style.display = 'none';
-      if (!DB.chantier) {
-        document.getElementById('setup-screen').style.display = 'flex';
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('setup-date').value = today;
-      } else {
-        startApp();
+  // ── Attendre que le SDK Firebase soit chargé (max 8s) ──
+  function _waitForFirebase(callback, attempts) {
+    attempts = attempts || 0;
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+      callback(true);
+    } else if (attempts > 80) {
+      // Timeout après 8s
+      callback(false);
+    } else {
+      setTimeout(function() { _waitForFirebase(callback, attempts + 1); }, 100);
+    }
+  }
+
+  // Splash minimum 1.6s puis attente Firebase
+  var splashDone = false;
+  var firebaseDone = false;
+  var firebaseOk = false;
+
+  function _tryStart() {
+    if (!splashDone || !firebaseDone) return;
+    splash.style.display = 'none';
+
+    if (!firebaseOk) {
+      _afficherErreurSDK();
+      return;
+    }
+
+    const fbCfg = loadFirebaseCfg();
+    if (!fbCfg || !fbCfg.apiKey || fbCfg.apiKey === 'VOTRE_API_KEY') {
+      _afficherErreurConfig();
+      return;
+    }
+
+    if (initFirebase(fbCfg)) {
+      const lastCode     = localStorage.getItem('vigilo_last_code')     || '';
+      const lastChantier = localStorage.getItem('vigilo_last_chantier') || '';
+      if (lastCode) {
+        var resumeZone  = document.getElementById('role-resume-zone');
+        var resumeLabel = document.getElementById('role-resume-label');
+        if (resumeZone)  resumeZone.style.display = 'block';
+        if (resumeLabel) resumeLabel.textContent = lastChantier
+          ? (lastChantier + '  ·  ' + lastCode)
+          : ('Code : ' + lastCode);
+        var inp = document.getElementById('agent-code-input');
+        if (inp) inp.value = lastCode;
       }
-    }, 520);
-  }, splashDuration);
+      showFirebaseScreen('role-screen');
+    } else {
+      _afficherErreurSDK();
+    }
+  }
+
+  // Timer splash
+  setTimeout(function() {
+    splash.classList.add('fade-out');
+    setTimeout(function() { splashDone = true; _tryStart(); }, 480);
+  }, 1600);
+
+  // Attente Firebase SDK
+  _waitForFirebase(function(ok) {
+    firebaseOk = ok;
+    firebaseDone = true;
+    _tryStart();
+  });
 });
+
+function _afficherErreurSDK() {
+  document.getElementById('splash-screen').style.display = 'none';
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:#1A1A18;display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px';
+  overlay.innerHTML = '<div style="max-width:400px;width:100%;background:#242422;border-radius:20px;padding:28px 24px;text-align:center;border:1.5px solid #C44040">'
+    + '<div style="font-size:40px;margin-bottom:16px">📡</div>'
+    + '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:800;color:#E8E6DE;margin-bottom:10px">Connexion impossible</div>'
+    + '<div style="font-size:13px;color:#8A8880;line-height:1.7;margin-bottom:20px">Le service cloud n\'a pas pu se charger.<br>Vérifiez votre connexion internet puis rechargez la page.</div>'
+    + '<button onclick="location.reload()" style="background:#D85A30;border:none;color:#fff;padding:13px 28px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;width:100%">🔄 Réessayer</button>'
+    + '</div>';
+  document.body.appendChild(overlay);
+}
+
+function _afficherErreurConfig() {
+  // Afficher un message clair si la config n'est pas remplie
+  document.getElementById('splash-screen').style.display = 'none';
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:#1A1A18;display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px';
+  overlay.innerHTML = '<div style="max-width:420px;width:100%;background:#242422;border-radius:20px;padding:28px 24px;text-align:center;border:1.5px solid #D85A30">'
+    + '<div style="font-size:40px;margin-bottom:16px">🔥</div>'
+    + '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:800;color:#E8E6DE;margin-bottom:10px">Configuration requise</div>'
+    + '<div style="font-size:13px;color:#8A8880;line-height:1.7;margin-bottom:20px">'
+    + 'Ouvrez ce fichier HTML dans un éditeur de code et renseignez votre configuration Firebase dans la variable <code style="background:#2A2A28;padding:2px 6px;border-radius:4px;color:#E8733E">VIGILO_FIREBASE_CONFIG</code> (ligne ~3880).'
+    + '</div>'
+    + '<div style="background:#1A1A18;border-radius:12px;padding:14px;font-family:monospace;font-size:12px;color:#8BBF44;text-align:left;line-height:1.9">'
+    + 'apiKey: "AIzaSy..."<br>projectId: "mon-projet"<br>appId: "1:123:web:abc"'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(overlay);
+}
 
 function setDefaultDates() {
   const today = new Date().toISOString().split('T')[0];
@@ -3780,12 +4231,19 @@ function setDefaultDates() {
 function startApp() {
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('bottom-nav').style.display = 'flex';
-  document.getElementById('fab-btn').style.display = 'flex';
+  // FAB incident : visible seulement pour les agents (pas les admins)
+  if (!_isAdmin) {
+    document.getElementById('fab-btn').style.display = 'flex';
+  }
   _appliquerTheme();
   switchScreen('home');
   initSignaturePads();
   loadWeather();
   updateUrgenceStrip();
+  // Sync Firestore si connecté en tant qu'agent
+  if (fbDB && _fbCode && !_isAdmin) {
+    saveToFirestore();
+  }
 
   // Fermer la recherche avec Escape
   document.addEventListener('keydown', function(e) {
@@ -3800,7 +4258,7 @@ function startApp() {
     const msJusquMinuit = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0, 0, 5) - now;
     setTimeout(function() {
       if (currentScreen === 'home') renderHome();
-      planifierMinuit(); // replanifier pour le lendemain
+      planifierMinuit();
     }, msJusquMinuit);
   }
   planifierMinuit();
@@ -3823,6 +4281,10 @@ function validerSetup() {
     dateDebut: document.getElementById('setup-date').value
   };
   save();
+  // Sync Firestore si connecté
+  if (typeof fbDB !== 'undefined' && fbDB && typeof _fbCode !== 'undefined' && _fbCode) {
+    saveToFirestore();
+  }
   startApp();
   showToast('Chantier configuré ! Bienvenue ' + nom);
 }
@@ -3900,7 +4362,7 @@ function switchScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const s = document.getElementById('screen-'+name);
-  const _secondary = ['toolbox','tournee','formation','exports','env','hsse'];
+  const _secondary = ['toolbox','tournee','formation','exports','env','hsse','admin'];
   const n = _secondary.includes(name)
     ? document.getElementById('nav-more')
     : document.getElementById('nav-'+name);
@@ -3916,6 +4378,7 @@ function switchScreen(name) {
   if (name === 'exports') renderExports();
   if (name === 'tournee') renderTournee();
   if (name === 'hsse') renderHSSE();
+  if (name === 'admin') renderAdminDashboard();
 }
 
 // ═══════════════════════════════════════════════
@@ -15882,6 +16345,1141 @@ function genererAfficheHSSE(idx) {
 (function() {
   var _origLoad = load;
 })();
+
+
+// ═══════════════════════════════════════════════
+// FIREBASE — SYNC TEMPS RÉEL & ADMIN DASHBOARD
+// ═══════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════
+// ⚙️  CONFIGURATION FIREBASE — À REMPLIR UNE SEULE FOIS
+//     (ne jamais partager ce fichier avec vos clés en clair)
+// ═══════════════════════════════════════════════════════
+const VIGILO_FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyAjv6k00Z0CLYJxggwMK-nLiJVPxAhoJpI",
+  authDomain:        "hsegest.firebaseapp.com",
+  projectId:         "hsegest",
+  storageBucket:     "hsegest.firebasestorage.app",
+  messagingSenderId: "962222547907",
+  appId:             "1:962222547907:web:9f60dca92a7f87e9fd9376",
+  measurementId:     "G-KB78KBZWSN"
+};
+// ═══════════════════════════════════════════════════════
+
+const FB_COLLECTION = 'vigilo_chantiers';
+
+let fbApp = null;
+let fbDB  = null;
+let fbListener = null;
+let _fbCode    = null;
+let _isAdmin   = false;
+let _adminViewCode = null;
+
+// Config toujours disponible (embarquée)
+function loadFirebaseCfg() {
+  return VIGILO_FIREBASE_CONFIG;
+}
+function saveFirebaseCfg(cfg) {
+  // no-op : config embarquée, pas de localStorage nécessaire
+}
+
+// ── Init Firebase ────────────────────────────────
+function initFirebase(cfg) {
+  if (fbApp && fbDB) return true;
+
+  // Vérifier que le SDK Firebase est bien chargé
+  if (typeof firebase === 'undefined') {
+    console.error('[Firebase] SDK non chargé — vérifiez votre connexion internet');
+    return false;
+  }
+
+  try {
+    // Supprimer les apps existantes pour éviter les doublons
+    var apps = firebase.apps ? Array.from(firebase.apps) : [];
+    if (apps.length > 0) {
+      fbApp = apps[0];
+    } else {
+      fbApp = firebase.initializeApp({
+        apiKey:            cfg.apiKey,
+        authDomain:        cfg.authDomain        || (cfg.projectId + '.firebaseapp.com'),
+        projectId:         cfg.projectId,
+        storageBucket:     cfg.storageBucket     || (cfg.projectId + '.appspot.com'),
+        messagingSenderId: cfg.messagingSenderId || '',
+        appId:             cfg.appId             || '1:000000000000:web:000000',
+        measurementId:     cfg.measurementId     || ''
+      });
+    }
+    fbDB = firebase.firestore();
+    console.log('[Firebase] ✅ Connecté au projet:', cfg.projectId);
+    return true;
+  } catch(e) {
+    console.error('[Firebase] Init error:', e);
+    fbApp = null; fbDB = null;
+    return false;
+  }
+}
+
+// ── Save vers Firestore ──────────────────────────
+function saveToFirestore() {
+  if (!fbDB || !_fbCode) return;
+  const payload = JSON.parse(JSON.stringify(DB));
+  // Supprimer le logo base64 si trop lourd (limite Firestore 1MB/doc)
+  if (payload.logo && typeof payload.logo === 'string' && payload.logo.length > 500000) {
+    delete payload.logo;
+  }
+  // Supprimer TETRIS_LOGO_DEFAULT si présent
+  payload._syncedAt = new Date().toISOString();
+  fbDB.collection(FB_COLLECTION).doc(_fbCode).set(payload)
+    .catch(function(e) { console.error('[Firestore] Save err:', e.message); });
+}
+
+// ── Load depuis Firestore ────────────────────────
+async function loadFromFirestore(code) {
+  if (!fbDB) return false;
+  try {
+    const doc = await fbDB.collection(FB_COLLECTION).doc(code).get();
+    if (doc.exists) {
+      const data = doc.data();
+      DB = data;
+      _normaliserDB();
+      return true;
+    }
+    return false;
+  } catch(e) {
+    console.error('[Firestore] Load err:', e.message);
+    return false;
+  }
+}
+
+// ── Listener temps réel ──────────────────────────
+function subscribeFirestore(code) {
+  if (fbListener) { fbListener(); fbListener = null; }
+  if (!fbDB) return;
+  fbListener = fbDB.collection(FB_COLLECTION).doc(code).onSnapshot(function(doc) {
+    if (doc.exists && !doc.metadata.hasPendingWrites) {
+      DB = doc.data();
+      _normaliserDB();
+      // Rafraîchir l'écran courant
+      if (typeof currentScreen !== 'undefined' && currentScreen) {
+        try {
+          if (currentScreen === 'home') renderHome();
+          else if (currentScreen === 'incidents') renderIncidents();
+          else if (currentScreen === 'personnel') renderPersonnel();
+          else if (currentScreen === 'jsa') { renderJSA(); renderPermis(); }
+        } catch(err) {}
+      }
+      updateUrgenceStrip();
+    }
+  }, function(err) {
+    console.warn('[Firestore] Listener error:', err.message);
+  });
+}
+
+function disconnectFirestore() {
+  if (fbListener) { fbListener(); fbListener = null; }
+  _fbCode = null;
+  _adminViewCode = null;
+}
+
+function _normaliserDB() {
+  if (!DB.config)    DB.config    = {};
+  if (!DB.config.urgence) DB.config.urgence = {};
+  if (!DB.incidents)   DB.incidents   = [];
+  if (!DB.inductions)  DB.inductions  = [];
+  if (!DB.jsas)        DB.jsas        = [];
+  if (!DB.toolboxes)   DB.toolboxes   = [];
+  if (!DB.capas)       DB.capas       = [];
+  if (!DB.epis)        DB.epis        = [];
+  if (!DB.personnel)   DB.personnel   = [];
+  if (!DB.activity)    DB.activity    = [];
+  if (!DB.permis)      DB.permis      = [];
+  if (!DB.formations)  DB.formations  = [];
+  if (!DB.hsse)        DB.hsse        = {};
+  if (!DB.capaCounter) DB.capaCounter = 1;
+  if (!DB.permisCounter) DB.permisCounter = 1;
+}
+
+// ── Générer un code unique ───────────────────────
+function genererCode() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var code = '';
+  for (var i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+// ══════════════════════════════════════════════════
+// GESTION DES ÉCRANS FIREBASE
+// ══════════════════════════════════════════════════
+
+var _FB_SCREENS = ['role-screen','admin-auth-screen','admin-create-chantier-screen','admin-code-display-screen','agent-join-screen'];
+
+function showFirebaseScreen(id) {
+  // Masquer tous les écrans firebase
+  _FB_SCREENS.forEach(function(s) {
+    var el = document.getElementById(s);
+    if (el) el.style.display = 'none';
+  });
+  // Afficher l'écran demandé
+  var target = document.getElementById(id);
+  if (target) target.style.display = 'flex';
+
+  // Masquer l'app et le shell admin
+  ['splash-screen','setup-screen','bottom-nav','fab-btn'].forEach(function(s) {
+    var el = document.getElementById(s);
+    if (el) el.style.display = 'none';
+  });
+  _fermerAdminShell();
+
+  // ── Logique spécifique par écran ──
+
+  // Choix de rôle : bouton "Continuer ma session" si code mémorisé
+  if (id === 'role-screen') {
+    var lastCode = '';
+    var lastChantier = '';
+    try { lastCode    = localStorage.getItem('vigilo_last_code')     || ''; } catch(e) {}
+    try { lastChantier = localStorage.getItem('vigilo_last_chantier') || ''; } catch(e) {}
+    var resumeZone  = document.getElementById('role-resume-zone');
+    var resumeLabel = document.getElementById('role-resume-label');
+    if (lastCode && resumeZone) {
+      resumeZone.style.display = 'block';
+      if (resumeLabel) resumeLabel.textContent = lastChantier
+        ? (lastChantier + '  ·  ' + lastCode)
+        : ('Code : ' + lastCode);
+    } else if (resumeZone) {
+      resumeZone.style.display = 'none';
+    }
+  }
+
+  // Écran agent : pré-remplir le code mémorisé + focus
+  if (id === 'agent-join-screen') {
+    var lastCode2 = '';
+    try { lastCode2 = localStorage.getItem('vigilo_last_code') || ''; } catch(e) {}
+    var inp = document.getElementById('agent-code-input');
+    if (inp) {
+      inp.value = lastCode2;
+      setTimeout(function() { inp.focus(); }, 100);
+    }
+  }
+
+  // Écran admin-auth : réinitialiser les statuts
+  if (id === 'admin-auth-screen') {
+    _setAuthStatus && _setAuthStatus('admin-login-status', '', '');
+    _setAuthStatus && _setAuthStatus('admin-register-status', '', '');
+    // Reset to login tab
+    setTimeout(function() {
+      var loginBtn = document.getElementById('tab-login-btn');
+      var regBtn   = document.getElementById('tab-register-btn');
+      var loginPan = document.getElementById('auth-panel-login');
+      var regPan   = document.getElementById('auth-panel-register');
+      if (loginBtn) loginBtn.classList.add('active');
+      if (regBtn)   regBtn.classList.remove('active');
+      if (loginPan) loginPan.classList.add('active');
+      if (regPan)   regPan.classList.remove('active');
+      var el = document.getElementById('admin-login-email');
+      if (el) { el.value = ''; el.focus(); }
+      var pl = document.getElementById('admin-login-pass');
+      if (pl) pl.value = '';
+    }, 100);
+  }
+
+  // Écran création chantier : pré-remplir la date
+  if (id === 'admin-create-chantier-screen') {
+    var ncDate = document.getElementById('nc-date');
+    if (ncDate && !ncDate.value) ncDate.value = new Date().toISOString().split('T')[0];
+    // Pré-remplir depuis le profil admin si disponible
+    if (_currentAdminData) {
+      var ncEnt  = document.getElementById('nc-entreprise');
+      var ncResp = document.getElementById('nc-responsable');
+      if (ncEnt  && !ncEnt.value  && _currentAdminData.entreprise) ncEnt.value  = _currentAdminData.entreprise;
+      if (ncResp && !ncResp.value && _currentAdminData.nom)        ncResp.value = _currentAdminData.nom;
+    }
+    setTimeout(function() { var el = document.getElementById('nc-nom'); if (el) el.focus(); }, 100);
+  }
+}
+
+function hideAllFirebaseScreens() {
+  _FB_SCREENS.forEach(function(s) {
+    var el = document.getElementById(s);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function reconfigurerFirebase() {
+  try { localStorage.removeItem('vigilo_firebase_cfg_v1'); } catch(e) {}
+  try { localStorage.removeItem('vigilo_last_code'); } catch(e) {}
+  try { localStorage.removeItem('vigilo_last_chantier'); } catch(e) {}
+  fbApp = null; fbDB = null;
+  disconnectFirestore();
+  _isAdmin = false;
+  var nav = document.getElementById('bottom-nav');
+  var fab = document.getElementById('fab-btn');
+  if (nav) nav.style.display = 'none';
+  if (fab) fab.style.display = 'none';
+  var banner = document.getElementById('admin-banner');
+  if (banner) banner.style.display = 'none';
+  document.body.classList.remove('admin-viewing');
+  // Config embarquée — pas de champs à vider
+  showFirebaseScreen('role-screen');
+  showToast('Reconnectez-vous');
+}
+
+function utiliserSansFirebase() {
+  // Sauvegarde une config vide pour ne plus montrer l'écran Firebase
+  saveFirebaseCfg({ apiKey:'', projectId:'', adminCode:'', offline:true });
+  hideAllFirebaseScreens();
+  // Flux normal
+  if (!DB.chantier) {
+    document.getElementById('setup-screen').style.display = 'flex';
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById('setup-date').value = today;
+  } else {
+    startApp();
+  }
+}
+
+// ── validerFirebaseConfig : no-op (config embarquée) ──
+async function validerFirebaseConfig() {
+  showToast('Config Firebase embarquée dans le code source.', 'info');
+}
+
+// ── Rôles ────────────────────────────────────────
+function choisirAdmin() {
+  showFirebaseScreen('admin-auth-screen');
+}
+
+function choisirAgent() {
+  showFirebaseScreen('agent-join-screen');
+  setTimeout(function() {
+    var el = document.getElementById('agent-code-input');
+    if (el) el.focus();
+  }, 200);
+}
+
+// ── Helpers auth ─────────────────────────────────
+function togglePassVisibility(inputId, btn) {
+  var inp = document.getElementById(inputId);
+  if (!inp) return;
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
+}
+
+function switchAdminAuthTab(tab) {
+  var loginBtn = document.getElementById('tab-login-btn');
+  var regBtn   = document.getElementById('tab-register-btn');
+  var loginPan = document.getElementById('auth-panel-login');
+  var regPan   = document.getElementById('auth-panel-register');
+  if (tab === 'login') {
+    loginBtn.classList.add('active'); regBtn.classList.remove('active');
+    loginPan.classList.add('active'); regPan.classList.remove('active');
+    setTimeout(function() { var el = document.getElementById('admin-login-email'); if (el) el.focus(); }, 100);
+  } else {
+    regBtn.classList.add('active'); loginBtn.classList.remove('active');
+    regPan.classList.add('active'); loginPan.classList.remove('active');
+    setTimeout(function() { var el = document.getElementById('reg-nom'); if (el) el.focus(); }, 100);
+  }
+}
+
+function _setAuthStatus(elId, msg, type) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  el.style.display = msg ? 'block' : 'none';
+  el.style.background = type === 'err' ? 'var(--red-light)' : 'var(--green-light)';
+  el.style.color       = type === 'err' ? 'var(--red)' : 'var(--green)';
+  el.textContent = msg;
+}
+
+function _emailToKey(email) {
+  return email.toLowerCase().replace(/[@.]/g, function(c){ return c === '@' ? '_at_' : '_dot_'; });
+}
+
+const FB_ADMINS = 'vigilo_admins';
+
+// ── Connexion admin (email + mot de passe) ───────
+async function connexionAdminEmail() {
+  var email = (document.getElementById('admin-login-email') || {}).value;
+  var pass  = (document.getElementById('admin-login-pass')  || {}).value;
+  if (email) email = email.trim().toLowerCase();
+  if (pass)  pass  = pass.trim();
+
+  _setAuthStatus('admin-login-status', '', '');
+
+  if (!email || !email.includes('@')) { _setAuthStatus('admin-login-status', '❌ Adresse e-mail invalide', 'err'); return; }
+  if (!pass || pass.length < 4) { _setAuthStatus('admin-login-status', '❌ Mot de passe trop court', 'err'); return; }
+
+  if (!fbDB) { _setAuthStatus('admin-login-status', '❌ Firebase non connecté', 'err'); return; }
+
+  var btn = document.getElementById('admin-login-btn');
+  if (btn) { btn.textContent = '⏳ Connexion...'; btn.disabled = true; }
+
+  try {
+    var key = _emailToKey(email);
+    var doc = await fbDB.collection(FB_ADMINS).doc(key).get();
+    if (!doc.exists) {
+      _setAuthStatus('admin-login-status', '❌ Compte introuvable — vérifiez votre e-mail ou créez un compte', 'err');
+      if (btn) { btn.textContent = 'Se connecter →'; btn.disabled = false; }
+      return;
+    }
+    var adminData = doc.data();
+    if (adminData.password !== pass) {
+      _setAuthStatus('admin-login-status', '❌ Mot de passe incorrect', 'err');
+      if (btn) { btn.textContent = 'Se connecter →'; btn.disabled = false; }
+      var passEl = document.getElementById('admin-login-pass');
+      if (passEl) { passEl.value = ''; passEl.focus(); }
+      return;
+    }
+    // Succès
+    _currentAdminData = adminData;
+    _isAdmin = true;
+    _fbCode = null;
+    if (btn) { btn.textContent = 'Se connecter →'; btn.disabled = false; }
+    _appliquerTheme();
+    _ouvrirAdminShell();
+    setTimeout(function() { renderAdminDashboard(); }, 50);
+    showToast('👑 Bienvenue, ' + (adminData.nom || 'Administrateur'));
+  } catch(e) {
+    _setAuthStatus('admin-login-status', '❌ Erreur : ' + e.message, 'err');
+    if (btn) { btn.textContent = 'Se connecter →'; btn.disabled = false; }
+  }
+}
+
+// ── Création de compte admin ──────────────────────
+async function creerCompteAdmin() {
+  var nom        = (document.getElementById('reg-nom')        || {}).value;
+  var tel        = (document.getElementById('reg-tel')        || {}).value;
+  var email      = (document.getElementById('reg-email')      || {}).value;
+  var entreprise = (document.getElementById('reg-entreprise') || {}).value;
+  var fonction   = (document.getElementById('reg-fonction')   || {}).value;
+  var pass       = (document.getElementById('reg-pass')       || {}).value;
+  var pass2      = (document.getElementById('reg-pass2')      || {}).value;
+
+  if (nom)   nom   = nom.trim();
+  if (tel)   tel   = tel.trim();
+  if (email) email = email.trim().toLowerCase();
+  if (pass)  pass  = pass.trim();
+  if (pass2) pass2 = pass2.trim();
+
+  _setAuthStatus('admin-register-status', '', '');
+
+  if (!nom)  { _setAuthStatus('admin-register-status', '❌ Nom obligatoire', 'err'); return; }
+  if (!tel)  { _setAuthStatus('admin-register-status', '❌ Téléphone obligatoire', 'err'); return; }
+  if (!email || !email.includes('@')) { _setAuthStatus('admin-register-status', '❌ Adresse e-mail invalide', 'err'); return; }
+  if (!pass || pass.length < 6)  { _setAuthStatus('admin-register-status', '❌ Mot de passe trop court (minimum 6 caractères)', 'err'); return; }
+  if (pass !== pass2) { _setAuthStatus('admin-register-status', '❌ Les mots de passe ne correspondent pas', 'err'); return; }
+
+  if (!fbDB) { _setAuthStatus('admin-register-status', '❌ Firebase non connecté', 'err'); return; }
+
+  var btn = document.getElementById('admin-register-btn');
+  if (btn) { btn.textContent = '⏳ Création en cours...'; btn.disabled = true; }
+
+  try {
+    var key = _emailToKey(email);
+    // Vérifier si le compte existe déjà
+    var existing = await fbDB.collection(FB_ADMINS).doc(key).get();
+    if (existing.exists) {
+      _setAuthStatus('admin-register-status', '❌ Un compte existe déjà avec cet e-mail — connectez-vous', 'err');
+      if (btn) { btn.textContent = '✨ Créer mon compte →'; btn.disabled = false; }
+      return;
+    }
+
+    // Créer le compte
+    var adminData = {
+      nom: nom, telephone: tel, email: email,
+      entreprise: entreprise || '', fonction: fonction || '',
+      password: pass,
+      createdAt: new Date().toISOString(),
+      chantiers: []
+    };
+    await fbDB.collection(FB_ADMINS).doc(key).set(adminData);
+    _currentAdminData = adminData;
+
+    if (btn) { btn.textContent = '✨ Créer mon compte →'; btn.disabled = false; }
+    showToast('✅ Compte créé — créez maintenant votre premier chantier !');
+
+    // Pré-remplir le formulaire de création de chantier
+    var ncEnt  = document.getElementById('nc-entreprise');
+    var ncResp = document.getElementById('nc-responsable');
+    var ncDate = document.getElementById('nc-date');
+    if (ncEnt && entreprise)  ncEnt.value = entreprise;
+    if (ncResp && nom) ncResp.value = nom;
+    if (ncDate) ncDate.value = new Date().toISOString().split('T')[0];
+
+    // Changer le back-btn pour ne pas retourner sur auth
+    var backBtn = document.getElementById('create-chantier-back-btn');
+    if (backBtn) backBtn.style.display = 'none'; // Premier chantier obligatoire après inscription
+
+    showFirebaseScreen('admin-create-chantier-screen');
+  } catch(e) {
+    _setAuthStatus('admin-register-status', '❌ Erreur : ' + e.message, 'err');
+    if (btn) { btn.textContent = '✨ Créer mon compte →'; btn.disabled = false; }
+  }
+}
+
+// ── Créer un chantier ─────────────────────────────
+var _currentAdminData = null;
+var _lastCreatedCode  = null;
+
+async function validerCreationChantier() {
+  var nomC      = (document.getElementById('nc-nom')          || {}).value;
+  var typeC     = (document.getElementById('nc-type')         || {}).value;
+  var dateC     = (document.getElementById('nc-date')         || {}).value;
+  var adresse   = (document.getElementById('nc-adresse')      || {}).value;
+  var entreprise= (document.getElementById('nc-entreprise')   || {}).value;
+  var responsable= (document.getElementById('nc-responsable') || {}).value;
+
+  if (nomC) nomC = nomC.trim();
+
+  var statusEl = document.getElementById('create-chantier-status');
+  function setStatus(msg, type) {
+    if (!statusEl) return;
+    statusEl.style.display = msg ? 'block' : 'none';
+    statusEl.style.background = type === 'err' ? 'var(--red-light)' : 'var(--green-light)';
+    statusEl.style.color = type === 'err' ? 'var(--red)' : 'var(--green)';
+    statusEl.textContent = msg;
+  }
+
+  setStatus('', '');
+  if (!nomC) { setStatus('❌ Le nom du chantier est obligatoire', 'err'); return; }
+  if (!dateC) { setStatus('❌ La date de début est obligatoire', 'err'); return; }
+  if (!fbDB) { setStatus('❌ Firebase non connecté', 'err'); return; }
+
+  var btn = document.getElementById('create-chantier-btn');
+  if (btn) { btn.textContent = '⏳ Création...'; btn.disabled = true; }
+
+  try {
+    var code = genererCode();
+    // S'assurer que le code est unique
+    var tries = 0;
+    while (tries < 5) {
+      var check = await fbDB.collection(FB_COLLECTION).doc(code).get();
+      if (!check.exists) break;
+      code = genererCode(); tries++;
+    }
+
+    var chantierDoc = {
+      chantier: nomC,
+      _codeGenereParAdmin: true,
+      _createdAt: new Date().toISOString(),
+      _adminEmail: _currentAdminData ? _currentAdminData.email : '',
+      config: {
+        nom: responsable || (_currentAdminData ? _currentAdminData.nom : ''),
+        fonction: (_currentAdminData ? _currentAdminData.fonction : '') || 'Responsable HSE',
+        entreprise: entreprise || (_currentAdminData ? _currentAdminData.entreprise : ''),
+        dateDebut: dateC,
+        adresse: adresse || '',
+        typeChantier: typeC || '',
+        urgence: {}
+      },
+      incidents: [], inductions: [], jsas: [], toolboxes: [],
+      capas: [], epis: [], personnel: [], activity: [],
+      permis: [], formations: [], hsse: {},
+      capaCounter: 1, permisCounter: 1
+    };
+
+    await fbDB.collection(FB_COLLECTION).doc(code).set(chantierDoc);
+    _lastCreatedCode = code;
+
+    // Mettre à jour le compte admin avec le code chantier
+    if (_currentAdminData && _currentAdminData.email) {
+      var key = _emailToKey(_currentAdminData.email);
+      await fbDB.collection(FB_ADMINS).doc(key).update({
+        chantiers: firebase.firestore.FieldValue.arrayUnion(code)
+      });
+      if (_currentAdminData.chantiers) _currentAdminData.chantiers.push(code);
+    }
+
+    if (btn) { btn.textContent = '🏗️ Créer le chantier →'; btn.disabled = false; }
+
+    // Afficher l'écran du code
+    var codeVal  = document.getElementById('code-display-value');
+    var codeName = document.getElementById('code-display-chantier-name');
+    if (codeVal)  codeVal.textContent  = code;
+    if (codeName) codeName.textContent = '« ' + nomC + ' » — Créé le ' + new Date().toLocaleDateString('fr-FR');
+
+    showFirebaseScreen('admin-code-display-screen');
+    showToast('✅ Chantier créé avec succès !');
+
+    // Réinitialiser le formulaire
+    ['nc-nom','nc-adresse','nc-entreprise','nc-responsable'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    var ncType = document.getElementById('nc-type'); if (ncType) ncType.value = '';
+    var ncDate = document.getElementById('nc-date'); if (ncDate) ncDate.value = new Date().toISOString().split('T')[0];
+    var backBtn = document.getElementById('create-chantier-back-btn');
+    if (backBtn) backBtn.style.display = '';
+
+  } catch(e) {
+    setStatus('❌ Erreur : ' + e.message, 'err');
+    if (btn) { btn.textContent = '🏗️ Créer le chantier →'; btn.disabled = false; }
+  }
+}
+
+function copierCodeChantier() {
+  var code = _lastCreatedCode || (document.getElementById('code-display-value') || {}).textContent;
+  if (!code) return;
+  navigator.clipboard && navigator.clipboard.writeText(code)
+    .then(function() { showToast('📋 Code ' + code + ' copié !'); })
+    .catch(function() { showToast('Code : ' + code + ' — notez-le bien !'); });
+}
+
+function partagerCodeChantier() {
+  var code = _lastCreatedCode || (document.getElementById('code-display-value') || {}).textContent;
+  var chantierName = (document.getElementById('code-display-chantier-name') || {}).textContent || '';
+  var line1 = '\uD83C\uDFD7\uFE0F Rejoignez mon chantier sur VIGILO !';
+  var line2 = '\u25B6 Code : ' + code;
+  var line3 = '1. Ouvrez VIGILO';
+  var line4 = '2. Choisissez "Agent de terrain"';
+  var line5 = '3. Entrez le code : ' + code;
+  var text = [line1, '', line2, '', line3, line4, line5].join('\n');
+  if (navigator.share) {
+    navigator.share({ title: 'Code chantier VIGILO', text: text })
+      .catch(function() {});
+  } else {
+    navigator.clipboard && navigator.clipboard.writeText(text)
+      .then(function() { showToast('\uD83D\uDCCB Message copié pour partage !'); })
+      .catch(function() { showToast('Code : ' + code + ' — partagez-le manuellement'); });
+  }
+}
+function accederChantierDepuisCode() {
+  var code = _lastCreatedCode;
+  if (!code) { showFirebaseScreen('role-screen'); return; }
+  hideAllFirebaseScreens();
+  _isAdmin = true;
+  _fbCode = null;
+  _appliquerTheme();
+  _ouvrirAdminShell();
+  setTimeout(function() { renderAdminDashboard(); }, 50);
+  showToast('👑 Tableau de bord administrateur');
+}
+
+// ── Admin login (legacy - kept for compatibility) ─
+async function validerAdminLogin() {
+  connexionAdminEmail();
+}
+
+// ── Agent rejoindre chantier ─────────────────────
+async function validerAgentCode() {
+  var raw = document.getElementById('agent-code-input').value.trim().toUpperCase();
+  if (!raw || raw.length < 4) {
+    showToast('Code invalide — minimum 4 caractères', 'err'); return;
+  }
+  var code = raw;
+
+  // Bouton en chargement
+  var btn = document.getElementById('agent-join-btn');
+  if (btn) { btn.textContent = '⏳ Vérification...'; btn.disabled = true; }
+
+  _fbCode = code;
+  _isAdmin = false;
+
+  var exists = await loadFromFirestore(code);
+
+  if (btn) { btn.textContent = 'Rejoindre le chantier →'; btn.disabled = false; }
+
+  // ── Code introuvable → ACCÈS REFUSÉ ──────────────
+  if (!exists) {
+    _fbCode = null;
+    var inp = document.getElementById('agent-code-input');
+    if (inp) { inp.value = ''; inp.focus(); }
+    showToast('❌ Code introuvable — vérifiez avec votre responsable', 'err');
+    var st = document.getElementById('agent-status');
+    if (st) {
+      st.style.display = 'block';
+      st.textContent = '❌ Code « ' + code + ' » introuvable. Vérifiez avec votre responsable HSE.';
+    }
+    return;
+  }
+
+  // ── Code valide → accès autorisé ─────────────────
+  try {
+    localStorage.setItem('vigilo_last_code', code);
+    if (DB.chantier) localStorage.setItem('vigilo_last_chantier', DB.chantier);
+  } catch(e) {}
+
+  subscribeFirestore(code);
+  hideAllFirebaseScreens();
+
+  // Si le chantier n'est pas encore configuré (nouveau ou placeholder admin)
+  if (!DB.chantier) {
+    document.getElementById('setup-screen').style.display = 'flex';
+    var today = new Date().toISOString().split('T')[0];
+    var sd = document.getElementById('setup-date');
+    if (sd) sd.value = today;
+    showToast('Bienvenue ! Configurez votre chantier ' + code);
+    return;
+  }
+
+  _demarrerAppAgent();
+  showToast('✅ Bienvenue sur ' + (DB.chantier || code));
+}
+
+// ── Reprendre la session précédente ──────────────
+async function resumeAgentSession() {
+  var code = localStorage.getItem('vigilo_last_code') || '';
+  if (!code) return;
+  var inp = document.getElementById('agent-code-input');
+  if (inp) inp.value = code;
+  await validerAgentCode();
+}
+
+// ── Générer un code et le mettre dans le champ ───
+function genererEtRemplirCode() {
+  var code = genererCode();
+  var inp = document.getElementById('agent-code-input');
+  if (inp) { inp.value = code; inp.focus(); }
+  showToast('Code généré : ' + code + ' — notez-le !');
+}
+
+// ── Démarrer l'app en mode Agent ─────────────────
+function _demarrerAppAgent() {
+  hideAllFirebaseScreens();
+  // Indicateur de rôle Agent dans la topbar
+  _afficherIndicateurAgent();
+  startApp();
+}
+
+// ── Indicateur rôle agent (topbar) ───────────────
+function _afficherIndicateurAgent() {
+  var sub = document.getElementById('topbar-sub');
+  if (sub && DB.config && DB.config.nom) {
+    sub.innerHTML = '<span style="color:var(--blue);font-weight:600">🦺 ' + DB.config.nom + '</span> · ' + (DB.chantier || _fbCode || '');
+  }
+}
+
+function creerNouveauChantier() {
+  var code = genererCode();
+  // Afficher dans une confirmation pour que l'admin puisse noter le code
+  showConfirm(
+    '🏗️ Nouveau code chantier généré',
+    'Code : ' + code + '\n\nCommuniquez ce code à votre agent de terrain. Il l\'utilisera pour créer et accéder au chantier.',
+    function() {
+      navigator.clipboard && navigator.clipboard.writeText(code).then(function() {
+        showToast('📋 Code ' + code + ' copié dans le presse-papiers !');
+      }).catch(function() {
+        showToast('Code chantier : ' + code + ' — notez-le !');
+      });
+    }
+  );
+  // Toast immédiat aussi
+  showToast('Code généré : ' + code);
+}
+
+// ══════════════════════════════════════════════════
+// INTERFACE ADMIN — LOGIQUE COMPLÈTE
+// Séparée de l'app agent, jamais de switchScreen
+// ══════════════════════════════════════════════════
+
+// Variable pour stocker les données du chantier en cours de consultation
+var _adminChantierData = null;
+var _adminCurrentTab   = 'incidents';
+
+// ── Ouvrir le shell admin ─────────────────────────
+function _ouvrirAdminShell() {
+  // Masquer tous les écrans firebase
+  _FB_SCREENS.forEach(function(s) {
+    var el = document.getElementById(s);
+    if (el) el.style.display = 'none';
+  });
+  // Masquer l'app agent complètement
+  ['bottom-nav','fab-btn','setup-screen'].forEach(function(s) {
+    var el = document.getElementById(s);
+    if (el) el.style.display = 'none';
+  });
+  // Afficher le shell admin
+  var shell = document.getElementById('admin-shell');
+  if (shell) shell.style.display = 'flex';
+  // S'assurer qu'on est sur la vue liste
+  _adminAfficherVueListe();
+}
+
+// ── Fermer le shell admin ─────────────────────────
+function _fermerAdminShell() {
+  var shell = document.getElementById('admin-shell');
+  if (shell) shell.style.display = 'none';
+}
+
+// ── Vue liste : afficher la liste des chantiers ───
+function _adminAfficherVueListe() {
+  document.getElementById('admin-view-liste').style.display = 'flex';
+  document.getElementById('admin-view-chantier').style.display = 'none';
+  document.getElementById('admin-back-btn').style.display = 'none';
+  document.getElementById('admin-refresh-btn').style.display = '';
+  document.getElementById('admin-new-btn').style.display = '';
+  var title = document.getElementById('admin-shell-title');
+  var sub   = document.getElementById('admin-shell-sub');
+  if (title) title.textContent = 'Dashboard Admin';
+  if (sub)   sub.textContent   = 'Vue globale · Tous les chantiers';
+  _adminChantierData = null;
+}
+
+// ── Vue détail : afficher un chantier ────────────
+function _adminAfficherVueChantier(data) {
+  _adminChantierData = data;
+  document.getElementById('admin-view-liste').style.display = 'none';
+  var vc = document.getElementById('admin-view-chantier');
+  vc.style.display = 'flex';
+  document.getElementById('admin-back-btn').style.display = '';
+  document.getElementById('admin-refresh-btn').style.display = 'none';
+  document.getElementById('admin-new-btn').style.display = 'none';
+  // Titre
+  var nom = data.chantier || data._id;
+  var title = document.getElementById('admin-shell-title');
+  var sub   = document.getElementById('admin-shell-sub');
+  if (title) title.textContent = nom;
+  if (sub) {
+    var entr = (data.config || {}).entreprise || '';
+    var resp = (data.config || {}).nom || '';
+    sub.textContent = (entr ? entr + ' · ' : '') + (resp || data._id);
+  }
+  // En-tête résumé
+  var inc   = (data.incidents  || []).length;
+  var pers  = (data.personnel  || []).length;
+  var tb    = (data.toolboxes  || []).length;
+  var capas = (data.capas || []).filter(function(c){ return c.statut !== 'Clôturée'; }).length;
+  var accid = (data.incidents || []).filter(function(i){ return i.gravite === 'accident' || i.gravite === 'mortel'; }).length;
+  var dateD = (data.config || {}).dateDebut || '';
+  var jours = dateD ? Math.floor((Date.now() - new Date(dateD).getTime()) / 86400000) : '—';
+  var syncAt = data._syncedAt ? new Date(data._syncedAt).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Jamais';
+  var hdr = document.getElementById('admin-chantier-header');
+  if (hdr) {
+    hdr.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">'
+      + _adminKpiMini(inc,   'Incidents', accid > 0 ? 'var(--red)' : 'var(--text)', accid > 0 ? 'var(--red-light)' : 'var(--gray-light)')
+      + _adminKpiMini(pers,  'Agents',    'var(--blue)',  'var(--blue-light)')
+      + _adminKpiMini(tb,    'Toolbox',   'var(--green)', 'var(--green-light)')
+      + _adminKpiMini(jours === '—' ? jours : jours + 'j', 'Durée', 'var(--text)', 'var(--gray-light)')
+      + '</div>'
+      + '<div style="display:flex;justify-content:space-between;align-items:center">'
+      + (capas > 0
+          ? '<span style="font-size:11px;color:var(--amber);font-weight:600">⚠️ ' + capas + ' CAPA ouverte' + (capas > 1 ? 's' : '') + '</span>'
+          : '<span style="font-size:11px;color:var(--green)">✅ Aucune CAPA ouverte</span>')
+      + '<span style="font-size:10px;color:var(--text3)">Sync ' + syncAt + '</span>'
+      + '</div>';
+  }
+  // Onglet par défaut
+  adminSwitchTab('incidents', document.querySelector('#admin-tabs-bar .admin-tab'));
+}
+
+// ── Changer d'onglet ──────────────────────────────
+function adminSwitchTab(tab, btn) {
+  _adminCurrentTab = tab;
+  // Activer le bouton
+  var tabs = document.querySelectorAll('#admin-tabs-bar .admin-tab');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  // Rendre le contenu
+  _adminRendreOnglet(tab);
+}
+
+function _adminRendreOnglet(tab) {
+  var el = document.getElementById('admin-tab-content');
+  if (!el || !_adminChantierData) return;
+  var d = _adminChantierData;
+
+  if (tab === 'incidents') {
+    var items = (d.incidents || []).slice().reverse();
+    if (!items.length) { el.innerHTML = _adminEmpty('Aucun incident enregistré'); return; }
+    el.innerHTML = items.map(function(i) {
+      var gravColor = i.gravite === 'mortel' ? 'var(--red)' : i.gravite === 'accident' ? 'var(--red)' : i.gravite === 'presquaccident' ? 'var(--amber)' : 'var(--text3)';
+      var gravLabel = {'mortel':'💀 Mortel','accident':'🚨 Accident','presquaccident':'⚠️ Presqu\'acc.','incident':'🔶 Incident','observation':'👁️ Obs.'}[i.gravite] || i.gravite || '—';
+      return '<div class="admin-row-item">'
+        + '<div class="admin-row-badge" style="background:var(--red-light)">'
+        + '<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>'
+        + '</div>'
+        + '<div style="flex:1;min-width:0">'
+        + '<div style="font-size:13px;font-weight:600;color:var(--text);line-height:1.3">' + (i.description || i.type || 'Sans description') + '</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">'
+        + '<span style="color:' + gravColor + ';font-weight:700">' + gravLabel + '</span>'
+        + '<span>' + (i.date || '—') + '</span>'
+        + (i.lieu ? '<span>📍 ' + i.lieu + '</span>' : '')
+        + '</div>'
+        + '</div></div>';
+    }).join('');
+  }
+
+  else if (tab === 'capas') {
+    var items = (d.capas || []).slice().reverse();
+    if (!items.length) { el.innerHTML = _adminEmpty('Aucune CAPA'); return; }
+    el.innerHTML = items.map(function(c) {
+      var statColor = c.statut === 'Clôturée' ? 'var(--green)' : c.statut === 'En cours' ? 'var(--blue)' : 'var(--amber)';
+      return '<div class="admin-row-item">'
+        + '<div class="admin-row-badge" style="background:var(--orange-light)">'
+        + '<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".6" fill="var(--orange)"/></svg>'
+        + '</div>'
+        + '<div style="flex:1;min-width:0">'
+        + '<div style="font-size:13px;font-weight:600;color:var(--text)">' + (c.action || c.description || 'CAPA sans titre') + '</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">'
+        + '<span style="color:' + statColor + ';font-weight:700">' + (c.statut || 'Ouverte') + '</span>'
+        + (c.responsable ? '<span>👤 ' + c.responsable + '</span>' : '')
+        + (c.echeance ? '<span>📅 ' + c.echeance + '</span>' : '')
+        + '</div></div></div>';
+    }).join('');
+  }
+
+  else if (tab === 'personnel') {
+    var items = (d.personnel || []);
+    if (!items.length) { el.innerHTML = _adminEmpty('Aucun agent enregistré'); return; }
+    el.innerHTML = items.map(function(p) {
+      return '<div class="admin-row-item">'
+        + '<div class="admin-row-badge" style="background:var(--blue-light)">'
+        + '<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+        + '</div>'
+        + '<div style="flex:1;min-width:0">'
+        + '<div style="font-size:13px;font-weight:600;color:var(--text)">' + (p.nom || p.prenom || 'Agent') + (p.prenom && p.nom ? ' ' + p.prenom : '') + '</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">'
+        + (p.poste || p.fonction ? '<span>' + (p.poste || p.fonction) + '</span>' : '')
+        + (p.entreprise ? '<span>🏢 ' + p.entreprise + '</span>' : '')
+        + '</div></div></div>';
+    }).join('');
+  }
+
+  else if (tab === 'toolboxes') {
+    var items = (d.toolboxes || []).slice().reverse();
+    if (!items.length) { el.innerHTML = _adminEmpty('Aucune toolbox meeting'); return; }
+    el.innerHTML = items.map(function(t) {
+      var nb = (t.participants || t.signatures || []).length;
+      return '<div class="admin-row-item">'
+        + '<div class="admin-row-badge" style="background:var(--green-light)">'
+        + '<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
+        + '</div>'
+        + '<div style="flex:1;min-width:0">'
+        + '<div style="font-size:13px;font-weight:600;color:var(--text)">' + (t.sujet || t.theme || 'Toolbox sans titre') + '</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">'
+        + '<span>' + (t.date || '—') + '</span>'
+        + (nb ? '<span>👥 ' + nb + ' participant' + (nb > 1 ? 's' : '') + '</span>' : '')
+        + (t.animateur ? '<span>🎤 ' + t.animateur + '</span>' : '')
+        + '</div></div></div>';
+    }).join('');
+  }
+
+  else if (tab === 'jsas') {
+    var items = (d.jsas || []).slice().reverse();
+    if (!items.length) { el.innerHTML = _adminEmpty('Aucun JSA'); return; }
+    el.innerHTML = items.map(function(j) {
+      return '<div class="admin-row-item">'
+        + '<div class="admin-row-badge" style="background:var(--orange-light)">'
+        + '<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+        + '</div>'
+        + '<div style="flex:1;min-width:0">'
+        + '<div style="font-size:13px;font-weight:600;color:var(--text)">' + (j.tache || j.activite || 'JSA sans titre') + '</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">'
+        + '<span>' + (j.date || '—') + '</span>'
+        + (j.redacteur ? '<span>✍️ ' + j.redacteur + '</span>' : '')
+        + '</div></div></div>';
+    }).join('');
+  }
+}
+
+function _adminEmpty(msg) {
+  return '<div style="text-align:center;padding:40px 20px;color:var(--text3)">'
+    + '<div style="font-size:32px;margin-bottom:8px">📭</div>'
+    + '<div style="font-size:13px">' + msg + '</div></div>';
+}
+
+// ── Ouvrir la fiche d'un chantier ────────────────
+async function adminOuvrirChantier(code) {
+  _adminViewCode = code;
+  var el = document.getElementById('admin-tab-content');
+  if (el) el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)">⏳ Chargement...</div>';
+  try {
+    var doc = await fbDB.collection(FB_COLLECTION).doc(code).get();
+    if (!doc.exists) { showToast('Chantier introuvable', 'err'); return; }
+    var data = doc.data();
+    // ── SÉCURITÉ : vérifier que ce chantier appartient bien à cet admin ──
+    if (_currentAdminData && data._adminEmail &&
+        data._adminEmail !== _currentAdminData.email) {
+      showToast('Accès refusé — ce chantier ne vous appartient pas', 'err');
+      console.warn('[Vigilo] Tentative accès chantier non autorisé:', code);
+      return;
+    }
+    _adminAfficherVueChantier(Object.assign({ _id: doc.id }, data));
+  } catch(e) {
+    showToast('Erreur chargement : ' + e.message, 'err');
+  }
+}
+
+// ── Retour à la liste ─────────────────────────────
+function adminRetourDashboard() {
+  _adminAfficherVueListe();
+}
+
+// ── Déconnexion admin ─────────────────────────────
+function deconnexionAdmin() {
+  deconnecterFirebase();
+}
+
+function deconnecterFirebase() {
+  disconnectFirestore();
+  _isAdmin = false;
+  _currentAdminData = null;
+  _lastCreatedCode  = null;
+  _fermerAdminShell();
+  document.getElementById('bottom-nav').style.display = 'none';
+  document.getElementById('fab-btn').style.display = 'none';
+  showFirebaseScreen('role-screen');
+}
+
+// ── Actualiser ────────────────────────────────────
+function actualiserDashboardAdmin() {
+  renderAdminDashboard();
+  showToast('Actualisation...');
+}
+
+// ── Générer un nouveau code chantier ─────────────
+async function adminCreerChantierModal() {
+  if (!fbDB) { showToast('Firebase non connecté', 'err'); return; }
+
+  // Pré-remplir depuis le profil admin si disponible
+  var ncDate = document.getElementById('nc-date');
+  if (ncDate) ncDate.value = new Date().toISOString().split('T')[0];
+  if (_currentAdminData) {
+    var ncEnt  = document.getElementById('nc-entreprise');
+    var ncResp = document.getElementById('nc-responsable');
+    if (ncEnt  && _currentAdminData.entreprise) ncEnt.value  = _currentAdminData.entreprise;
+    if (ncResp && _currentAdminData.nom)        ncResp.value = _currentAdminData.nom;
+  }
+  // Afficher l'écran de création de chantier
+  var backBtn = document.getElementById('create-chantier-back-btn');
+  if (backBtn) backBtn.onclick = function() { _fermerAdminShell(); _ouvrirAdminShell(); renderAdminDashboard(); };
+
+  // Masquer le shell admin temporairement et afficher l'écran de création
+  _fermerAdminShell();
+  showFirebaseScreen('admin-create-chantier-screen');
+  return; // --- DEAD CODE ci-dessous conservé pour référence ---
+  if (false) {
+
+  // Afficher le code à copier
+  showConfirm(
+    '✅ Chantier créé — Code : ' + code,
+    'Communiquez ce code à votre agent de terrain.\n\nIl peut maintenant se connecter avec ce code et configurer le chantier.\n\nCode : ' + code,
+    function() {
+      navigator.clipboard && navigator.clipboard.writeText(code)
+        .then(function() { showToast('📋 Code ' + code + ' copié !'); })
+        .catch(function() { showToast('Code : ' + code + ' — notez-le !'); });
+    }
+  );
+  showToast('✅ Chantier créé : ' + code);
+
+  // Rafraîchir le dashboard
+  setTimeout(function() { renderAdminDashboard(); }, 800);
+  } // end if(false)
+}
+
+// ── Rendu dashboard (liste des chantiers) ────────
+async function renderAdminDashboard() {
+  var el    = document.getElementById('admin-chantiers-list');
+  var kpiEl = document.getElementById('admin-kpi-row');
+  if (!el) return;
+
+  if (!fbDB) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--red)">Firebase non connecté.</div>';
+    return;
+  }
+
+  el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)">⏳ Chargement...</div>';
+
+  try {
+    // ── SÉCURITÉ : ne charger QUE les chantiers de cet admin ──
+    if (!_currentAdminData || !_currentAdminData.email) {
+      el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--red)">❌ Session expirée — reconnectez-vous.</div>';
+      return;
+    }
+    var adminEmail = _currentAdminData.email;
+    var snapshot = await fbDB.collection(FB_COLLECTION)
+      .where('_adminEmail', '==', adminEmail)
+      .get();
+    var chantiers = [];
+    snapshot.forEach(function(doc) {
+      chantiers.push(Object.assign({ _id: doc.id }, doc.data()));
+    });
+
+    // KPIs globaux
+    var totalC    = chantiers.length;
+    var totalInc  = chantiers.reduce(function(s,c){ return s + (c.incidents||[]).length; }, 0);
+    var totalPers = chantiers.reduce(function(s,c){ return s + (c.personnel||[]).length; }, 0);
+    var totalCapa = chantiers.reduce(function(s,c){
+      return s + (c.capas||[]).filter(function(ca){ return ca.statut !== 'Clôturée'; }).length;
+    }, 0);
+
+    // Mettre à jour les KPIs dans le HTML fixe
+    var kc = document.getElementById('akpi-chantiers');
+    var ki = document.getElementById('akpi-incidents');
+    var ka = document.getElementById('akpi-agents');
+    var kp = document.getElementById('akpi-capas');
+    if (kc) kc.textContent = totalC;
+    if (ki) ki.textContent = totalInc;
+    if (ka) ka.textContent = totalPers;
+    if (kp) kp.textContent = totalCapa;
+
+    if (chantiers.length === 0) {
+      el.innerHTML = '<div style="text-align:center;padding:50px 20px;color:var(--text3)">'
+        + '<div style="font-size:48px;margin-bottom:12px">🏗️</div>'
+        + '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Aucun chantier</div>'
+        + '<div style="font-size:13px;line-height:1.5">Générez un code via <b>+ Code</b> et communiquez-le à vos agents.<br>Les chantiers apparaîtront ici dès la première connexion.</div>'
+        + '</div>';
+      return;
+    }
+
+    chantiers.sort(function(a,b){ return (b.incidents||[]).length - (a.incidents||[]).length; });
+
+    el.innerHTML = chantiers.map(function(c) {
+      var inc   = (c.incidents||[]).length;
+      var pers  = (c.personnel||[]).length;
+      var tb    = (c.toolboxes||[]).length;
+      var capas = (c.capas||[]).filter(function(ca){ return ca.statut !== 'Clôturée'; }).length;
+      var accid = (c.incidents||[]).filter(function(i){ return i.gravite === 'accident' || i.gravite === 'mortel'; }).length;
+      var nom   = c.chantier || c._id;
+      var entr  = (c.config||{}).entreprise || '';
+      var resp  = (c.config||{}).nom || '';
+      var dateD = (c.config||{}).dateDebut || '';
+      var jours = dateD ? Math.floor((Date.now() - new Date(dateD).getTime()) / 86400000) : '—';
+      var syncAt = c._syncedAt
+        ? new Date(c._syncedAt).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})
+        : 'Jamais';
+      var accidBadge = accid > 0
+        ? '<span style="background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-left:6px">'
+          + accid + ' accident' + (accid>1?'s':'') + '</span>'
+        : '';
+
+      return '<div class="admin-chantier-card" onclick="adminOuvrirChantier(\'' + c._id + '\')">'
+        + '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">'
+        + '<div style="flex:1;min-width:0">'
+        + '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">'
+        + '<span style="font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--text)">' + nom + '</span>'
+        + accidBadge
+        + '</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-top:2px">' + (entr ? entr + ' · ' : '') + (resp || '—') + '</div>'
+        + '</div>'
+        + '<div style="background:var(--orange-light);border:1px solid var(--orange-mid);border-radius:8px;padding:4px 8px;font-size:12px;font-weight:800;color:var(--orange);font-family:var(--font-head);letter-spacing:1px;flex-shrink:0;margin-left:8px">'
+        + c._id + '</div>'
+        + '</div>'
+        + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">'
+        + _adminKpiMini(inc,   'Incidents', accid > 0 ? 'var(--red)' : 'var(--text)', accid > 0 ? 'var(--red-light)' : 'var(--gray-light)')
+        + _adminKpiMini(pers,  'Agents',    'var(--blue)',  'var(--blue-light)')
+        + _adminKpiMini(tb,    'Toolbox',   'var(--green)', 'var(--green-light)')
+        + _adminKpiMini(jours === '—' ? jours : jours + 'j', 'Durée', 'var(--text)', 'var(--gray-light)')
+        + '</div>'
+        + '<div style="display:flex;justify-content:space-between;align-items:center">'
+        + (capas > 0
+            ? '<span style="font-size:11px;color:var(--amber);font-weight:600">⚠️ ' + capas + ' CAPA ouverte' + (capas>1?'s':'') + '</span>'
+            : '<span style="font-size:11px;color:var(--green)">✅ Aucune CAPA ouverte</span>')
+        + '<span style="font-size:10px;color:var(--text3)">Sync ' + syncAt + '</span>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+
+  } catch(e) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--red)">Erreur : ' + e.message
+      + '<br><small>Vérifiez les règles Firestore (mode test requis)</small></div>';
+    console.error('[Admin]', e);
+  }
+}
+
+function _adminKpiMini(val, lbl, color, bg) {
+  return '<div style="background:' + bg + ';border-radius:8px;padding:8px 6px;text-align:center">'
+    + '<div style="font-size:15px;font-weight:700;color:' + color + '">' + val + '</div>'
+    + '<div style="font-size:10px;color:var(--text3)">' + lbl + '</div>'
+    + '</div>';
+}
 
 </script>
 
