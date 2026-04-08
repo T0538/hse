@@ -1225,6 +1225,72 @@ body.dark-mode .admin-tab:hover:not(.active){background:var(--gray-light)}
 .role-btn-title{font-family:var(--font-head);font-size:16px;font-weight:800}
 .role-btn-sub{font-size:12px;color:var(--text3);margin-top:2px}
 /* ── ADMIN BANNER ── */
+
+/* ── Éditeur d'annotation photo (style Dalux) ── */
+#annot-overlay {
+  position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:3000;
+  display:none;flex-direction:column;align-items:stretch;
+}
+#annot-overlay.open { display:flex; }
+
+#annot-topbar {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:rgba(0,0,0,.7);flex-shrink:0;gap:10px;
+}
+#annot-title { font-size:13px;font-weight:700;color:#fff;flex:1; }
+
+/* Palette d'outils */
+#annot-tools {
+  display:flex;align-items:center;gap:6px;overflow-x:auto;
+  padding:10px 14px;background:rgba(20,20,20,.85);flex-shrink:0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.annot-tool-btn {
+  width:38px;height:38px;border-radius:10px;border:2px solid transparent;
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .15s,border-color .15s;font-size:16px;
+}
+.annot-tool-btn.active {
+  background:var(--orange);border-color:var(--orange);
+}
+.annot-tool-btn:active { opacity:.7; }
+.annot-sep { width:1px;height:28px;background:rgba(255,255,255,.15);flex-shrink:0;margin:0 2px; }
+
+/* Sélecteur de couleur */
+.annot-color-btn {
+  width:26px;height:26px;border-radius:50%;border:2.5px solid transparent;
+  cursor:pointer;flex-shrink:0;transition:border-color .15s,transform .15s;
+}
+.annot-color-btn.active { border-color:#fff;transform:scale(1.2); }
+
+/* Sélecteur d'épaisseur */
+#annot-size-wrap { display:flex;flex-direction:column;align-items:center;gap:2px;margin:0 4px; }
+#annot-size-wrap label { font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px; }
+#annot-size { width:64px; }
+
+/* Canvas wrapper */
+#annot-canvas-wrap {
+  flex:1;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;touch-action:none;
+}
+#annot-canvas {
+  max-width:100%;max-height:100%;cursor:crosshair;display:block;
+  touch-action:none;user-select:none;
+}
+
+/* Barre bas */
+#annot-bottom {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:rgba(0,0,0,.7);flex-shrink:0;gap:10px;
+}
+.annot-action-btn {
+  padding:10px 20px;border-radius:12px;border:none;font-size:14px;
+  font-weight:700;cursor:pointer;font-family:inherit;
+}
+.annot-action-btn.primary { background:var(--orange);color:#fff; }
+.annot-action-btn.secondary { background:rgba(255,255,255,.12);color:#fff; }
+.annot-action-btn.danger { background:rgba(220,60,60,.8);color:#fff; }
 </style>
 </head>
 <body>
@@ -11795,16 +11861,38 @@ function previewPhotos(input, previewId) {
   var files = input.files;
   if (!files.length) return;
   PHOTO_STORE[previewId] = [];
-  container.innerHTML = '<div class="photo-count-badge"><svg width="12" height="12" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>' + files.length + ' photo(s)</div>';
+  container.innerHTML = '<div class="photo-count-badge"><svg width="12" height="12" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>' + files.length + ' photo(s) — Tapez pour annoter</div>';
   var arr = Array.prototype.slice.call(files, 0, 4);
-  arr.forEach(function(file) {
+  arr.forEach(function(file, fileIdx) {
     var reader = new FileReader();
     reader.onload = function(e) {
       if (!PHOTO_STORE[previewId]) PHOTO_STORE[previewId] = [];
+      var idx = PHOTO_STORE[previewId].length;
       PHOTO_STORE[previewId].push(e.target.result);
+      // Wrapper cliquable
+      var wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative;display:inline-block;cursor:pointer';
+      wrap.title = 'Cliquez pour annoter cette photo';
       var img = document.createElement('img');
-      img.src = e.target.result; img.className = 'photo-thumb';
-      container.appendChild(img);
+      img.src = e.target.result;
+      img.className = 'photo-thumb';
+      img.style.display = 'block';
+      // Icône crayon
+      var pen = document.createElement('div');
+      pen.style.cssText = 'position:absolute;bottom:3px;right:3px;width:20px;height:20px;'
+        + 'background:var(--orange);border-radius:50%;display:flex;align-items:center;'
+        + 'justify-content:center;pointer-events:none';
+      pen.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>';
+      // Clic → annotation
+      (function(captureIdx, capturePreviewId) {
+        wrap.onclick = function() {
+          var b64 = PHOTO_STORE[capturePreviewId] && PHOTO_STORE[capturePreviewId][captureIdx];
+          if (b64) ouvrirAnnotation(b64, capturePreviewId, captureIdx);
+        };
+      })(idx, previewId);
+      wrap.appendChild(img);
+      wrap.appendChild(pen);
+      container.appendChild(wrap);
     };
     reader.readAsDataURL(file);
   });
@@ -18445,14 +18533,974 @@ function genererAfficheHSSE(idx) {
   win.document.write('<div class="titre">' + affiche.titre + '</div>');
   win.document.write('<div class="desc">' + affiche.desc + '</div>');
   win.document.write('<div class="footer">' + chantier + (entreprise ? ' — ' + entreprise : '') + '</div>');
-  win.document.write('</body></html>');
+    win.document.write('</body></html>');
   win.document.close();
-  setTimeout(function() { win.print(); }, 400);
+  setTimeout(function(){ win.print(); }, 300);
 }
 
+// ═══════════════════════════════════════════════
+// ÉDITEUR D'ANNOTATION PHOTO — moteur complet
+// Outils : flèche, cercle, rectangle, ligne, texte
+// Couleurs, épaisseur, undo, export base64
+// ═══════════════════════════════════════════════
+
+var _annotState = {
+  tool:     'fleche',
+  color:    '#E53935',
+  size:     4,
+  drawing:  false,
+  startX:   0,
+  startY:   0,
+  history:  [],        // snapshots ImageData pour undo
+  callback: null,      // function(base64) appelée à la validation
+  previewId:null,      // id du conteneur miniatures à mettre à jour
+  photoIdx:  0,        // index dans PHOTO_STORE[previewId]
+  freePoints:[],       // points pour ligne libre
+  textX:    0,
+  textY:    0,
+};
+var annotSize = 4;
+
+// ── Ouvrir l'éditeur ─────────────────────────────
+function ouvrirAnnotation(base64, previewId, photoIdx, callback) {
+  var overlay = document.getElementById('annot-overlay');
+  var canvas  = document.getElementById('annot-canvas');
+  var wrap    = document.getElementById('annot-canvas-wrap');
+  if (!overlay || !canvas) return;
+
+  _annotState.callback  = callback || null;
+  _annotState.previewId = previewId;
+  _annotState.photoIdx  = photoIdx;
+  _annotState.history   = [];
+  _annotState.freePoints= [];
+
+  var img = new Image();
+  img.onload = function() {
+    // Adapter le canvas à la taille disponible
+    var maxW = wrap.clientWidth  || window.innerWidth;
+    var maxH = (wrap.clientHeight || window.innerHeight) - 20;
+    var scale = Math.min(maxW / img.width, maxH / img.height, 1);
+    canvas.width  = Math.round(img.width  * scale);
+    canvas.height = Math.round(img.height * scale);
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    _annotSaveHistory();
+    _annotBindEvents(canvas);
+  };
+  img.src = base64;
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+// ── Fermer / annuler ─────────────────────────────
+function annotAnnuler() {
+  document.getElementById('annot-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  _annotUnbindEvents();
+}
+
+// ── Valider et exporter ──────────────────────────
+function annotValider() {
+  var canvas  = document.getElementById('annot-canvas');
+  var base64  = canvas.toDataURL('image/jpeg', 0.9);
+
+  // Mettre à jour le store et la miniature
+  if (_annotState.previewId && typeof PHOTO_STORE !== 'undefined') {
+    if (!PHOTO_STORE[_annotState.previewId]) PHOTO_STORE[_annotState.previewId] = [];
+    PHOTO_STORE[_annotState.previewId][_annotState.photoIdx] = base64;
+    // Rafraîchir la miniature dans le DOM
+    var container = document.getElementById(_annotState.previewId);
+    if (container) {
+      var thumbs = container.querySelectorAll('.photo-thumb');
+      if (thumbs[_annotState.photoIdx]) {
+        thumbs[_annotState.photoIdx].src = base64;
+        thumbs[_annotState.photoIdx].style.border = '2px solid var(--green)';
+      }
+    }
+  }
+  if (typeof _annotState.callback === 'function') _annotState.callback(base64);
+
+  annotAnnuler();
+  showToast('Photo annotée ✓ — annotation enregistrée');
+}
+
+// ── Effacer tout (restaurer image d'origine) ─────
+function annotEffacer() {
+  if (_annotState.history.length > 0) {
+    var canvas = document.getElementById('annot-canvas');
+    var ctx = canvas.getContext('2d');
+    ctx.putImageData(_annotState.history[0], 0, 0);
+    _annotState.history = [_annotState.history[0]];
+    showToast('Toutes les annotations effacées');
+  }
+}
+
+// ── Undo ────────────────────────────────────────
+function annotUndo() {
+  if (_annotState.history.length < 2) return;
+  _annotState.history.pop();
+  var canvas = document.getElementById('annot-canvas');
+  var ctx = canvas.getContext('2d');
+  ctx.putImageData(_annotState.history[_annotState.history.length - 1], 0, 0);
+}
+
+function _annotSaveHistory() {
+  var canvas = document.getElementById('annot-canvas');
+  var ctx = canvas.getContext('2d');
+  var snap = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  _annotState.history.push(snap);
+  if (_annotState.history.length > 30) _annotState.history.shift();
+}
+
+// ── Sélection outil / couleur ────────────────────
+function annotSelTool(tool) {
+  _annotState.tool = tool;
+  document.querySelectorAll('.annot-tool-btn').forEach(function(b){ b.classList.remove('active'); });
+  var btn = document.getElementById('annot-btn-' + tool);
+  if (btn) btn.classList.add('active');
+}
+
+function annotSelColor(hex, btnId) {
+  _annotState.color = hex;
+  document.querySelectorAll('.annot-color-btn').forEach(function(b){ b.classList.remove('active'); });
+  var btn = document.getElementById(btnId);
+  if (btn) btn.classList.add('active');
+}
+
+// ── Événements dessin ────────────────────────────
+var _annotMoveHandler = null;
+var _annotUpHandler   = null;
+
+function _annotGetPos(canvas, e) {
+  var rect = canvas.getBoundingClientRect();
+  var scaleX = canvas.width  / rect.width;
+  var scaleY = canvas.height / rect.height;
+  var cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  var cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+  return { x: cx * scaleX, y: cy * scaleY };
+}
+
+function _annotBindEvents(canvas) {
+  _annotUnbindEvents();
+
+  function onStart(e) {
+    e.preventDefault();
+    if (_annotState.tool === 'texte') { _annotStartText(canvas, e); return; }
+    var pos = _annotGetPos(canvas, e);
+    _annotState.drawing  = true;
+    _annotState.startX   = pos.x;
+    _annotState.startY   = pos.y;
+    _annotState.freePoints = [pos];
+    _annotSaveHistory();
+  }
+
+  function onMove(e) {
+    e.preventDefault();
+    if (!_annotState.drawing) return;
+    var pos = _annotGetPos(canvas, e);
+    var ctx = canvas.getContext('2d');
+    // Restaurer dernier snapshot pour prévisualisation
+    ctx.putImageData(_annotState.history[_annotState.history.length - 1], 0, 0);
+    _annotDraw(ctx, _annotState.startX, _annotState.startY, pos.x, pos.y, pos);
+  }
+
+  function onEnd(e) {
+    if (!_annotState.drawing) return;
+    _annotState.drawing = false;
+    _annotSaveHistory();
+  }
+
+  canvas.addEventListener('mousedown',  onStart);
+  canvas.addEventListener('touchstart', onStart, { passive: false });
+  _annotMoveHandler = onMove;
+  _annotUpHandler   = onEnd;
+  document.addEventListener('mousemove',  onMove);
+  document.addEventListener('mouseup',    onEnd);
+  document.addEventListener('touchmove',  onMove, { passive: false });
+  document.addEventListener('touchend',   onEnd);
+
+  // Ctrl+Z
+  document.addEventListener('keydown', _annotKeyHandler);
+}
+
+function _annotKeyHandler(e) {
+  if (e.ctrlKey && e.key === 'z') { e.preventDefault(); annotUndo(); }
+}
+
+function _annotUnbindEvents() {
+  if (_annotMoveHandler) {
+    document.removeEventListener('mousemove',  _annotMoveHandler);
+    document.removeEventListener('touchmove',  _annotMoveHandler);
+    _annotMoveHandler = null;
+  }
+  if (_annotUpHandler) {
+    document.removeEventListener('mouseup',    _annotUpHandler);
+    document.removeEventListener('touchend',   _annotUpHandler);
+    _annotUpHandler = null;
+  }
+  document.removeEventListener('keydown', _annotKeyHandler);
+}
+
+// ── Rendu selon l'outil ──────────────────────────
+function _annotDraw(ctx, x1, y1, x2, y2, pos) {
+  var tool  = _annotState.tool;
+  var color = _annotState.color;
+  var size  = annotSize || _annotState.size || 4;
+
+  ctx.strokeStyle = color;
+  ctx.fillStyle   = color;
+  ctx.lineWidth   = size;
+  ctx.lineCap     = 'round';
+  ctx.lineJoin    = 'round';
+
+  if (tool === 'fleche') {
+    _drawArrow(ctx, x1, y1, x2, y2, size);
+
+  } else if (tool === 'cercle') {
+    var rx = Math.abs(x2 - x1) / 2;
+    var ry = Math.abs(y2 - y1) / 2;
+    var cx = x1 + (x2 - x1) / 2;
+    var cy = y1 + (y2 - y1) / 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, Math.max(rx, 2), Math.max(ry, 2), 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+  } else if (tool === 'rect') {
+    ctx.beginPath();
+    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+  } else if (tool === 'ligne') {
+    if (pos) _annotState.freePoints.push(pos);
+    var pts = _annotState.freePoints;
+    if (pts.length < 2) return;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.stroke();
+  }
+}
+
+function _drawArrow(ctx, x1, y1, x2, y2, size) {
+  var headLen = Math.max(size * 4, 18);
+  var angle   = Math.atan2(y2 - y1, x2 - x1);
+
+  // Corps
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+
+  // Tête
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI / 6), y2 - headLen * Math.sin(angle - Math.PI / 6));
+  ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI / 6), y2 - headLen * Math.sin(angle + Math.PI / 6));
+  ctx.closePath();
+  ctx.fill();
+}
+
+// ── Outil texte ──────────────────────────────────
+function _annotStartText(canvas, e) {
+  var pos = _annotGetPos(canvas, e);
+  var rect = canvas.getBoundingClientRect();
+  var scaleX = rect.width  / canvas.width;
+  var scaleY = rect.height / canvas.height;
+
+  _annotState.textX = pos.x;
+  _annotState.textY = pos.y;
+
+  var inp = document.getElementById('annot-text-input');
+  inp.value = '';
+  inp.style.display  = 'block';
+  inp.style.left     = (rect.left + pos.x * scaleX) + 'px';
+  inp.style.top      = (rect.top  + pos.y * scaleY - 20) + 'px';
+  inp.focus();
+}
+
+function annotConfirmText() {
+  var inp = document.getElementById('annot-text-input');
+  var txt = inp.value.trim();
+  inp.style.display = 'none';
+  if (!txt) return;
+
+  var canvas = document.getElementById('annot-canvas');
+  var ctx    = canvas.getContext('2d');
+  var size   = annotSize || 4;
+  var fontSize = Math.max(size * 4, 16);
+
+  _annotSaveHistory();
+  ctx.font         = 'bold ' + fontSize + 'px sans-serif';
+  ctx.fillStyle    = _annotState.color;
+  ctx.strokeStyle  = 'rgba(0,0,0,0.6)';
+  ctx.lineWidth    = fontSize / 8;
+  ctx.strokeText(txt, _annotState.textX, _annotState.textY);
+  ctx.fillText(txt,   _annotState.textX, _annotState.textY);
+  _annotSaveHistory();
+  showToast('Texte ajouté ✓');
+}
+
+function annotCancelText() {
+  document.getElementById('annot-text-input').style.display = 'none';
+}
+
+</script>
+
+<!-- ═══════════════ PHOTO PICKER ═══════════════ -->
+<div id="photo-picker-overlay" onclick="closePhotoPicker(event)">
+  <div id="photo-picker-sheet">
+    <div class="photo-picker-handle"></div>
+    <div class="photo-picker-title">Ajouter une photo</div>
+    <div class="photo-picker-options">
+      <button class="photo-picker-btn primary" onclick="photoPickerChoose('camera')">
+        <div class="photo-picker-btn-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div>
+          <div class="photo-picker-btn-label">Prendre une photo</div>
+          <div class="photo-picker-btn-sub">Ouvrir l'appareil photo</div>
+        </div>
+      </button>
+      <button class="photo-picker-btn secondary" onclick="photoPickerChoose('gallery')">
+        <div class="photo-picker-btn-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div>
+          <div class="photo-picker-btn-label">Choisir dans la galerie</div>
+          <div class="photo-picker-btn-sub">Importer depuis mes photos</div>
+        </div>
+      </button>
+    </div>
+    <button class="photo-picker-cancel" onclick="closePhotoPicker()">Annuler</button>
+  </div>
+</div>
+
+<!-- ── MODAL NOUVELLE FORMATION ── -->
+<div class="modal-overlay" id="modal-new-formation" onclick="closeModalOut(event,'modal-new-formation')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="new-form-modal-title">Nouvelle Formation HSE</div>
+
+    <div class="form-group">
+      <label class="form-label">Titre de la formation *</label>
+      <input class="form-input" id="nf-titre" type="text" placeholder="Ex: Sécurité électrique sur chantier">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Catégorie</label>
+      <div class="form-cat-chips" id="nf-cat-chips">
+        <div class="form-cat-chip selected" onclick="selectFormCat(this,'Risques physiques')">Risques physiques</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Incendie')">Incendie</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'EPI')">EPI</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Hauteur')">Hauteur</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Electricite')">Electricité</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Chimique')">Chimique</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'Tropical')">Tropical</div>
+        <div class="form-cat-chip" onclick="selectFormCat(this,'General')">Général</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description courte</label>
+      <div class="voice-wrap"><textarea class="form-input" id="nf-desc" rows="2" placeholder="Objectif pédagogique de cette formation..." style="padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('nf-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <!-- Slides builder -->
+    <label class="form-label" style="margin-bottom:10px;display:block">Slides (max 7)</label>
+    <div id="nf-slides-container"></div>
+    <button class="btn-secondary" style="width:100%;margin-bottom:16px" id="nf-add-slide-btn" onclick="nfAddSlide()">
+      + Ajouter un slide
+    </button>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1" onclick="saveFormation()">Enregistrer la formation</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-new-formation')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL LANCER FORMATION (choisir agent) ── -->
+<div class="modal-overlay" id="modal-launch-formation" onclick="closeModalOut(event,'modal-launch-formation')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="launch-form-title">Démarrer la formation</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:16px">L'agent doit renseigner ses informations avant de commencer</p>
+
+    <div class="form-group">
+      <label class="form-label">Nom complet de l'agent *</label>
+      <input class="form-input" id="launch-agent-nom" type="text" placeholder="Prénom Nom">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fonction</label>
+      <input class="form-input" id="launch-agent-fonction" type="text" placeholder="Maçon, Électricien, Chef d'équipe...">
+    </div>
+    <div class="form-group" style="margin-bottom:0">
+      <label class="form-label">Entreprise</label>
+      <input class="form-input" id="launch-agent-entreprise" type="text" placeholder="Nom de l'entreprise">
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn-primary" style="flex:1" onclick="lancerFormation()">Démarrer →</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-launch-formation')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL DETAIL FORMATION ── -->
+<div class="modal-overlay" id="modal-detail-formation" onclick="closeModalOut(event,'modal-detail-formation')">
+  <div class="modal-sheet" style="max-height:90vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div id="detail-formation-body"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     SCREEN — ENVIRONNEMENT HSSE
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-env">
+  <div class="topbar">
+    <div>
+      <div class="topbar-brand"><div class="brand-dot" style="background:var(--green)"></div><div class="topbar-title">Environnement</div></div>
+      <div class="topbar-sub">Déchets · Pollution · EIES · Côte d'Ivoire</div>
+    </div>
+    <button class="btn-sm" style="background:var(--green-light);color:var(--green);border-color:var(--green-mid)" onclick="openEnvQuickMenu()">+ Déclarer</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="env-kpi-row" id="env-kpi-row">
+    <div class="env-kpi"><div class="env-kpi-val green" id="ekpi-dechets">0</div><div class="env-kpi-lbl">Fiches déchets</div></div>
+    <div class="env-kpi"><div class="env-kpi-val orange" id="ekpi-pollutions">0</div><div class="env-kpi-lbl">Pollutions</div></div>
+    <div class="env-kpi"><div class="env-kpi-val red" id="ekpi-incidents">0</div><div class="env-kpi-lbl">Incidents env.</div></div>
+    <div class="env-kpi"><div class="env-kpi-val amber" id="ekpi-eies">0</div><div class="env-kpi-lbl">EIES</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="env-tab-bar">
+    <button class="env-tab active" onclick="switchEnvTab('dechets',this)">🗑️ Déchets</button>
+    <button class="env-tab" onclick="switchEnvTab('pollution',this)">💧 Pollution</button>
+    <button class="env-tab" onclick="switchEnvTab('incidents',this)">⚠️ Incidents env.</button>
+    <button class="env-tab" onclick="switchEnvTab('eies',this)">📋 EIES</button>
+  </div>
+
+  <!-- ── ONGLET DÉCHETS ── -->
+  <div class="env-section active" id="env-sec-dechets">
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Registre des déchets</span>
+      <button onclick="openModal('modal-env-dechet')" style="font-size:11px;font-weight:600;color:var(--green);background:none;border:none;cursor:pointer">+ Nouvelle fiche</button>
+    </div>
+
+    <!-- Légende ANASUR -->
+    <div style="margin:0 16px 10px;background:var(--green-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div style="font-size:11px;color:var(--green);line-height:1.5">Conforme au plan de gestion des déchets ANASUR — Côte d'Ivoire. Tout déchet dangereux doit être remis à un prestataire agréé ANASUR.</div>
+    </div>
+
+    <div id="env-dechets-list"></div>
+  </div>
+
+  <!-- ── ONGLET POLLUTION ── -->
+  <div class="env-section" id="env-sec-pollution">
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Déclarations de pollution</span>
+      <button onclick="openModal('modal-env-pollution')" style="font-size:11px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer">+ Déclarer</button>
+    </div>
+
+    <!-- Rappel légal -->
+    <div style="margin:0 16px 10px;background:var(--blue-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div style="font-size:11px;color:var(--blue);line-height:1.5">Décret n°2012-1047 CI — Toute pollution accidentelle doit être déclarée à l'ANDE (Agence Nationale De l'Environnement) sous 24h.</div>
+    </div>
+
+    <div id="env-pollution-list"></div>
+  </div>
+
+  <!-- ── ONGLET INCIDENTS ENV ── -->
+  <div class="env-section" id="env-sec-incidents">
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Incidents environnementaux</span>
+      <button onclick="openModal('modal-env-incident')" style="font-size:11px;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer">+ Déclarer</button>
+    </div>
+    <div id="env-incidents-list"></div>
+  </div>
+
+  <!-- ── ONGLET EIES ── -->
+  <div class="env-section" id="env-sec-eies">
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Évaluation d'impact environnemental</span>
+      <button onclick="openModal('modal-env-eies')" style="font-size:11px;font-weight:600;color:var(--amber);background:none;border:none;cursor:pointer">+ Nouvelle EIES</button>
+    </div>
+
+    <!-- EIES intro -->
+    <div style="margin:0 16px 10px;background:var(--amber-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <div style="font-size:11px;color:var(--amber);line-height:1.5">EIES simplifiée conforme au Code de l'Environnement CI (loi n°96-766). Obligatoire pour tout projet susceptible d'affecter l'environnement.</div>
+    </div>
+
+    <div id="env-eies-list"></div>
+  </div>
+
+  <div class="spacer"></div>
+</div>
+
+<!-- ═══════════════ MODAL DÉCHET ═══════════════ -->
+<div class="modal-overlay" id="modal-env-dechet" onclick="closeModalOut(event,'modal-env-dechet')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Fiche Déchet</div>
+    <input type="hidden" id="env-dechet-edit-id" value="">
+
+    <div class="form-group">
+      <label class="form-label">Type de déchet *</label>
+      <div class="env-type-grid" id="env-dechet-type-grid">
+        <div class="env-type-btn green" data-type="Inerte" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">🪨</div><div class="env-type-btn-lbl">Inerte</div></div>
+        <div class="env-type-btn orange" data-type="Non dangereux" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">♻️</div><div class="env-type-btn-lbl">Non dangereux</div></div>
+        <div class="env-type-btn red" data-type="Dangereux" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">☢️</div><div class="env-type-btn-lbl">Dangereux</div></div>
+        <div class="env-type-btn blue" data-type="Liquide" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">🪣</div><div class="env-type-btn-lbl">Liquide</div></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nature précise *</label>
+      <input class="form-input" id="env-dechet-nature" type="text" placeholder="Ex: Huiles usagées, Béton, Peintures, Amiante…">
+    </div>
+
+    <div style="display:flex;gap:8px" class="form-group">
+      <div style="flex:1">
+        <label class="form-label">Quantité *</label>
+        <input class="form-input" id="env-dechet-qte" type="number" min="0" step="0.1" placeholder="0">
+      </div>
+      <div style="width:110px">
+        <label class="form-label">Unité</label>
+        <select class="form-select" id="env-dechet-unite">
+          <option>kg</option><option>tonne</option><option>litre</option><option>m³</option><option>unité</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mode d'élimination *</label>
+      <select class="form-select" id="env-dechet-elimination">
+        <option value="">Choisir…</option>
+        <option>Décharge autorisée ANASUR</option>
+        <option>Recyclage (prestataire agréé)</option>
+        <option>Incinération contrôlée</option>
+        <option>Collecte déchets ménagers</option>
+        <option>Réutilisation sur site</option>
+        <option>Remise à un prestataire spécialisé</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Transporteur / Prestataire</label>
+      <input class="form-input" id="env-dechet-prestataire" type="text" placeholder="Nom de l'entreprise de collecte…">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Zone de stockage temporaire</label>
+      <input class="form-input" id="env-dechet-zone" type="text" placeholder="Ex: Local déchets — Zone B">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Date d'évacuation prévue</label>
+      <input class="form-input" id="env-dechet-date-evac" type="date">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Observations</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-dechet-obs" placeholder="Conditions de stockage, précautions particulières…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-dechet-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" onclick="saveEnvDechet()">Enregistrer la fiche</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-dechet')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL POLLUTION ═══════════════ -->
+<div class="modal-overlay" id="modal-env-pollution" onclick="closeModalOut(event,'modal-env-pollution')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Déclaration de Pollution</div>
+    <input type="hidden" id="env-poll-edit-id" value="">
+
+    <div class="form-group">
+      <label class="form-label">Milieu affecté *</label>
+      <div class="env-type-grid" id="env-poll-type-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="env-type-btn blue" data-type="Eau" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">💧</div><div class="env-type-btn-lbl">Eau</div></div>
+        <div class="env-type-btn amber" data-type="Sol" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">🌱</div><div class="env-type-btn-lbl">Sol</div></div>
+        <div class="env-type-btn green" data-type="Air" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">💨</div><div class="env-type-btn-lbl">Air</div></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Source / Cause *</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-poll-source" placeholder="Ex: Fuite de carburant, déversement produit chimique, émission poussières…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-poll-source',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Zone concernée</label>
+      <input class="form-input" id="env-poll-zone" type="text" placeholder="Localisation précise sur le chantier…">
+    </div>
+
+    <div style="display:flex;gap:8px" class="form-group">
+      <div style="flex:1">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="env-poll-date" type="date">
+      </div>
+      <div style="flex:1">
+        <label class="form-label">Gravité</label>
+        <select class="form-select" id="env-poll-gravite">
+          <option value="Faible">Faible</option>
+          <option value="Modérée">Modérée</option>
+          <option value="Grave">Grave</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mesures d'urgence prises</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-poll-mesures" placeholder="Confinement, neutralisation, alerte autorités (ANDE)…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-poll-mesures',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">ANDE notifiée ?</label>
+      <div style="display:flex;gap:8px">
+        <button id="env-poll-ande-oui" style="flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-family:var(--font-body);font-size:13px;cursor:pointer" onclick="setEnvToggle('env-poll-ande','oui')">✓ Oui</button>
+        <button id="env-poll-ande-non" style="flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--red);background:var(--red-light);color:var(--red);font-family:var(--font-body);font-size:13px;cursor:pointer" onclick="setEnvToggle('env-poll-ande','non')">✗ Non</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;background:var(--blue);border-color:var(--blue)" onclick="saveEnvPollution()">Enregistrer</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-pollution')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL INCIDENT ENV ═══════════════ -->
+<div class="modal-overlay" id="modal-env-incident" onclick="closeModalOut(event,'modal-env-incident')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Incident Environnemental</div>
+    <input type="hidden" id="env-inc-edit-id" value="">
+
+    <div class="form-group">
+      <label class="form-label">Catégorie *</label>
+      <div class="env-type-grid" id="env-inc-type-grid">
+        <div class="env-type-btn orange" data-type="Déversement" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🛢️</div><div class="env-type-btn-lbl">Déversement</div></div>
+        <div class="env-type-btn red" data-type="Incendie végétation" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🔥</div><div class="env-type-btn-lbl">Incendie végétat.</div></div>
+        <div class="env-type-btn blue" data-type="Pollution nappe" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🏞️</div><div class="env-type-btn-lbl">Pollution nappe</div></div>
+        <div class="env-type-btn amber" data-type="Destruction habitat" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🌿</div><div class="env-type-btn-lbl">Habitat naturel</div></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description *</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-inc-desc" placeholder="Décrivez précisément l'incident environnemental observé…" style="padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-inc-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div style="display:flex;gap:8px" class="form-group">
+      <div style="flex:1">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="env-inc-date" type="date">
+      </div>
+      <div style="flex:1">
+        <label class="form-label">Zone</label>
+        <input class="form-input" id="env-inc-zone" type="text" placeholder="Localisation…">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Actions correctives immédiates</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="env-inc-actions" placeholder="Mesures prises pour limiter l'impact…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-inc-actions',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;background:var(--orange);border-color:var(--orange)" onclick="saveEnvIncident()">Enregistrer</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-incident')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL EIES ═══════════════ -->
+<div class="modal-overlay" id="modal-env-eies" onclick="closeModalOut(event,'modal-env-eies')">
+  <div class="modal-sheet" style="max-height:94vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">EIES Simplifiée</div>
+    <input type="hidden" id="env-eies-edit-id" value="">
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Évaluation d'Impact Environnemental et Social — Code de l'Environnement CI</div>
+    <input type="hidden" id="env-eies-edit-id" value="">
+
+    <div class="form-group">
+      <label class="form-label">Intitulé du projet / activité *</label>
+      <input class="form-input" id="eies-projet" type="text" placeholder="Ex: Terrassement zone C — Extension bâtiment">
+    </div>
+
+    <div class="eies-step">
+      <div class="eies-step-hd"><div class="eies-step-num">1</div><div class="eies-step-title">Description de l'environnement existant</div></div>
+      <div class="form-group" style="margin-bottom:8px">
+        <div class="voice-wrap"><textarea class="form-textarea" id="eies-env-initial" placeholder="Végétation, cours d'eau, faune, proximité habitations, sol…" style="min-height:70px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-env-initial',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+      </div>
+    </div>
+
+    <div class="eies-step">
+      <div class="eies-step-hd"><div class="eies-step-num">2</div><div class="eies-step-title">Impacts identifiés — Évaluation</div></div>
+      <div id="eies-impacts-list">
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Déforestation / déboisement</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Pollution des eaux de surface</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Pollution de la nappe phréatique</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Érosion / dégradation sol</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Émissions de poussières / gaz</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Bruit et vibrations</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Perturbation faune / biodiversité</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Impact sur populations riveraines</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+        <div class="eies-impact-row"><span class="eies-impact-lbl">Génération de déchets dangereux</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
+      </div>
+    </div>
+
+    <div class="eies-step">
+      <div class="eies-step-hd"><div class="eies-step-num">3</div><div class="eies-step-title">Mesures d'atténuation proposées</div></div>
+      <div class="form-group" style="margin-bottom:8px">
+        <div class="voice-wrap"><textarea class="form-textarea" id="eies-mesures" placeholder="Plan de reboisement, bassin de rétention, barrières anti-bruit, signalisation riverains…" style="min-height:80px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-mesures',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+      </div>
+    </div>
+
+    <div class="eies-step">
+      <div class="eies-step-hd"><div class="eies-step-num">4</div><div class="eies-step-title">Plan de surveillance et suivi</div></div>
+      <div class="form-group" style="margin-bottom:8px">
+        <div class="voice-wrap"><textarea class="form-textarea" id="eies-surveillance" placeholder="Fréquence des contrôles, indicateurs de suivi, responsable environnement…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-surveillance',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="flex:1;background:var(--amber);border-color:var(--amber)" onclick="saveEnvEies()">Enregistrer l'EIES</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-eies')">Annuler</button>
+    </div>
+  </div>
+</div>
+<!-- ═══════════════════════════════════════════════
+     SCREEN — POLITIQUE & RÉGLEMENTATION HSSE
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-hsse">
+  <div class="topbar">
+    <div>
+      <div class="topbar-brand"><div class="brand-dot" style="background:var(--blue)"></div><div class="topbar-title">Politique HSSE</div></div>
+      <div class="topbar-sub">Engagements · Objectifs · Réglementation CI</div>
+    </div>
+    <button class="icon-btn" onclick="ouvrirEditHSSE()" title="Modifier">
+      <svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2.5" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    </button>
+  </div>
+
+  <!-- Tabs HSSE -->
+  <div class="env-tab-bar" style="overflow-x:auto">
+    <button class="env-tab active" onclick="switchHSSETab('politique',this)">📜 Politique</button>
+    <button class="env-tab" onclick="switchHSSETab('objectifs',this)">🎯 Objectifs</button>
+    <button class="env-tab" onclick="switchHSSETab('reglementation',this)">⚖️ Réglementation CI</button>
+    <button class="env-tab" onclick="switchHSSETab('affiches',this)">📋 Consignes</button>
+  </div>
+
+  <!-- ── TAB : POLITIQUE ── -->
+  <div id="hsse-tab-politique">
+    <div style="padding:14px 16px 6px">
+      <div style="border-radius:14px;background:linear-gradient(135deg,var(--blue-light),#EEF5FF);border:1.5px solid var(--blue);padding:16px 16px 14px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--font-head);font-size:16px;font-weight:800;color:var(--blue)">Engagement de la Direction</div>
+            <div style="font-size:11px;color:var(--text3)" id="hsse-pol-chantier">—</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text);line-height:1.65;white-space:pre-wrap" id="hsse-pol-texte">Appuyez sur ✏️ pour rédiger la politique HSSE du chantier.</div>
+      </div>
+
+      <div style="border-radius:14px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:10px">🧭 Principes directeurs</div>
+        <div id="hsse-principes-list"></div>
+      </div>
+
+      <div style="border-radius:14px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:10px">✍️ Signature &amp; Date</div>
+        <div style="font-size:13px;color:var(--text2)" id="hsse-pol-signataire">Non renseigné — modifiez via ✏️</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB : OBJECTIFS ── -->
+  <div id="hsse-tab-objectifs" style="display:none">
+    <div style="padding:14px 16px 6px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Définissez vos objectifs HSSE annuels et suivez leur progression. Modifiables via ✏️.</div>
+      <div id="hsse-objectifs-list"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB : RÉGLEMENTATION CI ── -->
+  <div id="hsse-tab-reglementation" style="display:none">
+    <div style="padding:14px 16px 6px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Principales obligations légales applicables aux chantiers en Côte d'Ivoire.</div>
+      <div id="hsse-reglem-list"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB : CONSIGNES / AFFICHES ── -->
+  <div id="hsse-tab-affiches" style="display:none">
+    <div style="padding:14px 16px 6px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Consignes de sécurité à afficher sur le chantier. Appuyez pour télécharger ou partager.</div>
+      <div id="hsse-affiches-list"></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+</div>
+
+<!-- ── MODAL EDIT HSSE ── -->
+<div class="modal-overlay" id="modal-hsse-edit" onclick="closeModalOut(event,'modal-hsse-edit')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Modifier la Politique HSSE</div>
+
+    <div class="form-group">
+      <label class="form-label">Texte de la politique HSSE</label>
+      <div class="voice-wrap"><textarea class="form-textarea" id="hsse-edit-texte" rows="6" placeholder="Rédigez ici l'engagement de la direction envers la santé, sécurité et environnement..." style="min-height:120px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('hsse-edit-texte',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Signataire (ex : Directeur des Travaux)</label>
+      <input class="form-input" id="hsse-edit-signataire" type="text" placeholder="Nom, Fonction — Date">
+    </div>
+
+    <div style="margin:14px 0 10px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:10px">🎯 Objectifs HSSE du chantier</div>
+      <div id="hsse-edit-objectifs-list"></div>
+      <button class="btn-sm outline" style="width:100%;margin-top:8px" onclick="ajouterObjectifHSSE()">+ Ajouter un objectif</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn-primary" style="flex:1" onclick="sauvegarderHSSE()">Enregistrer</button>
+      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-hsse-edit')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL URGENCE ═══════════════ -->
+<div class="modal-overlay" id="modal-urgence" onclick="closeModalOut(event,'modal-urgence')">
+  <div class="modal-sheet" style="max-height:90vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <div style="width:36px;height:36px;border-radius:10px;background:#A32D2D;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="modal-title" style="margin-bottom:0">Numéros d'urgence</div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:16px">Appuyez sur un numéro pour appeler directement</div>
+
+    <!-- Adresse chantier -->
+    <div id="urg-adresse-zone"></div>
+
+    <!-- Numéros nationaux -->
+    <div class="urg-section-title">Numéros nationaux — Côte d'Ivoire</div>
+    <div class="urg-num-bloc" id="urg-nationaux-list"></div>
+
+    <!-- Contacts chantier -->
+    <div class="urg-section-title">Contacts du chantier</div>
+    <div class="urg-chantier-bloc" id="urg-contacts-list"></div>
+
+    <button class="btn-secondary" style="margin-top:4px" onclick="closeModal('modal-urgence')">Fermer</button>
+    <button class="btn-sm outline" style="width:100%;margin-top:8px;font-size:11px;color:var(--text3);border-color:var(--border)" onclick="closeModal('modal-urgence');openModal('modal-settings')">
+      ⚙️ Modifier les contacts du chantier
+    </button>
+  </div>
+</div>
+
+
+
+<!-- ═══════════════════════════════════════
+     ÉDITEUR D'ANNOTATION PHOTO
+     Style Dalux : flèches, cercles, texte
+════════════════════════════════════════ -->
+<div id="annot-overlay">
+
+  <!-- Topbar -->
+  <div id="annot-topbar">
+    <button class="annot-action-btn secondary" onclick="annotAnnuler()" style="padding:8px 14px;font-size:12px">✕ Fermer</button>
+    <span id="annot-title">Annoter la photo</span>
+    <button class="annot-action-btn danger" onclick="annotEffacer()" style="padding:8px 14px;font-size:12px">↺ Effacer</button>
+  </div>
+
+  <!-- Barre d'outils -->
+  <div id="annot-tools">
+
+    <!-- Outils de dessin -->
+    <button class="annot-tool-btn active" id="annot-btn-fleche"  onclick="annotSelTool('fleche')"  title="Flèche">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="19" x2="19" y2="5"/><polyline points="9,5 19,5 19,15"/></svg>
+    </button>
+    <button class="annot-tool-btn" id="annot-btn-cercle" onclick="annotSelTool('cercle')" title="Cercle">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg>
+    </button>
+    <button class="annot-tool-btn" id="annot-btn-rect"   onclick="annotSelTool('rect')"   title="Rectangle">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
+    </button>
+    <button class="annot-tool-btn" id="annot-btn-ligne"  onclick="annotSelTool('ligne')"  title="Ligne libre">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 20 Q8 8 12 12 Q16 16 21 4"/></svg>
+    </button>
+    <button class="annot-tool-btn" id="annot-btn-texte"  onclick="annotSelTool('texte')"  title="Texte">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 7V4h16v3"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="8" y1="20" x2="16" y2="20"/></svg>
+    </button>
+
+    <div class="annot-sep"></div>
+
+    <!-- Couleurs -->
+    <div class="annot-color-btn active" id="annot-c-red"    style="background:#E53935" onclick="annotSelColor('#E53935','annot-c-red')" title="Rouge"></div>
+    <div class="annot-color-btn"        id="annot-c-orange" style="background:#FF7043" onclick="annotSelColor('#FF7043','annot-c-orange')" title="Orange"></div>
+    <div class="annot-color-btn"        id="annot-c-yellow" style="background:#FDD835" onclick="annotSelColor('#FDD835','annot-c-yellow')" title="Jaune"></div>
+    <div class="annot-color-btn"        id="annot-c-green"  style="background:#43A047" onclick="annotSelColor('#43A047','annot-c-green')" title="Vert"></div>
+    <div class="annot-color-btn"        id="annot-c-blue"   style="background:#1E88E5" onclick="annotSelColor('#1E88E5','annot-c-blue')" title="Bleu"></div>
+    <div class="annot-color-btn"        id="annot-c-white"  style="background:#FFFFFF" onclick="annotSelColor('#FFFFFF','annot-c-white')" title="Blanc"></div>
+
+    <div class="annot-sep"></div>
+
+    <!-- Épaisseur -->
+    <div id="annot-size-wrap">
+      <label>Épaisseur</label>
+      <input type="range" id="annot-size" min="2" max="18" value="4" oninput="annotSize=+this.value">
+    </div>
+
+    <div class="annot-sep"></div>
+
+    <!-- Undo -->
+    <button class="annot-tool-btn" onclick="annotUndo()" title="Annuler (Ctrl+Z)">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 7v6h6"/><path d="M3 13A9 9 0 1 0 6 6.4"/></svg>
+    </button>
+
+  </div>
+
+  <!-- Zone canvas -->
+  <div id="annot-canvas-wrap">
+    <canvas id="annot-canvas"></canvas>
+  </div>
+
+  <!-- Barre du bas : Valider -->
+  <div id="annot-bottom">
+    <span style="font-size:11px;color:rgba(255,255,255,.4)">Tapez ou dessinez sur la photo</span>
+    <button class="annot-action-btn primary" onclick="annotValider()">✓ Valider l'annotation</button>
+  </div>
+</div>
+
+<!-- Input texte flottant pour l'outil texte -->
+<input id="annot-text-input" type="text" placeholder="Tapez votre texte…"
+  style="display:none;position:fixed;z-index:3100;background:rgba(0,0,0,.85);color:#fff;
+  border:2px solid var(--orange);border-radius:8px;padding:8px 12px;font-size:14px;
+  font-family:inherit;outline:none;min-width:180px;max-width:80vw"
+  onkeydown="if(event.key==='Enter')annotConfirmText();if(event.key==='Escape')annotCancelText()">
+
+
+<script>
 // Garantir hsse dans DB au load
 (function() {
-  var _origLoad = load;
+  // _origLoad réservé pour extension future
 })();
 
 
@@ -18560,16 +19608,45 @@ function _sanitizeForFirestore(obj) {
 
 function saveToFirestore() {
   if (!fbDB || !_fbCode) return;
-  var payload = JSON.parse(JSON.stringify(DB));
-  // Supprimer le logo base64 si trop lourd (limite Firestore 1MB/doc)
-  if (payload.logo && typeof payload.logo === 'string' && payload.logo.length > 500000) {
+  var payload;
+  try {
+    payload = JSON.parse(JSON.stringify(DB));
+  } catch(e) {
+    console.error('[Firestore] Serialization error:', e.message);
+    return;
+  }
+
+  // Supprimer le logo base64 si trop lourd (limite Firestore ~1MB/doc)
+  if (payload.logo && typeof payload.logo === 'string' && payload.logo.length > 400000) {
     delete payload.logo;
   }
+
+  // Supprimer les photos annotées dans les incidents (base64 lourd)
+  if (Array.isArray(payload.incidents)) {
+    payload.incidents = payload.incidents.map(function(inc) {
+      var i = Object.assign({}, inc);
+      if (Array.isArray(i.photos) && i.photos.some(function(p){ return p && p.length > 100000; })) {
+        i.photos = i.photos.map(function(p){ return (p && p.length > 100000) ? '[photo]' : p; });
+      }
+      return i;
+    });
+  }
+
+  // Stocker l'email du manager si session manager active
+  if (_sessionIsManager && _sessionAdminEmail) {
+    payload._adminEmail = payload._adminEmail || _sessionAdminEmail;
+  }
+
   payload._syncedAt = new Date().toISOString();
+
   // Nettoyer les tableaux imbriqués (interdit par Firestore)
   payload = _sanitizeForFirestore(payload);
+
   fbDB.collection(FB_COLLECTION).doc(_fbCode).set(payload)
-    .catch(function(e) { console.error('[Firestore] Save err:', e.message); });
+    .catch(function(e) {
+      console.error('[Firestore] Save err:', e.message);
+      if (typeof showToast === 'function') showToast('⚠ Sync Firestore échouée', 'err');
+    });
 }
 
 // ── Load depuis Firestore ────────────────────────
@@ -18578,9 +19655,14 @@ async function loadFromFirestore(code) {
   try {
     const doc = await fbDB.collection(FB_COLLECTION).doc(code).get();
     if (doc.exists) {
-      const data = doc.data();
-      DB = data;
+      DB = doc.data();
       _normaliserDB();
+      // Si session manager : forcer config depuis compte admin
+      if (_sessionIsManager && _currentAdminData) {
+        DB.config.nom        = DB.config.nom        || _currentAdminData.nom        || '';
+        DB.config.fonction   = DB.config.fonction   || _currentAdminData.fonction   || 'Responsable HSE';
+        DB.config.entreprise = DB.config.entreprise || _currentAdminData.entreprise || '';
+      }
       return true;
     }
     return false;
@@ -18601,13 +19683,21 @@ function subscribeFirestore(code) {
       // Rafraîchir l'écran courant
       if (typeof currentScreen !== 'undefined' && currentScreen) {
         try {
-          if (currentScreen === 'home') renderHome();
-          else if (currentScreen === 'incidents') renderIncidents();
-          else if (currentScreen === 'personnel') renderPersonnel();
-          else if (currentScreen === 'jsa') { renderJSA(); renderPermis(); }
-        } catch(err) {}
+          switch (currentScreen) {
+            case 'home':      renderHome();      break;
+            case 'incidents': renderIncidents(); break;
+            case 'personnel': renderPersonnel(); break;
+            case 'jsa':       renderJSA(); renderPermis(); break;
+            case 'toolbox':   renderCapa(); break;
+            case 'exports':   renderExports(); break;
+            case 'env':       renderEnv(); break;
+          }
+        } catch(err) {
+          console.warn('[Firestore] Refresh err:', err.message);
+        }
       }
-      updateUrgenceStrip();
+      if (typeof updateUrgenceStrip === 'function') updateUrgenceStrip();
+      if (typeof renderRoleBadge    === 'function') renderRoleBadge();
     }
   }, function(err) {
     console.warn('[Firestore] Listener error:', err.message);
@@ -18621,24 +19711,52 @@ function disconnectFirestore() {
 }
 
 function _normaliserDB() {
-  if (!DB.config)    DB.config    = {};
-  if (!DB.config.urgence) DB.config.urgence = {};
-  if (!DB.incidents)   DB.incidents   = [];
-  if (!DB.inductions)  DB.inductions  = [];
-  if (!DB.jsas)        DB.jsas        = [];
-  if (!DB.toolboxes)   DB.toolboxes   = [];
-  if (!DB.capas)       DB.capas       = [];
-  if (!DB.epis)        DB.epis        = [];
-  if (!DB.personnel)   DB.personnel   = [];
-  if (!DB.activity)    DB.activity    = [];
-  if (!Array.isArray(DB.permis))              DB.permis              = [];
-  if (!Array.isArray(DB.formations))          DB.formations          = [];
+  // ── Config de base ──────────────────────────────
+  if (!DB.config)              DB.config              = {};
+  if (!DB.config.urgence)      DB.config.urgence      = {};
+  if (!DB.config.dateDebut)    DB.config.dateDebut    = '';
+  if (!DB.config.nom)          DB.config.nom          = '';
+  if (!DB.config.fonction)     DB.config.fonction     = '';
+  if (!DB.config.entreprise)   DB.config.entreprise   = '';
+
+  // ── Tableaux principaux ─────────────────────────
+  if (!Array.isArray(DB.incidents))   DB.incidents   = [];
+  if (!Array.isArray(DB.inductions))  DB.inductions  = [];
+  if (!Array.isArray(DB.jsas))        DB.jsas        = [];
+  if (!Array.isArray(DB.toolboxes))   DB.toolboxes   = [];
+  if (!Array.isArray(DB.capas))       DB.capas       = [];
+  if (!Array.isArray(DB.epis))        DB.epis        = [];
+  if (!Array.isArray(DB.personnel))   DB.personnel   = [];
+  if (!Array.isArray(DB.activity))    DB.activity    = [];
+  if (!Array.isArray(DB.permis))      DB.permis      = [];
+  if (!Array.isArray(DB.tournees))    DB.tournees    = [];
+  if (!Array.isArray(DB.completions)) DB.completions = [];
+
+  // ── Rapports ────────────────────────────────────
   if (!Array.isArray(DB.rapportsJournaliers)) DB.rapportsJournaliers = [];
   if (!Array.isArray(DB.rapportsMensuels))    DB.rapportsMensuels    = [];
-  if (!Array.isArray(DB.tournees))            DB.tournees            = [];
+
+  // ── Formations ──────────────────────────────────
+  if (!Array.isArray(DB.formations))   DB.formations   = [];
+  if (!DB.formationCounter)            DB.formationCounter = 1;
+
+  // ── Environnement HSSE ──────────────────────────
+  if (!Array.isArray(DB.envDechets))    DB.envDechets    = [];
+  if (!Array.isArray(DB.envPollutions)) DB.envPollutions = [];
+  if (!Array.isArray(DB.envIncidents))  DB.envIncidents  = [];
+  if (!Array.isArray(DB.envEies))       DB.envEies       = [];
+  if (!DB.envCounter)                   DB.envCounter    = 1;
+
+  // ── Politique HSSE ──────────────────────────────
   if (!DB.hsse)        DB.hsse        = {};
-  if (!DB.capaCounter) DB.capaCounter = 1;
-  if (!DB.permisCounter) DB.permisCounter = 1;
+  if (!DB.qhsPlan)     DB.qhsPlan     = {};
+
+  // ── Compteurs ───────────────────────────────────
+  if (!DB.capaCounter)    DB.capaCounter    = 1;
+  if (!DB.permisCounter)  DB.permisCounter  = 1;
+
+  // ── Logo ────────────────────────────────────────
+  if (DB.logo === undefined) DB.logo = null;
 }
 
 // ── Générer un code unique ───────────────────────
@@ -19717,575 +20835,6 @@ function _adminKpiMini(val, lbl, color, bg) {
 }
 
 </script>
-
-<!-- ═══════════════ PHOTO PICKER ═══════════════ -->
-<div id="photo-picker-overlay" onclick="closePhotoPicker(event)">
-  <div id="photo-picker-sheet">
-    <div class="photo-picker-handle"></div>
-    <div class="photo-picker-title">Ajouter une photo</div>
-    <div class="photo-picker-options">
-      <button class="photo-picker-btn primary" onclick="photoPickerChoose('camera')">
-        <div class="photo-picker-btn-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        </div>
-        <div>
-          <div class="photo-picker-btn-label">Prendre une photo</div>
-          <div class="photo-picker-btn-sub">Ouvrir l'appareil photo</div>
-        </div>
-      </button>
-      <button class="photo-picker-btn secondary" onclick="photoPickerChoose('gallery')">
-        <div class="photo-picker-btn-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        </div>
-        <div>
-          <div class="photo-picker-btn-label">Choisir dans la galerie</div>
-          <div class="photo-picker-btn-sub">Importer depuis mes photos</div>
-        </div>
-      </button>
-    </div>
-    <button class="photo-picker-cancel" onclick="closePhotoPicker()">Annuler</button>
-  </div>
-</div>
-
-<!-- ── MODAL NOUVELLE FORMATION ── -->
-<div class="modal-overlay" id="modal-new-formation" onclick="closeModalOut(event,'modal-new-formation')">
-  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="new-form-modal-title">Nouvelle Formation HSE</div>
-
-    <div class="form-group">
-      <label class="form-label">Titre de la formation *</label>
-      <input class="form-input" id="nf-titre" type="text" placeholder="Ex: Sécurité électrique sur chantier">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Catégorie</label>
-      <div class="form-cat-chips" id="nf-cat-chips">
-        <div class="form-cat-chip selected" onclick="selectFormCat(this,'Risques physiques')">Risques physiques</div>
-        <div class="form-cat-chip" onclick="selectFormCat(this,'Incendie')">Incendie</div>
-        <div class="form-cat-chip" onclick="selectFormCat(this,'EPI')">EPI</div>
-        <div class="form-cat-chip" onclick="selectFormCat(this,'Hauteur')">Hauteur</div>
-        <div class="form-cat-chip" onclick="selectFormCat(this,'Electricite')">Electricité</div>
-        <div class="form-cat-chip" onclick="selectFormCat(this,'Chimique')">Chimique</div>
-        <div class="form-cat-chip" onclick="selectFormCat(this,'Tropical')">Tropical</div>
-        <div class="form-cat-chip" onclick="selectFormCat(this,'General')">Général</div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Description courte</label>
-      <div class="voice-wrap"><textarea class="form-input" id="nf-desc" rows="2" placeholder="Objectif pédagogique de cette formation..." style="padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('nf-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-    </div>
-
-    <!-- Slides builder -->
-    <label class="form-label" style="margin-bottom:10px;display:block">Slides (max 7)</label>
-    <div id="nf-slides-container"></div>
-    <button class="btn-secondary" style="width:100%;margin-bottom:16px" id="nf-add-slide-btn" onclick="nfAddSlide()">
-      + Ajouter un slide
-    </button>
-
-    <div style="display:flex;gap:8px">
-      <button class="btn-primary" style="flex:1" onclick="saveFormation()">Enregistrer la formation</button>
-      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-new-formation')">Annuler</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── MODAL LANCER FORMATION (choisir agent) ── -->
-<div class="modal-overlay" id="modal-launch-formation" onclick="closeModalOut(event,'modal-launch-formation')">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="launch-form-title">Démarrer la formation</div>
-    <p style="font-size:12px;color:var(--text3);margin-bottom:16px">L'agent doit renseigner ses informations avant de commencer</p>
-
-    <div class="form-group">
-      <label class="form-label">Nom complet de l'agent *</label>
-      <input class="form-input" id="launch-agent-nom" type="text" placeholder="Prénom Nom">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Fonction</label>
-      <input class="form-input" id="launch-agent-fonction" type="text" placeholder="Maçon, Électricien, Chef d'équipe...">
-    </div>
-    <div class="form-group" style="margin-bottom:0">
-      <label class="form-label">Entreprise</label>
-      <input class="form-input" id="launch-agent-entreprise" type="text" placeholder="Nom de l'entreprise">
-    </div>
-
-    <div style="display:flex;gap:8px;margin-top:16px">
-      <button class="btn-primary" style="flex:1" onclick="lancerFormation()">Démarrer →</button>
-      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-launch-formation')">Annuler</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── MODAL DETAIL FORMATION ── -->
-<div class="modal-overlay" id="modal-detail-formation" onclick="closeModalOut(event,'modal-detail-formation')">
-  <div class="modal-sheet" style="max-height:90vh;overflow-y:auto">
-    <div class="modal-handle"></div>
-    <div id="detail-formation-body"></div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════════
-     SCREEN — ENVIRONNEMENT HSSE
-═══════════════════════════════════════════════ -->
-<div class="screen" id="screen-env">
-  <div class="topbar">
-    <div>
-      <div class="topbar-brand"><div class="brand-dot" style="background:var(--green)"></div><div class="topbar-title">Environnement</div></div>
-      <div class="topbar-sub">Déchets · Pollution · EIES · Côte d'Ivoire</div>
-    </div>
-    <button class="btn-sm" style="background:var(--green-light);color:var(--green);border-color:var(--green-mid)" onclick="openEnvQuickMenu()">+ Déclarer</button>
-  </div>
-
-  <!-- KPIs -->
-  <div class="env-kpi-row" id="env-kpi-row">
-    <div class="env-kpi"><div class="env-kpi-val green" id="ekpi-dechets">0</div><div class="env-kpi-lbl">Fiches déchets</div></div>
-    <div class="env-kpi"><div class="env-kpi-val orange" id="ekpi-pollutions">0</div><div class="env-kpi-lbl">Pollutions</div></div>
-    <div class="env-kpi"><div class="env-kpi-val red" id="ekpi-incidents">0</div><div class="env-kpi-lbl">Incidents env.</div></div>
-    <div class="env-kpi"><div class="env-kpi-val amber" id="ekpi-eies">0</div><div class="env-kpi-lbl">EIES</div></div>
-  </div>
-
-  <!-- Tabs -->
-  <div class="env-tab-bar">
-    <button class="env-tab active" onclick="switchEnvTab('dechets',this)">🗑️ Déchets</button>
-    <button class="env-tab" onclick="switchEnvTab('pollution',this)">💧 Pollution</button>
-    <button class="env-tab" onclick="switchEnvTab('incidents',this)">⚠️ Incidents env.</button>
-    <button class="env-tab" onclick="switchEnvTab('eies',this)">📋 EIES</button>
-  </div>
-
-  <!-- ── ONGLET DÉCHETS ── -->
-  <div class="env-section active" id="env-sec-dechets">
-    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Registre des déchets</span>
-      <button onclick="openModal('modal-env-dechet')" style="font-size:11px;font-weight:600;color:var(--green);background:none;border:none;cursor:pointer">+ Nouvelle fiche</button>
-    </div>
-
-    <!-- Légende ANASUR -->
-    <div style="margin:0 16px 10px;background:var(--green-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <div style="font-size:11px;color:var(--green);line-height:1.5">Conforme au plan de gestion des déchets ANASUR — Côte d'Ivoire. Tout déchet dangereux doit être remis à un prestataire agréé ANASUR.</div>
-    </div>
-
-    <div id="env-dechets-list"></div>
-  </div>
-
-  <!-- ── ONGLET POLLUTION ── -->
-  <div class="env-section" id="env-sec-pollution">
-    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Déclarations de pollution</span>
-      <button onclick="openModal('modal-env-pollution')" style="font-size:11px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer">+ Déclarer</button>
-    </div>
-
-    <!-- Rappel légal -->
-    <div style="margin:0 16px 10px;background:var(--blue-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <div style="font-size:11px;color:var(--blue);line-height:1.5">Décret n°2012-1047 CI — Toute pollution accidentelle doit être déclarée à l'ANDE (Agence Nationale De l'Environnement) sous 24h.</div>
-    </div>
-
-    <div id="env-pollution-list"></div>
-  </div>
-
-  <!-- ── ONGLET INCIDENTS ENV ── -->
-  <div class="env-section" id="env-sec-incidents">
-    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Incidents environnementaux</span>
-      <button onclick="openModal('modal-env-incident')" style="font-size:11px;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer">+ Déclarer</button>
-    </div>
-    <div id="env-incidents-list"></div>
-  </div>
-
-  <!-- ── ONGLET EIES ── -->
-  <div class="env-section" id="env-sec-eies">
-    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Évaluation d'impact environnemental</span>
-      <button onclick="openModal('modal-env-eies')" style="font-size:11px;font-weight:600;color:var(--amber);background:none;border:none;cursor:pointer">+ Nouvelle EIES</button>
-    </div>
-
-    <!-- EIES intro -->
-    <div style="margin:0 16px 10px;background:var(--amber-light);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      <div style="font-size:11px;color:var(--amber);line-height:1.5">EIES simplifiée conforme au Code de l'Environnement CI (loi n°96-766). Obligatoire pour tout projet susceptible d'affecter l'environnement.</div>
-    </div>
-
-    <div id="env-eies-list"></div>
-  </div>
-
-  <div class="spacer"></div>
-</div>
-
-<!-- ═══════════════ MODAL DÉCHET ═══════════════ -->
-<div class="modal-overlay" id="modal-env-dechet" onclick="closeModalOut(event,'modal-env-dechet')">
-  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Fiche Déchet</div>
-    <input type="hidden" id="env-dechet-edit-id" value="">
-
-    <div class="form-group">
-      <label class="form-label">Type de déchet *</label>
-      <div class="env-type-grid" id="env-dechet-type-grid">
-        <div class="env-type-btn green" data-type="Inerte" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">🪨</div><div class="env-type-btn-lbl">Inerte</div></div>
-        <div class="env-type-btn orange" data-type="Non dangereux" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">♻️</div><div class="env-type-btn-lbl">Non dangereux</div></div>
-        <div class="env-type-btn red" data-type="Dangereux" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">☢️</div><div class="env-type-btn-lbl">Dangereux</div></div>
-        <div class="env-type-btn blue" data-type="Liquide" onclick="selectEnvType(this,'env-dechet-type-grid')"><div class="env-type-btn-icon">🪣</div><div class="env-type-btn-lbl">Liquide</div></div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Nature précise *</label>
-      <input class="form-input" id="env-dechet-nature" type="text" placeholder="Ex: Huiles usagées, Béton, Peintures, Amiante…">
-    </div>
-
-    <div style="display:flex;gap:8px" class="form-group">
-      <div style="flex:1">
-        <label class="form-label">Quantité *</label>
-        <input class="form-input" id="env-dechet-qte" type="number" min="0" step="0.1" placeholder="0">
-      </div>
-      <div style="width:110px">
-        <label class="form-label">Unité</label>
-        <select class="form-select" id="env-dechet-unite">
-          <option>kg</option><option>tonne</option><option>litre</option><option>m³</option><option>unité</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Mode d'élimination *</label>
-      <select class="form-select" id="env-dechet-elimination">
-        <option value="">Choisir…</option>
-        <option>Décharge autorisée ANASUR</option>
-        <option>Recyclage (prestataire agréé)</option>
-        <option>Incinération contrôlée</option>
-        <option>Collecte déchets ménagers</option>
-        <option>Réutilisation sur site</option>
-        <option>Remise à un prestataire spécialisé</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Transporteur / Prestataire</label>
-      <input class="form-input" id="env-dechet-prestataire" type="text" placeholder="Nom de l'entreprise de collecte…">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Zone de stockage temporaire</label>
-      <input class="form-input" id="env-dechet-zone" type="text" placeholder="Ex: Local déchets — Zone B">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Date d'évacuation prévue</label>
-      <input class="form-input" id="env-dechet-date-evac" type="date">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Observations</label>
-      <div class="voice-wrap"><textarea class="form-textarea" id="env-dechet-obs" placeholder="Conditions de stockage, précautions particulières…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-dechet-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-    </div>
-
-    <div style="display:flex;gap:8px">
-      <button class="btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" onclick="saveEnvDechet()">Enregistrer la fiche</button>
-      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-dechet')">Annuler</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ MODAL POLLUTION ═══════════════ -->
-<div class="modal-overlay" id="modal-env-pollution" onclick="closeModalOut(event,'modal-env-pollution')">
-  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Déclaration de Pollution</div>
-    <input type="hidden" id="env-poll-edit-id" value="">
-
-    <div class="form-group">
-      <label class="form-label">Milieu affecté *</label>
-      <div class="env-type-grid" id="env-poll-type-grid" style="grid-template-columns:repeat(3,1fr)">
-        <div class="env-type-btn blue" data-type="Eau" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">💧</div><div class="env-type-btn-lbl">Eau</div></div>
-        <div class="env-type-btn amber" data-type="Sol" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">🌱</div><div class="env-type-btn-lbl">Sol</div></div>
-        <div class="env-type-btn green" data-type="Air" onclick="selectEnvType(this,'env-poll-type-grid')"><div class="env-type-btn-icon">💨</div><div class="env-type-btn-lbl">Air</div></div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Source / Cause *</label>
-      <div class="voice-wrap"><textarea class="form-textarea" id="env-poll-source" placeholder="Ex: Fuite de carburant, déversement produit chimique, émission poussières…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-poll-source',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Zone concernée</label>
-      <input class="form-input" id="env-poll-zone" type="text" placeholder="Localisation précise sur le chantier…">
-    </div>
-
-    <div style="display:flex;gap:8px" class="form-group">
-      <div style="flex:1">
-        <label class="form-label">Date</label>
-        <input class="form-input" id="env-poll-date" type="date">
-      </div>
-      <div style="flex:1">
-        <label class="form-label">Gravité</label>
-        <select class="form-select" id="env-poll-gravite">
-          <option value="Faible">Faible</option>
-          <option value="Modérée">Modérée</option>
-          <option value="Grave">Grave</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Mesures d'urgence prises</label>
-      <div class="voice-wrap"><textarea class="form-textarea" id="env-poll-mesures" placeholder="Confinement, neutralisation, alerte autorités (ANDE)…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-poll-mesures',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">ANDE notifiée ?</label>
-      <div style="display:flex;gap:8px">
-        <button id="env-poll-ande-oui" style="flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-family:var(--font-body);font-size:13px;cursor:pointer" onclick="setEnvToggle('env-poll-ande','oui')">✓ Oui</button>
-        <button id="env-poll-ande-non" style="flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--red);background:var(--red-light);color:var(--red);font-family:var(--font-body);font-size:13px;cursor:pointer" onclick="setEnvToggle('env-poll-ande','non')">✗ Non</button>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:8px">
-      <button class="btn-primary" style="flex:1;background:var(--blue);border-color:var(--blue)" onclick="saveEnvPollution()">Enregistrer</button>
-      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-pollution')">Annuler</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ MODAL INCIDENT ENV ═══════════════ -->
-<div class="modal-overlay" id="modal-env-incident" onclick="closeModalOut(event,'modal-env-incident')">
-  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Incident Environnemental</div>
-    <input type="hidden" id="env-inc-edit-id" value="">
-
-    <div class="form-group">
-      <label class="form-label">Catégorie *</label>
-      <div class="env-type-grid" id="env-inc-type-grid">
-        <div class="env-type-btn orange" data-type="Déversement" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🛢️</div><div class="env-type-btn-lbl">Déversement</div></div>
-        <div class="env-type-btn red" data-type="Incendie végétation" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🔥</div><div class="env-type-btn-lbl">Incendie végétat.</div></div>
-        <div class="env-type-btn blue" data-type="Pollution nappe" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🏞️</div><div class="env-type-btn-lbl">Pollution nappe</div></div>
-        <div class="env-type-btn amber" data-type="Destruction habitat" onclick="selectEnvType(this,'env-inc-type-grid')"><div class="env-type-btn-icon">🌿</div><div class="env-type-btn-lbl">Habitat naturel</div></div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Description *</label>
-      <div class="voice-wrap"><textarea class="form-textarea" id="env-inc-desc" placeholder="Décrivez précisément l'incident environnemental observé…" style="padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-inc-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-    </div>
-
-    <div style="display:flex;gap:8px" class="form-group">
-      <div style="flex:1">
-        <label class="form-label">Date</label>
-        <input class="form-input" id="env-inc-date" type="date">
-      </div>
-      <div style="flex:1">
-        <label class="form-label">Zone</label>
-        <input class="form-input" id="env-inc-zone" type="text" placeholder="Localisation…">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Actions correctives immédiates</label>
-      <div class="voice-wrap"><textarea class="form-textarea" id="env-inc-actions" placeholder="Mesures prises pour limiter l'impact…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('env-inc-actions',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-    </div>
-
-    <div style="display:flex;gap:8px">
-      <button class="btn-primary" style="flex:1;background:var(--orange);border-color:var(--orange)" onclick="saveEnvIncident()">Enregistrer</button>
-      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-incident')">Annuler</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ MODAL EIES ═══════════════ -->
-<div class="modal-overlay" id="modal-env-eies" onclick="closeModalOut(event,'modal-env-eies')">
-  <div class="modal-sheet" style="max-height:94vh;overflow-y:auto">
-    <div class="modal-handle"></div>
-    <div class="modal-title">EIES Simplifiée</div>
-    <input type="hidden" id="env-eies-edit-id" value="">
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Évaluation d'Impact Environnemental et Social — Code de l'Environnement CI</div>
-    <input type="hidden" id="env-eies-edit-id" value="">
-
-    <div class="form-group">
-      <label class="form-label">Intitulé du projet / activité *</label>
-      <input class="form-input" id="eies-projet" type="text" placeholder="Ex: Terrassement zone C — Extension bâtiment">
-    </div>
-
-    <div class="eies-step">
-      <div class="eies-step-hd"><div class="eies-step-num">1</div><div class="eies-step-title">Description de l'environnement existant</div></div>
-      <div class="form-group" style="margin-bottom:8px">
-        <div class="voice-wrap"><textarea class="form-textarea" id="eies-env-initial" placeholder="Végétation, cours d'eau, faune, proximité habitations, sol…" style="min-height:70px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-env-initial',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-      </div>
-    </div>
-
-    <div class="eies-step">
-      <div class="eies-step-hd"><div class="eies-step-num">2</div><div class="eies-step-title">Impacts identifiés — Évaluation</div></div>
-      <div id="eies-impacts-list">
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Déforestation / déboisement</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Pollution des eaux de surface</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Pollution de la nappe phréatique</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Érosion / dégradation sol</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Émissions de poussières / gaz</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Bruit et vibrations</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Perturbation faune / biodiversité</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Impact sur populations riveraines</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-        <div class="eies-impact-row"><span class="eies-impact-lbl">Génération de déchets dangereux</span><div class="eies-sev-btns"><button class="eies-sev none" onclick="setEiesSev(this)">Nul</button><button class="eies-sev mod" onclick="setEiesSev(this)">Modéré</button><button class="eies-sev maj" onclick="setEiesSev(this)">Majeur</button></div></div>
-      </div>
-    </div>
-
-    <div class="eies-step">
-      <div class="eies-step-hd"><div class="eies-step-num">3</div><div class="eies-step-title">Mesures d'atténuation proposées</div></div>
-      <div class="form-group" style="margin-bottom:8px">
-        <div class="voice-wrap"><textarea class="form-textarea" id="eies-mesures" placeholder="Plan de reboisement, bassin de rétention, barrières anti-bruit, signalisation riverains…" style="min-height:80px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-mesures',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-      </div>
-    </div>
-
-    <div class="eies-step">
-      <div class="eies-step-hd"><div class="eies-step-num">4</div><div class="eies-step-title">Plan de surveillance et suivi</div></div>
-      <div class="form-group" style="margin-bottom:8px">
-        <div class="voice-wrap"><textarea class="form-textarea" id="eies-surveillance" placeholder="Fréquence des contrôles, indicateurs de suivi, responsable environnement…" style="min-height:65px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('eies-surveillance',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:8px">
-      <button class="btn-primary" style="flex:1;background:var(--amber);border-color:var(--amber)" onclick="saveEnvEies()">Enregistrer l'EIES</button>
-      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-env-eies')">Annuler</button>
-    </div>
-  </div>
-</div>
-<!-- ═══════════════════════════════════════════════
-     SCREEN — POLITIQUE & RÉGLEMENTATION HSSE
-═══════════════════════════════════════════════ -->
-<div class="screen" id="screen-hsse">
-  <div class="topbar">
-    <div>
-      <div class="topbar-brand"><div class="brand-dot" style="background:var(--blue)"></div><div class="topbar-title">Politique HSSE</div></div>
-      <div class="topbar-sub">Engagements · Objectifs · Réglementation CI</div>
-    </div>
-    <button class="icon-btn" onclick="ouvrirEditHSSE()" title="Modifier">
-      <svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2.5" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-    </button>
-  </div>
-
-  <!-- Tabs HSSE -->
-  <div class="env-tab-bar" style="overflow-x:auto">
-    <button class="env-tab active" onclick="switchHSSETab('politique',this)">📜 Politique</button>
-    <button class="env-tab" onclick="switchHSSETab('objectifs',this)">🎯 Objectifs</button>
-    <button class="env-tab" onclick="switchHSSETab('reglementation',this)">⚖️ Réglementation CI</button>
-    <button class="env-tab" onclick="switchHSSETab('affiches',this)">📋 Consignes</button>
-  </div>
-
-  <!-- ── TAB : POLITIQUE ── -->
-  <div id="hsse-tab-politique">
-    <div style="padding:14px 16px 6px">
-      <div style="border-radius:14px;background:linear-gradient(135deg,var(--blue-light),#EEF5FF);border:1.5px solid var(--blue);padding:16px 16px 14px;margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <div style="width:36px;height:36px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="18" height="18" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <div>
-            <div style="font-family:var(--font-head);font-size:16px;font-weight:800;color:var(--blue)">Engagement de la Direction</div>
-            <div style="font-size:11px;color:var(--text3)" id="hsse-pol-chantier">—</div>
-          </div>
-        </div>
-        <div style="font-size:13px;color:var(--text);line-height:1.65;white-space:pre-wrap" id="hsse-pol-texte">Appuyez sur ✏️ pour rédiger la politique HSSE du chantier.</div>
-      </div>
-
-      <div style="border-radius:14px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:10px">🧭 Principes directeurs</div>
-        <div id="hsse-principes-list"></div>
-      </div>
-
-      <div style="border-radius:14px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:10px">✍️ Signature &amp; Date</div>
-        <div style="font-size:13px;color:var(--text2)" id="hsse-pol-signataire">Non renseigné — modifiez via ✏️</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── TAB : OBJECTIFS ── -->
-  <div id="hsse-tab-objectifs" style="display:none">
-    <div style="padding:14px 16px 6px">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Définissez vos objectifs HSSE annuels et suivez leur progression. Modifiables via ✏️.</div>
-      <div id="hsse-objectifs-list"></div>
-    </div>
-  </div>
-
-  <!-- ── TAB : RÉGLEMENTATION CI ── -->
-  <div id="hsse-tab-reglementation" style="display:none">
-    <div style="padding:14px 16px 6px">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Principales obligations légales applicables aux chantiers en Côte d'Ivoire.</div>
-      <div id="hsse-reglem-list"></div>
-    </div>
-  </div>
-
-  <!-- ── TAB : CONSIGNES / AFFICHES ── -->
-  <div id="hsse-tab-affiches" style="display:none">
-    <div style="padding:14px 16px 6px">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">Consignes de sécurité à afficher sur le chantier. Appuyez pour télécharger ou partager.</div>
-      <div id="hsse-affiches-list"></div>
-    </div>
-  </div>
-
-  <div class="spacer"></div>
-</div>
-
-<!-- ── MODAL EDIT HSSE ── -->
-<div class="modal-overlay" id="modal-hsse-edit" onclick="closeModalOut(event,'modal-hsse-edit')">
-  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Modifier la Politique HSSE</div>
-
-    <div class="form-group">
-      <label class="form-label">Texte de la politique HSSE</label>
-      <div class="voice-wrap"><textarea class="form-textarea" id="hsse-edit-texte" rows="6" placeholder="Rédigez ici l'engagement de la direction envers la santé, sécurité et environnement..." style="min-height:120px;padding-bottom:36px"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('hsse-edit-texte',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Signataire (ex : Directeur des Travaux)</label>
-      <input class="form-input" id="hsse-edit-signataire" type="text" placeholder="Nom, Fonction — Date">
-    </div>
-
-    <div style="margin:14px 0 10px;padding-top:12px;border-top:1px solid var(--border)">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:10px">🎯 Objectifs HSSE du chantier</div>
-      <div id="hsse-edit-objectifs-list"></div>
-      <button class="btn-sm outline" style="width:100%;margin-top:8px" onclick="ajouterObjectifHSSE()">+ Ajouter un objectif</button>
-    </div>
-
-    <div style="display:flex;gap:8px;margin-top:16px">
-      <button class="btn-primary" style="flex:1" onclick="sauvegarderHSSE()">Enregistrer</button>
-      <button class="btn-sm outline" style="padding:12px 16px" onclick="closeModal('modal-hsse-edit')">Annuler</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ MODAL URGENCE ═══════════════ -->
-<div class="modal-overlay" id="modal-urgence" onclick="closeModalOut(event,'modal-urgence')">
-  <div class="modal-sheet" style="max-height:90vh;overflow-y:auto">
-    <div class="modal-handle"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-      <div style="width:36px;height:36px;border-radius:10px;background:#A32D2D;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      </div>
-      <div class="modal-title" style="margin-bottom:0">Numéros d'urgence</div>
-    </div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:16px">Appuyez sur un numéro pour appeler directement</div>
-
-    <!-- Adresse chantier -->
-    <div id="urg-adresse-zone"></div>
-
-    <!-- Numéros nationaux -->
-    <div class="urg-section-title">Numéros nationaux — Côte d'Ivoire</div>
-    <div class="urg-num-bloc" id="urg-nationaux-list"></div>
-
-    <!-- Contacts chantier -->
-    <div class="urg-section-title">Contacts du chantier</div>
-    <div class="urg-chantier-bloc" id="urg-contacts-list"></div>
-
-    <button class="btn-secondary" style="margin-top:4px" onclick="closeModal('modal-urgence')">Fermer</button>
-    <button class="btn-sm outline" style="width:100%;margin-top:8px;font-size:11px;color:var(--text3);border-color:var(--border)" onclick="closeModal('modal-urgence');openModal('modal-settings')">
-      ⚙️ Modifier les contacts du chantier
-    </button>
-  </div>
-</div>
 
 </body>
 </html>
