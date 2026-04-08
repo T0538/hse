@@ -1261,12 +1261,12 @@ body.dark-mode .admin-tab:hover:not(.active){background:var(--gray-light)}
       <div style="text-align:center;font-size:11px;color:var(--text3);margin:12px 0 4px">— ou se connecter autrement —</div>
     </div>
 
-    <!-- Bouton Admin -->
+    <!-- Bouton Responsable QHSE -->
     <button onclick="showFirebaseScreen('admin-auth-screen')" style="width:100%;padding:18px 16px;border-radius:14px;border:2px solid var(--orange);background:var(--orange-light);cursor:pointer;text-align:left;display:flex;align-items:center;gap:14px;margin-bottom:12px">
-      <div style="width:44px;height:44px;border-radius:13px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏛️</div>
+      <div style="width:44px;height:44px;border-radius:13px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🛡️</div>
       <div style="flex:1">
-        <div style="font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--orange)">Administrateur</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:2px">Connexion ou création de compte</div>
+        <div style="font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--orange)">Responsable QHSE</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Email + mot de passe · Accès total</div>
       </div>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
@@ -1276,7 +1276,7 @@ body.dark-mode .admin-tab:hover:not(.active){background:var(--gray-light)}
       <div style="width:44px;height:44px;border-radius:13px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🦺</div>
       <div style="flex:1">
         <div style="font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--blue)">Agent de terrain</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:2px">Rejoindre un chantier existant</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Code chantier · Accès selon rôle</div>
       </div>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
@@ -1306,9 +1306,9 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
       Retour
     </button>
     <div style="text-align:center;margin-bottom:20px">
-      <div style="width:60px;height:60px;background:var(--orange);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">🏛️</div>
-      <div class="fb-title">Espace Administrateur</div>
-      <div class="fb-sub" style="margin-bottom:0;font-size:12px">Gérez vos chantiers et partagez les accès</div>
+      <div style="width:60px;height:60px;background:var(--orange);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">🛡️</div>
+      <div class="fb-title">Espace Responsable QHSE</div>
+      <div class="fb-sub" style="margin-bottom:0;font-size:12px">Email + mot de passe · Droits de validation et signature</div>
     </div>
 
     <!-- Tabs -->
@@ -1589,13 +1589,23 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
       <div class="setup-field">
         <label class="setup-field-label">Fonction *</label>
         <select class="setup-field-input setup-field-select" id="setup-fonction">
-          <option value="">Sélectionner</option>
-          <option>Responsable HSE</option>
-          <option>Chef de chantier</option>
-          <option>Conducteur de travaux</option>
-          <option>Directeur technique</option>
-          <option>Coordinateur SPS</option>
-          <option>Auditeur HSE</option>
+          <option value="">— Sélectionner votre rôle —</option>
+          <optgroup label="Managers (accès complet)">
+            <option>Responsable HSE</option>
+            <option>Coordinateur SPS</option>
+            <option>Directeur technique</option>
+          </optgroup>
+          <optgroup label="Chefs de chantier">
+            <option>Chef de chantier</option>
+            <option>Conducteur de travaux</option>
+          </optgroup>
+          <optgroup label="Terrain (accès limité)">
+            <option>Agent HSE</option>
+            <option>Agent de maîtrise</option>
+          </optgroup>
+          <optgroup label="Lecture seule">
+            <option>Auditeur HSE</option>
+          </optgroup>
         </select>
       </div>
     </div>
@@ -2645,12 +2655,22 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
     <div class="form-group">
       <label class="form-label">Fonction</label>
       <select class="form-select" id="s-fonction">
-        <option>Responsable HSE</option>
-        <option>Chef de chantier</option>
-        <option>Conducteur de travaux</option>
-        <option>Directeur technique</option>
-        <option>Coordinateur SPS</option>
-        <option>Auditeur HSE</option>
+        <optgroup label="Managers (accès complet)">
+          <option>Responsable HSE</option>
+          <option>Coordinateur SPS</option>
+          <option>Directeur technique</option>
+        </optgroup>
+        <optgroup label="Chefs de chantier">
+          <option>Chef de chantier</option>
+          <option>Conducteur de travaux</option>
+        </optgroup>
+        <optgroup label="Terrain (accès limité)">
+          <option>Agent HSE</option>
+          <option>Agent de maîtrise</option>
+        </optgroup>
+        <optgroup label="Lecture seule">
+          <option>Auditeur HSE</option>
+        </optgroup>
       </select>
     </div>
     <div class="form-group">
@@ -4484,6 +4504,174 @@ function setDefaultDates() {
   ['inc-heure','tb-heure'].forEach(id => { const el=document.getElementById(id); if(el) el.value=now; });
 }
 
+// ═══════════════════════════════════════════════
+// RBAC — Système de rôles et permissions Vigilo
+// ═══════════════════════════════════════════════
+var VIGILO_ROLES = {
+  hse_manager:   { label: "Responsable HSE",  color: "var(--orange)", bg: "var(--orange-light)", icon: "🛡️" },
+  chef_chantier: { label: "Chef de chantier",  color: "var(--blue)",   bg: "var(--blue-light)",   icon: "👷" },
+  agent_hse:     { label: "Agent HSE",          color: "var(--green)",  bg: "var(--green-light)",  icon: "🦺" },
+  auditeur:      { label: "Auditeur",           color: "var(--text2)",  bg: "var(--gray-light)",   icon: "👁️" }
+};
+
+var FONCTION_ROLE_MAP = {
+  "Responsable HSE":      "hse_manager",
+  "Coordinateur SPS":     "hse_manager",
+  "Directeur technique":  "hse_manager",
+  "Chef de chantier":     "chef_chantier",
+  "Conducteur de travaux":"chef_chantier",
+  "Agent HSE":            "agent_hse",
+  "Agent de maîtrise":    "agent_hse",
+  "Auditeur HSE":         "auditeur"
+};
+
+function _getRole() {
+  if (_sessionIsManager) return "hse_manager";
+  var f = (DB.config && DB.config.fonction) || "";
+  return FONCTION_ROLE_MAP[f] || "agent_hse";
+}
+
+var PERMS = {
+  incident_create:         ["hse_manager","chef_chantier","agent_hse"],
+  incident_close:          ["hse_manager"],
+  incident_capa:           ["hse_manager","chef_chantier"],
+  incident_5p:             ["hse_manager","chef_chantier"],
+  incident_delete:         ["hse_manager"],
+  capa_create:             ["hse_manager","chef_chantier"],
+  capa_start:              ["hse_manager","chef_chantier"],
+  capa_close:              ["hse_manager"],
+  capa_edit:               ["hse_manager","chef_chantier"],
+  capa_delete:             ["hse_manager"],
+  jsa_create:              ["hse_manager","chef_chantier","agent_hse"],
+  jsa_validate:            ["hse_manager","chef_chantier"],
+  jsa_edit:                ["hse_manager","chef_chantier"],
+  jsa_delete:              ["hse_manager"],
+  permis_create:           ["hse_manager"],
+  permis_close:            ["hse_manager"],
+  permis_delete:           ["hse_manager"],
+  toolbox_create:          ["hse_manager","chef_chantier","agent_hse"],
+  settings_edit:           ["hse_manager"],
+  personnel_delete:        ["hse_manager"],
+  induction_delete:        ["hse_manager"],
+};
+
+function can(perm, item) {
+  var role = _getRole();
+  var allowed = PERMS[perm] || [];
+  if (allowed.indexOf(role) >= 0) return true;
+  // Règle contextuelle : chef peut clôturer si c'est son incident/CAPA
+  if (perm === "incident_close" && role === "chef_chantier")
+    if (item && (item.resp === DB.config.nom || item.createdBy === DB.config.nom)) return true;
+  if (perm === "capa_close" && role === "chef_chantier")
+    if (item && item.resp === DB.config.nom) return true;
+  return false;
+}
+
+function permRefus(action) {
+  var role = _getRole();
+  var info = VIGILO_ROLES[role] || { label: role };
+  showToast("🔒 " + info.label + " — non autorisé : " + action, "err");
+}
+
+function renderRoleBadge() {
+  var role = _getRole();
+  var info = VIGILO_ROLES[role] || { label: role, color: "var(--text2)", bg: "var(--gray-light)", icon: "👤" };
+  var existing = document.getElementById("vigilo-role-badge");
+  if (existing) existing.remove();
+  var badge = document.createElement("div");
+  badge.id = "vigilo-role-badge";
+  badge.style.cssText = "display:inline-flex;align-items:center;gap:5px;padding:3px 9px;"
+    + "border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.2px;flex-shrink:0;"
+    + "color:" + info.color + ";background:" + info.bg + ";cursor:default";
+  badge.title = "Votre rôle : " + info.label;
+  badge.innerHTML = "<span style='font-size:13px'>" + info.icon + "</span>" + info.label;
+  // Bouton retour dashboard si manager en app
+  if (_sessionIsManager) {
+    var retour = document.createElement("button");
+    retour.id = "vigilo-retour-dashboard-btn";
+    retour.style.cssText = "margin-left:6px;padding:2px 7px;border-radius:8px;border:1px solid var(--orange-mid);"
+      + "background:var(--orange-light);color:var(--orange);font-size:10px;font-weight:700;cursor:pointer;";
+    retour.textContent = "← Dashboard";
+    retour.onclick = retourDashboardManager;
+    badge.appendChild(retour);
+  }
+  var tr = document.querySelector(".topbar-right");
+  if (tr) tr.insertBefore(badge, tr.firstChild);
+}
+
+// ── Actions RBAC avec traçabilité ────────────────
+function rbacCloturerIncident(id) {
+  var item = DB.incidents.find(function(i){ return i.id == id; });
+  if (!item || !can("incident_close", item)) { permRefus("Clôturer un incident"); return; }
+  showConfirm("Clôturer l'incident ?", "Confirmez que les actions correctives sont en place.", function() {
+    item.status   = "closed";
+    item.closedAt = nowISO();
+    item.closedBy = DB.config.nom;
+    save(); renderIncidents(); renderHome();
+    addActivity("Incident clôturé — " + item.type, "green");
+    showToast("Incident clôturé ✓ — " + DB.config.nom);
+  });
+}
+
+function rbacDemarrerCapa(id) {
+  var c = DB.capas.find(function(x){ return x.id == id; });
+  if (!c || !can("capa_start", c)) { permRefus("Démarrer une CAPA"); return; }
+  c.status    = "progress";
+  c.startedAt = nowISO();
+  c.startedBy = DB.config.nom;
+  save(); renderCapa(); renderHome();
+  addActivity("CAPA #" + c.num + " démarrée par " + DB.config.nom, "amber");
+  showToast("CAPA #" + c.num + " démarrée ✓");
+}
+
+function rbacCloturerCapa(id) {
+  var c = DB.capas.find(function(x){ return x.id == id; });
+  if (!c || !can("capa_close", c)) { permRefus("Valider une CAPA"); return; }
+  showConfirm("Valider CAPA #" + c.num + " ?", "Confirmez que l'action est réalisée et efficace.", function() {
+    c.status   = "closed";
+    c.closedAt = nowISO();
+    c.closedBy = DB.config.nom;
+    c.progress = 100;
+    save(); renderCapa(); renderHome();
+    addActivity("CAPA #" + c.num + " validée & clôturée — " + DB.config.nom, "green");
+    showToast("CAPA #" + c.num + " validée ✓ — " + DB.config.nom);
+  });
+}
+
+function rbacValiderJSA(id) {
+  var jsa = DB.jsas.find(function(x){ return x.id == id; });
+  if (!jsa || !can("jsa_validate", jsa)) { permRefus("Valider une JSA"); return; }
+  jsa.validated   = true;
+  jsa.validatedAt = nowISO();
+  jsa.validatedBy = DB.config.nom;
+  jsa.status      = "validated";
+  save(); renderJSA();
+  addActivity("JSA validée — " + jsa.type + " par " + DB.config.nom, "green");
+  showToast("JSA validée ✓ — " + DB.config.nom);
+}
+
+function rbacOuvrirModalCapa() {
+  if (!can("capa_create")) { permRefus("Créer une CAPA"); return; }
+  if (typeof resetCapaForm === "function") resetCapaForm();
+  openModal("modal-capa");
+}
+
+function rbacOuvrirSettings() {
+  if (!can("settings_edit")) { permRefus("Modifier les paramètres"); return; }
+  openModal("modal-settings");
+}
+
+function rbacSupprimerInduction(id) {
+  if (!can("induction_delete")) { permRefus("Supprimer une induction"); return; }
+  supprimerInduction(id);
+}
+
+function rbacSupprimerPersonnel(id) {
+  if (!can("personnel_delete")) { permRefus("Supprimer un agent"); return; }
+  supprimerPersonnel(id);
+}
+
+
 function startApp() {
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('bottom-nav').style.display = 'flex';
@@ -4492,6 +4680,7 @@ function startApp() {
     document.getElementById('fab-btn').style.display = 'flex';
   }
   _appliquerTheme();
+  renderRoleBadge();
   switchScreen('home');
   initSignaturePads();
   loadWeather();
@@ -4546,6 +4735,7 @@ function validerSetup() {
 }
 
 function sauvegarderSettings() {
+  if (typeof can === "function" && !can("settings_edit")) { permRefus("Modifier les paramètres"); return; }
   const chantier = document.getElementById('s-chantier').value.trim();
   const nom = document.getElementById('s-nom').value.trim();
   if (!chantier || !nom) { showToast('Champs obligatoires manquants', 'err'); return; }
@@ -5199,14 +5389,14 @@ function renderIncidents() {
       </div>
       <div class="list-card-actions">
         <button class="btn-sm outline" onclick="voirDetail('incident','${item.id}')">Voir</button>
-        ${item.status === 'open' ? `<button class="btn-sm orange" onclick="changerStatutIncident('${item.id}','progress')">En cours</button>` : ''}
-        ${item.status === 'progress' ? `<button class="btn-sm green" onclick="changerStatutIncident('${item.id}','closed')">Clôturer</button>` : ''}
-        ${item.status === 'closed' ? '' : `<button class="btn-sm outline" onclick="creerCapaDepuis('${item.id}')">→ CAPA</button>`}
-        <button class="btn-sm" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-light)" onclick="ouvrir5P('${item.id}')" title="Analyse 5 Pourquoi — causes racines">
+        ${can('incident_close', item) && item.status === 'open' ? `<button class="btn-sm orange" onclick="changerStatutIncident('${item.id}','progress')">▶ En cours</button>` : ''}
+        ${can('incident_close', item) && item.status === 'progress' ? `<button class="btn-sm green" onclick="rbacCloturerIncident('${item.id}')">✓ Clôturer</button>` : ''}
+        ${can('incident_capa', item) && item.status !== 'closed' ? `<button class="btn-sm outline" onclick="creerCapaDepuis('${item.id}')">→ CAPA</button>` : ''}
+        ${can('incident_5p', item) ? `<button class="btn-sm" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-light)" onclick="ouvrir5P('${item.id}')" title="5 Pourquoi">
           <svg width="11" height="11" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="display:inline-block;vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>5P${item.cinqP && item.cinqP.whys && item.cinqP.whys.filter(w=>w).length > 0 ? ' ✓' : ''}
-        </button>
+        </button>` : ''}
         <button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFicheIncident('${item.id}')">📄 PDF</button>
-        <button class="btn-sm outline" onclick="supprimerIncident('${item.id}')">✕</button>
+        ${can('incident_delete', item) ? `<button class="btn-sm outline" onclick="supprimerIncident('${item.id}')">✕</button>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -5864,20 +6054,22 @@ function renderJSA() {
       if (jsa.epis && jsa.epis.length) {
         jsa.epis.forEach(function(e){ epiHtml += '<span class="badge orange" style="font-size:10px;padding:2px 7px">' + e + '</span>'; });
       }
-      html += '<div class="list-card" style="border-left:3px solid var(--blue)">'
+      html += '<div class="list-card" style="border-left:3px solid ' + (jsa.validated ? 'var(--green)' : 'var(--blue)') + '">'
         + '<div class="list-card-top"><div class="list-card-title">' + jsa.type + '</div>'
-        + '<span class="badge ' + sevColor(jsa.risk) + '">' + (jsa.risk||'—') + '</span></div>'
+        + '<div style="display:flex;gap:5px;align-items:center"><span class="badge ' + sevColor(jsa.risk) + '">' + (jsa.risk||'—') + '</span>'
+        + (jsa.validated ? '<span class="badge green" style="font-size:10px">✓ Validée</span>' : '<span class="badge gray" style="font-size:10px">À valider</span>') + '</div></div>'
         + '<div class="list-card-meta">'
         + '<span>' + nb + ' étape(s)</span><span>·</span>'
         + '<span>Resp : ' + jsa.resp + '</span><span>·</span>'
         + '<span>' + fmtDate(jsa.createdAt) + '</span></div>'
         + (epiHtml ? '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">' + epiHtml + '</div>' : '')
         + '<div class="list-card-actions">'
-        + '<button class="btn-sm outline" onclick="voirDetailJSA(\'' + jsa.id + '\')">Voir étapes</button>'
-        + '<button class="btn-sm outline" onclick="editerJSA(\'' + jsa.id + '\')">Modifier</button>'
-        + '<button class="btn-sm" style="background:var(--green-light);color:var(--green)" onclick="dupliquerJSA(\'' + jsa.id + '\')">⎘ Copier</button>'
+        + '<button class="btn-sm outline" onclick="voirDetailJSA(\'' + jsa.id + '\')" >Voir étapes</button>'
+        + (can('jsa_validate', jsa) && !jsa.validated ? '<button class="btn-sm green" onclick="rbacValiderJSA(\'' + jsa.id + '\')">✓ Valider</button>' : '')
+        + (jsa.validated ? '<span style="font-size:11px;color:var(--green);font-weight:600;padding:0 4px">✓ Validée</span>' : '<span style="font-size:10px;color:var(--text3);padding:0 4px">En attente validation</span>')
         + '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFicheJSA(\'' + jsa.id + '\')">📄 PDF</button>'
-        + '<button class="btn-sm outline" onclick="supprimerJSA(\'' + jsa.id + '\')">✕</button>'
+        + (can('jsa_edit', jsa) ? '<button class="btn-sm outline" onclick="editerJSA(\'' + jsa.id + '\')">Modifier</button>' : '')
+        + (can('jsa_delete', jsa) ? '<button class="btn-sm outline" onclick="supprimerJSA(\'' + jsa.id + '\')">✕</button>' : '')
         + '</div></div>';
     });
     el.innerHTML = html;
@@ -7409,12 +7601,12 @@ function renderCapa() {
       </div>
       <div class="list-card-bar"><div class="list-card-bar-fill" style="width:${barW}%;background:${barColor}"></div></div>
       <div class="list-card-actions">
-        ${c.status === 'open' ? `<button class="btn-sm orange" onclick="changerStatutCapa('${c.id}','progress')">Démarrer</button>` : ''}
-        ${c.status === 'progress' ? `<button class="btn-sm green" onclick="changerStatutCapa('${c.id}','closed')">Clôturer</button>` : ''}
-        ${c.status !== 'closed' ? `<button class="btn-sm outline" onclick="editerCapa('${c.id}')">Modifier</button>` : ''}
+        ${can('capa_start', c) && c.status === 'open' ? `<button class="btn-sm orange" onclick="rbacDemarrerCapa('${c.id}')">▶ Démarrer</button>` : ''}
+        ${can('capa_close', c) && c.status === 'progress' ? `<button class="btn-sm green" onclick="rbacCloturerCapa('${c.id}')">✓ Valider</button>` : ''}
+        ${can('capa_edit', c) && c.status !== 'closed' ? `<button class="btn-sm outline" onclick="editerCapa('${c.id}')">Modifier</button>` : ''}
         <button class="btn-sm outline" onclick="voirDetail('capa','${c.id}')">Voir</button>
         <button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFicheCapa('${c.id}')">📄 PDF</button>
-        <button class="btn-sm outline" onclick="supprimerCapa('${c.id}')">✕</button>
+        ${can('capa_delete', c) ? `<button class="btn-sm outline" onclick="supprimerCapa('${c.id}')">✕</button>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -7469,6 +7661,7 @@ function voirDetail(type, id) {
       ${item.cause ? row('Cause immédiate', item.cause) : ''}
       ${item.action ? row('Action immédiate', item.action) : ''}
       ${row('Déclaré par', item.createdBy + ' le ' + fmtDate(item.createdAt))}
+      ${item.closedBy ? row('Clôturé par', item.closedBy + (item.closedAt ? ' — ' + fmtDate(item.closedAt) : '')) : ''}
       ${item.cinqP && item.cinqP.whys && item.cinqP.whys.filter(w=>w).length > 0 ? `
       <div style="margin-top:14px;padding:12px;background:var(--red-light);border-radius:10px;border:1px solid var(--red)">
         <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--red);margin-bottom:8px">Analyse 5 Pourquoi</div>
@@ -7517,7 +7710,9 @@ function voirDetail(type, id) {
       ${row('Origine', item.origine)}
       ${row('Responsable', item.resp)}
       ${row('Échéance', fmtDate(item.echeance))}
-      ${item.closedAt ? row('Clôturé le', fmtDate(item.closedAt)) : ''}
+      ${item.startedBy  ? row('Démarré par',  item.startedBy  + (item.startedAt  ? ' — ' + fmtDate(item.startedAt)  : '')) : ''}
+      ${item.closedBy   ? row('Validé par',   item.closedBy   + (item.closedAt   ? ' — ' + fmtDate(item.closedAt)   : '')) : ''}
+      ${item.closedAt && !item.closedBy ? row('Clôturé le', fmtDate(item.closedAt)) : ''}
       <button class="btn-sm outline" style="margin-top:14px" onclick="closeModal('modal-detail')">Fermer</button>`;
   }
   document.getElementById('modal-detail-content').innerHTML = html;
@@ -9320,10 +9515,10 @@ function renderPermis() {
         (p.createdBy?'<span>·</span><span>'+p.createdBy+'</span>':'') +
       '</div>' +
       '<div class="list-card-actions" style="padding-left:8px">' +
-        '<button class="btn-sm orange" onclick="ouvrirPermis(\''+p.type+'\',\''+p.id+'\')">✏️ Modifier</button>' +
+        (can('permis_create') ? '<button class="btn-sm orange" onclick="ouvrirPermis(\''+p.type+'\',\''+p.id+'\')">✏️ Modifier</button>' : '') +
         '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfPermisById(\''+p.id+'\')">📄 PDF</button>' +
-        (stat!=='cloture'?'<button class="btn-sm outline" style="color:var(--green);border-color:var(--green-mid)" onclick="cloturerPermis(\''+p.id+'\')">✓ Clôturer</button>':'') +
-        '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="supprimerPermis(\''+p.id+'\')">✕</button>' +
+        (can('permis_close') && stat!=='cloture' ? '<button class="btn-sm outline" style="color:var(--green);border-color:var(--green-mid)" onclick="cloturerPermis(\''+p.id+'\')">✓ Clôturer</button>' : '') +
+        (can('permis_delete') ? '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="supprimerPermis(\''+p.id+'\')">✕</button>' : '') +
       '</div></div>';
   }).join('');
 }
@@ -18285,8 +18480,10 @@ const FB_COLLECTION = 'vigilo_chantiers';
 let fbApp = null;
 let fbDB  = null;
 let fbListener = null;
-let _fbCode    = null;
-let _isAdmin   = false;
+let _fbCode            = null;
+let _isAdmin           = false;
+let _sessionIsManager  = false;   // true quand admin entre dans l'app (rôle hse_manager forcé)
+let _sessionAdminEmail = '';      // email admin courant (pour retour dashboard)
 let _adminViewCode = null;
 
 // Config toujours disponible (embarquée)
@@ -18680,7 +18877,7 @@ async function connexionAdminEmail() {
     _appliquerTheme();
     _ouvrirAdminShell();
     setTimeout(function() { renderAdminDashboard(); }, 50);
-    showToast('👑 Bienvenue, ' + (adminData.nom || 'Administrateur'));
+    showToast('🛡️ Bienvenue ' + (adminData.nom || 'Responsable QHSE') + ' — sélectionnez un chantier pour y accéder');
   } catch(e) {
     _setAuthStatus('admin-login-status', '❌ Erreur : ' + e.message, 'err');
     if (btn) { btn.textContent = 'Se connecter →'; btn.disabled = false; }
@@ -18807,7 +19004,7 @@ async function validerCreationChantier() {
       _adminEmail: _currentAdminData ? _currentAdminData.email : '',
       config: {
         nom: responsable || (_currentAdminData ? _currentAdminData.nom : ''),
-        fonction: (_currentAdminData ? _currentAdminData.fonction : '') || 'Responsable HSE',
+        fonction: (_currentAdminData && _currentAdminData.fonction) || 'Responsable HSE',
         entreprise: entreprise || (_currentAdminData ? _currentAdminData.entreprise : ''),
         dateDebut: dateC,
         adresse: adresse || '',
@@ -18943,7 +19140,11 @@ async function validerAgentCode() {
   subscribeFirestore(code);
   hideAllFirebaseScreens();
 
-  // Si le chantier n'est pas encore configuré (nouveau ou placeholder admin)
+  // Session agent — jamais manager
+  _sessionIsManager  = false;
+  _sessionAdminEmail = '';
+
+  // Si le chantier n'est pas encore configuré
   if (!DB.chantier) {
     document.getElementById('setup-screen').style.display = 'flex';
     var today = new Date().toISOString().split('T')[0];
@@ -18954,7 +19155,8 @@ async function validerAgentCode() {
   }
 
   _demarrerAppAgent();
-  showToast('✅ Bienvenue sur ' + (DB.chantier || code));
+  var roleInfo = (typeof VIGILO_ROLES !== 'undefined' && VIGILO_ROLES[typeof _getRole === 'function' ? _getRole() : 'agent_hse']) || {};
+  showToast('✅ ' + (DB.chantier || code) + ' — ' + (roleInfo.label || 'Agent'));
 }
 
 // ── Reprendre la session précédente ──────────────
@@ -19018,6 +19220,87 @@ var _adminChantierData = null;
 var _adminCurrentTab   = 'incidents';
 
 // ── Ouvrir le shell admin ─────────────────────────
+// ── Entrer dans un chantier en tant que Responsable HSE ──
+async function adminEntrerChantier(code) {
+  if (!fbDB) { showToast("Firebase non connecté", "err"); return; }
+  var btn = event && event.target;
+  if (btn) { btn.textContent = "⏳ Chargement..."; btn.disabled = true; }
+
+  try {
+    var doc = await fbDB.collection(FB_COLLECTION).doc(code).get();
+    if (!doc.exists) { showToast("Chantier introuvable", "err"); return; }
+    var data = doc.data();
+
+    // Sécurité : vérifier appartenance
+    if (_currentAdminData && data._adminEmail &&
+        data._adminEmail !== _currentAdminData.email) {
+      showToast("Accès refusé — ce chantier ne vous appartient pas", "err");
+      return;
+    }
+
+    // Charger les données dans DB
+    if (typeof _normaliserDB === 'function') {
+      Object.assign(DB, data);
+      _normaliserDB(DB);
+    } else {
+      Object.assign(DB, data);
+    }
+
+    // Forcer le nom/fonction depuis le compte admin
+    if (_currentAdminData) {
+      DB.config.nom      = DB.config.nom      || _currentAdminData.nom      || '';
+      DB.config.fonction = DB.config.fonction || _currentAdminData.fonction || 'Responsable HSE';
+      DB.config.entreprise = DB.config.entreprise || _currentAdminData.entreprise || '';
+    }
+
+    // Session manager
+    _sessionIsManager  = true;
+    _sessionAdminEmail = _currentAdminData ? _currentAdminData.email : '';
+    _fbCode            = code;
+    _isAdmin           = false; // on est dans l'app, pas le shell
+
+    // S'abonner Firestore
+    subscribeFirestore(code);
+
+    // Fermer le shell admin et démarrer l'app
+    _fermerAdminShell();
+    _appliquerTheme();
+    renderRoleBadge();
+    startApp();
+
+    showToast("🛡️ Bienvenue Responsable HSE — " + (DB.chantier || code));
+
+  } catch(e) {
+    showToast("Erreur : " + e.message, "err");
+  } finally {
+    if (btn) { btn.textContent = "📱 Accéder"; btn.disabled = false; }
+  }
+}
+
+// ── Retour au dashboard depuis l'app (manager) ───
+function retourDashboardManager() {
+  if (!_sessionIsManager) return;
+  showConfirm(
+    "Quitter le chantier ?",
+    "Vous revenez au tableau de bord administrateur. Vos données sont sauvegardées.",
+    function() {
+      _sessionIsManager  = false;
+      _sessionAdminEmail = '';
+      _isAdmin           = true;
+      _fbCode            = null;
+      // Masquer l'app
+      document.getElementById('bottom-nav').style.display = 'none';
+      var fab = document.getElementById('fab-btn');
+      if (fab) fab.style.display = 'none';
+      // Réouvrir le shell
+      _ouvrirAdminShell();
+      setTimeout(function() { renderAdminDashboard(); }, 50);
+      showToast("Retour au tableau de bord");
+    }
+  );
+}
+
+
 function _ouvrirAdminShell() {
   // Masquer tous les écrans firebase
   _FB_SCREENS.forEach(function(s) {
@@ -19098,7 +19381,8 @@ function _adminAfficherVueChantier(data) {
           ? '<span style="font-size:11px;color:var(--amber);font-weight:600">⚠️ ' + capas + ' CAPA ouverte' + (capas > 1 ? 's' : '') + '</span>'
           : '<span style="font-size:11px;color:var(--green)">✅ Aucune CAPA ouverte</span>')
       + '<span style="font-size:10px;color:var(--text3)">Sync ' + syncAt + '</span>'
-      + '</div>';
+      + '</div>'
+      + '<button style="width:100%;margin-top:12px;padding:12px;border-radius:12px;border:none;background:var(--orange);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body)" onclick="adminEntrerChantier(\''+data._id+'\')">📱 Entrer dans ce chantier en tant que Responsable HSE</button>';
   }
   // Onglet par défaut
   adminSwitchTab('incidents', document.querySelector('#admin-tabs-bar .admin-tab'));
@@ -19254,9 +19538,11 @@ function deconnexionAdmin() {
 
 function deconnecterFirebase() {
   disconnectFirestore();
-  _isAdmin = false;
-  _currentAdminData = null;
-  _lastCreatedCode  = null;
+  _isAdmin           = false;
+  _sessionIsManager  = false;
+  _sessionAdminEmail = '';
+  _currentAdminData  = null;
+  _lastCreatedCode   = null;
   _fermerAdminShell();
   document.getElementById('bottom-nav').style.display = 'none';
   document.getElementById('fab-btn').style.display = 'none';
@@ -19408,6 +19694,10 @@ async function renderAdminDashboard() {
             ? '<span style="font-size:11px;color:var(--amber);font-weight:600">⚠️ ' + capas + ' CAPA ouverte' + (capas>1?'s':'') + '</span>'
             : '<span style="font-size:11px;color:var(--green)">✅ Aucune CAPA ouverte</span>')
         + '<span style="font-size:10px;color:var(--text3)">Sync ' + syncAt + '</span>'
+        + '</div>'
+        + '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;gap:8px">'
+        + '<button style="flex:1;padding:9px 10px;border-radius:10px;border:none;background:var(--orange);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-body)" onclick="event.stopPropagation();adminEntrerChantier(\''+c._id+'\')">📱 Accéder au chantier</button>'
+        + '<button style="padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font-body)" onclick="event.stopPropagation();adminOuvrirChantier(\''+c._id+'\')" title="Voir le détail">📊</button>'
         + '</div>'
         + '</div>';
     }).join('');
