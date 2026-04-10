@@ -1330,13 +1330,6 @@ body.dark-mode .admin-tab:hover:not(.active){background:var(--gray-light)}
 .wf-sig-img { height:36px;border:1px solid var(--border);border-radius:6px;background:#fff; }
 .wf-validation-box { background:var(--blue-light);border:1.5px solid var(--blue);border-radius:10px;padding:12px;margin-top:10px; }
 .wf-actions { display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg); }
-/* ── Accordéon carte ── */
-.wf-card-summary { cursor:pointer;user-select:none;-webkit-user-select:none; }
-.wf-card-summary:active { opacity:.85; }
-.wf-card-chevron { display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-weight:600; }
-.wf-card-chevron svg { transition:transform .22s cubic-bezier(.4,0,.2,1); }
-.wf-card-details { overflow:hidden;max-height:0;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .25s;opacity:0;pointer-events:none; }
-.wf-card-details.open { max-height:2000px;opacity:1;pointer-events:auto; }
 </style>
 </head>
 <body>
@@ -18903,20 +18896,6 @@ function wfStepBarHtml(status) {
 }
 
 // ── Carte CAPA avec workflow ────────────────────────
-// ── Toggle accordéon carte incident/CAPA ──
-function toggleCardDetails(cardId) {
-  var card = document.getElementById(cardId);
-  if (!card) return;
-  var details = card.querySelector('.wf-card-details');
-  var chevron = card.querySelector('.wf-card-chevron svg');
-  var label   = card.querySelector('.wf-card-chevron span');
-  if (!details) return;
-  var isOpen = details.classList.contains('open');
-  details.classList.toggle('open', !isOpen);
-  if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-  if (label)   label.textContent = isOpen ? 'Voir les détails' : 'Masquer';
-}
-
 function renderCapaCard(c) {
   var status  = c.status || 'open';
   var corr    = c.correction || {};
@@ -18994,14 +18973,10 @@ function renderCapaCard(c) {
     actions += '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="supprimerCapa(' + c.id + ')">✕</button>';
   }
 
-  var cardId = 'capa-card-' + c.id;
-
-  return '<div class="wf-card status-' + status + '" id="' + cardId + '">'
+  return '<div class="wf-card status-' + status + '">'
     + wfStepBarHtml(status)
     + '<div class="wf-card-body">'
-    // Zone cliquable : résumé toujours visible
-    + '<div class="wf-card-summary" onclick="toggleCardDetails(\'' + cardId + '\')">'
-    + '<div class="wf-card-header" style="margin-bottom:6px">'
+    + '<div class="wf-card-header">'
     + '<div>'
     + '<div style="font-size:10px;color:var(--text3);margin-bottom:2px">CAPA #' + c.num + ' · ' + (c.type || 'corrective') + '</div>'
     + '<div class="wf-card-title">' + c.titre + '</div>'
@@ -19012,19 +18987,10 @@ function renderCapaCard(c) {
     + '</div></div>'
     + '<span style="font-size:10px;font-weight:700;color:' + wfStatutColor(status) + ';flex-shrink:0">' + wfStatutLabel(status) + '</span>'
     + '</div>'
-    + '<div class="list-card-bar" style="margin-bottom:6px"><div class="list-card-bar-fill" style="width:' + barW + '%;background:' + barColor + '"></div></div>'
-    // Chevron
-    + '<div class="wf-card-chevron">'
-    + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>'
-    + '<span>Voir les détails</span>'
-    + '</div>'
-    + '</div>'
-    // Détails cachés
-    + '<div class="wf-card-details">'
-    + (c.desc ? '<div class="wf-desc-box" style="margin-top:10px">' + c.desc + '</div>' : '')
+    + '<div class="list-card-bar" style="margin-bottom:10px"><div class="list-card-bar-fill" style="width:' + barW + '%;background:' + barColor + '"></div></div>'
+    + (c.desc ? '<div class="wf-desc-box">' + c.desc + '</div>' : '')
     + corrBlock + validBlock
     + (status === 'rejected' && valid.commentaire ? '<div style="background:var(--orange-light);border:1px solid var(--orange);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--orange);font-weight:600;margin-top:8px">⚠️ Motif de rejet : ' + valid.commentaire + '</div>' : '')
-    + '</div>'
     + '</div>'
     + '<div class="wf-actions">' + actions + '</div>'
     + '</div>';
@@ -19120,14 +19086,11 @@ function renderIncidentCard(item) {
     actions += '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="supprimerIncident(' + item.id + ')">✕</button>';
   }
 
-  var cardId = 'inc-card-' + item.id;
-
-  return '<div class="wf-card status-' + status + '" id="' + cardId + '">'
+  return '<div class="wf-card status-' + status + '" id="inc-card-' + item.id + '">'
     + wfStepBarHtml(status)
     + '<div class="wf-card-body">'
-    // Zone cliquable : résumé toujours visible
-    + '<div class="wf-card-summary" onclick="toggleCardDetails(\'' + cardId + '\')">'
-    + '<div class="wf-card-header" style="margin-bottom:6px">'
+    // En-tête
+    + '<div class="wf-card-header">'
     + '<div><div class="wf-card-title">' + item.type + '</div>'
     + '<div class="wf-card-meta">'
     + '<span>' + fmtDate(item.date) + (item.heure ? ' ' + item.heure : '') + '</span>'
@@ -19139,23 +19102,18 @@ function renderIncidentCard(item) {
     + '<span class="badge ' + sevCls + '" style="font-size:10px">' + sev + '</span>'
     + '<span style="font-size:10px;font-weight:700;color:' + wfStatutColor(status) + '">' + wfStatutLabel(status) + '</span>'
     + '</div></div>'
-    // Chevron
-    + '<div class="wf-card-chevron">'
-    + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>'
-    + '<span>Voir les détails</span>'
-    + '</div>'
-    + '</div>'
-    // Détails cachés
-    + '<div class="wf-card-details">'
-    + (item.desc ? '<div class="wf-desc-box" style="margin-top:10px">' + item.desc + '</div>' : '')
+    // Description déclaration
+    + (item.desc ? '<div class="wf-desc-box">' + item.desc + '</div>' : '')
     + (item.cause ? '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">Cause : ' + item.cause + '</div>' : '')
     + (item.personnes ? '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">Personne(s) : ' + item.personnes + '</div>' : '')
     + (item.action ? '<div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-style:italic">Action immédiate : ' + item.action + '</div>' : '')
+    // Photos déclaration
     + (photosDecl ? '<div class="wf-section-label">Photos de l\'incident</div><div class="wf-photos">' + photosDecl + '</div>' : '')
+    // Correction
     + corrBlock
+    // Validation
     + validBlock
     + (status === 'rejected' && valid.commentaire ? '<div style="background:var(--orange-light);border:1px solid var(--orange);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--orange);font-weight:600;margin-top:8px">⚠️ Motif de rejet : ' + valid.commentaire + '</div>' : '')
-    + '</div>'
     + '</div>'
     + '<div class="wf-actions">' + actions + '</div>'
     + '</div>';
@@ -20005,10 +19963,9 @@ function wfAgrandirPhoto(src) {
   onkeydown="if(event.key==='Enter')annotConfirmText();if(event.key==='Escape')annotCancelText()">
 
 
-<script>
 // Garantir hsse dans DB au load
 (function() {
-  // réservé pour extension future
+  var _origLoad = load;
 })();
 
 
@@ -21342,10 +21299,11 @@ function _adminKpiMini(val, lbl, color, bg) {
     + '</div>';
 }
 
-</script>
+
 
 <!-- ═════════════ MODAL CORRECTION ═════════════ -->
-<div class="modal-overlay" id="modal-correction" onclick="closeModalOut(event,'modal-correction')">\n  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+<div class="modal-overlay" id="modal-correction" onclick="closeModalOut(event,'modal-correction')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
     <div class="modal-handle"></div>
     <div class="modal-title">✅ Saisir la correction</div>
     <input type="hidden" id="corr-ref-id">
