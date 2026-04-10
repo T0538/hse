@@ -1330,6 +1330,48 @@ body.dark-mode .admin-tab:hover:not(.active){background:var(--gray-light)}
 .wf-sig-img { height:36px;border:1px solid var(--border);border-radius:6px;background:#fff; }
 .wf-validation-box { background:var(--blue-light);border:1.5px solid var(--blue);border-radius:10px;padding:12px;margin-top:10px; }
 .wf-actions { display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg); }
+
+/* ── Panel détail incident / CAPA ── */
+#wf-detail-panel{position:fixed;inset:0;z-index:2000;display:none;flex-direction:column;background:var(--bg)}
+#wf-detail-panel.open{display:flex}
+#wf-detail-topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+#wf-detail-back{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+#wf-detail-title{font-family:var(--font-head);font-size:17px;font-weight:800;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#wf-detail-scroll{flex:1;overflow-y:auto;padding-bottom:120px}
+#wf-detail-actions{position:sticky;bottom:0;display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
+.wfd-section{padding:14px 16px;border-bottom:1px solid var(--border)}
+.wfd-section-title{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.wfd-field{margin-bottom:10px}
+.wfd-field-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.wfd-field-val{font-size:13px;color:var(--text);line-height:1.5}
+.wfd-photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.wfd-photo{width:90px;height:90px;border-radius:12px;object-fit:cover;border:1.5px solid var(--border);cursor:pointer;transition:transform .12s}
+.wfd-photo:active{transform:scale(.96)}
+.wfd-corr-box{background:var(--green-light);border:1.5px solid var(--green-mid);border-radius:12px;padding:14px}
+.wfd-corr-box.rejected{background:var(--amber-light);border-color:var(--amber)}
+.wfd-valid-box{background:var(--blue-light);border:1.5px solid var(--blue);border-radius:12px;padding:14px;margin-top:10px}
+.wfd-sig{height:40px;border:1px solid var(--border);border-radius:8px;background:#fff;max-width:130px}
+.wfd-step-row{display:flex;gap:4px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0}
+.wfd-step-pill{flex:1;padding:6px 4px;text-align:center;border-radius:8px;font-size:10px;font-weight:700;background:var(--gray-light);color:var(--text3)}
+.wfd-step-pill.done{background:var(--green-light);color:var(--green)}
+.wfd-step-pill.active{background:var(--orange-light);color:var(--orange)}
+.wfd-step-pill.waiting{background:var(--blue-light);color:var(--blue)}
+.wfd-step-pill.closed{background:var(--green);color:#fff}
+.wfd-step-pill.rejected{background:var(--orange-light);color:var(--orange)}
+.wf-compact-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:transform .12s}
+.wf-compact-card:active{transform:scale(.985)}
+.wf-compact-card.status-open{border-left:4px solid var(--red)}
+.wf-compact-card.status-progress{border-left:4px solid var(--amber)}
+.wf-compact-card.status-pending_validation{border-left:4px solid var(--blue)}
+.wf-compact-card.status-closed{border-left:4px solid var(--green)}
+.wf-compact-card.status-rejected{border-left:4px solid var(--orange)}
+.wf-compact-inner{padding:13px 14px}
+.wf-compact-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.wf-compact-title{font-size:14px;font-weight:700;color:var(--text);line-height:1.3}
+.wf-compact-meta{font-size:11px;color:var(--text3);margin-top:4px;display:flex;gap:6px;flex-wrap:wrap}
+.wf-compact-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+.wf-compact-progress{height:4px;background:var(--gray-light);border-radius:2px;overflow:hidden;flex:1;margin-right:8px}
+.wf-compact-progress-fill{height:100%;border-radius:2px;transition:width .4s}
 </style>
 </head>
 <body>
@@ -5480,7 +5522,7 @@ function renderIncidents() {
         + '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="rbacSupprimerInduction(\'' + item.id + '\')" >✕</button>'
         + '</div></div>';
     }
-    return renderIncidentCard(item);
+    return renderIncidentCardCompact(item);
   }).join('');
 }
 
@@ -7669,7 +7711,7 @@ function renderCapa() {
     const retard = c.status !== 'closed' && c.echeance && c.echeance < now;
     const barColor = c.status === 'closed' ? 'var(--green-mid)' : (c.status === 'progress' ? 'var(--amber)' : 'var(--orange)');
     const barW = c.status === 'closed' ? 100 : (c.status === 'progress' ? (c.progress || 50) : 0);
-    return renderCapaCard(c);
+    return renderCapaCardCompact(c);
   }).join('');
 }
 
@@ -19208,6 +19250,7 @@ function soumettreCorrectionPourValidation() {
   closeModal('modal-correction');
   if (currentScreen === 'incidents') renderIncidents();
   if (currentScreen === 'toolbox')   renderCapa();
+  wfRefreshDetail();
   showToast('Correction soumise au Responsable QHSE ✓');
 }
 
@@ -19295,6 +19338,7 @@ function validerQHSE(accepter) {
   closeModal('modal-validation-qhse');
   if (currentScreen === 'incidents') renderIncidents();
   if (currentScreen === 'toolbox')   renderCapa();
+  wfRefreshDetail();
   showToast(accepter ? '✅ Validé & Clôturé par le QHSE' : '⚠️ Correction rejetée — à revoir');
 }
 
@@ -19963,9 +20007,10 @@ function wfAgrandirPhoto(src) {
   onkeydown="if(event.key==='Enter')annotConfirmText();if(event.key==='Escape')annotCancelText()">
 
 
+<script>
 // Garantir hsse dans DB au load
 (function() {
-  var _origLoad = load;
+  // réservé pour extension future
 })();
 
 
@@ -21301,9 +21346,211 @@ function _adminKpiMini(val, lbl, color, bg) {
 
 
 
+// ══ Panel détail Incident / CAPA ══
+
+var _wfDetailType = null;
+var _wfDetailId   = null;
+
+function wfOuvrirDetail(type, id) {
+  _wfDetailType = type; _wfDetailId = id;
+  var p = document.getElementById('wf-detail-panel');
+  if (p) { p.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  wfRendreDetail();
+}
+function wfFermerDetail() {
+  var p = document.getElementById('wf-detail-panel');
+  if (p) p.classList.remove('open');
+  document.body.style.overflow = '';
+  _wfDetailType = null; _wfDetailId = null;
+}
+function wfRefreshDetail() {
+  if (_wfDetailType && _wfDetailId) wfRendreDetail();
+}
+
+function wfRendreDetail() {
+  var type = _wfDetailType, id = _wfDetailId;
+  if (!type || !id) return;
+  var item = type === 'incident'
+    ? DB.incidents.find(function(x){ return x.id == id; })
+    : DB.capas.find(function(x){ return x.id == id; });
+  if (!item) return;
+  var status = item.status || 'open';
+  var corr = item.correction || {}, valid = item.validation || {};
+
+  // Topbar
+  var t = document.getElementById('wf-detail-title');
+  if (t) t.textContent = type === 'incident' ? (item.type||'Incident') : ('CAPA #'+item.num+' \u2014 '+(item.titre||''));
+
+  // \u00c9tapes
+  var stepsEl = document.getElementById('wf-detail-steps');
+  if (stepsEl) {
+    var s1 = 'done';
+    var s2 = status === 'open' ? 'active' : status === 'rejected' ? 'rejected' : 'done';
+    var s3 = status === 'closed' ? 'closed' : status === 'pending_validation' ? 'waiting' : '';
+    stepsEl.innerHTML = '<div class="wfd-step-pill '+s1+'">1 \u00b7 D\u00e9claration</div>'
+      + '<div class="wfd-step-pill '+s2+'">2 \u00b7 Correction</div>'
+      + '<div class="wfd-step-pill '+s3+'">3 \u00b7 Validation</div>';
+  }
+
+  // Corps
+  var scroll = document.getElementById('wf-detail-scroll');
+  if (!scroll) return;
+  var html = '';
+
+  // Section d\u00e9claration
+  html += '<div class="wfd-section">';
+  html += '<div class="wfd-section-title">'+(type==='incident'?'\ud83d\udd34 D\u00e9claration':'\ud83d\udd27 D\u00e9tails CAPA')+'</div>';
+  if (type === 'incident') {
+    html += wfdF('Type', item.type) + wfdF('Gravit\u00e9', item.sev)
+      + wfdF('Date / Heure', fmtDate(item.date)+(item.heure?' \u00e0 '+item.heure:''))
+      + wfdF('Zone', item.zone);
+    if (item.personnes) html += wfdF('Personne(s)', item.personnes);
+    if (item.desc)      html += wfdF('Description', item.desc);
+    if (item.cause)     html += wfdF('Cause', item.cause);
+    if (item.action)    html += wfdF('Action imm\u00e9diate', item.action);
+    html += wfdF('D\u00e9clar\u00e9 par', (item.createdBy||'\u2014')+(item.createdAt?' \u00b7 '+fmtDate(item.createdAt):''));
+    if (item.photos && item.photos.length) {
+      html += '<div class="wfd-field-lbl" style="margin-top:10px">\ud83d\udcf7 Photos ('+item.photos.length+')</div>';
+      html += '<div class="wfd-photos">'+item.photos.map(function(p){ return '<img src="'+p+'" class="wfd-photo" onclick="wfAgrandirPhoto(this.src)">'; }).join('')+'</div>';
+    }
+  } else {
+    html += wfdF('Action', item.titre) + (item.desc?wfdF('Description',item.desc):'')
+      + wfdF('Responsable', item.resp) + wfdF('\u00c9ch\u00e9ance', fmtDate(item.echeance))
+      + wfdF('Origine', item.origine||'\u2014');
+    var retard = status!=='closed' && item.echeance && item.echeance < new Date().toISOString().split('T')[0];
+    var bw = status==='closed'?100:status==='pending_validation'?70:status==='progress'?40:5;
+    var bc = status==='closed'?'var(--green)':retard?'var(--red)':'var(--blue)';
+    html += '<div style="margin-top:10px"><div class="wf-compact-progress"><div class="wf-compact-progress-fill" style="width:'+bw+'%;background:'+bc+'"></div></div></div>';
+  }
+  html += '</div>';
+
+  // Section correction
+  if (corr.desc) {
+    var rc = status==='rejected'?' rejected':'';
+    html += '<div class="wfd-section"><div class="wfd-section-title">\u2705 Correction r\u00e9alis\u00e9e</div>';
+    html += '<div class="wfd-corr-box'+rc+'">';
+    html += '<div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:10px">'+corr.desc+'</div>';
+    if (corr.photos && corr.photos.length) {
+      html += '<div class="wfd-field-lbl">\ud83d\udcf7 Photos correction ('+corr.photos.length+')</div>';
+      html += '<div class="wfd-photos">'+corr.photos.map(function(p){ return '<img src="'+p+'" class="wfd-photo" onclick="wfAgrandirPhoto(this.src)">'; }).join('')+'</div>';
+    }
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid rgba(0,0,0,.1)">';
+    html += '<div style="font-size:11px;color:var(--text3)">\ud83d\udc64 '+(corr.by||'\u2014')+' \u00b7 '+(corr.at?fmtDate(corr.at):'')+'</div>';
+    if (corr.signature) html += '<img src="'+corr.signature+'" class="wfd-sig">';
+    html += '</div></div></div>';
+  }
+
+  // Section validation
+  if (valid.by) {
+    var acc = status === 'closed';
+    html += '<div class="wfd-section"><div class="wfd-section-title">'+(acc?'\ud83d\udfe2 Valid\u00e9 par le QHSE':'\ud83d\udd34 Rejet\u00e9 par le QHSE')+'</div>';
+    html += '<div class="wfd-valid-box">';
+    html += '<div style="font-size:13px;font-weight:700;color:'+(acc?'var(--green)':'var(--red)')+';margin-bottom:6px">'+(acc?'\u2713 Valid\u00e9 &amp; Cl\u00f4tur\u00e9':'\u2717 Correction rejet\u00e9e')+'</div>';
+    html += '<div style="font-size:12px;color:var(--text3);margin-bottom:8px">Par '+valid.by+' \u00b7 '+(valid.at?fmtDate(valid.at):'')+'</div>';
+    if (valid.commentaire) html += '<div style="font-size:13px;color:var(--text);line-height:1.5;background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px">'+valid.commentaire+'</div>';
+    if (valid.signature) html += '<div><div style="font-size:9px;color:var(--text3);margin-bottom:3px">Signature QHSE</div><img src="'+valid.signature+'" class="wfd-sig" style="max-width:160px;height:48px"></div>';
+    html += '</div></div>';
+  }
+  if (status==='rejected' && valid.commentaire) {
+    html += '<div class="wfd-section"><div style="background:var(--orange-light);border:1.5px solid var(--orange);border-radius:10px;padding:12px;font-size:12px;color:var(--orange);font-weight:600">\u26a0\ufe0f Motif de rejet : '+valid.commentaire+'</div></div>';
+  }
+
+  scroll.innerHTML = html;
+
+  // Actions
+  var actEl = document.getElementById('wf-detail-actions');
+  if (!actEl) return;
+  var act = '';
+  if (status==='open'||status==='rejected') {
+    if (can('capa_start',item)) {
+      var lbl = status==='rejected'?'\ud83d\udd04 Revoir la correction':'\u270f\ufe0f Saisir la correction';
+      act += '<button class="btn-primary" style="flex:1;background:var(--orange);border-color:var(--orange)" onclick="wfFermerDetail();ouvrirModalCorrection('+id+',\''+type+'\')">'+lbl+'</button>';
+    } else {
+      act += '<span style="font-size:11px;color:var(--text3);flex:1;text-align:center">Correction \u00e0 saisir par chef ou responsable</span>';
+    }
+  }
+  if (status==='pending_validation') {
+    if (can('incident_close',item)) {
+      act += '<button class="btn-primary" style="flex:1;background:var(--blue);border-color:var(--blue)" onclick="wfFermerDetail();ouvrirValidationQHSE('+id+',\''+type+'\')">&#128737; Valider &amp; Signer (QHSE)</button>';
+    } else {
+      act += '<div style="flex:1;text-align:center;font-size:12px;color:var(--blue);font-weight:600">&#9203; En attente validation QHSE</div>';
+    }
+  }
+  var sec = '';
+  if (type==='incident') {
+    if (can('incident_5p',item)) sec += '<button class="btn-sm" style="background:var(--red-light);color:var(--red)" onclick="wfFermerDetail();setTimeout(function(){ouvrir5P('+id+')},200)">5P</button>';
+    if (can('incident_capa',item)&&status!=='closed') sec += '<button class="btn-sm outline" onclick="wfFermerDetail();setTimeout(function(){creerCapaDepuis('+id+')},200)">\u2192 CAPA</button>';
+    sec += '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFicheIncident('+id+')">&#128196; PDF</button>';
+    if (can('incident_delete',item)) sec += '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="wfFermerDetail();setTimeout(function(){supprimerIncident('+id+')},200)">\u2715</button>';
+  } else {
+    if (can('capa_edit',item)&&status!=='closed') sec += '<button class="btn-sm outline" onclick="wfFermerDetail();setTimeout(function(){editerCapa('+id+')},200)">Modifier</button>';
+    sec += '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfFicheCapa('+id+')">&#128196; PDF</button>';
+    if (can('capa_delete',item)) sec += '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="wfFermerDetail();setTimeout(function(){supprimerCapa('+id+')},200)">\u2715</button>';
+  }
+  if (sec) act += '<div style="display:flex;gap:6px;flex-wrap:wrap;width:100%">'+sec+'</div>';
+  actEl.innerHTML = act;
+}
+
+function wfdF(lbl, val) {
+  if (!val && val!==0) return '';
+  return '<div class="wfd-field"><div class="wfd-field-lbl">'+lbl+'</div><div class="wfd-field-val">'+val+'</div></div>';
+}
+
+// Cartes compactes
+function renderIncidentCardCompact(item) {
+  if (!item||item._isInduction) return '';
+  var status = item.status||'open';
+  var nPh = (item.photos||[]).length;
+  var hasC = !!(item.correction&&item.correction.desc);
+  var bw = status==='closed'?100:status==='pending_validation'?70:status==='progress'?40:5;
+  var bc = status==='closed'?'var(--green)':status==='pending_validation'?'var(--blue)':'var(--amber)';
+  return '<div class="wf-compact-card status-'+status+'" id="inc-card-'+item.id+'" onclick="wfOuvrirDetail(\'incident\','+item.id+')">'
+    +'<div class="wf-compact-inner">'
+    +'<div class="wf-compact-header">'
+    +'<div style="flex:1;min-width:0">'
+    +'<div class="wf-compact-title">'+item.type+'</div>'
+    +'<div class="wf-compact-meta"><span>'+fmtDate(item.date)+(item.heure?' '+item.heure:'')+'</span><span>\u00b7</span><span>'+(item.zone||'\u2014')+'</span>'+(item.createdBy?'<span>\u00b7</span><span>'+item.createdBy+'</span>':'')+'</div>'
+    +'</div>'
+    +(item.sev?'<span class="badge '+sevColor(item.sev)+'" style="font-size:10px;flex-shrink:0">'+item.sev+'</span>':'')
+    +'</div>'
+    +'<div class="wf-compact-bottom">'
+    +'<div class="wf-compact-progress"><div class="wf-compact-progress-fill" style="width:'+bw+'%;background:'+bc+'"></div></div>'
+    +'<div style="display:flex;align-items:center;gap:8px">'
+    +(nPh?'<span style="font-size:10px;color:var(--text3)">&#128247; '+nPh+'</span>':'')
+    +(hasC?'<span style="font-size:10px;color:var(--green)">&#10003;</span>':'')
+    +'<span style="font-size:10px;font-weight:700;color:'+wfStatutColor(status)+'">'+wfStatutLabel(status).split(' ').slice(1).join(' ')+'</span>'
+    +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>'
+    +'</div></div></div></div>';
+}
+
+function renderCapaCardCompact(c) {
+  var status = c.status||'open';
+  var retard = status!=='closed'&&c.echeance&&c.echeance<new Date().toISOString().split('T')[0];
+  var hasC = !!(c.correction&&c.correction.desc);
+  var bw = status==='closed'?100:status==='pending_validation'?70:status==='progress'?40:5;
+  var bc = status==='closed'?'var(--green)':retard?'var(--red)':'var(--blue)';
+  return '<div class="wf-compact-card status-'+status+'" onclick="wfOuvrirDetail(\'capa\','+c.id+')">'
+    +'<div class="wf-compact-inner">'
+    +'<div class="wf-compact-header">'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-size:10px;color:var(--text3);margin-bottom:2px">CAPA #'+c.num+' \u00b7 '+(c.type||'corrective')+'</div>'
+    +'<div class="wf-compact-title">'+c.titre+'</div>'
+    +'<div class="wf-compact-meta"><span>&#128100; '+c.resp+'</span><span>\u00b7</span><span '+(retard?'style="color:var(--red);font-weight:600"':'')+'>&#128197; '+fmtDate(c.echeance)+(retard?' \u26a0':'')+'</span></div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="wf-compact-bottom">'
+    +'<div class="wf-compact-progress"><div class="wf-compact-progress-fill" style="width:'+bw+'%;background:'+bc+'"></div></div>'
+    +'<div style="display:flex;align-items:center;gap:8px">'
+    +(hasC?'<span style="font-size:10px;color:var(--green)">&#10003;</span>':'')
+    +'<span style="font-size:10px;font-weight:700;color:'+wfStatutColor(status)+'">'+wfStatutLabel(status).split(' ').slice(1).join(' ')+'</span>'
+    +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>'
+    +'</div></div></div></div>';
+}
+
+</script>
+
 <!-- ═════════════ MODAL CORRECTION ═════════════ -->
-<div class="modal-overlay" id="modal-correction" onclick="closeModalOut(event,'modal-correction')">
-  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+<div class="modal-overlay" id="modal-correction" onclick="closeModalOut(event,'modal-correction')">\n  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
     <div class="modal-handle"></div>
     <div class="modal-title">✅ Saisir la correction</div>
     <input type="hidden" id="corr-ref-id">
@@ -21405,5 +21652,19 @@ function _adminKpiMini(val, lbl, color, bg) {
   </div>
 </div>
 
+
+<!-- ══════════════ PANEL DÉTAIL INCIDENT / CAPA ══════════════ -->
+<div id="wf-detail-panel">
+  <div id="wf-detail-topbar">
+    <button id="wf-detail-back" onclick="wfFermerDetail()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span id="wf-detail-title">Détail</span>
+    <span id="wf-detail-status-lbl" style="font-size:11px;font-weight:700;flex-shrink:0"></span>
+  </div>
+  <div class="wfd-step-row" id="wf-detail-steps"></div>
+  <div id="wf-detail-scroll"></div>
+  <div id="wf-detail-actions"></div>
+</div>
 </body>
 </html>
