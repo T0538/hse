@@ -1372,6 +1372,59 @@ body.dark-mode .admin-tab:hover:not(.active){background:var(--gray-light)}
 .wf-compact-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
 .wf-compact-progress{height:4px;background:var(--gray-light);border-radius:2px;overflow:hidden;flex:1;margin-right:8px}
 .wf-compact-progress-fill{height:100%;border-radius:2px;transition:width .4s}
+
+/* ══ MODULE QUALITÉ ══════════════════════════════ */
+.qual-tab{flex:0 0 auto;padding:10px 14px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;font-family:var(--font-body)}
+.qual-tab.active{color:#7C3AED;border-bottom-color:#7C3AED;font-weight:700}
+.qual-section{display:none;padding-bottom:80px}
+.qual-section.active{display:block}
+
+.nc-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:transform .12s}
+.nc-card:active{transform:scale(.985)}
+.nc-card.status-ouverte{border-left:4px solid #7C3AED}
+.nc-card.status-en_cours{border-left:4px solid var(--amber)}
+.nc-card.status-levee{border-left:4px solid var(--green)}
+.nc-card.status-rejetee{border-left:4px solid var(--red)}
+.nc-inner{padding:13px 14px}
+.nc-num{font-size:10px;color:var(--text3);margin-bottom:2px}
+.nc-title{font-size:14px;font-weight:700;color:var(--text);line-height:1.3}
+.nc-meta{font-size:11px;color:var(--text3);margin-top:5px;display:flex;gap:6px;flex-wrap:wrap}
+.nc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding-top:8px;border-top:1px solid var(--border)}
+.nc-progress{height:4px;background:var(--gray-light);border-radius:2px;overflow:hidden;flex:1;margin-right:8px}
+.nc-progress-fill{height:100%;border-radius:2px;transition:width .4s}
+.nc-badge-statut{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.nc-badge-statut.ouverte{background:#EDE9FE;color:#5B21B6}
+.nc-badge-statut.en_cours{background:var(--amber-light);color:var(--amber)}
+.nc-badge-statut.levee{background:var(--green-light);color:var(--green)}
+.nc-badge-statut.rejetee{background:var(--red-light);color:var(--red)}
+
+.ctrl-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;cursor:pointer;transition:transform .12s;overflow:hidden}
+.ctrl-card:active{transform:scale(.985)}
+.ctrl-card.conforme{border-left:4px solid var(--green)}
+.ctrl-card.non-conforme{border-left:4px solid var(--red)}
+.ctrl-card.en-cours{border-left:4px solid var(--amber)}
+.ctrl-inner{padding:13px 14px}
+.ctrl-score{font-family:var(--font-head);font-size:22px;font-weight:800}
+
+.res-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:transform .12s}
+.res-card:active{transform:scale(.985)}
+.res-card.ouverte{border-left:4px solid var(--orange)}
+.res-card.levee{border-left:4px solid var(--green)}
+.res-inner{padding:13px 14px}
+
+.ctrl-checklist-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ctrl-check-dot{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;color:var(--text3);flex-shrink:0;transition:all .15s}
+.ctrl-check-dot.ok{background:var(--green);border-color:var(--green);color:#fff}
+.ctrl-check-dot.nok{background:var(--red);border-color:var(--red);color:#fff}
+.ctrl-check-dot.na{background:var(--gray-light);border-color:var(--gray-light);color:var(--text3)}
+.nc-grav-btn.selected{border-color:#7C3AED!important;background:#EDE9FE!important}
+
+#qual-detail-panel{position:fixed;inset:0;z-index:2000;display:none;flex-direction:column;background:var(--bg)}
+#qual-detail-panel.open{display:flex}
+#qual-detail-topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+#qual-detail-scroll{flex:1;overflow-y:auto;padding-bottom:100px}
+#qual-detail-actions{position:sticky;bottom:0;display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
+#qual-alertes-strip{display:none;margin:6px 16px;background:var(--red-light);border:1.5px solid var(--red);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--red);font-weight:600}
 </style>
 </head>
 <body>
@@ -2778,6 +2831,12 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
         <svg width="20" height="20" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
       </div>
       <div class="more-nav-lbl">Politique</div>
+    </button>
+    <button class="more-nav-btn" id="more-nav-qualite" onclick="moreNavGo('qualite')">
+      <div class="more-nav-icon" style="background:#EDE9FE">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="#7C3AED" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div class="more-nav-lbl">Qualité</div>
     </button>
   </div>
 </div>
@@ -21547,6 +21606,757 @@ function renderCapaCardCompact(c) {
     +'</div></div></div></div>';
 }
 
+
+
+// ══════════════════════════════════════════════════════════
+// MODULE QUALITÉ — NC · Contrôles · Réserves
+// Workflow : déclaration → correction → validation QHSE
+// ══════════════════════════════════════════════════════════
+
+var QUAL_CTRL_TYPES = [
+  { id:"beton",        label:"Béton armé / Coulage",  items:["Propreté du coffrage","Position armatures conformes au plan","Épaisseur d'enrobage OK","Résistance béton vérifiée","Cure réalisée","Pas de nids de cailloux","Dimensions conformes au plan"] },
+  { id:"maconnerie",   label:"Maçonnerie / Cloisons",  items:["Verticalité (tolérance ±5mm/m)","Planéité (règle de 2m)","Joints remplis et réguliers","Alignement des assises","Chaînages et renforts conformes","Liaisons avec structure OK"] },
+  { id:"etancheite",   label:"Étanchéité",             items:["Supports propres et secs","Relevés >= 20cm","Recouvrements suffisants","Collages ou soudures continus","Évacuations étanches","Pas de cloques ni décollements","Essai d'étanchéité réalisé"] },
+  { id:"electricite",  label:"Électricité",            items:["Cheminements conformes aux plans","Fixations à 50cm maxi","Boîtes encastrées au nu","Fils correctement repérés","Continuité de terre vérifiée","Protection différentielle installée","Coffret étiqueté"] },
+  { id:"plomberie",    label:"Plomberie / Sanitaires", items:["Pentes évacuations >= 1%","Siphons en place","Robinetterie conforme","Essai pression réalisé","Isolation des tubes","Distances WC/mur conformes"] },
+  { id:"menuiseries",  label:"Menuiseries",            items:["Aplombs et niveaux OK","Jeux d'ouvrant conformes","Étanchéité périphérique","Quincailleries fonctionnelles","Vitrage conforme à la commande","Serrures et fermetures OK"] },
+  { id:"revetements",  label:"Revêtements sol/mur",   items:["Planeité support <= 2mm/2m","Joints de fractionnement prévus","Collage homogène","Calepinage conforme","Rejointoiement complet","Nettoyage effectué"] },
+  { id:"peinture",     label:"Peinture / Enduits",     items:["Surface dépoussiérée","Primaire appliqué","Couches suffisantes","Pas de coulures","Aspect homogène","Finition conforme commande"] },
+  { id:"reception",    label:"Réception travaux",      items:["Nettoyage général effectué","Tous les réseaux fonctionnels","Documents techniques remis","DOE remis","Clés remises","Réserves levées","PV signé"] },
+  { id:"libre",        label:"Contrôle libre",         items:[] }
+];
+
+function ncStatutLabel(s) {
+  return { ouverte:"🔴 Ouverte", en_cours:"🟡 En correction", levee:"🟢 Levée", rejetee:"🟠 À revoir" }[s] || s;
+}
+function ncGraviteColor(g) {
+  return { bloquante:"var(--red)", majeure:"var(--orange)", mineure:"var(--amber)" }[g] || "var(--text3)";
+}
+function ncGraviteLabel(g) {
+  return { bloquante:"🛑 Bloquante", majeure:"⚠️ Majeure", mineure:"🟡 Mineure" }[g] || g;
+}
+
+// ── KPIs & alertes ───────────────────────────────
+function renderQualite() {
+  if (!Array.isArray(DB.qualiteNC))        DB.qualiteNC        = [];
+  if (!Array.isArray(DB.qualiteControles)) DB.qualiteControles = [];
+  if (!Array.isArray(DB.qualiteReserves))  DB.qualiteReserves  = [];
+
+  var ncOpen   = DB.qualiteNC.filter(function(n){ return n.statut !== "levee"; }).length;
+  var ncLev    = DB.qualiteNC.filter(function(n){ return n.statut === "levee"; }).length;
+  var taux     = DB.qualiteNC.length > 0 ? Math.round(ncLev / DB.qualiteNC.length * 100) : null;
+  var resOpen  = DB.qualiteReserves.filter(function(r){ return r.statut !== "levee"; }).length;
+  var el;
+  el = document.getElementById("qkpi-nc");    if (el) { el.textContent = ncOpen; el.style.color = ncOpen > 0 ? "#7C3AED" : "var(--green)"; }
+  el = document.getElementById("qkpi-ctrl");  if (el) el.textContent = DB.qualiteControles.length;
+  el = document.getElementById("qkpi-res");   if (el) { el.textContent = resOpen; el.style.color = resOpen > 0 ? "var(--orange)" : "var(--green)"; }
+  el = document.getElementById("qkpi-taux");  if (el) el.textContent = taux !== null ? taux + "%" : "\u2014";
+
+  // Alertes retard
+  var today = new Date().toISOString().split("T")[0];
+  var retardNC  = DB.qualiteNC.filter(function(n){ return n.statut !== "levee" && n.echeance && n.echeance < today; }).length;
+  var retardRes = DB.qualiteReserves.filter(function(r){ return r.statut !== "levee" && r.echeance && r.echeance < today; }).length;
+  var strip = document.getElementById("qual-alertes-strip");
+  if (strip) {
+    var tot = retardNC + retardRes;
+    strip.style.display = tot > 0 ? "block" : "none";
+    if (tot > 0) strip.innerHTML = "\u26a0\ufe0f " + tot + " \u00e9l\u00e9ment(s) en retard : " + retardNC + " NC · " + retardRes + " r\u00e9serve(s)";
+  }
+
+  renderQualNC(); renderQualControles(); renderQualReserves();
+}
+
+// ── ONGLETS ──────────────────────────────────────
+function switchQualTab(tab, btn) {
+  document.querySelectorAll(".qual-tab").forEach(function(b){ b.classList.remove("active"); });
+  document.querySelectorAll(".qual-section").forEach(function(s){ s.classList.remove("active"); });
+  if (btn) btn.classList.add("active");
+  var sec = document.getElementById("qsec-" + tab);
+  if (sec) sec.classList.add("active");
+}
+
+// ── LISTES ───────────────────────────────────────
+function renderQualNC() {
+  var el = document.getElementById("qual-nc-list");
+  if (!el) return;
+  var list = (DB.qualiteNC || []).slice().sort(function(a,b){ return (b.createdAt||"").localeCompare(a.createdAt||""); });
+  if (!list.length) { el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">\u2705</div><div style="font-size:13px">Aucune non-conformit\u00e9</div></div>'; return; }
+  var today = new Date().toISOString().split("T")[0];
+  el.innerHTML = list.map(function(nc) {
+    var st = nc.statut || "ouverte";
+    var pct = st === "levee" ? 100 : st === "en_cours" ? 50 : 0;
+    var barCol = st === "levee" ? "var(--green)" : st === "en_cours" ? "var(--amber)" : "#7C3AED";
+    var retard = st !== "levee" && nc.echeance && nc.echeance < today;
+    return '<div class="nc-card status-' + st + '" onclick="qualOuvrirDetailNC(' + nc.id + ')">'
+      + '<div class="nc-inner">'
+      + '<div class="nc-num">NC-' + String(nc.id).padStart(4,"0") + (nc.lot ? " · " + nc.lot : "") + (nc.zone ? " · " + nc.zone : "") + '</div>'
+      + '<div class="nc-title">' + nc.type + '</div>'
+      + (nc.desc ? '<div style="font-size:11px;color:var(--text2);margin-top:3px;line-height:1.4">' + nc.desc.substring(0,90) + (nc.desc.length>90?"…":"") + '</div>' : "")
+      + '<div class="nc-meta"><span>' + (nc.createdAt ? nc.createdAt.split("T")[0] : "") + '</span>'
+      + '<span style="color:' + ncGraviteColor(nc.gravite) + ';font-weight:700">' + ncGraviteLabel(nc.gravite) + '</span>'
+      + (nc.entreprise ? '<span>' + nc.entreprise + '</span>' : "")
+      + (retard ? '<span style="color:var(--red);font-weight:700">\u26a0 En retard</span>' : "")
+      + '</div>'
+      + '<div class="nc-bottom">'
+      + '<div class="nc-progress"><div class="nc-progress-fill" style="width:' + pct + '%;background:' + barCol + '"></div></div>'
+      + '<span class="nc-badge-statut ' + st + '">' + ncStatutLabel(st).split(" ").slice(1).join(" ") + '</span>'
+      + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>'
+      + '</div></div></div>';
+  }).join("");
+}
+
+function renderQualControles() {
+  var el = document.getElementById("qual-controles-list");
+  if (!el) return;
+  if (!DB.qualiteControles || !DB.qualiteControles.length) { el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">\ud83d\udccb</div><div style="font-size:13px">Aucun contr\u00f4le</div></div>'; return; }
+  el.innerHTML = DB.qualiteControles.slice().reverse().map(function(c) {
+    var tot = c.items ? c.items.filter(function(i){ return i.rep !== "na"; }).length : 0;
+    var ok  = c.items ? c.items.filter(function(i){ return i.rep === "ok"; }).length : 0;
+    var nok = c.items ? c.items.filter(function(i){ return i.rep === "nok"; }).length : 0;
+    var pct = tot > 0 ? Math.round(ok/tot*100) : 0;
+    var cls = nok > 0 ? "non-conforme" : ok === (c.items||[]).length && (c.items||[]).length > 0 ? "conforme" : "en-cours";
+    var col = cls === "conforme" ? "var(--green)" : cls === "non-conforme" ? "var(--red)" : "var(--amber)";
+    return '<div class="ctrl-card ' + cls + '" onclick="qualOuvrirDetailCtrl(' + c.id + ')">'
+      + '<div class="ctrl-inner">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
+      + '<div><div style="font-size:13px;font-weight:700;color:var(--text)">' + c.typeLabel + '</div>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:2px">' + (c.zone||"\u2014") + " · " + (c.createdAt ? c.createdAt.split("T")[0] : "") + '</div></div>'
+      + '<div style="text-align:right"><div class="ctrl-score" style="color:' + col + '">' + pct + '%</div><div style="font-size:9px;color:var(--text3)">conforme</div></div>'
+      + '</div>'
+      + '<div style="height:5px;background:var(--gray-light);border-radius:3px;overflow:hidden"><div style="height:100%;width:' + pct + '%;background:' + col + ';border-radius:3px"></div></div>'
+      + '<div style="display:flex;gap:10px;margin-top:7px;font-size:11px">'
+      + '<span style="color:var(--green)">\u2713 ' + ok + ' OK</span>'
+      + (nok > 0 ? '<span style="color:var(--red)">\u2717 ' + nok + ' NOK</span>' : "")
+      + '<span style="color:var(--text3)">' + ((c.items||[]).length - tot) + ' N/A</span>'
+      + '</div></div></div>';
+  }).join("");
+}
+
+function renderQualReserves() {
+  var el = document.getElementById("qual-reserves-list");
+  if (!el) return;
+  if (!DB.qualiteReserves || !DB.qualiteReserves.length) { el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">\ud83d\udccb</div><div style="font-size:13px">Aucune r\u00e9serve</div></div>'; return; }
+  var today = new Date().toISOString().split("T")[0];
+  el.innerHTML = DB.qualiteReserves.slice().reverse().map(function(r) {
+    var st = r.statut || "ouverte";
+    var retard = st !== "levee" && r.echeance && r.echeance < today;
+    return '<div class="res-card ' + st + '" onclick="qualOuvrirDetailReserve(' + r.id + ')">'
+      + '<div class="res-inner">'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="font-size:10px;color:var(--text3);margin-bottom:2px">RES-' + String(r.id).padStart(3,"0") + (r.lot ? " · " + r.lot : "") + '</div>'
+      + '<div style="font-size:14px;font-weight:700;color:var(--text);line-height:1.3">' + r.titre + '</div>'
+      + (r.entreprise ? '<div style="font-size:11px;color:var(--text3);margin-top:3px">\ud83c\udfd7\ufe0f ' + r.entreprise + '</div>' : "")
+      + (r.echeance ? '<div style="font-size:11px;color:' + (retard?"var(--red)":"var(--text3)") + ';margin-top:3px">\ud83d\udcc5 ' + r.echeance + (retard?" \u26a0":"") + '</div>' : "")
+      + '</div>'
+      + '<span style="background:' + (st==="levee"?"var(--green-light)":"var(--orange-light)") + ';color:' + (st==="levee"?"var(--green)":"var(--orange)") + ';font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0;white-space:nowrap">' + (st==="levee"?"\u2713 Lev\u00e9e":"En attente") + '</span>'
+      + '</div></div></div>';
+  }).join("");
+}
+
+// ── QUICK MENU ───────────────────────────────────
+function ouvrirQuickQualite() {
+  var overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:209";
+  var sheet = document.createElement("div");
+  sheet.style.cssText = "position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:20px 20px 0 0;border-top:1px solid var(--border);z-index:210;padding:12px 18px calc(18px + env(safe-area-inset-bottom))";
+  overlay.onclick = function(){ overlay.remove(); sheet.remove(); };
+  var items = [
+    { label:"\ud83d\udd34 D\u00e9clarer une Non-Conformit\u00e9", fn:function(){ ouvrirModalNC(); } },
+    { label:"\u2705 Nouveau contr\u00f4le qualit\u00e9",           fn:function(){ ouvrirModalControle(); } },
+    { label:"\ud83d\udccb Ajouter une r\u00e9serve",              fn:function(){ ouvrirModalReserve(); } },
+  ];
+  sheet.innerHTML = '<div style="width:36px;height:4px;background:var(--gray-mid);border-radius:2px;margin:0 auto 14px"></div>'
+    + '<div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Que souhaitez-vous d\u00e9clarer ?</div>'
+    + items.map(function(o, i) {
+        return '<button id="qa-sheet-btn-' + i + '" style="display:block;width:100%;text-align:left;padding:13px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:14px;color:var(--text);margin-bottom:8px;cursor:pointer;font-family:var(--font-body)">' + o.label + '</button>';
+      }).join("")
+    + '<button onclick="this.closest(\'[style*=fixed]\').previousElementSibling.remove();this.closest(\'[style*=fixed]\').remove()" style="display:block;width:100%;text-align:center;padding:10px;background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;font-family:var(--font-body)">Annuler</button>';
+  document.body.appendChild(overlay);
+  document.body.appendChild(sheet);
+  items.forEach(function(o, i) {
+    document.getElementById("qa-sheet-btn-" + i).onclick = function(){ overlay.remove(); sheet.remove(); o.fn(); };
+  });
+}
+
+// ── MODAL NC ─────────────────────────────────────
+var _ncGravSelected = "majeure";
+function selectNCGrav(el) {
+  document.querySelectorAll(".nc-grav-btn").forEach(function(b){ b.classList.remove("selected"); });
+  el.classList.add("selected");
+  _ncGravSelected = el.dataset.val || el.getAttribute("data-val");
+}
+
+function ouvrirModalNC(id) {
+  var nc = id ? (DB.qualiteNC||[]).find(function(x){ return x.id==id; }) : null;
+  var titleEl = document.getElementById("modal-nc-title");
+  if (titleEl) titleEl.textContent = nc ? "\u270f\ufe0f Modifier NC" : "\ud83d\udd34 D\u00e9clarer une Non-Conformit\u00e9";
+  document.getElementById("nc-edit-id").value = nc ? nc.id : "";
+  _ncGravSelected = nc ? (nc.gravite || "majeure") : "majeure";
+  document.querySelectorAll(".nc-grav-btn").forEach(function(b){ b.classList.toggle("selected", (b.dataset.val||b.getAttribute("data-val")) === _ncGravSelected); });
+  ["nc-type","nc-zone","nc-lot","nc-entreprise","nc-echeance","nc-desc","nc-action-imm"].forEach(function(id2) {
+    var el = document.getElementById(id2);
+    if (el) el.value = nc ? (nc[id2.replace("nc-","").replace("-","_").replace("action_imm","actionImm")] || "") : "";
+  });
+  // handle field name mapping manually
+  if (document.getElementById("nc-type"))       document.getElementById("nc-type").value       = nc ? (nc.type||"")       : "";
+  if (document.getElementById("nc-zone"))       document.getElementById("nc-zone").value       = nc ? (nc.zone||"")       : "";
+  if (document.getElementById("nc-lot"))        document.getElementById("nc-lot").value        = nc ? (nc.lot||"")        : "";
+  if (document.getElementById("nc-entreprise")) document.getElementById("nc-entreprise").value = nc ? (nc.entreprise||"") : "";
+  if (document.getElementById("nc-echeance"))   document.getElementById("nc-echeance").value   = nc ? (nc.echeance||"")   : "";
+  if (document.getElementById("nc-desc"))       document.getElementById("nc-desc").value       = nc ? (nc.desc||"")       : "";
+  if (document.getElementById("nc-action-imm")) document.getElementById("nc-action-imm").value = nc ? (nc.actionImm||"") : "";
+  clearPhotos("nc-photos-preview");
+  openModal("modal-qual-nc");
+}
+
+function sauvegarderNC() {
+  var editId = document.getElementById("nc-edit-id").value;
+  var type   = (document.getElementById("nc-type")       || {}).value || "";
+  var zone   = (document.getElementById("nc-zone")       || {}).value || "";
+  var desc   = (document.getElementById("nc-desc")       || {}).value || "";
+  if (!type || !zone || !desc) { showToast("Type, zone et description obligatoires", "err"); return; }
+  var photos = getPhotos("nc-photos-preview");
+  if (!DB.qualiteNCCounter) DB.qualiteNCCounter = 1;
+  var obj = {
+    id: editId ? parseInt(editId) : DB.qualiteNCCounter++,
+    type: type, zone: zone, gravite: _ncGravSelected || "majeure", desc: desc,
+    lot:        ((document.getElementById("nc-lot")        || {}).value || "").trim(),
+    entreprise: ((document.getElementById("nc-entreprise") || {}).value || "").trim(),
+    echeance:   ((document.getElementById("nc-echeance")   || {}).value || ""),
+    actionImm:  ((document.getElementById("nc-action-imm") || {}).value || "").trim(),
+    photos: photos, statut: "ouverte",
+    createdAt: editId ? ((DB.qualiteNC||[]).find(function(x){ return x.id==editId; }) || {}).createdAt || nowISO() : nowISO(),
+    createdBy: DB.config.nom || "",
+  };
+  if (!DB.qualiteNC) DB.qualiteNC = [];
+  if (editId) {
+    var idx = DB.qualiteNC.findIndex(function(x){ return x.id==editId; });
+    if (idx >= 0) { obj.statut = DB.qualiteNC[idx].statut; DB.qualiteNC[idx] = obj; }
+  } else {
+    DB.qualiteNC.unshift(obj);
+    addActivity("NC-" + String(obj.id).padStart(4,"0") + " \u2014 " + type, "orange");
+  }
+  save(); closeModal("modal-qual-nc"); renderQualite();
+  switchQualTab("nc", document.getElementById("qtab-nc"));
+  showToast("NC enregistr\u00e9e \u2713" + (obj.gravite==="bloquante" ? " \u2014 BLOQUANTE : arr\u00eat requis !" : ""));
+}
+
+// ── CORRECTION NC ─────────────────────────────────
+function ouvrirCorrectionNC(id) {
+  var nc = (DB.qualiteNC||[]).find(function(x){ return x.id==id; });
+  if (!nc) return;
+  document.getElementById("nc-corr-ref-id").value = id;
+  document.getElementById("nc-corr-desc").value = (nc.correction && nc.correction.desc) || "";
+  clearPhotos("nc-corr-photos-preview");
+  var recap = document.getElementById("nc-corr-recap");
+  if (recap) recap.innerHTML = '<div style="background:#EDE9FE;border:1.5px solid #C4B5FD;border-radius:10px;padding:12px;margin-bottom:14px">'
+    + '<div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#5B21B6;margin-bottom:6px">NC \u00e0 corriger</div>'
+    + '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">' + nc.type + '</div>'
+    + '<div style="font-size:12px;color:var(--text2)">' + nc.desc + '</div>'
+    + (nc.gravite === "bloquante" ? '<div style="margin-top:8px;font-size:11px;color:var(--red);font-weight:700">\u26a0\ufe0f NC BLOQUANTE</div>' : "")
+    + (nc.rejetMotif ? '<div style="margin-top:8px;background:var(--orange-light);border-radius:8px;padding:8px;font-size:11px;color:var(--orange);font-weight:600">Motif de rejet : ' + nc.rejetMotif + '</div>' : "")
+    + '</div>';
+  setTimeout(function(){ initSig("nc-corr-sig-canvas"); }, 80);
+  openModal("modal-nc-correction");
+}
+
+function soumettreCorrectionNC() {
+  var id   = document.getElementById("nc-corr-ref-id").value;
+  var desc = document.getElementById("nc-corr-desc").value.trim();
+  if (!desc) { showToast("La description est obligatoire", "err"); return; }
+  var sigCanvas = document.getElementById("nc-corr-sig-canvas");
+  var sig = sigCanvas ? sigCanvas.toDataURL("image/png") : "";
+  if (!sig || sig.length < 2000) { showToast("Signature du correcteur obligatoire", "err"); return; }
+  var nc = (DB.qualiteNC||[]).find(function(x){ return x.id==id; });
+  if (!nc) return;
+  nc.correction = { desc: desc, photos: getPhotos("nc-corr-photos-preview"), signature: sig, by: DB.config.nom||"", at: nowISO() };
+  nc.statut = "en_cours";
+  save(); closeModal("modal-nc-correction"); renderQualite();
+  addActivity("Correction NC-" + String(nc.id).padStart(4,"0") + " soumise", "blue");
+  showToast("Correction soumise au QHSE \u2713");
+}
+
+// ── VALIDATION QHSE NC ───────────────────────────
+function validerNC(id, accepter) {
+  if (!can("incident_close", {})) { permRefus("Valider une NC \u2014 r\u00e9serv\u00e9 QHSE"); return; }
+  var nc = (DB.qualiteNC||[]).find(function(x){ return x.id==id; });
+  if (!nc) return;
+  document.getElementById("valid-nc-id").value      = id;
+  document.getElementById("valid-nc-accepter").value = accepter ? "1" : "0";
+  document.getElementById("valid-nc-commentaire").value = "";
+  var tEl = document.getElementById("valid-nc-modal-title");
+  if (tEl) tEl.textContent = accepter ? "\u2705 Valider & Lever la NC" : "\u2717 Rejeter la correction";
+  var btn = document.getElementById("valid-nc-btn-confirm");
+  if (btn) { btn.textContent = accepter ? "\u2705 Lever la NC" : "\u2717 Rejeter"; btn.style.background = accepter ? "var(--green)" : "var(--red)"; btn.style.borderColor = accepter ? "var(--green)" : "var(--red)"; }
+  var lbl = document.getElementById("valid-nc-comment-lbl");
+  if (lbl) lbl.textContent = accepter ? "Commentaire (facultatif)" : "Motif de rejet *";
+  // recap correction
+  var corr = nc.correction || {};
+  var recap = document.getElementById("valid-nc-recap");
+  if (recap) {
+    var phHtml = (corr.photos||[]).slice(0,4).map(function(p){ return '<img src="'+p+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1.5px solid var(--border)">'; }).join("");
+    recap.innerHTML = '<div style="background:var(--green-light);border:1.5px solid var(--green-mid);border-radius:10px;padding:12px;margin-bottom:14px">'
+      + '<div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--green);margin-bottom:6px">Correction de ' + (corr.by||"\u2014") + '</div>'
+      + '<div style="font-size:13px;color:var(--text);line-height:1.5;margin-bottom:8px">' + (corr.desc||"\u2014") + '</div>'
+      + (phHtml ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">' + phHtml + '</div>' : "")
+      + (corr.signature && corr.signature.length>2000 ? '<img src="'+corr.signature+'" style="height:28px;border:1px solid var(--border);border-radius:4px;background:#fff">' : "")
+      + '</div>';
+  }
+  clearSig("valid-nc-sig-canvas");
+  setTimeout(function(){ initSig("valid-nc-sig-canvas"); }, 80);
+  openModal("modal-valid-nc");
+}
+
+function confirmerValidationNC() {
+  var id       = document.getElementById("valid-nc-id").value;
+  var accepter = document.getElementById("valid-nc-accepter").value === "1";
+  var comm     = document.getElementById("valid-nc-commentaire").value.trim();
+  var sig      = document.getElementById("valid-nc-sig-canvas").toDataURL("image/png");
+  if (!sig || sig.length < 2000) { showToast("Signature obligatoire", "err"); return; }
+  if (!accepter && !comm)         { showToast("Motif de rejet obligatoire", "err"); return; }
+  var nc = (DB.qualiteNC||[]).find(function(x){ return x.id==id; });
+  if (!nc) return;
+  if (accepter) {
+    nc.statut = "levee"; nc.leveeAt = nowISO(); nc.leveeBy = DB.config.nom||""; nc.leveeSignature = sig; nc.leveeCommentaire = comm;
+    addActivity("NC-" + String(nc.id).padStart(4,"0") + " lev\u00e9e \u2014 " + (DB.config.nom||"QHSE"), "green");
+    showToast("\u2705 NC lev\u00e9e et cl\u00f4tur\u00e9e");
+  } else {
+    nc.statut = "rejetee"; nc.rejetMotif = comm; nc.rejetAt = nowISO(); nc.rejetBy = DB.config.nom||""; nc.rejetSignature = sig;
+    addActivity("NC-" + String(nc.id).padStart(4,"0") + " rejet\u00e9e", "orange");
+    showToast("\u26a0\ufe0f NC rejet\u00e9e \u2014 correction \u00e0 revoir");
+  }
+  save(); closeModal("modal-valid-nc"); renderQualite(); qualFermerDetail();
+}
+
+// ── CONTRÔLE QUALITÉ ─────────────────────────────
+var _ctrlItems = [];
+
+function ouvrirModalControle() {
+  _ctrlItems = [];
+  document.getElementById("ctrl-edit-id").value = "";
+  document.getElementById("ctrl-zone").value     = "";
+  document.getElementById("ctrl-resp").value     = DB.config.nom || "";
+  document.getElementById("ctrl-obs").value      = "";
+  var sel = document.getElementById("ctrl-type");
+  if (sel) { sel.value = QUAL_CTRL_TYPES[0].id; _chargerItemsControle(QUAL_CTRL_TYPES[0].id); }
+  var sc = document.getElementById("ctrl-score-live");
+  if (sc) sc.textContent = "\u2014";
+  openModal("modal-qual-ctrl");
+}
+
+function _chargerItemsControle(typeId) {
+  var t = QUAL_CTRL_TYPES.find(function(x){ return x.id===typeId; }) || QUAL_CTRL_TYPES[0];
+  _ctrlItems = typeId === "libre" ? [{ label:"", rep:"na" }] : t.items.map(function(l){ return { label:l, rep:"na" }; });
+  renderCtrlItems();
+}
+
+function renderCtrlItems() {
+  var el = document.getElementById("ctrl-items-list");
+  if (!el) return;
+  el.innerHTML = _ctrlItems.map(function(item, i) {
+    var lbl = item.label !== "" ? '<span style="flex:1;font-size:12px;color:var(--text);line-height:1.4">' + item.label + '</span>'
+      : '<input class="form-input" style="flex:1;font-size:12px;padding:6px 10px" value="" placeholder="Point ' + (i+1) + '" onchange="_ctrlItems[' + i + '].label=this.value">';
+    return '<div class="ctrl-checklist-row">' + lbl
+      + '<div style="display:flex;gap:6px;flex-shrink:0">'
+      + '<div class="ctrl-check-dot' + (item.rep==="ok"?" ok":"") + '" onclick="_setCtrlRep(' + i + ',\'ok\')">\u2713</div>'
+      + '<div class="ctrl-check-dot' + (item.rep==="nok"?" nok":"") + '" onclick="_setCtrlRep(' + i + ',\'nok\')">\u2717</div>'
+      + '<div class="ctrl-check-dot' + (item.rep==="na"?" na":"") + '" onclick="_setCtrlRep(' + i + ',\'na\')">\u2014</div>'
+      + '</div></div>';
+  }).join("");
+}
+
+function _setCtrlRep(i, rep) {
+  _ctrlItems[i].rep = rep;
+  renderCtrlItems();
+  var ok = _ctrlItems.filter(function(x){ return x.rep==="ok"; }).length;
+  var tot = _ctrlItems.filter(function(x){ return x.rep!=="na"; }).length;
+  var pct = tot > 0 ? Math.round(ok/tot*100) : 0;
+  var sc = document.getElementById("ctrl-score-live");
+  if (sc) { sc.textContent = tot > 0 ? pct + "%" : "\u2014"; sc.style.color = pct>=80?"var(--green)":pct>=50?"var(--amber)":"var(--red)"; }
+}
+
+function addCtrlItem() { _ctrlItems.push({ label:"", rep:"na" }); renderCtrlItems(); }
+
+function sauvegarderControle() {
+  var zone   = (document.getElementById("ctrl-zone")  || {}).value || "";
+  var typeId = (document.getElementById("ctrl-type")  || {}).value || QUAL_CTRL_TYPES[0].id;
+  var t      = QUAL_CTRL_TYPES.find(function(x){ return x.id===typeId; }) || QUAL_CTRL_TYPES[0];
+  if (!zone) { showToast("La zone est obligatoire", "err"); return; }
+  var items = _ctrlItems.filter(function(i){ return i.label; });
+  if (!items.length) { showToast("Ajoutez au moins un point de contr\u00f4le", "err"); return; }
+  if (!DB.qualiteControleCounter) DB.qualiteControleCounter = 1;
+  var ctrl = {
+    id: DB.qualiteControleCounter++, typeId: typeId, typeLabel: t.label,
+    zone: zone, resp: ((document.getElementById("ctrl-resp")||{}).value||"").trim(),
+    obs:  ((document.getElementById("ctrl-obs") ||{}).value||"").trim(),
+    items: items, createdAt: nowISO(), createdBy: DB.config.nom||"",
+  };
+  if (!DB.qualiteControles) DB.qualiteControles = [];
+  DB.qualiteControles.push(ctrl);
+  var ok  = items.filter(function(i){ return i.rep==="ok"; }).length;
+  var nok = items.filter(function(i){ return i.rep==="nok"; }).length;
+  addActivity("Contr\u00f4le " + t.label + " \u2014 " + zone + " : " + ok + "/" + items.length + " OK", nok>0?"orange":"green");
+  save(); closeModal("modal-qual-ctrl"); renderQualite();
+  switchQualTab("controles", document.getElementById("qtab-controles"));
+  showToast("Contr\u00f4le enregistr\u00e9 \u2713" + (nok>0 ? " \u2014 " + nok + " point(s) NOK" : ""));
+  if (nok > 0) { setTimeout(function(){ if (confirm(nok + " point(s) NOK d\u00e9tect\u00e9(s). Cr\u00e9er des NC automatiquement ?")){ creerNCDepuisCtrl(ctrl.id); } }, 400); }
+}
+
+// ── RÉSERVES ─────────────────────────────────────
+function ouvrirModalReserve(id) {
+  var r = id ? (DB.qualiteReserves||[]).find(function(x){ return x.id==id; }) : null;
+  var tEl = document.getElementById("modal-res-title");
+  if (tEl) tEl.textContent = r ? "\u270f\ufe0f Modifier la r\u00e9serve" : "\ud83d\udccb Nouvelle r\u00e9serve";
+  document.getElementById("res-edit-id").value = r ? r.id : "";
+  ["res-titre","res-lot","res-zone","res-entreprise","res-echeance","res-desc"].forEach(function(fid) {
+    var el = document.getElementById(fid), key = fid.replace("res-","");
+    if (el) el.value = r ? (r[key]||"") : "";
+  });
+  clearPhotos("res-photos-preview");
+  openModal("modal-qual-res");
+}
+
+function sauvegarderReserve() {
+  var titre  = ((document.getElementById("res-titre")      ||{}).value||"").trim();
+  var zone   = ((document.getElementById("res-zone")       ||{}).value||"").trim();
+  if (!titre || !zone) { showToast("Titre et zone obligatoires", "err"); return; }
+  var editId = document.getElementById("res-edit-id").value;
+  if (!DB.qualiteReserveCounter) DB.qualiteReserveCounter = 1;
+  var obj = {
+    id:         editId ? parseInt(editId) : DB.qualiteReserveCounter++,
+    titre:      titre, zone: zone,
+    lot:        ((document.getElementById("res-lot")        ||{}).value||"").trim(),
+    entreprise: ((document.getElementById("res-entreprise") ||{}).value||"").trim(),
+    echeance:   ((document.getElementById("res-echeance")   ||{}).value||""),
+    desc:       ((document.getElementById("res-desc")       ||{}).value||"").trim(),
+    photos:     getPhotos("res-photos-preview"),
+    statut:     "ouverte", createdAt: nowISO(), createdBy: DB.config.nom||"",
+  };
+  if (!DB.qualiteReserves) DB.qualiteReserves = [];
+  if (editId) {
+    var idx = DB.qualiteReserves.findIndex(function(x){ return x.id==editId; });
+    if (idx>=0) { obj.statut = DB.qualiteReserves[idx].statut; DB.qualiteReserves[idx] = obj; }
+  } else {
+    DB.qualiteReserves.unshift(obj);
+    addActivity("R\u00e9serve RES-" + String(obj.id).padStart(3,"0") + " \u2014 " + titre, "amber");
+  }
+  save(); closeModal("modal-qual-res"); renderQualite();
+  switchQualTab("reserves", document.getElementById("qtab-reserves"));
+  showToast("R\u00e9serve enregistr\u00e9e \u2713");
+}
+
+function leverReserve(id) {
+  var r = (DB.qualiteReserves||[]).find(function(x){ return x.id==id; });
+  if (!r) return;
+  document.getElementById("levee-res-id").value = id;
+  clearPhotos("levee-photos-preview");
+  clearSig("levee-sig-canvas");
+  var recap = document.getElementById("levee-recap");
+  if (recap) recap.innerHTML = '<div style="font-weight:700;font-size:13px;margin-bottom:6px">' + r.titre + '</div>'
+    + (r.zone?'<div style="font-size:12px;color:var(--text3)">'+r.zone+'</div>':"")
+    + (r.desc?'<div style="font-size:12px;color:var(--text2);margin-top:6px">'+r.desc+'</div>':"");
+  setTimeout(function(){ initSig("levee-sig-canvas"); }, 80);
+  openModal("modal-qual-levee");
+}
+
+function confirmerLeveeReserve() {
+  var id  = document.getElementById("levee-res-id").value;
+  var sig = document.getElementById("levee-sig-canvas").toDataURL("image/png");
+  if (!sig || sig.length < 2000) { showToast("Signature de l'entrepreneur obligatoire", "err"); return; }
+  var r = (DB.qualiteReserves||[]).find(function(x){ return x.id==id; });
+  if (!r) return;
+  r.statut = "levee"; r.leveeAt = nowISO(); r.leveeBy = DB.config.nom||"";
+  r.leveeSignature = sig; r.leveePhotos = getPhotos("levee-photos-preview");
+  save(); closeModal("modal-qual-levee"); renderQualite(); qualFermerDetail();
+  addActivity("R\u00e9serve RES-" + String(r.id).padStart(3,"0") + " lev\u00e9e", "green");
+  showToast("\u2705 R\u00e9serve lev\u00e9e et sign\u00e9e");
+}
+
+// ── NC depuis Contrôle ────────────────────────────
+function creerNCDepuisCtrl(ctrlId) {
+  var c = (DB.qualiteControles||[]).find(function(x){ return x.id==ctrlId; });
+  if (!c) return;
+  var noks = c.items.filter(function(i){ return i.rep==="nok"; });
+  if (!noks.length) return;
+  if (!DB.qualiteNCCounter) DB.qualiteNCCounter = 1;
+  if (!DB.qualiteNC) DB.qualiteNC = [];
+  noks.forEach(function(it) {
+    DB.qualiteNC.unshift({ id: DB.qualiteNCCounter++, type: "Non-conformit\u00e9 contr\u00f4le", zone: c.zone,
+      gravite: "majeure", desc: "Point NOK \u2014 " + c.typeLabel + " : " + it.label,
+      lot:"", entreprise:"", echeance:"", actionImm:"", photos:[], statut:"ouverte",
+      createdAt: nowISO(), createdBy: DB.config.nom||"", sourceCtrlId: ctrlId });
+  });
+  save(); renderQualite(); switchQualTab("nc", document.getElementById("qtab-nc"));
+  showToast(noks.length + " NC cr\u00e9\u00e9e(s) depuis le contr\u00f4le \u2713");
+}
+
+// ── PANEL DÉTAIL QUALITÉ ──────────────────────────
+var _qualDetailType = null, _qualDetailId = null;
+
+function qualOuvrirDetailNC(id)      { _qualDetailType="nc";   _qualDetailId=id; _qualOpenPanel(); }
+function qualOuvrirDetailCtrl(id)    { _qualDetailType="ctrl"; _qualDetailId=id; _qualOpenPanel(); }
+function qualOuvrirDetailReserve(id) { _qualDetailType="res";  _qualDetailId=id; _qualOpenPanel(); }
+
+function _qualOpenPanel() {
+  qualRendreDetail();
+  var p = document.getElementById("qual-detail-panel");
+  if (p) { p.classList.add("open"); document.body.style.overflow = "hidden"; }
+}
+
+function qualFermerDetail() {
+  var p = document.getElementById("qual-detail-panel");
+  if (p) p.classList.remove("open");
+  document.body.style.overflow = "";
+  _qualDetailType = null; _qualDetailId = null;
+}
+
+function qualRendreDetail() {
+  var type = _qualDetailType, id = _qualDetailId;
+  if (!type||!id) return;
+  var scroll = document.getElementById("qual-detail-scroll");
+  var actEl  = document.getElementById("qual-detail-actions");
+  var titleEl= document.getElementById("qual-detail-title");
+  if (!scroll||!actEl) return;
+  var html = "", act = "";
+
+  if (type === "nc") {
+    var nc = (DB.qualiteNC||[]).find(function(x){ return x.id==id; });
+    if (!nc) return;
+    var st = nc.statut || "ouverte";
+    var corr = nc.correction || {};
+    if (titleEl) titleEl.textContent = "NC-" + String(nc.id).padStart(4,"0") + " \u00b7 " + nc.type;
+    html += qualDS("\ud83d\udd34 Non-Conformit\u00e9",
+      qualDF("Type", nc.type)
+      + qualDF("Gravit\u00e9", '<span style="color:' + ncGraviteColor(nc.gravite) + ';font-weight:700">' + ncGraviteLabel(nc.gravite) + '</span>')
+      + qualDF("Zone", nc.zone) + (nc.lot?qualDF("Lot",nc.lot):"")
+      + (nc.entreprise?qualDF("Entreprise",nc.entreprise):"")
+      + qualDF("Description", nc.desc)
+      + (nc.actionImm?qualDF("Action imm\u00e9diate",nc.actionImm):"")
+      + (nc.echeance?qualDF("\u00c9ch\u00e9ance", nc.echeance):"")
+      + qualDF("D\u00e9clar\u00e9e par", (nc.createdBy||"\u2014") + " \u00b7 " + (nc.createdAt?nc.createdAt.split("T")[0]:""))
+      + (nc.photos&&nc.photos.length ? qualDPhotos(nc.photos) : "")
+    );
+    if (corr.desc) {
+      html += qualDS("\u2705 Correction apport\u00e9e",
+        '<div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:10px">' + corr.desc + '</div>'
+        + (corr.photos&&corr.photos.length ? qualDPhotos(corr.photos) : "")
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'
+        + '<div style="font-size:11px;color:var(--text3)">\ud83d\udc64 ' + (corr.by||"\u2014") + " \u00b7 " + (corr.at?corr.at.split("T")[0]:"") + '</div>'
+        + (corr.signature&&corr.signature.length>2000 ? '<img src="'+corr.signature+'" style="height:32px;border:1px solid var(--border);border-radius:4px;background:#fff;max-width:100px">' : "")
+        + '</div>'
+      );
+    }
+    if (st==="levee")    html += qualDS("\ud83d\udfe2 NC Lev\u00e9e", qualDF("Lev\u00e9e par", (nc.leveeBy||"\u2014") + " \u00b7 " + (nc.leveeAt?nc.leveeAt.split("T")[0]:"")) + (nc.leveeSignature&&nc.leveeSignature.length>2000?'<img src="'+nc.leveeSignature+'" style="height:36px;border:1px solid var(--border);border-radius:4px;background:#fff;max-width:130px;margin-top:6px">':''));
+    if (st==="rejetee"&&nc.rejetMotif) html += qualDS("\u26a0\ufe0f Correction rejet\u00e9e", '<div style="background:var(--orange-light);border:1.5px solid var(--orange);border-radius:10px;padding:12px;font-size:12px;color:var(--orange);font-weight:600">Motif : ' + nc.rejetMotif + '</div>');
+
+    if (st==="ouverte"||st==="rejetee") {
+      if (can("capa_start",nc)) act += '<button class="btn-primary" style="flex:1;background:#7C3AED;border-color:#7C3AED" onclick="qualFermerDetail();ouvrirCorrectionNC(' + id + ')">' + (st==="rejetee"?"\ud83d\udd04 Revoir la correction":"\u270f\ufe0f Saisir la correction") + '</button>';
+      else act += '<div style="flex:1;text-align:center;font-size:11px;color:var(--text3)">Correction \u00e0 saisir par un chef ou responsable</div>';
+    }
+    if (st==="en_cours"&&can("incident_close",{})) {
+      act += '<button class="btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" onclick="validerNC(' + id + ',true)">\u2705 Lever la NC</button>';
+      act += '<button class="btn-primary" style="flex:1;background:var(--red);border-color:var(--red)" onclick="validerNC(' + id + ',false)">\u2717 Rejeter</button>';
+    }
+    if (st!=="levee") act += '<button class="btn-sm outline" onclick="qualFermerDetail();ouvrirModalNC(' + id + ')">Modifier</button>';
+    if (can("incident_delete",{})) act += '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="qualFermerDetail();setTimeout(function(){showConfirm(\'Supprimer ?\',\'Cette NC sera supprim\u00e9e.\',function(){DB.qualiteNC=DB.qualiteNC.filter(function(x){return x.id!=' + id + '});save();renderQualite();})},200)">\u2715</button>';
+
+  } else if (type === "ctrl") {
+    var c = (DB.qualiteControles||[]).find(function(x){ return x.id==id; });
+    if (!c) return;
+    if (titleEl) titleEl.textContent = "Contr\u00f4le \u00b7 " + c.typeLabel;
+    var ok=c.items.filter(function(i){return i.rep==="ok";}).length;
+    var nok=c.items.filter(function(i){return i.rep==="nok";}).length;
+    var tot=c.items.filter(function(i){return i.rep!=="na";}).length;
+    var pct=tot>0?Math.round(ok/tot*100):0;
+    var col=nok>0?"var(--red)":pct>=80?"var(--green)":"var(--amber)";
+    html += qualDS("\ud83d\udcca R\u00e9sultat",
+      '<div style="text-align:center;padding:16px 0">'
+      + '<div style="font-family:var(--font-head);font-size:52px;font-weight:800;color:' + col + '">' + pct + '%</div>'
+      + '<div style="font-size:13px;color:var(--text3)">de conformit\u00e9</div>'
+      + '<div style="display:flex;gap:16px;justify-content:center;margin-top:12px;font-size:13px">'
+      + '<span style="color:var(--green)">\u2713 ' + ok + ' OK</span>'
+      + (nok>0?'<span style="color:var(--red)">\u2717 ' + nok + ' NOK</span>':"")
+      + '<span style="color:var(--text3)">' + (c.items.length-tot) + ' N/A</span>'
+      + '</div></div>'
+      + qualDF("Zone",c.zone) + qualDF("Responsable",c.resp||"\u2014") + qualDF("Date",c.createdAt?c.createdAt.split("T")[0]:"")
+      + (c.obs?qualDF("Observations",c.obs):"")
+    );
+    html += qualDS("\ud83d\udccb D\u00e9tail des points",
+      c.items.map(function(it){
+        var ic=it.rep==="ok"?"\u2713":it.rep==="nok"?"\u2717":"\u2014";
+        var fc=it.rep==="ok"?"var(--green)":it.rep==="nok"?"var(--red)":"var(--text3)";
+        return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">'
+          + '<span style="font-size:15px;font-weight:800;color:' + fc + ';flex-shrink:0;width:22px">' + ic + '</span>'
+          + '<span style="font-size:12px;color:' + (it.rep==="nok"?"var(--red)":"var(--text)") + '">' + it.label + '</span></div>';
+      }).join("")
+    );
+    if (nok>0) act += '<button class="btn-primary" style="flex:1;background:#7C3AED;border-color:#7C3AED" onclick="qualFermerDetail();setTimeout(function(){creerNCDepuisCtrl(' + id + ')},200)">\u2192 Cr\u00e9er ' + nok + ' NC</button>';
+    act += '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfRapportControle(' + id + ')">\ud83d\udcc4 PDF</button>';
+    if (can("incident_delete",{})) act += '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="qualFermerDetail();setTimeout(function(){showConfirm(\'Supprimer ?\',\'\',function(){DB.qualiteControles=DB.qualiteControles.filter(function(x){return x.id!=' + id + '});save();renderQualite();})},200)">\u2715</button>';
+
+  } else if (type === "res") {
+    var r = (DB.qualiteReserves||[]).find(function(x){ return x.id==id; });
+    if (!r) return;
+    if (titleEl) titleEl.textContent = "RES-" + String(r.id).padStart(3,"0") + " \u00b7 " + r.titre;
+    var today = new Date().toISOString().split("T")[0];
+    var retard = r.statut!=="levee"&&r.echeance&&r.echeance<today;
+    html += qualDS("\ud83d\udccb R\u00e9serve",
+      qualDF("Intitul\u00e9",r.titre) + (r.lot?qualDF("Lot",r.lot):"") + (r.zone?qualDF("Zone",r.zone):"")
+      + (r.entreprise?qualDF("Entreprise",r.entreprise):"")
+      + (r.echeance?qualDF("\u00c9ch\u00e9ance",r.echeance+(retard?" \u26a0 En retard":"")):"")
+      + (r.desc?qualDF("Description",r.desc):"")
+      + qualDF("\u00c9mise par",(r.createdBy||"\u2014")+" \u00b7 "+(r.createdAt?r.createdAt.split("T")[0]:""))
+      + (r.photos&&r.photos.length?qualDPhotos(r.photos):"")
+    );
+    if (r.statut==="levee") {
+      html += qualDS("\u2705 R\u00e9serve lev\u00e9e",
+        qualDF("Lev\u00e9e par",(r.leveeBy||"\u2014")+" \u00b7 "+(r.leveeAt?r.leveeAt.split("T")[0]:""))
+        + (r.leveeSignature&&r.leveeSignature.length>2000?'<div style="margin-top:6px"><div style="font-size:10px;color:var(--text3);margin-bottom:3px">Signature entrepreneur</div><img src="'+r.leveeSignature+'" style="height:36px;border:1px solid var(--border);border-radius:4px;background:#fff;max-width:130px"></div>':"")
+        + (r.leveePhotos&&r.leveePhotos.length?qualDPhotos(r.leveePhotos):"")
+      );
+    }
+    if (r.statut!=="levee") act += '<button class="btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" onclick="leverReserve(' + id + ')">\u2705 Lever la r\u00e9serve</button>';
+    act += '<button class="btn-sm outline" onclick="qualFermerDetail();ouvrirModalReserve(' + id + ')">Modifier</button>';
+    act += '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="pdfRapportReception()">\ud83d\udcc4 PDF</button>';
+    if (can("incident_delete",{})) act += '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="qualFermerDetail();setTimeout(function(){showConfirm(\'Supprimer ?\',\'\',function(){DB.qualiteReserves=DB.qualiteReserves.filter(function(x){return x.id!=' + id + '});save();renderQualite();})},200)">\u2715</button>';
+  }
+
+  scroll.innerHTML = html;
+  actEl.innerHTML  = act;
+}
+
+function qualDS(titre, corps) {
+  return '<div style="padding:14px 16px;border-bottom:1px solid var(--border)">'
+    + '<div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">' + titre + '</div>'
+    + corps + '</div>';
+}
+function qualDF(lbl, val) {
+  if (!val && val!==0) return "";
+  return '<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">' + lbl + '</div><div style="font-size:13px;color:var(--text);line-height:1.5">' + val + '</div></div>';
+}
+function qualDPhotos(photos) {
+  return '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;margin:10px 0 6px">\ud83d\udcf7 Photos (' + photos.length + ')</div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">' + photos.map(function(p){ return '<img src="'+p+'" style="width:90px;height:90px;border-radius:12px;object-fit:cover;border:1.5px solid var(--border);cursor:pointer" onclick="wfAgrandirPhoto(this.src)">'; }).join("") + '</div>';
+}
+
+// ── PDF Rapport de réception ──────────────────────
+function pdfRapportReception() {
+  if (!window.jspdf || !window.jspdf.jsPDF) { showToast("PDF non disponible","err"); return; }
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation:"portrait",unit:"mm",format:"a4" });
+  var W=210, P=14, y=0;
+  var CP=[124,58,237], CG=[100,100,100], CD=[30,30,30], CV=[46,110,14], CO=[180,90,0], CR=[190,40,40];
+  var ch = DB.chantier||"Chantier", ent = (DB.config&&DB.config.entreprise)||"", dateR = new Date().toLocaleDateString("fr-FR");
+  var ncs = DB.qualiteNC||[], res = DB.qualiteReserves||[];
+  // Header
+  doc.setFillColor(...CP); doc.rect(0,0,W,32,"F");
+  doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(16); doc.text("RAPPORT DE R\u00c9CEPTION",P,14);
+  doc.setFontSize(10); doc.setFont("helvetica","normal"); doc.text(ch+(ent?" \u2014 "+ent:""),P,21); doc.text("Date : "+dateR,P,27);
+  y=42;
+  // KPIs
+  var ncO=ncs.filter(function(n){return n.statut!=="levee";}).length, ncL=ncs.filter(function(n){return n.statut==="levee";}).length;
+  var rO=res.filter(function(r){return r.statut!=="levee";}).length, rL=res.filter(function(r){return r.statut==="levee";}).length;
+  var boxes=[{l:"NC totales",v:ncs.length,c:CP},{l:"NC lev\u00e9es",v:ncL,c:CV},{l:"NC ouvertes",v:ncO,c:ncO>0?CR:CV},{l:"R\u00e9serves",v:res.length,c:CO},{l:"Lev\u00e9es",v:rL,c:CV},{l:"Restantes",v:rO,c:rO>0?CR:CV}];
+  var bW=(W-2*P-5*4)/6;
+  boxes.forEach(function(b,i){ var bx=P+i*(bW+4); doc.setFillColor(245,245,250); doc.roundedRect(bx,y,bW,18,2,2,"F"); doc.setFont("helvetica","bold");doc.setFontSize(14);doc.setTextColor(...b.c);doc.text(String(b.v),bx+bW/2,y+10,{align:"center"}); doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(...CG);doc.text(b.l,bx+bW/2,y+16,{align:"center"}); });
+  y+=26;
+  // NCs
+  if (ncs.length) {
+    doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...CP);doc.text("NON-CONFORMIT\u00c9S",P,y);y+=5;
+    doc.setDrawColor(...CP);doc.setLineWidth(.5);doc.line(P,y,W-P,y);y+=5;
+    ncs.forEach(function(nc){
+      if(y>260){doc.addPage();y=20;}
+      var sc=nc.statut==="levee"?CV:nc.statut==="rejetee"?CR:CO;
+      doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...CD);doc.text("NC-"+String(nc.id).padStart(4,"0")+"  "+nc.type,P,y);
+      doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...sc);doc.text("\u25cf "+(nc.statut||"").toUpperCase(),W-P,y,{align:"right"});
+      y+=4; doc.setTextColor(...CG); doc.text("Zone: "+(nc.zone||"\u2014")+"  |  Gravit\u00e9: "+(nc.gravite||"\u2014")+(nc.entreprise?"  |  "+nc.entreprise:""),P+2,y); y+=4;
+      var dl=doc.splitTextToSize(nc.desc||"",W-2*P-4); doc.setTextColor(...CD);doc.text(dl.slice(0,2),P+2,y); y+=dl.slice(0,2).length*4+2;
+      if(nc.statut==="levee"&&nc.leveeAt){doc.setTextColor(...CV);doc.text("\u2713 Lev\u00e9e le "+new Date(nc.leveeAt).toLocaleDateString("fr-FR")+" par "+(nc.leveeBy||"\u2014"),P+2,y);y+=4;}
+      y+=2;
+    });
+    y+=4;
+  }
+  // Réserves
+  if (res.length) {
+    if(y>230){doc.addPage();y=20;}
+    doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...CO);doc.text("R\u00c9SERVES \u2014 PUNCH LIST",P,y);y+=5;
+    doc.setDrawColor(...CO);doc.setLineWidth(.5);doc.line(P,y,W-P,y);y+=5;
+    res.forEach(function(r,idx){
+      if(y>260){doc.addPage();y=20;}
+      var sc=r.statut==="levee"?CV:CO;
+      doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...CD);doc.text((idx+1)+".  "+r.titre,P,y);
+      doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...sc);doc.text(r.statut==="levee"?"\u2713 Lev\u00e9e":"\u00c0 lever",W-P,y,{align:"right"});
+      y+=4; doc.setTextColor(...CG); doc.text((r.lot||"")+(r.zone?"  |  "+r.zone:"")+(r.entreprise?"  |  "+r.entreprise:""),P+4,y); y+=4;
+      if(r.statut==="levee"&&r.leveeAt){doc.setTextColor(...CV);doc.text("Lev\u00e9e le "+new Date(r.leveeAt).toLocaleDateString("fr-FR")+" par "+(r.leveeBy||"\u2014"),P+4,y);y+=4;}
+      y+=2;
+    });
+  }
+  var tot=doc.getNumberOfPages();
+  for(var p2=1;p2<=tot;p2++){doc.setPage(p2);doc.setFontSize(8);doc.setTextColor(...CG);doc.text("VIGILO \u2014 Rapport de r\u00e9ception \u2014 "+ch+" \u2014 Page "+p2+"/"+tot,W/2,293,{align:"center"});}
+  doc.save("Rapport_Reception_"+ch.replace(/\s+/g,"_")+"_"+dateR.replace(/\//g,"-")+".pdf");
+  showToast("\ud83d\udcc4 Rapport export\u00e9");
+}
+
+function pdfRapportControle(id) {
+  var c = (DB.qualiteControles||[]).find(function(x){ return x.id==id; });
+  if (!c) return;
+  if (!window.jspdf || !window.jspdf.jsPDF) { showToast("PDF non disponible","err"); return; }
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+  var W=210,P=14,y=0;
+  var ok=c.items.filter(function(i){return i.rep==="ok";}).length;
+  var nok=c.items.filter(function(i){return i.rep==="nok";}).length;
+  var tot=c.items.filter(function(i){return i.rep!=="na";}).length;
+  var pct=tot>0?Math.round(ok/tot*100):0;
+  var CV=[46,110,14],CR=[190,40,40],CO=[180,90,0],CG=[100,100,100],CD=[30,30,30];
+  doc.setFillColor(46,110,14);doc.rect(0,0,W,32,"F");
+  doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(14);doc.text("FICHE DE CONTR\u00d4LE QUALIT\u00c9",P,14);
+  doc.setFontSize(10);doc.setFont("helvetica","normal");doc.text(c.typeLabel+" \u2014 "+c.zone,P,21);doc.text("Date : "+(c.createdAt?c.createdAt.split("T")[0]:""),P,27);
+  y=42;
+  // Score
+  var col=nok>0?CR:pct>=80?CV:CO;
+  doc.setFont("helvetica","bold");doc.setFontSize(32);doc.setTextColor(...col);doc.text(pct+"%",W/2,y+16,{align:"center"});
+  doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(...CG);doc.text("de conformit\u00e9",W/2,y+24,{align:"center"});
+  doc.setFontSize(11);doc.setTextColor(...(nok>0?CR:[100,100,100]));
+  doc.text("\u2713 "+ok+" OK     \u2717 "+nok+" NOK     "+((c.items||[]).length-tot)+" N/A",W/2,y+32,{align:"center"});
+  y+=44;
+  // Items
+  doc.setDrawColor(200,200,200);doc.setLineWidth(.3);doc.line(P,y,W-P,y);y+=6;
+  (c.items||[]).forEach(function(it){
+    if(y>270){doc.addPage();y=20;}
+    var ic=it.rep==="ok"?"\u2713":it.rep==="nok"?"\u2717":"\u2014";
+    var fc=it.rep==="ok"?CV:it.rep==="nok"?CR:CG;
+    doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...fc);doc.text(ic,P+2,y);
+    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(...CD);doc.text(it.label||"",P+10,y);
+    y+=7;doc.setDrawColor(230,230,230);doc.line(P,y,W-P,y);y+=3;
+  });
+  doc.setFontSize(8);doc.setTextColor(...CG);doc.text("VIGILO \u2014 Contr\u00f4le qualit\u00e9 \u2014 "+(DB.chantier||"")+" \u2014 Page 1/1",W/2,293,{align:"center"});
+  doc.save("Controle_"+c.typeLabel.replace(/\s+/g,"_")+"_"+c.zone+"_"+(c.createdAt?c.createdAt.split("T")[0]:"")+".pdf");
+  showToast("\ud83d\udcc4 Fiche de contr\u00f4le export\u00e9e");
+}
+
+// ── Normalisation DB qualité ──────────────────────
+var _origNormDB = _normaliserDB;
+_normaliserDB = function() {
+  _origNormDB();
+  if (!Array.isArray(DB.qualiteNC))        DB.qualiteNC        = [];
+  if (!Array.isArray(DB.qualiteControles)) DB.qualiteControles = [];
+  if (!Array.isArray(DB.qualiteReserves))  DB.qualiteReserves  = [];
+  if (!DB.qualiteNCCounter)       DB.qualiteNCCounter       = 1;
+  if (!DB.qualiteControleCounter) DB.qualiteControleCounter = 1;
+  if (!DB.qualiteReserveCounter)  DB.qualiteReserveCounter  = 1;
+};
+
+// ── Hook switchScreen ─────────────────────────────
+(function() {
+  var _orig = switchScreen;
+  switchScreen = function(name) {
+    _orig(name);
+    if (name === "qualite") setTimeout(renderQualite, 50);
+  };
+})();
+
 </script>
 
 <!-- ═════════════ MODAL CORRECTION ═════════════ -->
@@ -21666,5 +22476,397 @@ function renderCapaCardCompact(c) {
   <div id="wf-detail-scroll"></div>
   <div id="wf-detail-actions"></div>
 </div>
+
+<!-- ══════════════════════════════════════════════════
+     ÉCRAN QUALITÉ — NC · Contrôles · Réserves
+══════════════════════════════════════════════════ -->
+<div class="screen" id="screen-qualite">
+  <div class="topbar">
+    <div>
+      <div class="topbar-brand"><div class="brand-dot" style="background:#7C3AED"></div><div class="topbar-title">Qualité</div></div>
+      <div class="topbar-sub">NC · Contrôles · Réserves</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-sm" style="background:var(--blue-light);color:var(--blue);border-color:var(--blue)" onclick="pdfRapportReception()" title="PDF Rapport réception">📄 Rapport</button>
+      <button class="btn-sm" style="background:#EDE9FE;color:#7C3AED;border-color:#C4B5FD" onclick="ouvrirQuickQualite()">+ Déclarer</button>
+    </div>
+  </div>
+  <!-- KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px 6px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center">
+      <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:#7C3AED" id="qkpi-nc">0</div>
+      <div style="font-size:10px;color:var(--text3)">NC ouvertes</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center">
+      <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--amber)" id="qkpi-ctrl">0</div>
+      <div style="font-size:10px;color:var(--text3)">Contrôles</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center">
+      <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--orange)" id="qkpi-res">0</div>
+      <div style="font-size:10px;color:var(--text3)">Réserves</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center">
+      <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--green)" id="qkpi-taux">—</div>
+      <div style="font-size:10px;color:var(--text3)">Conformité</div>
+    </div>
+  </div>
+  <!-- Bande alertes -->
+  <div id="qual-alertes-strip"></div>
+  <!-- Onglets -->
+  <div style="display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 16px;overflow-x:auto;flex-shrink:0">
+    <button class="qual-tab active" id="qtab-nc"        onclick="switchQualTab('nc',this)">🔴 NC</button>
+    <button class="qual-tab"        id="qtab-controles" onclick="switchQualTab('controles',this)">✅ Contrôles</button>
+    <button class="qual-tab"        id="qtab-reserves"  onclick="switchQualTab('reserves',this)">📋 Réserves</button>
+  </div>
+  <!-- NC -->
+  <div class="qual-section active" id="qsec-nc">
+    <div style="padding:10px 16px 6px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Non-Conformités</span>
+      <button onclick="ouvrirModalNC()" style="font-size:11px;font-weight:600;color:#7C3AED;background:none;border:none;cursor:pointer;font-family:var(--font-body)">+ Déclarer NC</button>
+    </div>
+    <div style="margin:0 16px 10px;background:#EDE9FE;border-radius:10px;padding:9px 12px;font-size:11px;color:#5B21B6;line-height:1.5">
+      💡 Tout écart par rapport aux spécifications, DTU ou plans. Doit être levé avant réception.
+    </div>
+    <div id="qual-nc-list" style="padding:0 16px"></div>
+  </div>
+  <!-- Contrôles -->
+  <div class="qual-section" id="qsec-controles">
+    <div style="padding:10px 16px 6px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Points de contrôle</span>
+      <button onclick="ouvrirModalControle()" style="font-size:11px;font-weight:600;color:var(--green);background:none;border:none;cursor:pointer;font-family:var(--font-body)">+ Nouveau contrôle</button>
+    </div>
+    <div id="qual-controles-list" style="padding:0 16px"></div>
+  </div>
+  <!-- Réserves -->
+  <div class="qual-section" id="qsec-reserves">
+    <div style="padding:10px 16px 6px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text3)">Punch list — Réserves OPR</span>
+      <button onclick="ouvrirModalReserve()" style="font-size:11px;font-weight:600;color:var(--amber);background:none;border:none;cursor:pointer;font-family:var(--font-body)">+ Réserve</button>
+    </div>
+    <div style="margin:0 16px 10px;background:var(--amber-light);border-radius:10px;padding:9px 12px;font-size:11px;color:var(--amber);line-height:1.5">
+      📋 Réserves émises lors des OPR. Levée obligatoire par l'entrepreneur avant réception définitive.
+    </div>
+    <div id="qual-reserves-list" style="padding:0 16px"></div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ═══ MODAL NC ═══ -->
+<div class="modal-overlay" id="modal-qual-nc" onclick="closeModalOut(event,'modal-qual-nc')">
+  <div class="modal-sheet" style="max-height:94vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-nc-title">🔴 Déclarer une Non-Conformité</div>
+    <input type="hidden" id="nc-edit-id">
+    <div style="background:#EDE9FE;border-radius:10px;padding:10px 12px;font-size:12px;color:#5B21B6;font-weight:600;margin-bottom:16px">
+      Une NC bien documentée = une levée rapide. Photos obligatoires.
+    </div>
+    <div class="form-group">
+      <label class="form-label">Type de NC *</label>
+      <input class="form-input" id="nc-type" placeholder="Ex: Ferraillage non conforme au plan, Défaut d'étanchéité...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Zone / Localisation *</label>
+      <input class="form-input" id="nc-zone" placeholder="Ex: R+2 — Appt A205 — salle de bain">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Lot / Phase concernée</label>
+      <select class="form-select" id="nc-lot">
+        <option value="">— Sélectionner —</option>
+        <optgroup label="Gros œuvre">
+          <option>Terrassement / VRD</option><option>Fondations / Radier</option>
+          <option>Béton armé / Structure</option><option>Maçonnerie / Cloisons</option><option>Charpente / Couverture</option>
+        </optgroup>
+        <optgroup label="Second œuvre">
+          <option>Étanchéité / Isolation</option><option>Menuiseries extérieures</option>
+          <option>Menuiseries intérieures</option><option>Revêtements sol / mur</option>
+          <option>Faux-plafonds</option><option>Peinture / Enduits</option>
+        </optgroup>
+        <optgroup label="Équipements">
+          <option>Électricité</option><option>Plomberie / Sanitaires</option>
+          <option>CVC / Climatisation</option><option>Sécurité incendie</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Gravité *</label>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <div class="nc-grav-btn" data-val="bloquante" onclick="selectNCGrav(this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer">
+          <div style="font-size:18px;margin-bottom:3px">🛑</div>
+          <div style="font-size:11px;font-weight:700;color:var(--red)">Bloquante</div>
+          <div style="font-size:10px;color:var(--text3)">Arrêt travaux</div>
+        </div>
+        <div class="nc-grav-btn selected" data-val="majeure" onclick="selectNCGrav(this)" style="border:1.5px solid #7C3AED;background:#EDE9FE;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer">
+          <div style="font-size:18px;margin-bottom:3px">⚠️</div>
+          <div style="font-size:11px;font-weight:700;color:var(--orange)">Majeure</div>
+          <div style="font-size:10px;color:var(--text3)">Impact qualité</div>
+        </div>
+        <div class="nc-grav-btn" data-val="mineure" onclick="selectNCGrav(this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer">
+          <div style="font-size:18px;margin-bottom:3px">🟡</div>
+          <div style="font-size:11px;font-weight:700;color:var(--amber)">Mineure</div>
+          <div style="font-size:10px;color:var(--text3)">Esthétique</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description de l'écart *</label>
+      <div class="voice-wrap">
+        <textarea class="form-textarea" id="nc-desc" placeholder="Décrivez l'écart : ce qui est observé vs ce qui était attendu (CCTP, DTU, plan…)" style="min-height:80px;padding-bottom:36px"></textarea>
+        <button type="button" class="voice-mic-btn" onclick="voiceDictate('nc-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Entreprise / Sous-traitant responsable</label>
+      <input class="form-input" id="nc-entreprise" placeholder="Nom de l'entreprise en cause">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Action immédiate prise</label>
+      <input class="form-input" id="nc-action-imm" placeholder="Ex: Zone balisée, travaux stoppés…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Échéance de levée</label>
+      <input class="form-input" id="nc-echeance" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">📷 Photos de la NC *</label>
+      <div class="photo-zone" onclick="openPhotoPicker(function(inp){var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});document.getElementById('nc-photos').files=dt.files;document.getElementById('nc-photos').dispatchEvent(new Event('change'));},true)">
+        <input type="file" accept="image/*" id="nc-photos" multiple style="display:none" onchange="previewPhotos(this,'nc-photos-preview')">
+        <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="photo-zone-text">Photo(s) prouvant la NC — avant/après</div>
+      </div>
+      <div class="photos-preview" id="nc-photos-preview"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-primary" style="flex:1;background:#7C3AED;border-color:#7C3AED" onclick="sauvegarderNC()">Déclarer la NC</button>
+      <button class="btn-sm outline" style="padding:12px 14px" onclick="closeModal('modal-qual-nc')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL CORRECTION NC ═══ -->
+<div class="modal-overlay" id="modal-nc-correction" onclick="closeModalOut(event,'modal-nc-correction')">
+  <div class="modal-sheet" style="max-height:94vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✅ Saisir la correction NC</div>
+    <input type="hidden" id="nc-corr-ref-id">
+    <div id="nc-corr-recap"></div>
+    <div class="form-group">
+      <label class="form-label">Description des travaux réalisés *</label>
+      <div class="voice-wrap">
+        <textarea class="form-textarea" id="nc-corr-desc" placeholder="Décrivez précisément les actions correctives…" style="min-height:80px;padding-bottom:36px"></textarea>
+        <button type="button" class="voice-mic-btn" onclick="voiceDictate('nc-corr-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">📷 Photos après correction *</label>
+      <div class="photo-zone" onclick="openPhotoPicker(function(inp){var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});document.getElementById('nc-corr-photos').files=dt.files;document.getElementById('nc-corr-photos').dispatchEvent(new Event('change'));},true)">
+        <input type="file" accept="image/*" id="nc-corr-photos" multiple style="display:none" onchange="previewPhotos(this,'nc-corr-photos-preview')">
+        <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="photo-zone-text">Photos après correction (avant/après)</div>
+      </div>
+      <div class="photos-preview" id="nc-corr-photos-preview"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Signature du correcteur *</label>
+      <div class="sig-pad">
+        <canvas id="nc-corr-sig-canvas" style="width:100%;height:90px;border-radius:10px;border:1.5px dashed #7C3AED;background:var(--bg);cursor:crosshair;touch-action:none;display:block"></canvas>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span style="font-size:10px;color:var(--text3)">Signez ci-dessus</span>
+          <button type="button" onclick="clearSig('nc-corr-sig-canvas')" style="font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer">✕ Effacer</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" onclick="soumettreCorrectionNC()">Soumettre au QHSE →</button>
+      <button class="btn-sm outline" style="padding:12px 14px" onclick="closeModal('modal-nc-correction')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL VALIDATION QHSE NC ═══ -->
+<div class="modal-overlay" id="modal-valid-nc" onclick="closeModalOut(event,'modal-valid-nc')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="valid-nc-modal-title">✅ Valider & Lever la NC</div>
+    <input type="hidden" id="valid-nc-id">
+    <input type="hidden" id="valid-nc-accepter">
+    <div style="background:var(--orange-light);border:1.5px solid var(--orange);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--orange);font-weight:600;margin-bottom:14px">
+      🛡️ Vérifiez la correction, puis signez pour valider ou rejeter.
+    </div>
+    <div id="valid-nc-recap" style="margin-bottom:14px"></div>
+    <div class="form-group">
+      <label class="form-label" id="valid-nc-comment-lbl">Commentaire</label>
+      <div class="voice-wrap">
+        <textarea class="form-textarea" id="valid-nc-commentaire" placeholder="Observations…" style="min-height:60px;padding-bottom:36px"></textarea>
+        <button type="button" class="voice-mic-btn" onclick="voiceDictate('valid-nc-commentaire',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Signature Responsable QHSE *</label>
+      <div class="sig-pad">
+        <canvas id="valid-nc-sig-canvas" style="width:100%;height:90px;border-radius:10px;border:1.5px dashed #7C3AED;background:var(--bg);cursor:crosshair;touch-action:none;display:block"></canvas>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span style="font-size:10px;color:var(--text3)">Signez pour confirmer</span>
+          <button type="button" onclick="clearSig('valid-nc-sig-canvas')" style="font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer">✕ Effacer</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-primary" id="valid-nc-btn-confirm" style="flex:1;background:var(--green);border-color:var(--green)" onclick="confirmerValidationNC()">✅ Lever la NC</button>
+      <button class="btn-sm outline" style="padding:12px 14px" onclick="closeModal('modal-valid-nc')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL CONTRÔLE ═══ -->
+<div class="modal-overlay" id="modal-qual-ctrl" onclick="closeModalOut(event,'modal-qual-ctrl')">
+  <div class="modal-sheet" style="max-height:96vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✅ Point de contrôle qualité</div>
+    <input type="hidden" id="ctrl-edit-id">
+    <div class="form-group">
+      <label class="form-label">Type de contrôle *</label>
+      <select class="form-select" id="ctrl-type" onchange="_chargerItemsControle(this.value)">
+        <option value="beton">Béton armé / Coulage</option>
+        <option value="maconnerie">Maçonnerie / Cloisons</option>
+        <option value="etancheite">Étanchéité</option>
+        <option value="electricite">Électricité</option>
+        <option value="plomberie">Plomberie / Sanitaires</option>
+        <option value="menuiseries">Menuiseries</option>
+        <option value="revetements">Revêtements</option>
+        <option value="peinture">Peinture / Enduits</option>
+        <option value="reception">Réception travaux</option>
+        <option value="libre">Contrôle libre</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Zone / Localisation *</label>
+      <input class="form-input" id="ctrl-zone" placeholder="Niveau, appartement, zone…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Responsable contrôle</label>
+      <input class="form-input" id="ctrl-resp" placeholder="Nom du qualiticien">
+    </div>
+    <!-- Score en temps réel -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:10px 14px;background:var(--gray-light);border-radius:10px">
+      <span style="font-size:12px;font-weight:600;color:var(--text2)">Score de conformité</span>
+      <span id="ctrl-score-live" style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--text3)">—</span>
+    </div>
+    <!-- Checklist -->
+    <div class="form-group">
+      <label class="form-label">Points de contrôle</label>
+      <div id="ctrl-items-list"></div>
+      <button onclick="addCtrlItem()" style="width:100%;padding:9px;border-radius:10px;border:1.5px dashed var(--border);background:var(--bg);color:var(--text3);font-size:12px;cursor:pointer;font-family:var(--font-body);margin-top:8px">+ Ajouter un point</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observations</label>
+      <div class="voice-wrap">
+        <textarea class="form-textarea" id="ctrl-obs" placeholder="Observations complémentaires…" style="min-height:60px;padding-bottom:36px"></textarea>
+        <button type="button" class="voice-mic-btn" onclick="voiceDictate('ctrl-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" onclick="sauvegarderControle()">Enregistrer le contrôle</button>
+      <button class="btn-sm outline" style="padding:12px 14px" onclick="closeModal('modal-qual-ctrl')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL RÉSERVE ═══ -->
+<div class="modal-overlay" id="modal-qual-res" onclick="closeModalOut(event,'modal-qual-res')">
+  <div class="modal-sheet" style="max-height:94vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-res-title">📋 Nouvelle réserve</div>
+    <input type="hidden" id="res-edit-id">
+    <div style="background:var(--amber-light);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--amber);font-weight:600;margin-bottom:16px">
+      Réserves OPR — numérotées automatiquement. Levée obligatoire avec photo + signature entreprise.
+    </div>
+    <div class="form-group">
+      <label class="form-label">Titre de la réserve *</label>
+      <input class="form-input" id="res-titre" placeholder="Ex: Prise électrique absente — chambre 2">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Zone / Localisation *</label>
+      <input class="form-input" id="res-zone" placeholder="Niveau, pièce, position précise">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Lot / Entreprise</label>
+      <input class="form-input" id="res-lot" placeholder="Ex: Lot 05 Électricité — SECI">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Entreprise</label>
+      <input class="form-input" id="res-entreprise" placeholder="Entreprise responsable">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Échéance de levée</label>
+      <input class="form-input" id="res-echeance" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <div class="voice-wrap">
+        <textarea class="form-textarea" id="res-desc" placeholder="Décrivez précisément ce qui est à corriger…" style="min-height:65px;padding-bottom:36px"></textarea>
+        <button type="button" class="voice-mic-btn" onclick="voiceDictate('res-desc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">📷 Photo de la réserve</label>
+      <div class="photo-zone" onclick="openPhotoPicker(function(inp){var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});document.getElementById('res-photos').files=dt.files;document.getElementById('res-photos').dispatchEvent(new Event('change'));},true)">
+        <input type="file" accept="image/*" id="res-photos" multiple style="display:none" onchange="previewPhotos(this,'res-photos-preview')">
+        <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="photo-zone-text">Photo de la réserve</div>
+      </div>
+      <div class="photos-preview" id="res-photos-preview"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-primary" style="flex:1;background:var(--amber);border-color:var(--amber)" onclick="sauvegarderReserve()">Émettre la réserve</button>
+      <button class="btn-sm outline" style="padding:12px 14px" onclick="closeModal('modal-qual-res')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL LEVÉE RÉSERVE ═══ -->
+<div class="modal-overlay" id="modal-qual-levee" onclick="closeModalOut(event,'modal-qual-levee')">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✅ Lever la réserve</div>
+    <input type="hidden" id="levee-res-id">
+    <div id="levee-recap" style="background:var(--amber-light);border:1.5px solid var(--amber);border-radius:12px;padding:12px;margin-bottom:16px;font-size:13px;color:var(--text)"></div>
+    <div class="form-group">
+      <label class="form-label">📷 Photo de la levée *</label>
+      <div class="photo-zone" onclick="openPhotoPicker(function(inp){var dt=new DataTransfer();Array.from(inp.files).forEach(function(f){dt.items.add(f)});document.getElementById('levee-photos').files=dt.files;document.getElementById('levee-photos').dispatchEvent(new Event('change'));},true)">
+        <input type="file" accept="image/*" id="levee-photos" multiple style="display:none" onchange="previewPhotos(this,'levee-photos-preview')">
+        <div class="photo-zone-icon"><svg width="19" height="19" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="photo-zone-text">Photo prouvant la levée — avant/après</div>
+      </div>
+      <div class="photos-preview" id="levee-photos-preview"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Signature de l'entrepreneur *</label>
+      <div class="sig-pad">
+        <canvas id="levee-sig-canvas" style="width:100%;height:90px;border-radius:10px;border:1.5px dashed var(--amber);background:var(--bg);cursor:crosshair;touch-action:none;display:block"></canvas>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span style="font-size:10px;color:var(--text3)">Signature de l'entrepreneur</span>
+          <button type="button" onclick="clearSig('levee-sig-canvas')" style="font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer">✕ Effacer</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" onclick="confirmerLeveeReserve()">✓ Confirmer la levée</button>
+      <button class="btn-sm outline" style="padding:12px 14px" onclick="closeModal('modal-qual-levee')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PANEL DÉTAIL QUALITÉ ═══ -->
+<div id="qual-detail-panel">
+  <div id="qual-detail-topbar">
+    <button onclick="qualFermerDetail()" style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span id="qual-detail-title" style="font-family:var(--font-head);font-size:17px;font-weight:800;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Détail</span>
+  </div>
+  <div id="qual-detail-scroll"></div>
+  <div id="qual-detail-actions"></div>
+</div>
+
 </body>
 </html>
