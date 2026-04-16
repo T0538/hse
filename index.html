@@ -4281,6 +4281,7 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
       <div class="form-group"><label class="form-label">Responsable HSE *</label><input class="form-input" id="rj-resp" type="text" placeholder="Nom du responsable"></div>
     </div>
     <div class="form-group"><label class="form-label">Zone / Secteur principal</label><input class="form-input" id="rj-zone" type="text" placeholder="Ex: Zone A — Fondations"></div>
+    <div class="form-group"><label class="form-label">Commentaire (Informations générales)</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-commentaire" placeholder="Commenter les informations générales..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-commentaire',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
 
     <!-- Météo -->
     <div style="background:var(--blue-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:7px">
@@ -4313,6 +4314,7 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
       <div class="form-group"><label class="form-label">Total travailleurs</label><input class="form-input" id="rj-effectif" type="number" placeholder="0" min="0"></div>
       <div class="form-group"><label class="form-label">Dont sous-traitants</label><input class="form-input" id="rj-st" type="number" placeholder="0" min="0"></div>
     </div>
+    <div class="form-group"><label class="form-label">Activités observées</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-activites" placeholder="Décrire les activités observées..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-activites',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
 
     <!-- Incidents -->
     <div style="background:var(--red-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--red);display:flex;align-items:center;gap:7px">
@@ -4374,6 +4376,8 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
     </div>
     <div class="form-group"><label class="form-label">Non-conformités détectées</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-nc" placeholder="Lister les non-conformités observées…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-nc',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
     <div class="form-group"><label class="form-label">Actions correctives immédiates</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-actions" placeholder="Actions prises ou à prendre…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-actions',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Appréciation HSE</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-apreciation" placeholder="Appréciation HSE..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-apreciation',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+    <div class="form-group"><label class="form-label">Recommandation</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-recommandation" placeholder="Recommandations..."></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-recommandation',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
     <div class="form-group"><label class="form-label">Observations générales</label><div class="voice-wrap"><textarea class="form-textarea" id="rj-obs" placeholder="Tout point notable de la journée…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rj-obs',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
 
     <!-- Photos -->
@@ -10973,17 +10977,21 @@ function ouvrirRapportJour(id) {
     document.getElementById('rj-date').value = r.date || today;
     document.getElementById('rj-resp').value = r.responsable || '';
     document.getElementById('rj-zone').value = r.zone || '';
+    document.getElementById('rj-commentaire').value = r.commentaire || '';
     document.getElementById('rj-meteo').value = r.meteo || '☀️ Ensoleillé';
     document.getElementById('rj-temp').value = r.temp || '';
     document.getElementById('rj-meteo-alerte').value = r.meteoAlerte || '';
     document.getElementById('rj-effectif').value = r.effectif || '';
     document.getElementById('rj-st').value = r.soustraitants || '';
+    document.getElementById('rj-activites').value = r.activites || '';
     ynSet('rj-inc', r.incident); document.getElementById('rj-inc-desc').value = r.incidentDesc || '';
     ynSet('rj-pa',  r.pa);       document.getElementById('rj-pa-desc').value  = r.paDesc || '';
     ynSet('rj-insp',r.inspection); document.getElementById('rj-insp-zone').value = r.inspZone || ''; document.getElementById('rj-insp-obs').value = r.inspObs || '';
     ynSet('rj-tb',  r.toolbox);  document.getElementById('rj-tb-theme').value  = r.toolboxTheme || '';
     document.getElementById('rj-nc').value = r.nc || '';
     document.getElementById('rj-actions').value = r.actions || '';
+    document.getElementById('rj-apreciation').value = r.apreciation || '';
+    document.getElementById('rj-recommandation').value = r.recommandation || '';
     document.getElementById('rj-obs').value = r.obs || '';
   } else {
     document.getElementById('rj-edit-id').value = '';
@@ -10997,7 +11005,7 @@ function ouvrirRapportJour(id) {
     document.getElementById('rj-effectif').value = DB.personnel.filter(p=>p.present).length || '';
     document.getElementById('rj-st').value = '';
     ['rj-inc','rj-pa','rj-insp','rj-tb'].forEach(p=>ynSelect(p,'non'));
-    ['rj-inc-desc','rj-pa-desc','rj-insp-zone','rj-insp-obs','rj-tb-theme','rj-nc','rj-actions','rj-obs'].forEach(id=>{var el=document.getElementById(id);if(el)el.value='';});
+    ['rj-inc-desc','rj-pa-desc','rj-insp-zone','rj-insp-obs','rj-tb-theme','rj-nc','rj-actions','rj-commentaire','rj-activites','rj-apreciation','rj-recommandation','rj-obs'].forEach(id=>{var el=document.getElementById(id);if(el)el.value='';});
     clearSig('sig-canvas-rj'); clearPhotos('rj-photo-preview');
   }
   initSig('sig-canvas-rj');
@@ -11065,11 +11073,13 @@ function lireFormRJ(exporter) {
     type: 'journalier',
     date, responsable: resp,
     zone: document.getElementById('rj-zone').value.trim(),
+    commentaire: document.getElementById('rj-commentaire').value.trim(),
     meteo: document.getElementById('rj-meteo').value,
     temp: document.getElementById('rj-temp').value,
     meteoAlerte: document.getElementById('rj-meteo-alerte').value.trim(),
     effectif: document.getElementById('rj-effectif').value,
     soustraitants: document.getElementById('rj-st').value,
+    activites: document.getElementById('rj-activites').value.trim(),
     incident: ynGet('rj-inc'),
     incidentDesc: document.getElementById('rj-inc-desc').value.trim(),
     pa: ynGet('rj-pa'),
@@ -11081,6 +11091,8 @@ function lireFormRJ(exporter) {
     toolboxTheme: document.getElementById('rj-tb-theme').value.trim(),
     nc: document.getElementById('rj-nc').value.trim(),
     actions: document.getElementById('rj-actions').value.trim(),
+    apreciation: document.getElementById('rj-apreciation').value.trim(),
+    recommandation: document.getElementById('rj-recommandation').value.trim(),
     obs: document.getElementById('rj-obs').value.trim(),
     photos: getPhotos('rj-photo-preview'),
     signature: getSig('sig-canvas-rj'),
@@ -11425,8 +11437,11 @@ function pdfRapportJour(r) {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
   doc.setTextColor(200, 215, 240);
-  doc.text(ent.toUpperCase() + '  ·  CHANTIER : ' + (DB.chantier || '').toUpperCase(),
-    W / 2 + 8, 27, { align: 'center' });
+  
+  var subTitle = ent.toUpperCase() + '  ·  CHANTIER : ' + (DB.chantier || '').toUpperCase();
+  var subLines = doc.splitTextToSize(subTitle, 130);
+  var subY = subLines.length > 1 ? 25 : 27;
+  doc.text(subLines, W / 2 + 8, subY, { align: 'center' });
 
   // Ligne de séparation interne
   hLine(32, M + 4, W - M, [60, 80, 120], 0.4);
@@ -11457,6 +11472,31 @@ function pdfRapportJour(r) {
 
   y = 62;
 
+  /* ── Champ texte long ── */
+  function longField(label, val) {
+    if (!val || !val.trim()) val = 'Aucune observation.';
+    var lines = doc.splitTextToSize(val, CW - 56);
+    var rh = Math.max(12, lines.length * 5 + 6);
+    needPage(rh + 2);
+
+    hLine(y, M, W - M, RULE, 0.25);
+    doc.setFillColor(...BGHEAD);
+    doc.rect(M, y, 52, rh, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...NAVY);
+    doc.text(label.toUpperCase(), M + 2, y + rh / 2 + 1.2);
+    vLine(M + 52, y, y + rh, RULE, 0.3);
+    vLine(M, y, y + rh, RULE, 0.25);
+    vLine(W - M, y, y + rh, RULE, 0.25);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...INK);
+    lines.forEach(function(l, i) { doc.text(l, M + 55, y + 5.5 + i * 5); });
+    hLine(y + rh, M, W - M, RULE, 0.25);
+    y += rh;
+  }
+
   /* ════════════════════════════════════
      SECTION 1 — INFORMATIONS GÉNÉRALES
   ════════════════════════════════════ */
@@ -11466,12 +11506,16 @@ function pdfRapportJour(r) {
   var tblTop = y;
 
   fieldRow('Zone / Secteur', r.zone || '—', 7, false, true);
-  fieldRow('Conditions météo', (r.meteo || '—') + (r.temp ? '   —   ' + r.temp + ' °C' : ''), 7, true);
+  var meteoClean = (r.meteo || '—').replace(/^[^\wÀ-ÿ]+/, '').trim();
+  fieldRow('Conditions météo', meteoClean + (r.temp ? '   —   ' + r.temp + ' °C' : ''), 7, true);
   if (r.meteoAlerte && r.meteoAlerte.trim()) {
     fieldRow('Alerte / Impact', r.meteoAlerte, 7, false);
   }
   fieldRow('Effectif total', r.effectif ? r.effectif + ' personnes' : '—', 7, true, true);
   fieldRow('Dont sous-traitants', r.soustraitants ? r.soustraitants + ' personnes' : '0', 7, false);
+  if (r.commentaire && r.commentaire.trim()) {
+    longField('Commentaire', r.commentaire);
+  }
   hLine(y, M, W - M, NAVY, 0.5);
 
   /* ════════════════════════════════════
@@ -11523,6 +11567,13 @@ function pdfRapportJour(r) {
   });
   y += kh + 4;
   hLine(y - 4, M, W - M, NAVY, 0.5);
+
+  if (r.activites && r.activites.trim()) {
+    y += 2;
+    longField('Activités observées', r.activites);
+    y += 2;
+    hLine(y, M, W - M, NAVY, 0.5);
+  }
 
   /* ════════════════════════════════════
      SECTION 3 — ÉVÉNEMENTS DE LA JOURNÉE
@@ -11597,32 +11648,16 @@ function pdfRapportJour(r) {
   ════════════════════════════════════ */
   sectionTitle(4, 'Non-conformités & actions correctives');
 
-  function longField(label, val) {
-    if (!val || !val.trim()) val = 'Aucune observation.';
-    var lines = doc.splitTextToSize(val, CW - 56);
-    var rh = Math.max(12, lines.length * 5 + 6);
-    needPage(rh + 2);
-
-    hLine(y, M, W - M, RULE, 0.25);
-    doc.setFillColor(...BGHEAD);
-    doc.rect(M, y, 52, rh, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-    doc.setTextColor(...NAVY);
-    doc.text(label.toUpperCase(), M + 2, y + rh / 2 + 1.2);
-    vLine(M + 52, y, y + rh, RULE, 0.3);
-    vLine(M, y, y + rh, RULE, 0.25);
-    vLine(W - M, y, y + rh, RULE, 0.25);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8.5);
-    doc.setTextColor(...INK);
-    lines.forEach(function(l, i) { doc.text(l, M + 55, y + 5.5 + i * 5); });
-    hLine(y + rh, M, W - M, RULE, 0.25);
-    y += rh;
-  }
-
   longField('Non-conformités détectées', r.nc);
   longField('Actions correctives immédiates', r.actions);
+  
+  if (r.apreciation && r.apreciation.trim()) {
+    longField('Appréciation HSE', r.apreciation);
+  }
+  if (r.recommandation && r.recommandation.trim()) {
+    longField('Recommandation', r.recommandation);
+  }
+
   longField('Observations générales', r.obs);
   hLine(y, M, W - M, NAVY, 0.5);
   y += 4;
