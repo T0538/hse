@@ -3243,10 +3243,11 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
         <option>Plombier</option>
         <option>Maçon</option>
         <option>Chef d'équipe</option>
-        <option>Conducteur d'engin</option>
+        <option>Conducteur Travaux</option>
         <option>Gestionnaire de Stock</option>
         <option>Responsable HSE</option>
         <option>Menuisier</option>
+                <option>Chef chantier</option>
       </select>
     </div>
     <div class="form-group">
@@ -7514,7 +7515,8 @@ function pdfQHS(id) {
     doc.setCharSpace(.8); doc.text('OBSERVATIONS ET POINTS CLÉS', 14, y+5); doc.setCharSpace(0);
     doc.setFillColor(...HSE_GREEN); doc.rect(14, y+7, w-28, 0.7, 'F');
     y += 11;
-    var obsLines = doc.splitTextToSize(tb.obs, w-32);
+    var cleanObs = (tb.obs || '').replace(/❓/g, 'Q : ');
+    var obsLines = doc.splitTextToSize(cleanObs, w-32);
     var obsH = obsLines.length * 5 + 10;
     if (y + obsH > h - 42) { doc.addPage(); y = 20; }
     doc.setFillColor(...GRAY1); doc.roundedRect(14, y, w-28, obsH, 2, 2, 'F');
@@ -8860,9 +8862,8 @@ function pdfFicheToolbox(id) {
       ['Date', fmtDate(tb.date) + (tb.heure ? ' à ' + tb.heure : '')],
       ['Durée', (tb.duree || 15) + ' minutes'],
       ['Animateur', tb.animateur || tb.createdBy || DB.config.nom],
-      ['Participants', tb.participants.length + ' personne(s)'],
-      ['Signatures recueillies', `${tb.signes} / ${tb.participants.length}`],
-      ['Observations / Notes', tb.obs || '—'],
+      ['Participants', tb.participants.length + ' personne(s) déclarée(s)'],
+      ['Observations / Notes', (tb.obs || '').replace(/❓/g, 'Q : ') || '—'],
     ],
     styles: {fontSize:9, cellPadding:3.5},
     columnStyles: {0:{cellWidth:55, fontStyle:'bold', fillColor:[248,252,248], textColor:c.text2}},
@@ -8872,13 +8873,16 @@ function pdfFicheToolbox(id) {
 
   // Participants table
   y = pdfSectionTitle(doc, `LISTE DE PRÉSENCE (${tb.participants.length} participants)`, y, c.green);
+  doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(...c.text3);
+  doc.text('* La liste ci-dessous atteste de la présence. Les émargements manuscrits sont archivés dans le registre HSE physique.', 14, y-2);
+
   doc.autoTable({
     startY: y, margin:{left:14, right:14},
-    head:[['#','Nom Prénom','Fonction','Signature']],
-    body: tb.participants.map((p,i) => [i+1, p.nom, p.role||'—', p.signe ? '✓ Signé' : '— En attente']),
+    head:[['#','Nom Prénom','Fonction','Pointage']],
+    body: tb.participants.map((p,i) => [i+1, p.nom, p.role||'—', '✓ Présent']),
     styles:{fontSize:8.5, cellPadding:4},
     headStyles:{fillColor:c.green, textColor:c.white, fontStyle:'bold', fontSize:8},
-    columnStyles:{0:{cellWidth:10}, 3:{cellWidth:30}},
+    columnStyles:{0:{cellWidth:10}, 3:{cellWidth:30, fontStyle:'bold', textColor:c.green}},
     alternateRowStyles:{fillColor:[248,252,248]},
     theme:'striped',
   });
@@ -18096,7 +18100,7 @@ function smartToolboxOnTheme(theme) {
   var data = D_TB[theme];
   if (!data || theme === '__custom__') { panel.style.display='none'; panel.innerHTML=''; return; }
 
-  var allItems = data.points.concat(data.questions ? data.questions.map(function(q){ return '❓ '+q; }) : []);
+  var allItems = data.points.concat(data.questions ? data.questions.map(function(q){ return 'Q : '+q; }) : []);
   var chips = _chips(allItems, function(p) {
     var obs = document.getElementById('tb-obs');
     if (!obs) return;
@@ -18109,7 +18113,7 @@ function smartToolboxOnTheme(theme) {
     var obs = document.getElementById('tb-obs');
     if (!obs) return;
     var lines = data.points.map(function(p){ return '• '+p; });
-    if (data.questions && data.questions.length) { lines.push(''); lines.push('--- Questions au groupe ---'); data.questions.forEach(function(q){ lines.push('❓ '+q); }); }
+    if (data.questions && data.questions.length) { lines.push(''); lines.push('--- Questions au groupe ---'); data.questions.forEach(function(q){ lines.push('Q : '+q); }); }
     obs.value = lines.join('\n');
     if (panel) { panel.style.display='none'; panel.innerHTML=''; }
     showToast('Plan de session inséré ✓');
