@@ -8568,9 +8568,11 @@ function _pdfAddPhotos(doc, photos, y, label) {
       doc.addImage(b64, fmt, ix, y + row * (imgH + 5), imgW, imgH, undefined, 'FAST');
       doc.setDrawColor(...c.lightGray); doc.setLineWidth(0.4);
       doc.rect(ix, y + row * (imgH + 5), imgW, imgH);
-      // Numéro photo
+      // Numéro photo ou Titre
       doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...c.text2);
-      doc.text('Photo ' + (i+1), ix + 2, y + row * (imgH + 5) + imgH - 2);
+      var defaultTitle = 'Photo ' + (i+1);
+      var customTitle = (photos.titles && photos.titles[i] && photos.titles[i].trim() !== '') ? photos.titles[i].trim() : defaultTitle;
+      doc.text(customTitle, ix + 2, y + row * (imgH + 5) + imgH - 2);
       rowCount = row + 1;
     } catch(e) {
       // Photo illisible — afficher placeholder
@@ -11099,6 +11101,7 @@ function lireFormRJ(exporter) {
     recommandation: document.getElementById('rj-recommandation').value.trim(),
     obs: document.getElementById('rj-obs').value.trim(),
     photos: getPhotos('rj-photo-preview'),
+    photoTitles: getPhotoTitles('rj-photo-preview'),
     signature: getSig('sig-canvas-rj'),
     createdAt: nowISO(),
     createdBy: DB.config.nom
@@ -11699,7 +11702,9 @@ function pdfRapportJour(r) {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(7);
       doc.setTextColor(...WHITE);
-      doc.text('PHOTO ' + (pi + 1) + ' / ' + shown, px + phW / 2, py + phH - 2.5, { align: 'center' });
+      var defaultTitle = 'PHOTO ' + (pi + 1) + ' / ' + shown;
+      var customTitle = (r.photoTitles && r.photoTitles[pi] && r.photoTitles[pi].trim() !== '') ? r.photoTitles[pi].trim().toUpperCase() : defaultTitle;
+      doc.text(customTitle, px + phW / 2, py + phH - 2.5, { align: 'center' });
 
       if (col === cols - 1 || pi === shown - 1) y += phH + 5;
     }
@@ -11994,20 +11999,29 @@ function toggleIndBtn(el) {
 }
 // ── PHOTO STORE global (fiable même après réinitialisation DOM) ──
 var PHOTO_STORE = {};
+var PHOTO_TITLES_STORE = {};
 function previewPhotos(input, previewId) {
   var container = document.getElementById(previewId);
   var files = input.files;
   if (!files.length) return;
   PHOTO_STORE[previewId] = [];
+  PHOTO_TITLES_STORE[previewId] = [];
   container.innerHTML = '<div class="photo-count-badge"><svg width="12" height="12" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>' + files.length + ' photo(s) — Tapez pour annoter</div>';
   var arr = Array.prototype.slice.call(files, 0, 4);
   arr.forEach(function(file, fileIdx) {
     var reader = new FileReader();
     reader.onload = function(e) {
       if (!PHOTO_STORE[previewId]) PHOTO_STORE[previewId] = [];
+      if (!PHOTO_TITLES_STORE[previewId]) PHOTO_TITLES_STORE[previewId] = [];
       var idx = PHOTO_STORE[previewId].length;
       PHOTO_STORE[previewId].push(e.target.result);
-      // Wrapper cliquable
+      PHOTO_TITLES_STORE[previewId].push('');
+      
+      // Conteneur global photo + input
+      var itemWrap = document.createElement('div');
+      itemWrap.style.cssText = 'display:inline-flex;flex-direction:column;gap:4px;align-items:center';
+
+      // Wrapper cliquable (pour annotation)
       var wrap = document.createElement('div');
       wrap.style.cssText = 'position:relative;display:inline-block;cursor:pointer';
       wrap.title = 'Cliquez pour annoter cette photo';
@@ -12030,13 +12044,27 @@ function previewPhotos(input, previewId) {
       })(idx, previewId);
       wrap.appendChild(img);
       wrap.appendChild(pen);
-      container.appendChild(wrap);
+      
+      // Champ de saisie pour le titre
+      var titleInput = document.createElement('input');
+      titleInput.type = 'text';
+      titleInput.maxLength = 25;
+      titleInput.placeholder = 'Titre ' + (idx + 1);
+      titleInput.style.cssText = 'width:62px;font-size:9px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box;text-align:center;font-family:var(--font-body);color:var(--text)';
+      titleInput.oninput = function() {
+        PHOTO_TITLES_STORE[previewId][idx] = this.value;
+      };
+
+      itemWrap.appendChild(wrap);
+      itemWrap.appendChild(titleInput);
+      container.appendChild(itemWrap);
     };
     reader.readAsDataURL(file);
   });
 }
 function getPhotos(id) { return PHOTO_STORE[id] || []; }
-function clearPhotos(id) { PHOTO_STORE[id] = []; var el=document.getElementById(id); if(el) el.innerHTML=''; }
+function getPhotoTitles(id) { return PHOTO_TITLES_STORE[id] || []; }
+function clearPhotos(id) { PHOTO_STORE[id] = []; PHOTO_TITLES_STORE[id] = []; var el=document.getElementById(id); if(el) el.innerHTML=''; }
 
 // ── LOGO ──
 function chargerLogo(input) {
