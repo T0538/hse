@@ -13,9 +13,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
@@ -4615,38 +4612,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const splash = document.getElementById('splash-screen');
 
-  // ── Attendre que le SDK Firebase soit chargé (max 8s) ──
-  function _waitForFirebase(callback, attempts) {
-    attempts = attempts || 0;
-    if (typeof firebase !== 'undefined' && firebase.firestore) {
-      callback(true);
-    } else if (attempts > 80) {
-      // Timeout après 8s
-      callback(false);
-    } else {
-      setTimeout(function() { _waitForFirebase(callback, attempts + 1); }, 100);
-    }
-  }
-
-  // Splash minimum 1.6s puis attente Firebase
+  // Splash minimum 1.6s
   var splashDone = false;
-  var firebaseDone = false;
-  var firebaseOk = false;
 
   function _tryStart() {
-    if (!splashDone || !firebaseDone) return;
+    if (!splashDone) return;
     splash.style.display = 'none';
 
-    if (!firebaseOk) {
-      _afficherErreurSDK();
-      return;
-    }
-
     const fbCfg = loadFirebaseCfg();
-    if (!fbCfg || !fbCfg.apiKey || fbCfg.apiKey === 'VOTRE_API_KEY') {
-      _afficherErreurConfig();
-      return;
-    }
 
     if (initFirebase(fbCfg)) {
       const lastCode     = localStorage.getItem('vigilo_last_code')     || '';
@@ -4672,13 +4645,6 @@ document.addEventListener('DOMContentLoaded', () => {
     splash.classList.add('fade-out');
     setTimeout(function() { splashDone = true; _tryStart(); }, 480);
   }, 1600);
-
-  // Attente Firebase SDK
-  _waitForFirebase(function(ok) {
-    firebaseOk = ok;
-    firebaseDone = true;
-    _tryStart();
-  });
 });
 
 function _afficherErreurSDK() {
@@ -7885,6 +7851,7 @@ function voirDetail(type, id) {
       ${item.startedBy  ? row('Démarré par',  item.startedBy  + (item.startedAt  ? ' — ' + fmtDate(item.startedAt)  : '')) : ''}
       ${item.closedBy   ? row('Validé par',   item.closedBy   + (item.closedAt   ? ' — ' + fmtDate(item.closedAt)   : '')) : ''}
       ${item.closedAt && !item.closedBy ? row('Clôturé le', fmtDate(item.closedAt)) : ''}
+      ${item.photosAvant && item.photosAvant.length ? '<div style="margin-bottom:10px;margin-top:14px"><div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Photos (Avant correction)</div><div style="display:flex;gap:6px;flex-wrap:wrap">' + item.photosAvant.map(p => p==='[photo]'||p==='[photo_erreur_sync]'?'<div style="font-size:10px;color:var(--text3);font-style:italic">Photo locale</div>':`<img src="${p}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1.5px solid var(--border);cursor:pointer" onclick="wfAgrandirPhoto(this.src)">`).join('') + '</div></div>' : ''}
       <button class="btn-sm outline" style="margin-top:14px" onclick="closeModal('modal-detail')">Fermer</button>`;
   }
   document.getElementById('modal-detail-content').innerHTML = html;
@@ -10913,6 +10880,10 @@ function importerJSON(input) {
       showConfirm('Restaurer cette sauvegarde ?',
         'Toutes les données actuelles seront remplacées par celles du fichier "' + file.name + '". Cette action est irréversible.',
         function() {
+          // On garde l'identifiant cloudflare actuel s'il y en a un pour ne pas écraser l'association Admin
+          if (DB._adminEmail) data._adminEmail = DB._adminEmail;
+          if (DB._codeGenereParAdmin) data._codeGenereParAdmin = DB._codeGenereParAdmin;
+          
           DB = data;
           // Garantir la compatibilité
           if (!DB.rapportsJournaliers) DB.rapportsJournaliers = [];
@@ -19126,8 +19097,14 @@ function renderCapaCard(c) {
 
   // Photos correction
   var photosCorr = (corr.photos || []).map(function(p) {
-    if(p === '[photo]') return '<div style="font-size:10px;color:var(--text3);font-style:italic">Photo archivée</div>';
+    if(p === '[photo]' || p === '[photo_erreur_sync]') return '<div style="font-size:10px;color:var(--text3);font-style:italic">Photo locale</div>';
     return '<img src="' + p + '" class="wf-photo" onclick="wfAgrandirPhoto(this.src)">';
+  }).join('');
+
+  // Photos avant (Déclaration)
+  var photosAvantHtml = (c.photosAvant || []).map(function(p) {
+    if(p === '[photo]' || p === '[photo_erreur_sync]') return '<div style="font-size:10px;color:var(--text3);font-style:italic">Photo locale</div>';
+    return '<img src="' + p + '" class="wf-photo" onclick="wfAgrandirPhoto(this.src)" title="Cliquer pour agrandir">';
   }).join('');
 
   // Bloc correction
@@ -19210,6 +19187,7 @@ function renderCapaCard(c) {
     + '</div>'
     + '<div class="list-card-bar" style="margin-bottom:10px"><div class="list-card-bar-fill" style="width:' + barW + '%;background:' + barColor + '"></div></div>'
     + (c.desc ? '<div class="wf-desc-box">' + c.desc + '</div>' : '')
+    + (photosAvantHtml ? '<div class="wf-section-label" style="margin-top:8px">📷 Photo(s) avant correction</div><div class="wf-photos">' + photosAvantHtml + '</div>' : '')
     + corrBlock + validBlock
     + (status === 'rejected' && valid.commentaire ? '<div style="background:var(--orange-light);border:1px solid var(--orange);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--orange);font-weight:600;margin-top:8px">⚠️ Motif de rejet : ' + valid.commentaire + '</div>' : '')
     + '</div>'
@@ -19363,7 +19341,7 @@ function ouvrirModalCorrection(id, type) {
       ? (item.desc || '') + (item.zone ? ' · ' + item.zone : '') + (item.date ? ' · ' + fmtDate(item.date) : '')
       : (item.desc || '') + (item.echeance ? ' · Éch. ' + fmtDate(item.echeance) : '');
     var photosDeclHtml = '';
-    var photosArr = type === 'incident' ? (item.photos || []) : [];
+    var photosArr = type === 'incident' ? (item.photos || []) : (item.photosAvant || []);
     if (photosArr.length) {
       photosDeclHtml = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'
         + photosArr.slice(0,4).map(function(p) {
@@ -20200,141 +20178,145 @@ function wfAgrandirPhoto(src) {
 // ═══════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════
-// ⚙️  CONFIGURATION FIREBASE — À REMPLIR UNE SEULE FOIS
-//     (ne jamais partager ce fichier avec vos clés en clair)
+// ⚙️  CONFIGURATION CLOUDFLARE R2
 // ═══════════════════════════════════════════════════════
-const VIGILO_FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyAjv6k00Z0CLYJxggwMK-nLiJVPxAhoJpI",
-  authDomain:        "hsegest.firebaseapp.com",
-  projectId:         "hsegest",
-  storageBucket:     "hsegest.firebasestorage.app",
-  messagingSenderId: "962222547907",
-  appId:             "1:962222547907:web:9f60dca92a7f87e9fd9376",
-  measurementId:     "G-KB78KBZWSN"
-};
-// ═══════════════════════════════════════════════════════
+const CLOUDFLARE_API_URL = "https://vigilo-api.kevinyameogo01.workers.dev"; // 👈 Remplacer par votre URL Worker
 
 const FB_COLLECTION = 'vigilo_chantiers';
+const FB_ADMINS = 'vigilo_admins';
 
-let fbApp = null;
-let fbDB  = null;
-let fbListener = null;
 let _fbCode            = null;
 let _isAdmin           = false;
-let _sessionIsManager  = false;   // true quand admin entre dans l'app (rôle hse_manager forcé)
-let _sessionAdminEmail = '';      // email admin courant (pour retour dashboard)
+let _sessionIsManager  = false;   
+let _sessionAdminEmail = '';      
 let _adminViewCode = null;
 
-// Config toujours disponible (embarquée)
-function loadFirebaseCfg() {
-  return VIGILO_FIREBASE_CONFIG;
-}
-function saveFirebaseCfg(cfg) {
-  // no-op : config embarquée, pas de localStorage nécessaire
-}
+function loadFirebaseCfg() { return {}; }
+function saveFirebaseCfg(cfg) {}
 
-// ── Init Firebase ────────────────────────────────
-function initFirebase(cfg) {
-  if (fbApp && fbDB) return true;
-
-  // Vérifier que le SDK Firebase est bien chargé
-  if (typeof firebase === 'undefined') {
-    console.error('[Firebase] SDK non chargé — vérifiez votre connexion internet');
-    return false;
-  }
-
-  try {
-    // Supprimer les apps existantes pour éviter les doublons
-    var apps = firebase.apps ? Array.from(firebase.apps) : [];
-    if (apps.length > 0) {
-      fbApp = apps[0];
-    } else {
-      fbApp = firebase.initializeApp({
-        apiKey:            cfg.apiKey,
-        authDomain:        cfg.authDomain        || (cfg.projectId + '.firebaseapp.com'),
-        projectId:         cfg.projectId,
-        storageBucket:     cfg.storageBucket     || (cfg.projectId + '.appspot.com'),
-        messagingSenderId: cfg.messagingSenderId || '',
-        appId:             cfg.appId             || '1:000000000000:web:000000',
-        measurementId:     cfg.measurementId     || ''
-      });
+// ── Mock Firebase API over Cloudflare R2 ────────────────
+let firebase = {
+  firestore: {
+    FieldValue: {
+      arrayUnion: function(val) { return { _isUnion: true, val: val }; }
     }
-    fbDB = firebase.firestore();
-    console.log('[Firebase] ✅ Connecté au projet:', cfg.projectId);
-    return true;
-  } catch(e) {
-    console.error('[Firebase] Init error:', e);
-    fbApp = null; fbDB = null;
-    return false;
   }
-}
+};
 
-// ── Save vers Firestore ──────────────────────────
-// ── Sanitize : Firestore n'accepte pas les tableaux imbriqués ──
-function _sanitizeForFirestore(obj) {
-  if (Array.isArray(obj)) {
-    return obj.map(function(item) { return _sanitizeForFirestore(item); });
-  }
-  if (obj !== null && typeof obj === 'object') {
-    var out = {};
-    Object.keys(obj).forEach(function(k) {
-      var val = obj[k];
-      // Tableau imbriqué -> convertir chaque sous-tableau en objet {label, level}
-      if (Array.isArray(val) && val.some(function(v){ return Array.isArray(v); })) {
-        out[k] = val.map(function(item) {
-          if (Array.isArray(item)) {
-            // [label, level] -> {label, level}
-            return { label: item[0] || '', level: item[1] || '' };
+let fbDB = {
+  collection: function(colName) {
+    return {
+      doc: function(docId) {
+        return {
+          get: async function() {
+            let path = colName === FB_ADMINS ? `admin/${docId}` : `db/${docId}`;
+            try {
+              let res = await fetch(`${CLOUDFLARE_API_URL}/api/${path}`);
+              if (!res.ok) return { exists: false };
+              let data = await res.json();
+              return { exists: true, id: docId, data: () => data };
+            } catch(e) { return { exists: false }; }
+          },
+          set: async function(data) {
+            let path = colName === FB_ADMINS ? `admin/${docId}` : `db/${docId}`;
+            await fetch(`${CLOUDFLARE_API_URL}/api/${path}`, {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify(data)
+            });
+          },
+          update: async function(data) {
+            let getRes = await this.get();
+            let oldData = getRes.exists ? getRes.data() : {};
+            if (data.chantiers && data.chantiers._isUnion) {
+              oldData.chantiers = oldData.chantiers || [];
+              if (!oldData.chantiers.includes(data.chantiers.val)) {
+                oldData.chantiers.push(data.chantiers.val);
+              }
+              delete data.chantiers;
+            }
+            let merged = Object.assign({}, oldData, data);
+            await this.set(merged);
+          },
+          onSnapshot: function(cb, errCb) {
+            let path = colName === FB_ADMINS ? `admin/${docId}` : `db/${docId}`;
+            let active = true;
+            (async function poll() {
+              while(active) {
+                try {
+                  let res = await fetch(`${CLOUDFLARE_API_URL}/api/${path}`);
+                  if (res.ok) {
+                    let data = await res.json();
+                    cb({ exists: true, metadata: { hasPendingWrites: false }, data: () => data });
+                  }
+                } catch(e) { if(errCb) errCb(e); }
+                await new Promise(r => setTimeout(r, 15000));
+              }
+            })();
+            return function unsubscribe() { active = false; };
           }
-          return _sanitizeForFirestore(item);
-        });
-      } else {
-        out[k] = _sanitizeForFirestore(val);
+        };
+      },
+      where: function(field, op, val) {
+        return {
+          get: async function() {
+            if (colName === FB_COLLECTION && field === '_adminEmail') {
+              let adminKey = val.toLowerCase().replace(/[@.]/g, function(c){ return c === '@' ? '_at_' : '_dot_'; });
+              let adminDoc = await fbDB.collection(FB_ADMINS).doc(adminKey).get();
+              let docs = [];
+              if (adminDoc.exists) {
+                let data = adminDoc.data();
+                if (data.chantiers) {
+                  for (let code of data.chantiers) {
+                    let cDoc = await fbDB.collection(FB_COLLECTION).doc(code).get();
+                    if (cDoc.exists) docs.push({ id: code, data: cDoc.data });
+                  }
+                }
+              }
+              return { forEach: function(cb) { docs.forEach(cb); } };
+            }
+            return { forEach: function(){} };
+          }
+        };
       }
-    });
-    return out;
+    };
   }
-  return obj;
+};
+
+let fbListener = null;
+
+function initFirebase(cfg) {
+  console.log('[Cloudflare] ✅ Mode R2 activé:', CLOUDFLARE_API_URL);
+  return true;
 }
 
-function saveToFirestore() {
-  if (!fbDB || !_fbCode) return;
+// ── Save vers Cloudflare R2 ──────────────────────────
+async function saveToFirestore() {
+  if (!_fbCode) return;
   var payload;
   try {
     payload = JSON.parse(JSON.stringify(DB));
   } catch(e) {
-    console.error('[Firestore] Serialization error:', e.message);
+    console.error('[Cloudflare] Serialization error:', e.message);
     return;
   }
 
-  // Stocker l'email du manager si session manager active
   if (_sessionIsManager && _sessionAdminEmail) {
     payload._adminEmail = payload._adminEmail || _sessionAdminEmail;
   }
-
   payload._syncedAt = new Date().toISOString();
 
-  // On lance l'upload des photos en arrière-plan
-  uploadPendingPhotos(payload).then(newPayload => {
-    // Nettoyer les tableaux imbriqués (interdit par Firestore)
-    newPayload = _sanitizeForFirestore(newPayload);
-
-    fbDB.collection(FB_COLLECTION).doc(_fbCode).set(newPayload)
-      .catch(function(e) {
-        console.error('[Firestore] Save err:', e.message);
-        if (typeof showToast === 'function') showToast('⚠ Sync Firestore échouée', 'err');
-      });
-  }).catch(e => {
-    console.error('Error uploading photos', e);
-  });
+  try {
+    const newPayload = await uploadPendingPhotos(payload);
+    await fbDB.collection(FB_COLLECTION).doc(_fbCode).set(newPayload);
+  } catch(e) {
+    console.error('[Cloudflare] Save err:', e.message);
+    if (typeof showToast === 'function') showToast('⚠ Sync Cloudflare échouée', 'err');
+  }
 }
 
-// Fonction pour uploader les photos en attente (base64) vers Storage
+// Fonction pour uploader les photos vers Cloudflare R2
 async function uploadPendingPhotos(payload) {
-  if (typeof firebase === 'undefined' || !firebase.storage) return payload;
-  const storageRef = firebase.storage().ref();
-  
-  // Fonction utilitaire pour convertir base64 en Blob
   function dataURLtoBlob(dataurl) {
     var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
@@ -20358,16 +20340,23 @@ async function uploadPendingPhotos(payload) {
             const ext = mime.split('/')[1] || 'jpg';
             const blob = dataURLtoBlob(val);
             const path = `${basePath}_${k}.${ext}`;
-            const fileRef = storageRef.child(path);
-            await fileRef.put(blob);
-            const url = await fileRef.getDownloadURL();
-            obj[k] = url; // Remplacer dans le payload
+            
+            const res = await fetch(`${CLOUDFLARE_API_URL}/api/upload/${path}`, {
+              method: 'POST',
+              headers: { 'Content-Type': mime },
+              body: blob
+            });
+            if (!res.ok) throw new Error('Upload failed');
+            const data = await res.json();
+            
+            obj[k] = data.url; 
             if (dbObj) {
-              dbObj[k] = url; // Remplacer dans la base locale
+              dbObj[k] = data.url; 
               dbUpdated = true;
             }
           } catch(e) {
-            console.error('Upload failed for', path, e);
+            console.error('Upload failed for', k, e);
+            obj[k] = '[photo_erreur_sync]';
           }
         } else {
           await processObject(val, dbObj ? dbObj[k] : null, `${basePath}_${k}`);
@@ -20386,38 +20375,40 @@ async function uploadPendingPhotos(payload) {
     }
   }
   
-  // Logo
   if (payload.logo && payload.logo.startsWith('data:image/') && payload.logo.length > 5000) {
     try {
       const mime = payload.logo.match(/:(.*?);/)[1];
       const ext = mime.split('/')[1] || 'jpg';
       const blob = dataURLtoBlob(payload.logo);
-      const path = `photos/${_fbCode}/logo/logo.${ext}`;
-      const fileRef = storageRef.child(path);
-      await fileRef.put(blob);
-      const url = await fileRef.getDownloadURL();
-      payload.logo = url;
-      DB.logo = url;
-      dbUpdated = true;
+      const res = await fetch(`${CLOUDFLARE_API_URL}/api/upload/photos/${_fbCode}/logo/logo.${ext}`, {
+        method: 'POST',
+        headers: { 'Content-Type': mime },
+        body: blob
+      });
+      if (res.ok) {
+        const data = await res.json();
+        payload.logo = data.url;
+        DB.logo = data.url;
+        dbUpdated = true;
+      }
     } catch(e) {}
   }
   
   if (dbUpdated) {
-    localStorage.setItem(LS_KEY, JSON.stringify(DB));
+    try {
+      localStorage.setItem(KEY, JSON.stringify(DB));
+    } catch(e) {}
   }
-  
   return payload;
 }
 
-// ── Load depuis Firestore ────────────────────────
+// ── Load depuis Cloudflare ────────────────────────
 async function loadFromFirestore(code) {
-  if (!fbDB) return false;
   try {
     const doc = await fbDB.collection(FB_COLLECTION).doc(code).get();
     if (doc.exists) {
       DB = doc.data();
       _normaliserDB();
-      // Si session manager : forcer config depuis compte admin
       if (_sessionIsManager && _currentAdminData) {
         DB.config.nom        = DB.config.nom        || _currentAdminData.nom        || '';
         DB.config.fonction   = DB.config.fonction   || _currentAdminData.fonction   || 'Responsable HSE';
@@ -20427,40 +20418,39 @@ async function loadFromFirestore(code) {
     }
     return false;
   } catch(e) {
-    console.error('[Firestore] Load err:', e.message);
+    console.error('[Cloudflare] Load err:', e.message);
     return false;
   }
 }
 
-// ── Listener temps réel ──────────────────────────
+// ── Listener (Polling) ──────────────────────────
 function subscribeFirestore(code) {
   if (fbListener) { fbListener(); fbListener = null; }
-  if (!fbDB) return;
   fbListener = fbDB.collection(FB_COLLECTION).doc(code).onSnapshot(function(doc) {
     if (doc.exists && !doc.metadata.hasPendingWrites) {
-      DB = doc.data();
-      _normaliserDB();
-      // Rafraîchir l'écran courant
-      if (typeof currentScreen !== 'undefined' && currentScreen) {
-        try {
-          switch (currentScreen) {
-            case 'home':      renderHome();      break;
-            case 'incidents': renderIncidents(); break;
-            case 'personnel': renderPersonnel(); break;
-            case 'jsa':       renderJSA(); renderPermis(); break;
-            case 'toolbox':   renderCapa(); break;
-            case 'exports':   renderExports(); break;
-            case 'env':       renderEnv(); break;
+      let docData = doc.data();
+      if (JSON.stringify(DB) !== JSON.stringify(docData)) {
+        DB = docData;
+        _normaliserDB();
+        if (typeof currentScreen !== 'undefined' && currentScreen) {
+          try {
+            switch (currentScreen) {
+              case 'home':      renderHome();      break;
+              case 'incidents': renderIncidents(); break;
+              case 'personnel': renderPersonnel(); break;
+              case 'jsa':       renderJSA(); renderPermis(); break;
+              case 'toolbox':   renderCapa(); break;
+              case 'exports':   renderExports(); break;
+              case 'env':       renderEnv(); break;
+            }
+          } catch(err) {
+            console.warn('[Cloudflare] Refresh err:', err.message);
           }
-        } catch(err) {
-          console.warn('[Firestore] Refresh err:', err.message);
         }
+        if (typeof updateUrgenceStrip === 'function') updateUrgenceStrip();
+        if (typeof renderRoleBadge    === 'function') renderRoleBadge();
       }
-      if (typeof updateUrgenceStrip === 'function') updateUrgenceStrip();
-      if (typeof renderRoleBadge    === 'function') renderRoleBadge();
     }
-  }, function(err) {
-    console.warn('[Firestore] Listener error:', err.message);
   });
 }
 
@@ -20711,8 +20701,6 @@ function _setAuthStatus(elId, msg, type) {
 function _emailToKey(email) {
   return email.toLowerCase().replace(/[@.]/g, function(c){ return c === '@' ? '_at_' : '_dot_'; });
 }
-
-const FB_ADMINS = 'vigilo_admins';
 
 // ── Connexion admin (email + mot de passe) ───────
 async function connexionAdminEmail() {
@@ -20967,8 +20955,7 @@ function accederChantierDepuisCode() {
   _fbCode = null;
   _appliquerTheme();
   _ouvrirAdminShell();
-  setTimeout(function() { renderAdminDashboard(); }, 50);
-  showToast('👑 Tableau de bord administrateur');
+  adminEntrerChantier(code);
 }
 
 // ── Admin login (legacy - kept for compatibility) ─
@@ -21667,6 +21654,10 @@ function wfRendreDetail() {
     html += wfdF('Action', item.titre) + (item.desc?wfdF('Description',item.desc):'')
       + wfdF('Responsable', item.resp) + wfdF('\u00c9ch\u00e9ance', fmtDate(item.echeance))
       + wfdF('Origine', item.origine||'\u2014');
+    if (item.photosAvant && item.photosAvant.length) {
+      html += '<div class="wfd-field-lbl" style="margin-top:10px">\ud83d\udcf7 Photos avant correction ('+item.photosAvant.length+')</div>';
+      html += '<div class="wfd-photos">'+item.photosAvant.map(function(p){ return p==='[photo]'||p==='[photo_erreur_sync]'?'<div style="font-size:10px;color:var(--text3);font-style:italic">Photo locale</div>':'<img src="'+p+'" class="wfd-photo" onclick="wfAgrandirPhoto(this.src)">'; }).join('')+'</div>';
+    }
     var retard = status!=='closed' && item.echeance && item.echeance < new Date().toISOString().split('T')[0];
     var bw = status==='closed'?100:status==='pending_validation'?70:status==='progress'?40:5;
     var bc = status==='closed'?'var(--green)':retard?'var(--red)':'var(--blue)';
