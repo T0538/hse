@@ -1,0 +1,15 @@
+# ── Fichiers secrets ──
+.env
+.env.local
+.env.*.local
+wrangler.toml.local
+
+# ── Node.js ──
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Cloudflare Wrangler ──
+.wrangler/
+dist/

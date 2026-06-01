@@ -1,0 +1,16 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "vigilo-hse-worker"
+main = "cloudflare-worker.js"
+compatibility_date = "2025-06-01"
+
+# ── Variables d'environnement (à remplir dans le dashboard Cloudflare) ──
+# Ces variables sont des références, les vraies valeurs sont stockées dans Cloudflare
+[vars]
+# CLOUDINARY_CLOUD_NAME = "" # à configurer dans Dashboard → Workers → Settings
+# CLOUDINARY_API_KEY = ""
+# CLOUDINARY_API_SECRET = ""
+# CLOUDINARY_UPLOAD_PRESET = ""
+# MONGO_APP_ID = ""
+# MONGO_API_KEY = ""
+# MONGO_CLUSTER_NAME = ""
+# MONGO_DB_NAME = ""
