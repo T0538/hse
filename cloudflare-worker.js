@@ -1,5 +1,6 @@
 export default {
   async fetch(request, env, ctx) {
+    console.log('[Worker] Nouvelle requête reçue:', request.method, request.url);
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -8,19 +9,28 @@ export default {
     };
 
     if (request.method === 'OPTIONS') {
+      console.log('[Worker] Requête OPTIONS, retour CORS');
       return new Response(null, { headers: corsHeaders });
     }
 
     try {
       const url = new URL(request.url);
       const pathParts = url.pathname.split('/').filter(p => p);
+      console.log('[Worker] pathParts:', pathParts);
 
       // ── GESTION DES PHOTOS VIA CLOUDINARY ──
-      if (pathParts[0] === 'api' && pathParts[1] === 'storage' && pathParts[2]) {
-        const fileName = pathParts[2];
+      if (
+        (pathParts[0] === 'api' && pathParts[1] === 'storage' && pathParts[2]) ||
+        (pathParts[0] === 'api' && pathParts[1] === 'upload' && pathParts[2] === 'photos')
+      ) {
+        console.log('[Worker] Requête pour Cloudinary');
+        // On prend le dernier segment de chemin comme nom de fichier
+        const fileName = pathParts[pathParts.length - 1];
+        console.log('[Worker] Nom de fichier:', fileName);
 
         // Upload de l'image vers Cloudinary (POST/PUT)
         if (request.method === 'POST' || request.method === 'PUT') {
+          console.log('[Worker] Début upload vers Cloudinary');
           const blob = await request.arrayBuffer();
           const base64 = btoa(
             new Uint8Array(blob)
@@ -39,6 +49,7 @@ export default {
           });
           
           const cloudinaryData = await cloudinaryResponse.json();
+          console.log('[Worker] Réponse Cloudinary:', cloudinaryData);
           
           if (!cloudinaryResponse.ok) {
             throw new Error(cloudinaryData.error?.message || 'Erreur Cloudinary');
@@ -53,15 +64,26 @@ export default {
       }
 
       // ── GESTION DE LA BASE DE DONNÉES VIA CLOUDFLARE KV ──
+      // Accepte à la fois /api/db et /api/db/QUELQUECHOSE (rétrocompatibilité)
       if (pathParts[0] === 'api' && pathParts[1] === 'db') {
+        console.log('[Worker] Requête pour DB');
         const kv = env.DB || env.VIGILO_DB || env.KV;
+        console.log('[Worker] KV disponible?', !!kv);
         if (!kv) {
           throw new Error("Erreur Serveur : L'espace KV n'est pas lié au Worker.");
         }
 
         if (request.method === 'GET') {
+          console.log('[Worker] Requête GET DB');
           let data = await kv.get('db');
+          console.log('[Worker] Données KV pour "db":', data);
+          // Vérifie aussi la clé avec l'ID (pour l'ancienne version)
+          if (data === null && pathParts[2]) {
+            data = await kv.get(pathParts[2]);
+            console.log('[Worker] Données KV pour "'+pathParts[2]+'":', data);
+          }
           if (data === null) {
+            console.log('[Worker] Aucune donnée, retour default DB');
             // Return default empty DB if not exists
             const defaultDB = {
               chantier: null,
@@ -90,6 +112,7 @@ export default {
               headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
             });
           }
+          console.log('[Worker] Retourne données KV');
           return new Response(data, { 
             status: 200, 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -97,10 +120,19 @@ export default {
         }
 
         if (request.method === 'POST') {
+          console.log('[Worker] Requête POST DB');
           const bodyText = await request.text();
+          console.log('[Worker] Corps reçu (premiers 200 caractères):', bodyText.substring(0,200));
           if (!bodyText) throw new Error("Le corps de la requête est vide.");
-          JSON.parse(bodyText);
+          JSON.parse(bodyText); // Vérifie que c'est du JSON valide
+          console.log('[Worker] Début put dans KV');
           await kv.put('db', bodyText);
+          console.log('[Worker] Put KV réussi');
+          // Sauvegarde aussi dans la clé avec l'ID si elle existe (rétrocompatibilité)
+          if (pathParts[2]) {
+            console.log('[Worker] Sauvegarde aussi dans "'+pathParts[2]+'"');
+            await kv.put(pathParts[2], bodyText);
+          }
           return new Response(JSON.stringify({ success: true }), { 
             status: 200, 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -108,13 +140,15 @@ export default {
         }
       }
 
+      console.log('[Worker] Route non trouvée');
       return new Response(JSON.stringify({ error: 'Route non trouvée' }), { 
         status: 404, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       });
 
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
+      console.error('[Worker] Erreur:', error);
+      return new Response(JSON.stringify({ error: error.message, stack: error.stack }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });

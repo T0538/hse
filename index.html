@@ -4535,7 +4535,15 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
 // STATE
 // ═══════════════════════════════════════════════
 const KEY = 'hse_tetris_v2';
-const API_BASE = 'https://vigilo-hse-worker.kevinyameogo01.workers.dev';
+const API_BASE = 'https://vigilo-api.kevinyameogo01.workers.dev';
+
+// Helper to clear old storage (call in browser console: clearOldStorage())
+window.clearOldStorage = function() {
+  localStorage.removeItem(KEY);
+  sessionStorage.removeItem(KEY + '_session');
+  console.log('[Vigilo] Anciennes données locales supprimées !');
+  alert('Anciennes données locales supprimées ! Rechargez la page.');
+};
 
 // ── Check Protocol ──
 if (window.location.protocol === 'file:') {
@@ -4580,6 +4588,31 @@ async function fetchWithRetry(url, options = {}, retries = 2, backoff = 1000) {
   }
 }
 
+// ── UPLOAD PHOTO TO CLOUDINARY VIA WORKER ──
+async function uploadPhotoToCloudinary(base64Data, fileName) {
+  try {
+    // Convert base64 to blob
+    const base64WithoutHeader = base64Data.split(',')[1];
+    const binaryString = atob(base64WithoutHeader);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: 'image/jpeg' });
+
+    const response = await fetchWithRetry(`${API_BASE}/api/storage/${fileName}`, {
+      method: 'POST',
+      body: blob
+    });
+    if (!response.ok) throw new Error('Upload failed');
+    const result = await response.json();
+    return result.url;
+  } catch (e) {
+    console.error('[Vigilo] Photo upload failed:', e);
+    throw e;
+  }
+}
+
 // ── LOGO TETRIS PAR DÉFAUT (embarqué) ──
 var TETRIS_LOGO_DEFAULT = 'data:image/png;base64,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';
 
@@ -4607,67 +4640,93 @@ let DB = {
 };
 
 async function save() {
+  console.log('[Vigilo] save() appelée, DB à sauvegarder:', DB);
   let success = false;
+  
+  // First, try to sync to Cloudflare Worker (prioritize this)
   try {
-    const payload = JSON.stringify(DB);
-    localStorage.setItem(KEY, payload);
+    console.log('[Vigilo] Début sync Cloudflare vers', `${API_BASE}/api/db`);
+    await fetchWithRetry(`${API_BASE}/api/db`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(DB)
+    });
+    console.log('[Vigilo] Sync Cloudflare OK');
     success = true;
   } catch(e) {
+    console.warn('[Vigilo] Sync Cloudflare échoué:', e.message);
+  }
+
+  // If Cloudflare sync failed, try to save locally (but limit data)
+  if (!success) {
     try {
-      sessionStorage.setItem(KEY + '_session', JSON.stringify(DB));
-      console.warn('[Vigilo] localStorage indisponible, fallback sessionStorage:', e.message);
+      // Create a lightweight version of DB for local storage (without big photos)
+      const lightweightDB = JSON.parse(JSON.stringify(DB));
+      // Clear activity if too long
+      if (lightweightDB.activity && lightweightDB.activity.length > 5) {
+        lightweightDB.activity = lightweightDB.activity.slice(-5);
+      }
+      
+      const payload = JSON.stringify(lightweightDB);
+      localStorage.setItem(KEY, payload);
       success = true;
-    } catch(e2) {
-      console.error('[Vigilo] SAUVEGARDE IMPOSSIBLE:', e2.message);
-      // Tentative de sauvetage : on vide l'activité pour gagner un peu de place
-      if (DB.activity && DB.activity.length > 2) {
-        DB.activity = DB.activity.slice(0, 2);
-        try {
-          localStorage.setItem(KEY, JSON.stringify(DB));
-          console.warn('[Vigilo] Espace libéré en tronquant drastiquement l\'activité');
-          success = true;
-        } catch(e3) {
-          success = false;
+      console.warn('[Vigilo] Sauvegardé localement (version allégée)');
+    } catch(e) {
+      try {
+        const lightweightDB = JSON.parse(JSON.stringify(DB));
+        if (lightweightDB.activity && lightweightDB.activity.length > 3) {
+          lightweightDB.activity = lightweightDB.activity.slice(-3);
+        }
+        sessionStorage.setItem(KEY + '_session', JSON.stringify(lightweightDB));
+        success = true;
+        console.warn('[Vigilo] localStorage plein, fallback sessionStorage (version allégée)');
+      } catch(e2) {
+        console.error('[Vigilo] SAUVEGARDE IMPOSSIBLE:', e2.message);
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Mémoire pleine ! Supprimez d\'anciens éléments.', 'err');
         }
       }
-      if (!success && typeof showToast === 'function') {
-        showToast('⚠️ Mémoire pleine ! Supprimez d\'anciens rapports ou photos.', 'err');
-      }
     }
-  }
-  // Sync Cloudflare Worker
-  if (success) {
+  } else {
+    // Even if Cloudflare succeeded, try to save a lightweight local copy
     try {
-      await fetchWithRetry(`${API_BASE}/api/db`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(DB)
-      });
-      console.log('[Vigilo] Sync Cloudflare OK');
+      const lightweightDB = JSON.parse(JSON.stringify(DB));
+      if (lightweightDB.activity && lightweightDB.activity.length > 5) {
+        lightweightDB.activity = lightweightDB.activity.slice(-5);
+      }
+      localStorage.setItem(KEY, JSON.stringify(lightweightDB));
+      console.log('[Vigilo] Sauvegarde locale réussie (version allégée)');
     } catch(e) {
-      console.warn('[Vigilo] Sync Cloudflare échouée:', e.message);
+      console.warn('[Vigilo] Erreur sauvegarde locale (mais Cloudflare a fonctionné):', e.message);
+      // Ignore local save error if Cloudflare worked
     }
   }
+
   // Sync Firestore si connecté (keep for compatibility)
   if (success && typeof fbDB !== 'undefined' && fbDB && typeof _fbCode !== 'undefined' && _fbCode) {
     setTimeout(() => {
       saveToFirestore().catch(e => console.warn('[Vigilo] Sync Firestore background failed:', e.message));
     }, 100);
   }
+  console.log('[Vigilo] save() terminée, success =', success);
   return success;
 }
 async function load() {
+  console.log('[Vigilo] load() appelée');
   // First try to load from Cloudflare Worker
   try {
+    console.log('[Vigilo] Début chargement depuis Cloudflare vers', `${API_BASE}/api/db`);
     const response = await fetchWithRetry(`${API_BASE}/api/db`);
     if (response.ok) {
       const remoteDB = await response.json();
+      console.log('[Vigilo] Données reçues de Cloudflare:', remoteDB);
       if (remoteDB && typeof remoteDB === 'object') {
         DB = remoteDB;
-        console.log('[Vigilo] Chargement depuis Cloudflare OK');
+        console.log('[Vigilo] Chargement depuis Cloudflare OK, DB mis à jour:', DB);
         // Save to local storage as backup
         try {
           localStorage.setItem(KEY, JSON.stringify(DB));
+          console.log('[Vigilo] Sauvegarde locale backup réussie');
         } catch(e) {
           console.warn('[Vigilo] Sauvegarde locale échouée:', e.message);
         }
@@ -4679,9 +4738,11 @@ async function load() {
     try {
       let d = localStorage.getItem(KEY);
       if (!d) d = sessionStorage.getItem(KEY + '_session');
+      console.log('[Vigilo] Données locales récupérées:', d);
       if (d) {
         const parsed = JSON.parse(d);
         if (parsed && typeof parsed === 'object') DB = parsed;
+        console.log('[Vigilo] DB mis à jour depuis local:', DB);
       }
     } catch(e2) {
       console.warn('[Vigilo] Erreur chargement données locales:', e2.message);
@@ -10994,34 +11055,43 @@ function exporterJSON() {
   _majInfoBackup();
 }
 
-function importerJSON(input) {
+async function importerJSON(input) {
   var file = input.files[0];
   if (!file) return;
   var reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = async function(e) {
     try {
       var data = JSON.parse(e.target.result);
+      console.log('[Vigilo] Données JSON chargées:', data);
       if (!data.chantier) { showToast('Fichier invalide — non reconnu', 'err'); return; }
       showConfirm('Restaurer cette sauvegarde ?',
         'Toutes les données actuelles seront remplacées par celles du fichier "' + file.name + '". Cette action est irréversible.',
-        function() {
+        async function() {
+          console.log('[Vigilo] Confirmation de restauration reçue');
           // On garde l'identifiant cloudflare actuel s'il y en a un pour ne pas écraser l'association Admin
           if (DB._adminEmail) data._adminEmail = DB._adminEmail;
           if (DB._codeGenereParAdmin) data._codeGenereParAdmin = DB._codeGenereParAdmin;
           
           DB = data;
+          console.log('[Vigilo] DB mis à jour:', DB);
           // Garantir la compatibilité
           if (!DB.rapportsJournaliers) DB.rapportsJournaliers = [];
           if (!DB.rapportsMensuels) DB.rapportsMensuels = [];
           if (!DB.personnel) DB.personnel = [];
           if (!DB.activity) DB.activity = [];
-          save();
+          
+          showToast('Restauration en cours... Synchronisation Cloudflare...');
+          console.log('[Vigilo] Début de save()');
+          await save(); // Attend que la sauvegarde (et sync Cloudflare) soit terminée
+          console.log('[Vigilo] save() terminé');
+          
           if (currentScreen) switchScreen(currentScreen);
-          showToast('Données restaurées depuis ' + file.name + ' ✓');
+          showToast('Données restaurées depuis ' + file.name + ' et synchronisées ✓');
           _majInfoBackup();
         }
       );
     } catch(err) {
+      console.error('[Vigilo] Erreur import JSON:', err);
       showToast('Erreur lecture fichier JSON', 'err');
     }
   };

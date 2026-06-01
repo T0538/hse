@@ -1,7 +1,12 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "vigilo-hse-worker"
+name = "vigilo-api"
 main = "cloudflare-worker.js"
 compatibility_date = "2025-06-01"
+
+# ── Binding KV (remplace par ton ID) ──
+[[kv_namespaces]]
+binding = "VIGILO_DB"
+id = "[TON-ID-KV-ICI]" # REMPLACE PAR TON VRAI ID
 
 # ── Variables d'environnement (à remplir dans le dashboard Cloudflare) ──
 # Ces variables sont des références, les vraies valeurs sont stockées dans Cloudflare
