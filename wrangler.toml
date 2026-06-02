@@ -6,7 +6,7 @@ compatibility_date = "2025-06-01"
 # ── Binding KV (remplace par ton ID) ──
 [[kv_namespaces]]
 binding = "VIGILO_DB"
-id = "[TON-ID-KV-ICI]" # REMPLACE PAR TON VRAI ID
+id = "ccc0ddd66f4e44b0885c6dc8317ef76a" # REMPLACE PAR TON VRAI ID
 
 # ── Variables d'environnement (à remplir dans le dashboard Cloudflare) ──
 # Ces variables sont des références, les vraies valeurs sont stockées dans Cloudflare
