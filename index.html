@@ -11702,235 +11702,299 @@ function pdfRapportQuasiAccident(r) {
   var { jsPDF } = window.jspdf;
   var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   var W = 210, H = 297, M = 14, CW = W - M*2;
-  
-  /* Couleurs (bleu marine/orange comme l'image) */
-  var NAVY = [12, 35, 68];
-  var ORANGE = [214, 85, 40];
-  var WHITE = [255,255,255];
-  var INK = [15,15,15];
-  var MID = [70,70,70];
-  var PALE = [130,128,124];
-  var BG = [245,244,241];
-  var RULE = [190,188,182];
-  var RED = [155,30,30];
-  
-  var y = 10;
-  
-  // ── EN-TÊTE ──
-  // Logo (bouclier)
-  var logoX = M, logoY = y;
-  var logoW = 30, logoH = 30;
-  doc.setFillColor(...NAVY);
-  doc.circle(logoX + logoW/2, logoY + logoH/2, logoW/2, 'F');
-  doc.setFillColor(...WHITE);
-  doc.circle(logoX + logoW/2, logoY + logoH/2, logoW/2 - 3, 'F');
-  doc.setFillColor(...NAVY);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(20);
-  doc.setTextColor(...NAVY);
-  doc.text('!', logoX + logoW/2, logoY + logoH/2 + 5, { align: 'center' });
-  // Titre
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(22);
-  doc.setTextColor(...NAVY);
-  doc.text("RAPPORT D'INCIDENT / QUASI-ACCIDENT", logoX + logoW + 8, logoY + 12);
-  doc.setFont('helvetica','italic');
-  doc.setFontSize(12);
-  doc.setTextColor(...MID);
-  doc.text("Rapport d'un événement dangereux sans blessure", logoX + logoW + 8, logoY + 20);
-  y = logoY + logoH + 8;
-  
-  function needPage(h) { if (y + (h || 20) > H - 25) { doc.addPage(); y = 20; } }
+
+  /* Couleurs officielles */
+  var NAVY    = [12, 35, 68];
+  var ORANGE  = [214, 85, 40];
+  var WHITE   = [255, 255, 255];
+  var INK     = [15, 15, 15];
+  var MID     = [70, 70, 70];
+  var PALE    = [130, 128, 124];
+  var BG      = [245, 244, 241];
+  var BGHEAD  = [228, 233, 242];
+  var RULE    = [190, 188, 182];
+  var GREEN   = [20, 100, 40];
+  var RED     = [155, 30, 30];
+  var AMBER   = [170, 100, 10];
+  var BGGREEN = [232, 248, 236];
+  var BGRED   = [250, 232, 232];
+  var BGAMBER = [255, 245, 230];
+  var BLUE    = [20, 90, 150];
+  var BGBLUE  = [228, 233, 242];
+
+  var ent  = DB.config.entreprise || DB.chantier || 'VIGILO';
+  var logo = DB.logo || null;
+  var y = 0;
+
+  /* Helpers */
+  function needPage(h) {
+    if (y + (h || 20) > H - 22) { drawFooter(); doc.addPage(); drawPageHeader(); y = 52; }
+  }
+
   function hLine(yy, x1, x2, col, lw) {
     doc.setDrawColor(...(col || RULE));
     doc.setLineWidth(lw || 0.3);
-    doc.line(x1 || M, yy, x2 || (W-M), yy);
+    doc.line(x1 !== undefined ? x1 : M, yy, x2 !== undefined ? x2 : W - M, yy);
   }
-  
-  // ── Section 1: Infos Générales ──
-  function sectionTitle(num, titre, couleur) {
-    needPage(15);
-    doc.setFillColor(...(couleur || NAVY));
+
+  /* Titre de section */
+  function sectionTitle(num, title, color) {
+    needPage(16);
+    y += 5;
+    var sectionColor = color || NAVY;
+    doc.setFillColor(...sectionColor);
     doc.rect(M, y, CW, 7, 'F');
-    doc.setFont('helvetica','bold');
+    doc.setFillColor(...ORANGE);
+    doc.rect(M, y, 8, 7, 'F');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(...WHITE);
-    doc.text(String(num) + ". " + titre.toUpperCase(), M + 3, y + 5);
-    y += 10;
+    doc.text(String(num), M + 4, y + 5.5, { align: 'center' });
+    doc.text(title.toUpperCase(), M + 12, y + 5.5);
+    y += 11;
   }
-  sectionTitle(1, "INFORMATIONS GÉNÉRALES");
-  var table1 = [
-    ["Date", fmtDate(r.date)],
-    ["Heure", r.heure || '—'],
-    ["Entreprise / Service", r.entreprise || DB.chantier || '—'],
-    ["Nom du déclarant", r.declarant || '—'],
-    ["Poste occupé", r.poste || '—']
-  ];
-  table1.forEach(function(row, i) {
-    needPage(8);
-    doc.setFillColor(BG[0],BG[1],BG[2]);
-    doc.rect(M, y, CW, 7, 'FD');
-    doc.setFont('helvetica','bold');
+
+  /* Ligne de champ simple */
+  function fieldRow(label, val, h, shade) {
+    h = h || 7;
+    needPage(h + 2);
+    if (shade) { doc.setFillColor(...BG); doc.rect(M, y, CW, h, 'F'); }
+    hLine(y, M, W - M, RULE, 0.25);
+    doc.setFillColor(...BGHEAD);
+    doc.rect(M, y, 60, h, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...NAVY);
+    doc.text(label.toUpperCase(), M + 2, y + h/2 + 1.5);
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(8.5);
     doc.setTextColor(...INK);
-    doc.text(row[0], M+2, y+5);
-    doc.setFont('helvetica','normal');
-    doc.text(row[1], M+70, y+5);
-    y +=7;
-  });
-  
-  // ── Section 2: Description ──
+    var lines = doc.splitTextToSize(val || '—', CW - 64);
+    var actualH = Math.max(h, lines.length * 5 + 4);
+    if (lines.length > 1) {
+      if (shade) { doc.setFillColor(...BG); doc.rect(M + 60, y, CW - 60, actualH, 'F'); }
+      doc.setFillColor(...BGHEAD);
+      doc.rect(M, y, 60, actualH, 'F');
+    }
+    lines.forEach(function(l, i) { doc.text(l, M + 63, y + 5 + i*5); });
+    hLine(y + actualH, M, W - M, RULE, 0.25);
+    y += actualH;
+  }
+
+  /* Page header */
+  function drawPageHeader() {
+    doc.setFillColor(...NAVY);
+    doc.rect(0, 0, W, 14, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...WHITE);
+    doc.text('RAPPORT QUASI-ACCIDENT — ' + fmtDate(r.date), M, 9.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(180, 200, 230);
+    doc.text(ent + '  ·  ' + (DB.chantier || ''), W - M, 9.5, { align: 'right' });
+    hLine(14, 0, W, ORANGE, 1);
+  }
+
+  /* Footer */
+  function drawFooter() {
+    var pg = doc.internal.getNumberOfPages();
+    hLine(H - 14, M, W - M, RULE, 0.3);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...PALE);
+    doc.text('Document officiel — ' + ent + '  ·  Chantier : ' + (DB.chantier || '') + '  ·  Déclarant : ' + (r.declarant || ''), M, H - 10);
+    doc.text('Page ' + pg, W - M, H - 10, { align: 'right' });
+    doc.setFillColor(...ORANGE);
+    doc.rect(0, H - 6, W, 6, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6);
+    doc.setTextColor(...WHITE);
+    doc.text('VIGILO — Système de Gestion HSE  ·  Rapport généré le ' + new Date().toLocaleDateString('fr-FR'), W/2, H - 2.5, { align: 'center' });
+  }
+
+  /* PAGE 1 — EN-TÊTE */
+  doc.setFillColor(...NAVY);
+  doc.rect(0, 0, W, 52, 'F');
+  doc.setFillColor(...ORANGE);
+  doc.rect(0, 0, 4, 52, 'F');
+
+  if (logo) {
+    try {
+      doc.setFillColor(...WHITE);
+      doc.rect(M + 4, 8, 32, 20, 'F');
+      var fmt = logo.indexOf('data:image/png') === 0 ? 'PNG' : 'JPEG';
+      doc.addImage(logo, fmt, M + 5, 9, 30, 18);
+    } catch(e) {}
+  }
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(...WHITE);
+  doc.text("RAPPORT D'INCIDENT / QUASI-ACCIDENT", logo ? M + 42 : M + 8, 23);
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(200, 210, 230);
+  doc.text("Rapport d'événement dangereux sans blessure corporelle", logo ? M + 42 : M + 8, 31);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(180, 190, 210);
+  doc.text('Entreprise : ' + ent + (DB.chantier ? '  ·  Chantier : ' + DB.chantier : ''), W - M, 31, { align: 'right' });
+
+  doc.setFillColor(...ORANGE);
+  doc.rect(0, 50, W, 2, 'F');
+  y = 58;
+
+  /* SECTION 1 — INFOS GÉNÉRALES */
+  sectionTitle(1, "INFORMATIONS GÉNÉRALES");
+  fieldRow('Date', fmtDate(r.date), 7, true);
+  fieldRow('Heure', r.heure || '—', 7);
+  fieldRow('Entreprise / Service', r.entreprise || (DB.chantier || '—'), 7, true);
+  fieldRow('Nom du déclarant', r.declarant || '—', 7);
+  fieldRow('Poste occupé', r.poste || '—', 7, true);
+
+  /* SECTION 2 — DESCRIPTION */
   sectionTitle(2, "DESCRIPTION DU QUASI-ACCIDENT");
   needPage(25);
-  doc.setFillColor(BG[0],BG[1],BG[2]);
-  doc.rect(M, y, CW, 25, 'FD');
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(8.5);
+  y += 2;
+  doc.setFillColor(...BG);
+  doc.rect(M, y, CW, 24, 'FD');
+  var descLines = doc.splitTextToSize(r.description || '—', CW - 4);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
   doc.setTextColor(...INK);
-  var descLines = doc.splitTextToSize(r.description || "—", CW-4);
-  doc.text(descLines, M+2, y+5);
-  y += 25 + descLines.length*3;
-  
-  // ── Sections 3 & 4: 2 colonnes ──
+  descLines.forEach(function(l, i) { doc.text(l, M + 2, y + 5 + i*4); });
+  y += 28;
+
+  /* SECTIONS 3 & 4 — 2 COLONNES */
   sectionTitle(3, "SITUATION DANGEREUSE IDENTIFIÉE", RED);
   var leftX = M, rightX = M + CW/2 + 2;
   var colW = CW/2 - 2;
-  needPage(60);
-  // Colonne gauche: Section3
-  doc.setFillColor(250,232,232); // rouge pâle
-  doc.rect(leftX, y, colW, 55, 'F');
-  var y3 = y + 3;
-  // Checkboxes situations
+  needPage(70);
+  var startY = y;
+  
+  doc.setFillColor(...BGRED);
+  doc.rect(leftX, startY, colW, 60, 'F');
   var allSituations = ["Chute de plain-pied", "Risque électrique", "Produit chimique", "Incendie", "Mauvaise signalisation", "Équipement défectueux", "Absence d'EPI", "Autre"];
+  var localY = startY + 5;
   allSituations.forEach(function(s, i) {
     var checked = r.situations && r.situations.includes(s);
-    var yy = y3 + i*5;
-    if (i < allSituations.length) {
-      doc.setDrawColor(...RULE);
-      doc.setLineWidth(0.3);
-      doc.rect(leftX + 3, yy, 3,3, 'S');
-      if (checked) { doc.setFillColor(...RED); doc.rect(leftX + 3.5, yy+0.5, 2,2, 'F'); }
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(8);
-      doc.setTextColor(...INK);
-      doc.text(s, leftX +8, yy+2.3);
-    }
+    doc.setDrawColor(...RULE); doc.setLineWidth(0.3);
+    doc.rect(leftX + 4, localY, 3, 3, 'S');
+    if (checked) { doc.setFillColor(...RED); doc.rect(leftX + 4.5, localY + 0.5, 2, 2, 'F'); }
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...INK);
+    doc.text(s, leftX + 10, localY + 2.2);
+    localY += 7;
   });
-  // Champ "Autre"
   if (r.situationAutre) {
-    doc.setFont('helvetica','bold');
-    doc.setTextColor(...RED);
-    doc.text("→ " + r.situationAutre, leftX +3, y3 + allSituations.length*5 + 3);
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(...RED);
+    doc.text('→ ' + r.situationAutre, leftX + 4, localY + 2);
   }
-  // Colonne droite: Section4
-  sectionTitle(4, "CAUSES POSSIBLES", [170,110,20]); // ambre
-  // Nous avons déjà avancé y pour la section, donc réinitialiser un peu pour la 2e colonne
-  var y4 = y - 10;
-  needPage(60);
-  doc.setFillColor(255,245,230); // ambre pâle
-  doc.rect(rightX, y4, colW, 55, 'F');
+
+  sectionTitle(4, "CAUSES POSSIBLES", AMBER);
+  var y4 = startY;
+  doc.setFillColor(...BGAMBER);
+  doc.rect(rightX, y4, colW, 60, 'F');
   var allCauses = ["Manque de formation", "Non-respect des consignes", "Défaut matériel", "Mauvaise organisation", "Conditions de travail dangereuses", "Autre"];
+  var localY4 = y4 + 5;
   allCauses.forEach(function(s, i) {
     var checked = r.causes && r.causes.includes(s);
-    var yy = y4 + 3 + i*5;
     doc.setDrawColor(...RULE); doc.setLineWidth(0.3);
-    doc.rect(rightX +3, yy,3,3,'S');
-    if (checked) { doc.setFillColor([170,110,10]); doc.rect(rightX+3.5, yy+0.5, 2,2,'F'); }
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...INK);
-    doc.text(s, rightX+8, yy+2.3);
+    doc.rect(rightX + 4, localY4, 3, 3, 'S');
+    if (checked) { doc.setFillColor(...AMBER); doc.rect(rightX + 4.5, localY4 + 0.5, 2, 2, 'F'); }
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...INK);
+    doc.text(s, rightX + 10, localY4 + 2.2);
+    localY4 += 7;
   });
   if (r.causeAutre) {
-    doc.setFont('helvetica','bold'); doc.setTextColor([170,110,10]);
-    doc.text("→ " + r.causeAutre, rightX+3, y4 +3 + allCauses.length*5 +3);
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(...AMBER);
+    doc.text('→ ' + r.causeAutre, rightX + 4, localY4 + 2);
   }
-  y = y4 + 55 + 5;
-  
-  // ── Sections 5 &6: 2 colonnes ──
-  sectionTitle(5, "MESURES IMMÉDIATES PRISES", [20,100,40]); // vert
-  var y5 = y -10;
-  needPage(30);
-  doc.setFillColor(232,248,236); // vert pâle
-  doc.rect(leftX, y5, colW, 28, 'F');
-  var mesuresLines = doc.splitTextToSize(r.mesures || "—", colW-4);
-  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...INK);
-  doc.text(mesuresLines, leftX+2, y5+7);
-  
-  sectionTitle(6, "ACTIONS CORRECTIVES RECOMMANDÉES", [20,90,150]); // bleu
-  var y6 = y -10;
-  needPage(30);
-  doc.setFillColor(228,233,242); // bleu pâle
-  doc.rect(rightX, y6, colW, 28, 'F');
+  y = startY + 68;
+
+  /* SECTIONS 5 & 6 */
+  sectionTitle(5, "MESURES IMMÉDIATES PRISES", GREEN);
+  var y5 = y;
+  needPage(40);
+  doc.setFillColor(...BGGREEN);
+  doc.rect(leftX, y5, colW, 32, 'F');
+  var mesuresLines = doc.splitTextToSize(r.mesures || '—', colW - 4);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...INK);
+  mesuresLines.forEach(function(l, i) { doc.text(l, leftX + 2, y5 + 7 + i*4); });
+
+  sectionTitle(6, "ACTIONS CORRECTIVES RECOMMANDÉES", BLUE);
+  var y6 = y;
+  doc.setFillColor(...BGBLUE);
+  doc.rect(rightX, y6, colW, 32, 'F');
   var allActions = ["Sensibilisation du personnel", "Maintenance de l'équipement", "Mise en place de signalisation", "Fourniture des EPI", "Contrôle supplémentaire", "Autre"];
+  var localY6 = y6 + 5;
   allActions.forEach(function(s, i) {
     var checked = r.actions && r.actions.includes(s);
-    var yy = y6 + 3 + i*4;
-    if (yy < y6 + 26) {
+    if (localY6 < y6 + 30) {
       doc.setDrawColor(...RULE); doc.setLineWidth(0.3);
-      doc.rect(rightX +3, yy,3,3,'S');
-      if (checked) { doc.setFillColor([20,90,150]); doc.rect(rightX+3.5, yy+0.5, 2,2,'F'); }
-      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...INK);
-      doc.text(s, rightX+8, yy+2.3);
+      doc.rect(rightX + 4, localY6, 3, 3, 'S');
+      if (checked) { doc.setFillColor(...BLUE); doc.rect(rightX + 4.5, localY6 + 0.5, 2, 2, 'F'); }
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...INK);
+      doc.text(s, rightX + 10, localY6 + 2.2);
+      localY6 += 5;
     }
   });
-  if (r.actionAutre) {
-    doc.setFont('helvetica','bold'); doc.setTextColor([20,90,150]);
-    doc.text("→ " + r.actionAutre, rightX+3, y6+3+allActions.length*4 +1);
+  if (r.actionAutre && localY6 < y6 + 30) {
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(...BLUE);
+    doc.text('→ ' + r.actionAutre, rightX + 4, localY6 + 2);
   }
-  y = y6 +30;
-  
-  // ── Section 7: Responsable du suivi ──
+  y = y6 + 40;
+
+  /* SECTION 7 — SUIVI */
   sectionTitle(7, "RESPONSABLE DU SUIVI", RED);
-  needPage(15);
-  doc.setFillColor(250,232,232);
-  doc.rect(M, y, CW, 13, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...INK);
-  doc.text("Nom", M+2, y+5);
-  doc.text("Fonction", M+50, y+5);
-  doc.text("Date prévue de correction", M+110, y+5);
-  doc.setFont('helvetica','normal');
-  doc.text(r.suiviNom || '—', M+2, y+11);
-  doc.text(r.suiviFonction || '—', M+50, y+11);
-  doc.text(r.suiviDate ? fmtDate(r.suiviDate) : '—', M+110, y+11);
-  y +=15;
-  
-  // ── Section 8: Signatures ──
-  sectionTitle(8, "SIGNATURES", NAVY);
-  needPage(35);
+  needPage(20);
+  y += 2;
+  doc.setFillColor(...BGRED);
+  doc.rect(M, y, CW, 16, 'FD');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...RED);
+  doc.text('Nom', M + 3, y + 5);
+  doc.text('Fonction', M + 55, y + 5);
+  doc.text('Date prévue', M + 115, y + 5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...INK);
+  doc.text(r.suiviNom || '—', M + 3, y + 11);
+  doc.text(r.suiviFonction || '—', M + 55, y + 11);
+  doc.text(r.suiviDate ? fmtDate(r.suiviDate) : '—', M + 115, y + 11);
+  y += 22;
+
+  /* SECTION 8 — SIGNATURES */
+  sectionTitle(8, "SIGNATURES");
+  needPage(40);
   var sigW = (CW - 6)/2;
   var sigX1 = M, sigX2 = M + sigW + 6;
-  var sigY = y;
-  var sigH = 30;
-  
+  var sigY = y + 2;
+  var sigH = 35;
+
   doc.setDrawColor(...RULE); doc.setLineWidth(0.3);
-  doc.rect(sigX1, sigY, sigW, sigH, 'FD'); // fond BG
+  doc.rect(sigX1, sigY, sigW, sigH, 'FD');
   doc.rect(sigX2, sigY, sigW, sigH, 'FD');
-  // Labels signatures
-  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...INK);
-  doc.text("Déclarant", sigX1+2, sigY+5);
-  doc.text("Responsable HSE", sigX2+2, sigY+5);
-  
-  // Dessiner signatures
-  function drawSignature(imgData, x, yy, w, h) {
-    if (!imgData) return;
-    try {
-      doc.addImage(imgData, 'PNG', x+2, yy+7, w-4, h-9);
-    } catch(e) {}
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...NAVY);
+  doc.text('Déclarant', sigX1 + 4, sigY + 5);
+  doc.text('Responsable HSE', sigX2 + 4, sigY + 5);
+
+  if (r.signatureDeclarant) {
+    try { doc.addImage(r.signatureDeclarant, 'PNG', sigX1 + 4, sigY + 10, sigW - 8, sigH - 16); } catch(e) {}
   }
-  drawSignature(r.signatureDeclarant, sigX1, sigY, sigW, sigH);
-  drawSignature(r.signatureHse, sigX2, sigY, sigW, sigH);
-  y = sigY + sigH + 5;
-  
-  // ── Message de bas de page ──
-  needPage(20);
-  doc.setFillColor(250,232,232);
-  doc.setDrawColor(...RED);
-  doc.setLineWidth(0.5);
-  doc.rect(M, y, CW, 18, 'FD');
-  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...RED);
-  doc.text("⚠️ Ce quasi-accident aurait pu entraîner des conséquences graves.", M+3, y+7);
-  doc.setFont('helvetica','normal'); doc.setTextColor(...INK);
-  doc.text("Une action préventive immédiate est recommandée afin d'éviter tout futur incident.", M+3, y+12);
-  
+  if (r.signatureHse) {
+    try { doc.addImage(r.signatureHse, 'PNG', sigX2 + 4, sigY + 10, sigW - 8, sigH - 16); } catch(e) {}
+  }
+  y = sigY + sigH + 6;
+
+  /* Message sécurité */
+  needPage(22);
+  doc.setFillColor(255, 240, 240);
+  doc.setDrawColor(...RED); doc.setLineWidth(0.5);
+  doc.rect(M, y, CW, 20, 'FD');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...RED);
+  doc.text("⚠️ Ce quasi-accident aurait pu entraîner des conséquences graves.", M + 3, y + 7);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...INK);
+  doc.text("Une action préventive immédiate est recommandée afin d'éviter tout futur incident.", M + 3, y + 13);
+
+  drawFooter();
   doc.save("Rapport_Quasi_Accident_" + fmtDate(r.date).replace(/\//g, '-') + ".pdf");
 }
 
