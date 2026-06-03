@@ -2471,7 +2471,7 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
   </div>
 
   <div class="section-title">Rapports Périodiques HSE</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 4px">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:0 16px 4px">
     <button onclick="ouvrirRapportJour()" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:14px;border:1.5px solid var(--orange-mid);background:var(--orange-light);cursor:pointer">
       <div style="width:44px;height:44px;border-radius:12px;background:var(--orange);display:flex;align-items:center;justify-content:center">
         <svg width="21" height="21" viewBox="0 0 24 24" stroke="#fff" stroke-width="1.8" fill="none"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/><line x1="8" y1="18" x2="15" y2="18"/></svg>
@@ -2483,6 +2483,12 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
         <svg width="21" height="21" viewBox="0 0 24 24" stroke="#fff" stroke-width="1.8" fill="none"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
       </div>
       <div style="text-align:center"><div style="font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--blue)">Rapport Mensuel</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Bilan HSE du mois</div></div>
+    </button>
+    <button onclick="ouvrirModalRapportQuasiAccident()" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:14px;border:1.5px solid var(--red);background:var(--red-light);cursor:pointer">
+      <div style="width:44px;height:44px;border-radius:12px;background:var(--red);display:flex;align-items:center;justify-content:center">
+        <svg width="21" height="21" viewBox="0 0 24 24" stroke="#fff" stroke-width="1.8" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+      </div>
+      <div style="text-align:center"><div style="font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--red)">Rapport Quasi-Accident</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Formulaire standard</div></div>
     </button>
   </div>
   <div id="rapports-list"></div>
@@ -4530,6 +4536,182 @@ body.dark-mode .auth-tab.active{background:var(--surface)}
   </div>
 </div>
 
+<!-- Modal Rapport Incident / Quasi-Accident -->
+<div class="modal-overlay" id="modal-rapport-quasi-accident" onclick="closeModalOut(event,'modal-rapport-quasi-accident')">
+  <div class="modal-sheet" style="max-height:93vh">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="rqa-modal-title">🚨 Rapport Incident / Quasi-Accident</div>
+    <input type="hidden" id="rqa-edit-id" value="">
+
+    <!-- 1. Informations Générales -->
+    <div style="background:var(--blue-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:7px">
+      <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2.5" fill="none"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      1. INFORMATIONS GÉNÉRALES
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="rqa-date" type="date"></div>
+      <div class="form-group"><label class="form-label">Heure</label><input class="form-input" id="rqa-heure" type="time"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Entreprise / Service</label><input class="form-input" id="rqa-entreprise" type="text" placeholder="Nom de l'entreprise ou service"></div>
+    <div class="form-group"><label class="form-label">Nom du déclarant</label><input class="form-input" id="rqa-declarant" type="text" placeholder="Nom de la personne qui déclare"></div>
+    <div class="form-group"><label class="form-label">Poste occupé</label><input class="form-input" id="rqa-poste" type="text" placeholder="Poste du déclarant"></div>
+
+    <!-- 2. Description -->
+    <div style="background:var(--orange-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--orange);display:flex;align-items:center;gap:7px">
+      <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2.5" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      2. DESCRIPTION DU QUASI-ACCIDENT
+    </div>
+    <div class="form-group"><div class="voice-wrap"><textarea class="form-textarea" id="rqa-description" placeholder="Décrivez précisément l'événement observé…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rqa-description',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div></div>
+
+    <!-- 3 & 4: Situation dangereuse & causes possibles -->
+    <div class="form-row" style="gap:10px">
+      <div class="form-group" style="flex:1">
+        <div style="background:var(--red-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--red);display:flex;align-items:center;gap:7px">
+          <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2.5" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+          3. SITUATION DANGEREUSE IDENTIFIÉE
+        </div>
+        <div id="rqa-situations" style="display:flex;flex-direction:column;gap:8px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-situation" value="Chute de plain-pied"> Chute de plain-pied
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-situation" value="Risque électrique"> Risque électrique
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-situation" value="Produit chimique"> Produit chimique
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-situation" value="Incendie"> Incendie
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-situation" value="Mauvaise signalisation"> Mauvaise signalisation
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-situation" value="Équipement défectueux"> Équipement défectueux
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-situation" value="Absence d'EPI"> Absence d'EPI
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-situation" value="Autre"> Autre
+          </label>
+        </div>
+        <div class="form-group" style="margin-top:8px"><input class="form-input" id="rqa-situation-autre" type="text" placeholder="Préciser si 'Autre'"></div>
+      </div>
+      <div class="form-group" style="flex:1">
+        <div style="background:var(--amber-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--amber);display:flex;align-items:center;gap:7px">
+          <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--amber)" stroke-width="2.5" fill="none"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          4. CAUSES POSSIBLES
+        </div>
+        <div id="rqa-causes" style="display:flex;flex-direction:column;gap:8px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-cause" value="Manque de formation"> Manque de formation
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-cause" value="Non-respect des consignes"> Non-respect des consignes
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-cause" value="Défaut matériel"> Défaut matériel
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-cause" value="Mauvaise organisation"> Mauvaise organisation
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-cause" value="Conditions de travail dangereuses"> Conditions de travail dangereuses
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-cause" value="Autre"> Autre
+          </label>
+        </div>
+        <div class="form-group" style="margin-top:8px"><input class="form-input" id="rqa-cause-autre" type="text" placeholder="Préciser si 'Autre'"></div>
+      </div>
+    </div>
+
+    <!-- 5 & 6: Mesures immédiates & Actions correctives -->
+    <div class="form-row" style="gap:10px">
+      <div class="form-group" style="flex:1">
+        <div style="background:var(--green-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:7px">
+          <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2.5" fill="none"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          5. MESURES IMMÉDIATES PRISES
+        </div>
+        <div class="voice-wrap"><textarea class="form-textarea" id="rqa-mesures" placeholder="Détaillez les mesures immédiates prises…"></textarea><button type="button" class="voice-mic-btn" onclick="voiceDictate('rqa-mesures',this)" title="Dicter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button></div>
+      </div>
+      <div class="form-group" style="flex:1">
+        <div style="background:var(--blue-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:7px">
+          <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          6. ACTIONS CORRECTIVES RECOMMANDÉES
+        </div>
+        <div id="rqa-actions" style="display:flex;flex-direction:column;gap:8px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-action" value="Sensibilisation du personnel"> Sensibilisation du personnel
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-action" value="Maintenance de l'équipement"> Maintenance de l'équipement
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-action" value="Mise en place de signalisation"> Mise en place de signalisation
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-action" value="Fourniture des EPI"> Fourniture des EPI
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-action" value="Contrôle supplémentaire"> Contrôle supplémentaire
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="checkbox" class="rqa-action" value="Autre"> Autre
+          </label>
+        </div>
+        <div class="form-group" style="margin-top:8px"><input class="form-input" id="rqa-action-autre" type="text" placeholder="Préciser si 'Autre'"></div>
+      </div>
+    </div>
+
+    <!-- 7. Responsable du suivi -->
+    <div style="background:var(--red-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--red);display:flex;align-items:center;gap:7px">
+      <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2.5" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      7. RESPONSABLE DU SUIVI
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="rqa-suivi-nom" type="text" placeholder="Nom du responsable du suivi"></div>
+      <div class="form-group"><label class="form-label">Fonction</label><input class="form-input" id="rqa-suivi-fonction" type="text" placeholder="Fonction"></div>
+      <div class="form-group"><label class="form-label">Date prévue de correction</label><input class="form-input" id="rqa-suivi-date" type="date"></div>
+    </div>
+
+    <!-- 8. Signatures -->
+    <div style="background:var(--blue-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:7px">
+      <svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2.5" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      8. SIGNATURES
+    </div>
+    <div class="form-row" style="gap:10px">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Déclarant</label>
+        <div class="sig-pad"><canvas id="sig-canvas-rqa-declarant" width="400" height="100"></canvas><button class="sig-clear" onclick="clearSig('sig-canvas-rqa-declarant')">Effacer</button></div>
+        <div class="form-hint">Signez avec le doigt</div>
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Responsable HSE</label>
+        <div class="sig-pad"><canvas id="sig-canvas-rqa-hse" width="400" height="100"></canvas><button class="sig-clear" onclick="clearSig('sig-canvas-rqa-hse')">Effacer</button></div>
+        <div class="form-hint">Signez avec le doigt</div>
+      </div>
+    </div>
+
+    <!-- Message de bas de page -->
+    <div style="background:var(--red-light);border:1.5px solid var(--red);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start">
+      <div style="font-size:22px">⚠️</div>
+      <div style="font-size:13px;line-height:1.5">
+        Ce quasi-accident aurait pu entraîner des conséquences graves.<br>
+        Une action préventive immédiate est recommandée afin d'éviter tout futur incident.
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="sauvegarderRapportQuasiAccident()">
+      <svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:6px;fill:none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Enregistrer & Exporter PDF
+    </button>
+    <button class="btn-secondary" onclick="sauvegarderRapportQuasiAccidentSans()">Enregistrer sans PDF</button>
+    <button class="btn-secondary" style="margin-top:6px" onclick="closeModal('modal-rapport-quasi-accident')">Annuler</button>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════
 // STATE
@@ -4636,7 +4818,9 @@ let DB = {
   envPollutions: [],
   envIncidents: [],
   envEies: [],
-  envCounter: 1
+  envCounter: 1,
+  rapportsQuasiAccidents: [],
+  rapportsQuasiAccidentsCounter: 1
 };
 
 async function save() {
@@ -4780,6 +4964,8 @@ async function load() {
   if (!DB.envEies)             DB.envEies              = [];
   if (!DB.envCounter)          DB.envCounter           = 1;
   if (!DB.hsse)                DB.hsse                 = {};
+  if (!DB.rapportsQuasiAccidents) DB.rapportsQuasiAccidents = [];
+  if (!DB.rapportsQuasiAccidentsCounter) DB.rapportsQuasiAccidentsCounter = 1;
   // Précharger les formations HSE si la bibliothèque est vide
   if (!DB.formations || DB.formations.length === 0) {
     DB.formations = _getFormationsDefaut();
@@ -11362,41 +11548,450 @@ function sauvegarderRapportMensuelSans() {
   showToast('Rapport mensuel enregistré ✓');
 }
 
-// ── Supprimer ──
-function supprimerRapport(type, id) {
-  showConfirm('Supprimer ce rapport ?', 'Cette action est irréversible.', function() {
-    if (type==='journalier') DB.rapportsJournaliers = DB.rapportsJournaliers.filter(x=>x.id!=id);
-    else DB.rapportsMensuels = DB.rapportsMensuels.filter(x=>x.id!=id);
-    save(); renderRapports(); showToast('Rapport supprimé');
-  });
+// ── Rapport Quasi-Accident ──
+function setDefaultDateRQA() {
+  var d = new Date().toISOString().split('T')[0];
+  var el = document.getElementById('rqa-date');
+  if (el && !el.value) el.value = d;
+}
+function ouvrirModalRapportQuasiAccident(id) {
+  clearPhotos('rqa-photo-preview');
+  clearSig('sig-canvas-rqa-declarant');
+  clearSig('sig-canvas-rqa-hse');
+  setDefaultDateRQA();
+  document.getElementById('rqa-edit-id').value = id || '';
+  document.getElementById('rqa-modal-title').textContent = id ? '✏️ Modifier Rapport Incident / Quasi-Accident' : '🚨 Rapport Incident / Quasi-Accident';
+  var rData = null;
+  if (id) {
+    rData = DB.rapportsQuasiAccidents.find(x=>x.id==id);
+    if (rData) {
+      document.getElementById('rqa-date').value = rData.date || '';
+      document.getElementById('rqa-heure').value = rData.heure || '';
+      document.getElementById('rqa-entreprise').value = rData.entreprise || '';
+      document.getElementById('rqa-declarant').value = rData.declarant || '';
+      document.getElementById('rqa-poste').value = rData.poste || '';
+      document.getElementById('rqa-description').value = rData.description || '';
+      document.getElementById('rqa-mesures').value = rData.mesures || '';
+      document.getElementById('rqa-suivi-nom').value = rData.suiviNom || '';
+      document.getElementById('rqa-suivi-fonction').value = rData.suiviFonction || '';
+      document.getElementById('rqa-suivi-date').value = rData.suiviDate || '';
+      document.getElementById('rqa-situation-autre').value = rData.situationAutre || '';
+      document.getElementById('rqa-cause-autre').value = rData.causeAutre || '';
+      document.getElementById('rqa-action-autre').value = rData.actionAutre || '';
+      // Cocher checkboxes
+      (rData.situations || []).forEach(function(v) {
+        var el = document.querySelector('.rqa-situation[value="'+v+'"]');
+        if (el) el.checked = true;
+      });
+      (rData.causes || []).forEach(function(v) {
+        var el = document.querySelector('.rqa-cause[value="'+v+'"]');
+        if (el) el.checked = true;
+      });
+      (rData.actions || []).forEach(function(v) {
+        var el = document.querySelector('.rqa-action[value="'+v+'"]');
+        if (el) el.checked = true;
+      });
+    }
+  } else {
+    // Réinitialiser formulaire
+    document.getElementById('rqa-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('rqa-heure').value = '';
+    document.getElementById('rqa-entreprise').value = '';
+    document.getElementById('rqa-declarant').value = '';
+    document.getElementById('rqa-poste').value = '';
+    document.getElementById('rqa-description').value = '';
+    document.getElementById('rqa-mesures').value = '';
+    document.getElementById('rqa-suivi-nom').value = '';
+    document.getElementById('rqa-suivi-fonction').value = '';
+    document.getElementById('rqa-suivi-date').value = '';
+    document.getElementById('rqa-situation-autre').value = '';
+    document.getElementById('rqa-cause-autre').value = '';
+    document.getElementById('rqa-action-autre').value = '';
+    document.querySelectorAll('.rqa-situation, .rqa-cause, .rqa-action').forEach(el => el.checked = false);
+  }
+  initSig('sig-canvas-rqa-declarant');
+  initSig('sig-canvas-rqa-hse');
+  openModal('modal-rapport-quasi-accident');
+  // Restaurer signatures après ouverture du modal
+  if (id && rData) {
+    setTimeout(function() {
+      if (rData.signatureDeclarant) {
+        var img = new Image();
+        img.onload = function() {
+          var cv = document.getElementById('sig-canvas-rqa-declarant');
+          if (cv) cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        };
+        img.src = rData.signatureDeclarant;
+      }
+      if (rData.signatureHse) {
+        var imgR = new Image();
+        imgR.onload = function() {
+          var cvR = document.getElementById('sig-canvas-rqa-hse');
+          if (cvR) cvR.getContext('2d').drawImage(imgR, 0, 0, cvR.width, cvR.height);
+        };
+        imgR.src = rData.signatureHse;
+      }
+    }, 80);
+  }
+}
+function lireFormRQA() {
+  var date = document.getElementById('rqa-date').value;
+  var entreprise = document.getElementById('rqa-entreprise').value.trim();
+  var declarant = document.getElementById('rqa-declarant').value.trim();
+  if (!date) { showToast('Date obligatoire', 'err'); return null; }
+  var situations = [];
+  document.querySelectorAll('.rqa-situation:checked').forEach(el => situations.push(el.value));
+  var causes = [];
+  document.querySelectorAll('.rqa-cause:checked').forEach(el => causes.push(el.value));
+  var actions = [];
+  document.querySelectorAll('.rqa-action:checked').forEach(el => actions.push(el.value));
+  var data = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+    type: 'quasi-accident',
+    createdAt: nowISO(),
+    date: date,
+    heure: document.getElementById('rqa-heure').value,
+    entreprise: entreprise,
+    declarant: declarant,
+    poste: document.getElementById('rqa-poste').value.trim(),
+    description: document.getElementById('rqa-description').value.trim(),
+    situations: situations,
+    situationAutre: document.getElementById('rqa-situation-autre').value.trim(),
+    causes: causes,
+    causeAutre: document.getElementById('rqa-cause-autre').value.trim(),
+    mesures: document.getElementById('rqa-mesures').value.trim(),
+    actions: actions,
+    actionAutre: document.getElementById('rqa-action-autre').value.trim(),
+    suiviNom: document.getElementById('rqa-suivi-nom').value.trim(),
+    suiviFonction: document.getElementById('rqa-suivi-fonction').value.trim(),
+    suiviDate: document.getElementById('rqa-suivi-date').value,
+    signatureDeclarant: getSig('sig-canvas-rqa-declarant'),
+    signatureHse: getSig('sig-canvas-rqa-hse')
+  };
+  return data;
+}
+function _enregistrerRQA(data) {
+  if (!Array.isArray(DB.rapportsQuasiAccidents)) DB.rapportsQuasiAccidents = [];
+  var editId = document.getElementById('rqa-edit-id').value;
+  if (editId) {
+    var idx = DB.rapportsQuasiAccidents.findIndex(x=>x.id==editId);
+    if (idx!==-1) DB.rapportsQuasiAccidents[idx] = Object.assign({}, data, {id: editId});
+    else DB.rapportsQuasiAccidents.unshift(data);
+  } else {
+    DB.rapportsQuasiAccidents.unshift(data);
+    addActivity('Rapport Quasi-Accident — ' + fmtDate(data.date), 'red');
+  }
+  save(); closeModal('modal-rapport-quasi-accident');
+  if (currentScreen==='exports') renderRapports();
+}
+function sauvegarderRapportQuasiAccident() {
+  var data = lireFormRQA(); if (!data) return;
+  _enregistrerRQA(data);
+  pdfRapportQuasiAccident(data);
+  showToast('Rapport quasi-accident enregistré & PDF généré ✓');
+}
+function sauvegarderRapportQuasiAccidentSans() {
+  var data = lireFormRQA(); if (!data) return;
+  _enregistrerRQA(data);
+  showToast('Rapport quasi-accident enregistré ✓');
 }
 
-// ── Render liste rapports ──
+// ── PDF Rapport Quasi-Accident (exactement comme image) ──
+function pdfRapportQuasiAccident(r) {
+  if (!window.jspdf) { showToast('Librairie PDF en chargement', 'err'); return; }
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = 210, H = 297, M = 14, CW = W - M*2;
+  
+  /* Couleurs (bleu marine/orange comme l'image) */
+  var NAVY = [12, 35, 68];
+  var ORANGE = [214, 85, 40];
+  var WHITE = [255,255,255];
+  var INK = [15,15,15];
+  var MID = [70,70,70];
+  var PALE = [130,128,124];
+  var BG = [245,244,241];
+  var RULE = [190,188,182];
+  var RED = [155,30,30];
+  
+  var y = 10;
+  
+  // ── EN-TÊTE ──
+  // Logo (bouclier)
+  var logoX = M, logoY = y;
+  var logoW = 30, logoH = 30;
+  doc.setFillColor(...NAVY);
+  doc.circle(logoX + logoW/2, logoY + logoH/2, logoW/2, 'F');
+  doc.setFillColor(...WHITE);
+  doc.circle(logoX + logoW/2, logoY + logoH/2, logoW/2 - 3, 'F');
+  doc.setFillColor(...NAVY);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(20);
+  doc.setTextColor(...NAVY);
+  doc.text('!', logoX + logoW/2, logoY + logoH/2 + 5, { align: 'center' });
+  // Titre
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(22);
+  doc.setTextColor(...NAVY);
+  doc.text("RAPPORT D'INCIDENT / QUASI-ACCIDENT", logoX + logoW + 8, logoY + 12);
+  doc.setFont('helvetica','italic');
+  doc.setFontSize(12);
+  doc.setTextColor(...MID);
+  doc.text("Rapport d'un événement dangereux sans blessure", logoX + logoW + 8, logoY + 20);
+  y = logoY + logoH + 8;
+  
+  function needPage(h) { if (y + (h || 20) > H - 25) { doc.addPage(); y = 20; } }
+  function hLine(yy, x1, x2, col, lw) {
+    doc.setDrawColor(...(col || RULE));
+    doc.setLineWidth(lw || 0.3);
+    doc.line(x1 || M, yy, x2 || (W-M), yy);
+  }
+  
+  // ── Section 1: Infos Générales ──
+  function sectionTitle(num, titre, couleur) {
+    needPage(15);
+    doc.setFillColor(...(couleur || NAVY));
+    doc.rect(M, y, CW, 7, 'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...WHITE);
+    doc.text(String(num) + ". " + titre.toUpperCase(), M + 3, y + 5);
+    y += 10;
+  }
+  sectionTitle(1, "INFORMATIONS GÉNÉRALES");
+  var table1 = [
+    ["Date", fmtDate(r.date)],
+    ["Heure", r.heure || '—'],
+    ["Entreprise / Service", r.entreprise || DB.chantier || '—'],
+    ["Nom du déclarant", r.declarant || '—'],
+    ["Poste occupé", r.poste || '—']
+  ];
+  table1.forEach(function(row, i) {
+    needPage(8);
+    doc.setFillColor(BG[0],BG[1],BG[2]);
+    doc.rect(M, y, CW, 7, 'FD');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...INK);
+    doc.text(row[0], M+2, y+5);
+    doc.setFont('helvetica','normal');
+    doc.text(row[1], M+70, y+5);
+    y +=7;
+  });
+  
+  // ── Section 2: Description ──
+  sectionTitle(2, "DESCRIPTION DU QUASI-ACCIDENT");
+  needPage(25);
+  doc.setFillColor(BG[0],BG[1],BG[2]);
+  doc.rect(M, y, CW, 25, 'FD');
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...INK);
+  var descLines = doc.splitTextToSize(r.description || "—", CW-4);
+  doc.text(descLines, M+2, y+5);
+  y += 25 + descLines.length*3;
+  
+  // ── Sections 3 & 4: 2 colonnes ──
+  sectionTitle(3, "SITUATION DANGEREUSE IDENTIFIÉE", RED);
+  var leftX = M, rightX = M + CW/2 + 2;
+  var colW = CW/2 - 2;
+  needPage(60);
+  // Colonne gauche: Section3
+  doc.setFillColor(250,232,232); // rouge pâle
+  doc.rect(leftX, y, colW, 55, 'F');
+  var y3 = y + 3;
+  // Checkboxes situations
+  var allSituations = ["Chute de plain-pied", "Risque électrique", "Produit chimique", "Incendie", "Mauvaise signalisation", "Équipement défectueux", "Absence d'EPI", "Autre"];
+  allSituations.forEach(function(s, i) {
+    var checked = r.situations && r.situations.includes(s);
+    var yy = y3 + i*5;
+    if (i < allSituations.length) {
+      doc.setDrawColor(...RULE);
+      doc.setLineWidth(0.3);
+      doc.rect(leftX + 3, yy, 3,3, 'S');
+      if (checked) { doc.setFillColor(...RED); doc.rect(leftX + 3.5, yy+0.5, 2,2, 'F'); }
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...INK);
+      doc.text(s, leftX +8, yy+2.3);
+    }
+  });
+  // Champ "Autre"
+  if (r.situationAutre) {
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(...RED);
+    doc.text("→ " + r.situationAutre, leftX +3, y3 + allSituations.length*5 + 3);
+  }
+  // Colonne droite: Section4
+  sectionTitle(4, "CAUSES POSSIBLES", [170,110,20]); // ambre
+  // Nous avons déjà avancé y pour la section, donc réinitialiser un peu pour la 2e colonne
+  var y4 = y - 10;
+  needPage(60);
+  doc.setFillColor(255,245,230); // ambre pâle
+  doc.rect(rightX, y4, colW, 55, 'F');
+  var allCauses = ["Manque de formation", "Non-respect des consignes", "Défaut matériel", "Mauvaise organisation", "Conditions de travail dangereuses", "Autre"];
+  allCauses.forEach(function(s, i) {
+    var checked = r.causes && r.causes.includes(s);
+    var yy = y4 + 3 + i*5;
+    doc.setDrawColor(...RULE); doc.setLineWidth(0.3);
+    doc.rect(rightX +3, yy,3,3,'S');
+    if (checked) { doc.setFillColor([170,110,10]); doc.rect(rightX+3.5, yy+0.5, 2,2,'F'); }
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...INK);
+    doc.text(s, rightX+8, yy+2.3);
+  });
+  if (r.causeAutre) {
+    doc.setFont('helvetica','bold'); doc.setTextColor([170,110,10]);
+    doc.text("→ " + r.causeAutre, rightX+3, y4 +3 + allCauses.length*5 +3);
+  }
+  y = y4 + 55 + 5;
+  
+  // ── Sections 5 &6: 2 colonnes ──
+  sectionTitle(5, "MESURES IMMÉDIATES PRISES", [20,100,40]); // vert
+  var y5 = y -10;
+  needPage(30);
+  doc.setFillColor(232,248,236); // vert pâle
+  doc.rect(leftX, y5, colW, 28, 'F');
+  var mesuresLines = doc.splitTextToSize(r.mesures || "—", colW-4);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...INK);
+  doc.text(mesuresLines, leftX+2, y5+7);
+  
+  sectionTitle(6, "ACTIONS CORRECTIVES RECOMMANDÉES", [20,90,150]); // bleu
+  var y6 = y -10;
+  needPage(30);
+  doc.setFillColor(228,233,242); // bleu pâle
+  doc.rect(rightX, y6, colW, 28, 'F');
+  var allActions = ["Sensibilisation du personnel", "Maintenance de l'équipement", "Mise en place de signalisation", "Fourniture des EPI", "Contrôle supplémentaire", "Autre"];
+  allActions.forEach(function(s, i) {
+    var checked = r.actions && r.actions.includes(s);
+    var yy = y6 + 3 + i*4;
+    if (yy < y6 + 26) {
+      doc.setDrawColor(...RULE); doc.setLineWidth(0.3);
+      doc.rect(rightX +3, yy,3,3,'S');
+      if (checked) { doc.setFillColor([20,90,150]); doc.rect(rightX+3.5, yy+0.5, 2,2,'F'); }
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...INK);
+      doc.text(s, rightX+8, yy+2.3);
+    }
+  });
+  if (r.actionAutre) {
+    doc.setFont('helvetica','bold'); doc.setTextColor([20,90,150]);
+    doc.text("→ " + r.actionAutre, rightX+3, y6+3+allActions.length*4 +1);
+  }
+  y = y6 +30;
+  
+  // ── Section 7: Responsable du suivi ──
+  sectionTitle(7, "RESPONSABLE DU SUIVI", RED);
+  needPage(15);
+  doc.setFillColor(250,232,232);
+  doc.rect(M, y, CW, 13, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...INK);
+  doc.text("Nom", M+2, y+5);
+  doc.text("Fonction", M+50, y+5);
+  doc.text("Date prévue de correction", M+110, y+5);
+  doc.setFont('helvetica','normal');
+  doc.text(r.suiviNom || '—', M+2, y+11);
+  doc.text(r.suiviFonction || '—', M+50, y+11);
+  doc.text(r.suiviDate ? fmtDate(r.suiviDate) : '—', M+110, y+11);
+  y +=15;
+  
+  // ── Section 8: Signatures ──
+  sectionTitle(8, "SIGNATURES", NAVY);
+  needPage(35);
+  var sigW = (CW - 6)/2;
+  var sigX1 = M, sigX2 = M + sigW + 6;
+  var sigY = y;
+  var sigH = 30;
+  
+  doc.setDrawColor(...RULE); doc.setLineWidth(0.3);
+  doc.rect(sigX1, sigY, sigW, sigH, 'FD'); // fond BG
+  doc.rect(sigX2, sigY, sigW, sigH, 'FD');
+  // Labels signatures
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...INK);
+  doc.text("Déclarant", sigX1+2, sigY+5);
+  doc.text("Responsable HSE", sigX2+2, sigY+5);
+  
+  // Dessiner signatures
+  function drawSignature(imgData, x, yy, w, h) {
+    if (!imgData) return;
+    try {
+      doc.addImage(imgData, 'PNG', x+2, yy+7, w-4, h-9);
+    } catch(e) {}
+  }
+  drawSignature(r.signatureDeclarant, sigX1, sigY, sigW, sigH);
+  drawSignature(r.signatureHse, sigX2, sigY, sigW, sigH);
+  y = sigY + sigH + 5;
+  
+  // ── Message de bas de page ──
+  needPage(20);
+  doc.setFillColor(250,232,232);
+  doc.setDrawColor(...RED);
+  doc.setLineWidth(0.5);
+  doc.rect(M, y, CW, 18, 'FD');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...RED);
+  doc.text("⚠️ Ce quasi-accident aurait pu entraîner des conséquences graves.", M+3, y+7);
+  doc.setFont('helvetica','normal'); doc.setTextColor(...INK);
+  doc.text("Une action préventive immédiate est recommandée afin d'éviter tout futur incident.", M+3, y+12);
+  
+  doc.save("Rapport_Quasi_Accident_" + fmtDate(r.date).replace(/\//g, '-') + ".pdf");
+}
+
+// Mettre à jour renderRapports() pour inclure les rapports quasi-accident
 function renderRapports() {
   var el = document.getElementById('rapports-list'); if (!el) return;
   if (!Array.isArray(DB.rapportsJournaliers)) DB.rapportsJournaliers = [];
   if (!Array.isArray(DB.rapportsMensuels))  DB.rapportsMensuels  = [];
-  var all = DB.rapportsJournaliers.concat(DB.rapportsMensuels).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
-  if (!all.length) { el.innerHTML = '<div class="empty-state" style="padding:28px 16px"><div class="empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="empty-title" style="font-size:15px">Aucun rapport</div><div class="empty-desc">Créez votre premier rapport journalier ou mensuel.</div></div>'; return; }
+  if (!Array.isArray(DB.rapportsQuasiAccidents)) DB.rapportsQuasiAccidents = [];
+  
+  var all = [].concat(
+    DB.rapportsJournaliers.map(x => Object.assign({listType:'journalier'}, x)),
+    DB.rapportsMensuels.map(x => Object.assign({listType:'mensuel'}, x)),
+    DB.rapportsQuasiAccidents.map(x => Object.assign({listType:'quasi-accident'}, x))
+  ).sort((a,b)=> (b.createdAt||b.date).localeCompare(a.createdAt||a.date));
+  
+  if (!all.length) { 
+    el.innerHTML = '<div class="empty-state" style="padding:28px 16px"><div class="empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" stroke="var(--text3)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="empty-title" style="font-size:15px">Aucun rapport</div><div class="empty-desc">Créez votre premier rapport journalier, mensuel ou quasi-accident.</div></div>'; 
+    return; 
+  }
+  
   el.innerHTML = all.map(r => {
-    var isJour = r.type==='journalier';
-    var titre = isJour ? ('Rapport Journalier — ' + fmtDate(r.date)) : ('Rapport Mensuel — ' + nomMois(r.mois) + ' ' + r.annee);
-    var meta = 'Par ' + r.responsable + (r.zone ? ' · ' + r.zone : '');
+    var isJour = r.listType==='journalier';
+    var isMens = r.listType==='mensuel';
+    var isQuasi = r.listType==='quasi-accident';
+    var titre = isJour ? ('Rapport Journalier — ' + fmtDate(r.date)) : 
+                  isMens ? ('Rapport Mensuel — ' + nomMois(r.mois) + ' ' + r.annee) :
+                  ('Rapport Quasi-Accident — ' + fmtDate(r.date));
+    var meta = isQuasi ? ('Déclaré par ' + (r.declarant || DB.config.nom)) : 
+                        ('Par ' + (r.responsable || DB.config.nom) + (r.zone ? ' · ' + r.zone : ''));
     return '<div class="rapport-card">' +
-      '<div class="rapport-card-type '+(isJour?'jour':'mensuel')+'">' +
-      (isJour ? '<svg width="10" height="10" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2.5" fill="none"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg> JOURNALIER' : '<svg width="10" height="10" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2.5" fill="none"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> MENSUEL') + '</div>' +
+      '<div class="rapport-card-type '+(isQuasi ? 'red' : (isJour?'jour':'mensuel'))+'">' +
+      (isQuasi ? '<svg width="10" height="10" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="2.5" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg> QUASI-ACCIDENT' : 
+       (isJour ? '<svg width="10" height="10" viewBox="0 0 24 24" stroke="var(--orange)" stroke-width="2.5" fill="none"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg> JOURNALIER' :
+        '<svg width="10" height="10" viewBox="0 0 24 24" stroke="var(--blue)" stroke-width="2.5" fill="none"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> MENSUEL')) + '</div>' +
       '<div class="rapport-card-title">' + titre + '</div>' +
       '<div class="rapport-card-meta">' + meta + '</div>' +
-      (r.signature ? '<div style="margin-top:6px;font-size:10px;color:var(--green);font-weight:600">✓ Signé</div>' : '') +
+      ((r.signature || r.signatureDeclarant) ? '<div style="margin-top:6px;font-size:10px;color:var(--green);font-weight:600">✓ Signé</div>' : '') +
       '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">' +
-      '<button class="btn-sm orange" onclick="'+(isJour?'ouvrirRapportJour':'ouvrirRapportMensuel')+'(\''+r.id+'\')">✏️ Modifier</button>' +
-      '<button class="btn-sm" style="background:var(--blue-light);color:var(--blue)" onclick="'+(isJour?'pdfRapportJourById':'pdfRapportMensuelById')+'(\''+r.id+'\')">📄 PDF</button>' +
-      '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="supprimerRapport(\''+(isJour?'journalier':'mensuel')+'\',\''+r.id+'\')">✕</button>' +
+      (isQuasi ? 
+        '<button class="btn-sm red" onclick="ouvrirModalRapportQuasiAccident(\''+r.id+'\')">✏️ Modifier</button>' +
+        '<button class="btn-sm" style="background:var(--red-light);color:var(--red)" onclick="pdfRapportQuasiAccidentById(\''+r.id+'\')">📄 PDF</button>' : 
+        '<button class="btn-sm '+(isJour?'orange':'blue')+'" onclick="'+(isJour?'ouvrirRapportJour':'ouvrirRapportMensuel')+'(\''+r.id+'\')">✏️ Modifier</button>' +
+        '<button class="btn-sm" style="background:var(--'+(isJour?'orange':'blue')+'-light);color:var(--'+(isJour?'orange':'blue')+')" onclick="'+(isJour?'pdfRapportJourById':'pdfRapportMensuelById')+'(\''+r.id+'\')">📄 PDF</button>') +
+      '<button class="btn-sm outline" style="color:var(--red);border-color:var(--red)" onclick="supprimerRapport(\''+(isQuasi?'quasi-accident':(isJour?'journalier':'mensuel'))+'\',\''+r.id+'\')">✕</button>' +
       '</div></div>';
   }).join('');
 }
+function pdfRapportQuasiAccidentById(id) { var r=DB.rapportsQuasiAccidents.find(x=>x.id==id); if(r) pdfRapportQuasiAccident(r); }
 function pdfRapportJourById(id) { var r=DB.rapportsJournaliers.find(x=>x.id==id); if(r) pdfRapportJour(r); }
 function pdfRapportMensuelById(id){ var r=DB.rapportsMensuels.find(x=>x.id==id); if(r) pdfRapportMensuel(r); }
+function supprimerRapport(type, id) {
+  showConfirm('Supprimer ce rapport ?', 'Cette action est irréversible.', function() {
+    if (type==='journalier') DB.rapportsJournaliers = DB.rapportsJournaliers.filter(x=>x.id!=id);
+    else if (type==='mensuel') DB.rapportsMensuels = DB.rapportsMensuels.filter(x=>x.id!=id);
+    else DB.rapportsQuasiAccidents = DB.rapportsQuasiAccidents.filter(x=>x.id!=id);
+    save(); renderRapports(); showToast('Rapport supprimé');
+  });
+}
+
+
 
 // ═══════════════════════════════════════════════
 // PDF — RAPPORT JOURNALIER HSE  v4 · Officiel BTP
